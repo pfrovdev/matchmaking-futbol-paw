@@ -19,7 +19,7 @@ La plataforma tiene como propósito facilitar la organización y gestión de par
 5. Sistema de ranking y reputación (basado en partidos disputados, victorias, empates y derrotas).
 
 
-6. Chat de coordinación entre capitanes redireccionado a whatsapp .
+6. Chat de coordinación entre capitanes redireccionado a Whatsapp .
 
 
 # Módulos 
@@ -28,7 +28,7 @@ La plataforma tiene como propósito facilitar la organización y gestión de par
 
 - Registro de usuarios con nombre, correo, contraseña, etc.
 
-- Inicio de sesión con autenticación segura (nose recaptcha??).
+- Inicio de sesión con autenticación segura.
 
 - Recuperación de contraseña.
 
@@ -73,7 +73,7 @@ La plataforma tiene como propósito facilitar la organización y gestión de par
 
 ## Chat de Coordinación
 
-- Redirección a la aplicación de whatsapp mediante LINK.
+- Redirección a la aplicación de Whatsapp mediante un enlace.
 
 ## Registro de Resultados y Estadísticas.
 
@@ -85,7 +85,7 @@ La plataforma tiene como propósito facilitar la organización y gestión de par
 
 ## Sistema de Ranking y Experiencia (ELO)
 
-- Ranking dinámico basado en el sistema de ELO, que contempla victoria, empates, derrotas y resultado más probable.
+- Ranking dinámico basado en el sistema de puntuación ELO, que contempla victoria, empates, derrotas y resultado más probable.
 
 - Clasificación de jugadores y equipos en categorías: Novato, Amateur, Semiprofesional, Profesional.
 
@@ -126,11 +126,11 @@ La plataforma tiene como propósito facilitar la organización y gestión de par
 
 ## Administrador de la Plataforma
 
-- No participa en los partidos, pero puede gestionar usuarios, partidos, etc.
+- No participa en los partidos, pero puede gestionar los datos de la plataforma.
 
 - Modificar datos incorrectos (en caso de errores reportados por los usuarios).
 
-- Modera comentarios y calificaciones.
+- Moderar comentarios y calificaciones.
 
 # Presupuesto Funcional y Temporal
 
