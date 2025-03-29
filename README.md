@@ -147,3 +147,6 @@ Se dispone de un total de 13 semanas y USD 5000 como presupuesto para el desarro
 | Registro de Resultados y Estadísticas | 5 | 20 | 1000 |
 | Sistema de Ranking y Experiencia | 4 | 20 | 1000 |
 | Calificación de Deportividad y Comentarios | 2 | 4 | 200 |
+
+# Sitemap de la Plataforma Web
+![Alt text](sitemap.jpg)
