@@ -53,5 +53,13 @@ Es el perfil que tiene todo usuario en el momento de registrarse en la plataform
 # Wireframe
 
 # Arquitectura de la Aplicacion
+## Arquitectura Cliente/Servidor
+Los clientes (web browser) se comunican con la aplicacion mediante peticiones HTTP a traves de la Internet. Dicha aplicacion se encuentra alojada en un servidor remoto junto a la base de datos y otros recursos externos.
+
+![Alt text](arquitectura-cliente-servidor-imagen.png)
+
+## Arquitectura en Capas
+
+![Alt text](arquitectura-capas-imagen.jpg)
 
 # Diagrama
