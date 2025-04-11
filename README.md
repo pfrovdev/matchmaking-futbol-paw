@@ -59,6 +59,10 @@ Los clientes (web browser) se comunican con la aplicacion mediante peticiones HT
 ![Alt text](arquitectura-cliente-servidor-imagen.png)
 
 ## Arquitectura en Capas
+La aplicacion web constara de 3 capas:
+- Presentacion: capa responsable  de manejar la interaz grafica de usuario como por ejemplo las vistas renderizadas y los formularios HTML teniendo en cuenta las paginas web.
+- Dominio/Negocio: capa donde se encuentran todos los modelos, sus operaciones y restricciones vinculadas a la logica del negocio de la aplicacion.
+- Acceso a Datos (Persistencia): capa que tiene la responsabilidad de almacenar y obtener datos a partir de un repositorio de datos como una base datos o un archivo plano.
 
 ![Alt text](arquitectura-capas-imagen.jpg)
 
