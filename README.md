@@ -68,3 +68,5 @@ La aplicación web consta de 3 capas:
 ![Alt text](arquitectura-capas-imagen.jpg)
 
 # Diagrama
+
+![Alt text](diagrama-uml-imagen.png)
