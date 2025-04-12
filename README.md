@@ -51,6 +51,7 @@ Es el perfil que tiene todo usuario en el momento de registrarse en la plataform
 ![Alt text](sitemap-plataforma-web.jpg)
 
 # Wireframe
+[Enlace al Figma](https://www.figma.com/design/4SNjXA2fyOQJw5l6VsIHeq/Match-Making-Futbol-5?node-id=0-1&p=f)
 
 # Arquitectura de la Aplicacion
 ## Arquitectura Cliente/Servidor
