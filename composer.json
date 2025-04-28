@@ -1,0 +1,44 @@
+{
+    "name": "paw/tp3-pawprint",
+    "description": "Proyecto TP3 - Aplicación en PHP para compra y reserva de libros (sin frameworks)",
+    "type": "project",
+    "keywords": ["php", "mvc"],
+    "license": "ḾIT",
+    "require": {
+      "php": ">=7.4.0",
+      "vlucas/phpdotenv": "^5.5",
+      "filp/whoops": "~2",
+        "monolog/monolog": "^2.10"
+    },
+    "autoload": {
+      "psr-4": {
+        "Paw\\": "src/"
+      }
+    },
+    "authors": [
+      {
+        "name": "De Paola Agustín",
+        "email": "depa.agustin@gmail.com"
+      },
+      {
+        "name": "Federov Pavlo",
+        "email": "pfrov.dev@gmail.com"
+      },
+      {
+        "name": "Iarza Esteban",
+        "email": "iarzaesteban94@gmail.com"
+      },
+      {
+        "name": "Juarez Sebastián",
+        "email": "sebajuarezz@gmail.com"
+      }
+    ],
+    "scripts": {
+      "start": "php -S localhost:9999 -t public"
+    },
+    "config": {
+      "optimize-autoloader": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+  }
