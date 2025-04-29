@@ -17,7 +17,10 @@ return [
         ['path' => '/about-us', 'action' => 'PageController@aboutUs', 'method' => 'GET'],
         ['path' => '/login', 'action' => 'PageController@login', 'method' => 'GET'],
         ['path' => '/create-account', 'action' => 'PageController@createAccount', 'method' => 'GET'],
+        ['path' => '/create-team', 'action' => 'EquipoController@createTeam', 'method' => 'GET'],
+
         ['path' => '/register', 'action' => 'EquipoController@register', 'method' => 'POST'],
+        ['path' => '/register-team', 'action' => 'EquipoController@registerTeam', 'method' => 'POST'],
     ],
 
 

@@ -1,8 +1,8 @@
 <?php
-
 namespace Paw\Core;
 
-use Paw\Core\AbstractModel;
+use Monolog\Logger;
+
 use Paw\Core\Database\QueryBuilder;
 
 class AbstractController{
@@ -11,14 +11,13 @@ class AbstractController{
     public ?string $modelName = null;
     public ?object $model = null;
 
-    public function __construct(){
-        global $connection, $log;
+    public function __construct(Logger $log){
         $this->viewsDir = __DIR__ . "/../App/views/";
 
         if(!is_null($this->modelName)){
-            //$qb = new QueryBuilder($connection, $log);
-            $model = new $this->modelName;
-            //$model->setQueryBuilder($qb);
+            $queryBuilder = QueryBuilder::getInstance();
+            $queryBuilder->setLogger($log);
+            $model = new $this->modelName($queryBuilder);
             $this->setModel($model);
         }
     }
@@ -26,7 +25,5 @@ class AbstractController{
     public function setModel(?object $model){
         $this->model = $model;
     }
-
 }
-
 ?>

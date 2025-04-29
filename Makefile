@@ -4,6 +4,7 @@ export
 
 # Para levantar la App
 up:
+	composer update
 	docker-compose up -d db
 	composer start
 

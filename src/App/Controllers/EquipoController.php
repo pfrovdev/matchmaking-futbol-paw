@@ -19,45 +19,113 @@ class EquipoController extends AbstractController{
         require $this->viewsDir . '';
     }
 
-    public function register()
-    {
-        global $connection;
-
+    public function register(){
+        session_start();
         $email = $_POST['email'] ?? null;
         $confirmEmail = $_POST['confirm-email'] ?? null;
         $password = $_POST['password'] ?? null;
         $confirmPassword = $_POST['confirm_password'] ?? null;
         $telefono = $_POST['telefono'] ?? null;
 
-        if (!$email || !$confirmEmail || !$password || !$confirmPassword || !$telefono) {
-            echo "Faltan datos obligatorios.";
-            return;
+        $errors = [];
+
+        if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = "El correo electrónico no es válido.";
         }
 
         if ($email !== $confirmEmail) {
-            echo "Los correos electrónicos no coinciden.";
-            return;
+            $errors[] = "Los correos electrónicos no coinciden.";
         }
 
         if ($password !== $confirmPassword) {
-            echo "Las contraseñas no coinciden.";
-            return;
+            $errors[] = "Las contraseñas no coinciden.";
         }
 
-        $sql = "SELECT * FROM Equipo WHERE email = ?";
-        $stmt = $connection->prepare($sql);
-        $stmt->execute([$email]);
-        $equipo = $stmt->fetch();
-
-        if ($equipo) {
-            echo "El correo ya está registrado.";
-            return;
+        if (empty($telefono)) {
+            $errors[] = "El teléfono es obligatorio.";
         }
 
-        echo "El email está disponible. Podés seguir con el registro.";
-        
+        if (!preg_match("/^\+54[0-9]{10,12}$/", $telefono)) {
+            $errors[] ='El número de teléfono es inválido. Ej: +542323444444';
+        }
+
+        if (!empty($errors)) {
+            $_SESSION['errors'] = $errors;
+            $_SESSION['old'] = $_POST;
+            header('Location: /create-account');
+            exit;
+        }
+        $_SESSION['equipo_temp'] = [
+            'email' => $email,
+            'password' => password_hash($password, PASSWORD_DEFAULT),
+            'telefono' => $telefono
+        ];
+
+        header('Location: /create-team');
+        exit;
     }
 
-}
+    public function registerTeam(){   
+        session_start();
+        $errors = [];
+        if (!isset($_SESSION['equipo_temp'])) {
+            $errors[] = "Error de session, por favor intentalo nuevamente.";
+            $_SESSION['errors'] = $errors;
+            header('Location: /create-team');
+            exit;
+        }
+        
+        $teamName = $_POST['team-name'] ?? null;
+        $teamAcronym = $_POST['team-acronym'] ?? null;
+        $teamType = $_POST['team-type'] ?? null;
+        $teamZone = $_POST['team-zone'] ?? null;
+        $teamMotto = $_POST['team-motto'] ?? null;
+    
+        if (
+            empty($teamName) || 
+            empty($teamAcronym) || 
+            empty($teamType) ||
+            empty($teamZone)
+        ) {
+            $errors[] = "Por favor llená los campos obligatorios.";
+            header('Location: /create-team');
+            exit;
+        }
+        if (isset($teamZone['lat']) && isset($teamZone['lng'])) {
+            $lat = floatval($teamZone['lat']);
+            $lng = floatval($teamZone['lng']);
+            $geolocalizacion = "POINT($lng $lat)";
+        } else {
+            $geolocalizacion = null;
+        }
 
+        // Seteamos todos los valores en el modelo
+        $params = [
+            'email' => $_SESSION['equipo_temp']['email'],
+            'password' => $_SESSION['equipo_temp']['password'],
+            'telefono' => $_SESSION['equipo_temp']['telefono'],
+            'nombre_equipo' => $teamName,
+            'acronimo' => $teamAcronym,
+            'tipo_equipo' => $teamType,
+            'geolocalizacion' => $geolocalizacion ?? null,
+            'descripcion_lema' => $teamMotto,
+        ];
+        
+        // Guardamos en la base de datos
+        $insertedId = $this->model->saveNewTeam($params);
+
+        if ($insertedId !== null) {
+            // Limpiamos la sesión temporal
+            unset($_SESSION['equipo_temp']);
+            header('Location: /login');
+            exit;
+        } else {
+            $errors[] = "Hubo un error al registrar el equipo. Por favor intentalo nuevamente";
+        }
+    }
+
+    public function createTeam(){
+        require $this->viewsDir . 'create-team.php';
+    }
+}
 ?>

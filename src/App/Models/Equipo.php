@@ -74,7 +74,7 @@ class Equipo extends AbstractModel
                 continue;
             }
             $method = "set" . ucfirst($field);
-            $this->method($values[$field]); 
+            $this->$method($values[$field]); 
         }
     }
 
@@ -85,4 +85,16 @@ class Equipo extends AbstractModel
         }
         return null;
     }
+
+    public function findByParams(array $params) {
+        $queryBuilder = $this->getQueryBuilder();
+        $result = $queryBuilder->findByParams($this->table, $params);
+        return $result;
+    }
+
+    public function saveNewTeam(array $params): ?string{
+        $queryBuilder = $this->getQueryBuilder();
+        return $queryBuilder->insert($this->table, $params);
+    }
+    
 }

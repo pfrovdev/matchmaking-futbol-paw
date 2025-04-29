@@ -10,13 +10,30 @@
 </head>
 <body>
     <?php
+        session_start();
+        $errors = $_SESSION['errors'] ?? [];
+        $old = $_SESSION['old'] ?? [];
+        unset($_SESSION['errors']);
+        unset($_SESSION['old']);
+    ?>
+    <?php
         require "parts/header.php";
     ?>
 
     <main>       
         <section class="container register-container">
+            <head>
             <h1>Crear cuenta</h1>
             <p>Crea tu cuenta y equipo ya!</p>
+            </head>
+            
+            <?php if (!empty($errors)): ?>
+                <section class="error-messages">
+                    <?php foreach ($errors as $error): ?>
+                        <p style="color: red;"><?php echo htmlspecialchars($error); ?></p>
+                    <?php endforeach; ?>
+                </section>
+            <?php endif; ?>
             <form action="/register" method="post">              
                 <label for="email">Correo electronico *</label>
                 <input type="email" id="email" name="email" placeholder="ej: email@gmail.com" required>
@@ -47,4 +64,4 @@
     ?>
     
 </body>
-</html>
+</html>/home/eiarza/universidad/1er_cuatri_2025/PAW_2025/matchmaking-futbol-paw/src/App/views/create-team.php
