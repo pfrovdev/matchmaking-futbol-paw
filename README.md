@@ -4,7 +4,7 @@
 
 De Paola Agustín, depa.agustin@gmail.com
 Fedorov Pavlo, pfrov.dev@gmail.com
-Iarza Esteban, iarzaesteban94@gmail.com
+Iarza Esteban, iarzaesteban94@gmail.comssss
 Juarez Sebastián, sebajuarezz@#gmail.com
 
 ## Estructura del Proyecto PawPrint
