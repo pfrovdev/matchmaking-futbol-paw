@@ -16,9 +16,6 @@ class PageController extends AbstractController{
     public function login(){
         require $this->viewsDir . 'login.php';
     }
-    public function createAccount(){
-        require $this->viewsDir . 'create-account.php';
-    }
 
 
 }

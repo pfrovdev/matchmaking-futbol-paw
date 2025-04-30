@@ -1,22 +1,40 @@
 <?php
 
 namespace Paw\App\Controllers;
-
 use Paw\Core\AbstractController;
 use Paw\App\Models\Equipo;
+use Paw\App\Models\TipoEquipo;
 
 class EquipoController extends AbstractController{
 
     public ?string $modelName = Equipo::class;
     
-    public function show() {
-        $id = $_GET['id'];
-        $team = $this->model->getById($id);
-        if(is_null($team)){
-            require $this->viewsDir . 'not-found.php';
-            exit;
-        }
-        require $this->viewsDir . '';
+    // EJEMPLO DEL USO DE VARIOS MODELOS
+    // public function show()
+    // {
+    //     $id = $_GET['id'];
+
+    //     $equipo = $this->model->getById($id);
+
+    //     if (is_null($equipo)) {
+    //         require $this->viewsDir . 'not-found.php';
+    //         exit;
+    //     }
+
+    //     $tipoEquipoModel = $this->getModel(TipoEquipo::class);
+    //     $tipos = $tipoEquipoModel->all();
+
+    //     require $this->viewsDir . 'equipo-show.php';
+    // }
+
+    public function createAccount(){
+        require $this->viewsDir . 'create-account.php';
+    }
+
+    public function createTeam(){
+        $tipoEquipoModel = $this->getModel(TipoEquipo::class);
+        $tipos = $tipoEquipoModel->all();
+        require $this->viewsDir . 'create-team.php';
     }
 
     public function register(){
@@ -122,10 +140,6 @@ class EquipoController extends AbstractController{
         } else {
             $errors[] = "Hubo un error al registrar el equipo. Por favor intentalo nuevamente";
         }
-    }
-
-    public function createTeam(){
-        require $this->viewsDir . 'create-team.php';
     }
 }
 ?>

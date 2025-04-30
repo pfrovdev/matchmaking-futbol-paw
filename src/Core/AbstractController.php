@@ -1,29 +1,26 @@
 <?php
 namespace Paw\Core;
-
+use Paw\Core\ModelFactory;
 use Monolog\Logger;
-
-use Paw\Core\Database\QueryBuilder;
 
 class AbstractController{
     public string $viewsDir = "";
 
     public ?string $modelName = null;
     public ?object $model = null;
+    protected ModelFactory $modelFactory;
 
     public function __construct(Logger $log){
         $this->viewsDir = __DIR__ . "/../App/views/";
+        $this->modelFactory = new ModelFactory($log);
 
         if(!is_null($this->modelName)){
-            $queryBuilder = QueryBuilder::getInstance();
-            $queryBuilder->setLogger($log);
-            $model = new $this->modelName($queryBuilder);
-            $this->setModel($model);
+            $this->model = $this->modelFactory->make($this->modelName);
         }
     }
-
-    public function setModel(?object $model){
-        $this->model = $model;
+    public function getModel(string $modelClass): object
+    {
+        return $this->modelFactory->make($modelClass);
     }
 }
 ?>

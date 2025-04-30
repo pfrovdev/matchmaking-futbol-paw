@@ -1,38 +1,46 @@
 USE match_making_db;
 
 CREATE TABLE EstadoPartido (
-    estado VARCHAR(20) PRIMARY KEY
+    id_estado_partido INT AUTO_INCREMENT PRIMARY KEY,
+    estado VARCHAR(20),
+    descripcion_corta VARCHAR(20)
 );
 
-INSERT INTO EstadoPartido (estado) VALUES
-('PENDIENTE'),
-('CANCELADO'),
-('JUGADO'),
-('NO_ACORDADO');
+INSERT INTO EstadoPartido (estado, descripcion_corta) VALUES
+('Pendiente', 'pendiente'),
+('Cancelado', 'cancelado'),
+('Jugado', 'jugado'),
+('No acordado', 'no_acordado');
 
 CREATE TABLE EstadoIteracion (
-    estado VARCHAR(30) PRIMARY KEY
+    id_estado_iteracion INT AUTO_INCREMENT PRIMARY KEY,
+    estado VARCHAR(30),
+    descripcion_corta VARCHAR(20)
 );
 
-INSERT INTO EstadoIteracion (estado) VALUES
-('ESPERANDO_RIVAL'),
-('ITERACION_FALLIDA'),
-('RESULTADO_GENERADO'),
-('PENALIZADOS');
+INSERT INTO EstadoIteracion (estado, descripcion_corta) VALUES
+('Esperadon rival', 'esperando_rival'),
+('Iteracion fallida', 'iteracion_fallida'),
+('Resultado generado', 'resultado_geneardo'),
+('Penalizados', 'penalizados');
 
 CREATE TABLE TipoEquipo (
-    tipo VARCHAR(20) PRIMARY KEY
+    id_tipo_equipo INT AUTO_INCREMENT PRIMARY KEY,
+    tipo VARCHAR(20),
+    descripcion_corta VARCHAR(20)
 );
 
-INSERT INTO TipoEquipo (tipo) VALUES
-('MASCULINO'), ('FEMENINO'), ('MIXTO');
+INSERT INTO TipoEquipo (tipo, descripcion_corta) VALUES
+('Masculino', 'masculino'), ('Femenino', 'femenino'), ('Mixto', 'mixto');
 
 CREATE TABLE EstadoDesafio (
-    estado VARCHAR(20) PRIMARY KEY
+    id_estado_desafio INT AUTO_INCREMENT PRIMARY KEY,
+    estado VARCHAR(20),
+    descripcion_corta VARCHAR(20)
 );
 
-INSERT INTO EstadoDesafio (estado) VALUES
-('ACEPTADO'), ('PENDIENTE'), ('RECHAZADO');
+INSERT INTO EstadoDesafio (estado, descripcion_corta) VALUES
+('Aceptado', 'aceptado'), ('Pendiente', 'pendiente'), ('Rechazado', 'rechazado');
 
 
 CREATE TABLE Equipo (
@@ -44,8 +52,8 @@ CREATE TABLE Equipo (
     descripcion_lema VARCHAR(255),
     telefono VARCHAR(20),
     geolocalizacion POINT,
-    tipo_equipo VARCHAR(20),
-    FOREIGN KEY (tipo_equipo) REFERENCES TipoEquipo(tipo)
+    id_tipo_equipo INT,
+    FOREIGN KEY (id_tipo_equipo) REFERENCES TipoEquipo(id_tipo_equipo)
 );
 
 CREATE TABLE Desafio (
@@ -54,13 +62,13 @@ CREATE TABLE Desafio (
     equipo_desafiado_id INT NOT NULL,
     fecha_creacion DATE NOT NULL,
     fecha_aceptado DATE DEFAULT NULL,
-    estado_desafio VARCHAR(20) DEFAULT 'PENDIENTE',
+    id_estado_desafio INT DEFAULT 1,
     elo_win INT DEFAULT 0,
     elo_lose INT DEFAULT 0,
     elo_draw INT DEFAULT 0,
     FOREIGN KEY (equipo_desafiante_id) REFERENCES Equipo(id_equipo),
     FOREIGN KEY (equipo_desafiado_id) REFERENCES Equipo(id_equipo),
-    FOREIGN KEY (estado_desafio) REFERENCES EstadoDesafio(estado)
+    FOREIGN KEY (id_estado_desafio) REFERENCES EstadoDesafio(id_estado_desafio)
 );
 
 CREATE TABLE Partido (
@@ -69,8 +77,8 @@ CREATE TABLE Partido (
     fecha_jugado DATE DEFAULT NULL,
     iteracion_maxima INT DEFAULT 5,
     ultima_iteracion INT DEFAULT 0,
-    estado_partido VARCHAR(20),
-    FOREIGN KEY (estado_partido) REFERENCES EstadoPartido(estado)
+    id_estado_partido INT NOT NULL,
+    FOREIGN KEY (id_estado_partido) REFERENCES EstadoPartido(id_estado_partido)
 );
 
 CREATE TABLE FormularioPartido (

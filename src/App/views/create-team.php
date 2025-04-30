@@ -43,17 +43,20 @@
                 <fieldset class="form-group">
                     <legend>Tipo de equipo *</legend>
 
-                        <input type="radio" id="masculino" name="team-type" value="Masculino" checked required>
-                        <label for="masculino">Masculino</label>
-
-                        <input type="radio" id="femenino" name="team-type" value="Femenino" required>
-                        <label for="femenino">Femenino</label>
-
-                        <input type="radio" id="mixto" name="team-type" value="Mixto" required>
-                        <label for="mixto">Mixto</label>
-
+                    <fieldset class="form-group">
+                    <legend>Tipo de equipo *</legend>
+                    <?php $first = true; ?>
+                    <?php foreach ($tipos as $tipo): ?>
+                        <label>
+                            <input type="radio" 
+                                name="tipo_equipo" 
+                                value="<?= htmlspecialchars($tipo['id_tipo_equipo']) ?>"
+                                <?= $first ? 'checked' : '' ?>>
+                            <?= htmlspecialchars($tipo['tipo']); ?>
+                        </label><br>
+                        <?php $first = false; ?>
+                    <?php endforeach; ?>
                 </fieldset>
-                
                 
                 <label for="team-zone">Zona del equipo *</label>
                 <input type="text" id="team-zone" name="team-zone" placeholder="Buscá en el mapa..." required>
