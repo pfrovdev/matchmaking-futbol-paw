@@ -9,23 +9,6 @@ class EquipoController extends AbstractController{
 
     public ?string $modelName = Equipo::class;
     
-    // EJEMPLO DEL USO DE VARIOS MODELOS
-    // public function show()
-    // {
-    //     $id = $_GET['id'];
-
-    //     $equipo = $this->model->getById($id);
-
-    //     if (is_null($equipo)) {
-    //         require $this->viewsDir . 'not-found.php';
-    //         exit;
-    //     }
-
-    //     $tipoEquipoModel = $this->getModel(TipoEquipo::class);
-    //     $tipos = $tipoEquipoModel->all();
-
-    //     require $this->viewsDir . 'equipo-show.php';
-    // }
 
     public function createAccount(){
         require $this->viewsDir . 'create-account.php';
@@ -53,6 +36,11 @@ class EquipoController extends AbstractController{
 
         if ($email !== $confirmEmail) {
             $errors[] = "Los correos electrónicos no coinciden.";
+        }
+
+        $equipoExistente =$this->model->findByParams(['email' => $email]);
+        if ($equipoExistente) {
+            $errors[] = "Ya existe un equipo registrado con ese correo electrónico.";
         }
 
         if ($password !== $confirmPassword) {
@@ -95,18 +83,18 @@ class EquipoController extends AbstractController{
         
         $teamName = $_POST['team-name'] ?? null;
         $teamAcronym = $_POST['team-acronym'] ?? null;
-        $teamType = $_POST['team-type'] ?? null;
+        $teamTypeId = $_POST['tipo_equipo'] ?? null;
         $teamZone = $_POST['team-zone'] ?? null;
         $teamMotto = $_POST['team-motto'] ?? null;
     
         if (
             empty($teamName) || 
             empty($teamAcronym) || 
-            empty($teamType) ||
+            empty($teamTypeId) ||
             empty($teamZone)
         ) {
             $errors[] = "Por favor llená los campos obligatorios.";
-            header('Location: /create-team');
+            header('Location: /create-account');
             exit;
         }
         if (isset($teamZone['lat']) && isset($teamZone['lng'])) {
@@ -117,6 +105,12 @@ class EquipoController extends AbstractController{
             $geolocalizacion = null;
         }
 
+        $tipoEquipoModel = $this->getModel(TipoEquipo::class);
+        $id_tipo_equipo = $tipoEquipoModel->find(['id_tipo_equipo' => $teamTypeId]);
+        if (!$id_tipo_equipo) {
+            $errors[] = "El tipo de equipo seleccionado no es válido.";
+        }
+
         // Seteamos todos los valores en el modelo
         $params = [
             'email' => $_SESSION['equipo_temp']['email'],
@@ -124,7 +118,7 @@ class EquipoController extends AbstractController{
             'telefono' => $_SESSION['equipo_temp']['telefono'],
             'nombre_equipo' => $teamName,
             'acronimo' => $teamAcronym,
-            'tipo_equipo' => $teamType,
+            'id_tipo_equipo' => $id_tipo_equipo[0]['id_tipo_equipo'],
             'geolocalizacion' => $geolocalizacion ?? null,
             'descripcion_lema' => $teamMotto,
         ];

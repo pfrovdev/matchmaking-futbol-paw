@@ -14,7 +14,7 @@ services:
       - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
-      - ./src/Database/database_schema.sql:/docker-entrypoint-initdb.d/database_schema.sql:ro
+      - ./src/Deploy_database/database_schema.sql:/docker-entrypoint-initdb.d/database_schema.sql:ro
 
 volumes:
   db_data:

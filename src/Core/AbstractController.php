@@ -9,8 +9,10 @@ class AbstractController{
     public ?string $modelName = null;
     public ?object $model = null;
     protected ModelFactory $modelFactory;
+    protected Logger $logger;
 
     public function __construct(Logger $log){
+        $this->logger = $log;
         $this->viewsDir = __DIR__ . "/../App/views/";
         $this->modelFactory = new ModelFactory($log);
 

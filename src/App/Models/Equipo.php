@@ -88,7 +88,7 @@ class Equipo extends AbstractModel
 
     public function findByParams(array $params) {
         $queryBuilder = $this->getQueryBuilder();
-        $result = $queryBuilder->findByParams($this->table, $params);
+        $result = $queryBuilder->select($this->table, $params);
         return $result;
     }
 
@@ -96,5 +96,4 @@ class Equipo extends AbstractModel
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder->insert($this->table, $params);
     }
-    
 }

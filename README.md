@@ -19,18 +19,36 @@ Juarez Sebastián, sebajuarezz@#gmail.com
 ├── src/
 │   ├── App/
 │   │   ├── Controller/
+│   │   ├── Models/
 │   │   ├── Views/
-│   │   │   ├── Parts/
+│   │   │   └── Parts/
 │   ├── Config/
-│   │   ├── config.php
+│   │   └── config.php
 │   ├── Core/
+│   │   ├── Database/
+│   │   │   ├── ConnectionBuilder.php
+│   │   │   ├── Database.php
+│   │   │   └── QueryBuilder.php
 │   │   ├── Exceptions/
-│   │   ├── Router.php
-│   ├── Models/
+│   │   │   ├── InvalidValueFormatException.php
+│   │   │   └── RouteNotFoundException.php
+│   │   ├── Traits/
+│   │   │   └── Loggeable.php
+│   │   ├── AbstractController.php
+│   │   ├── AbstractModel.php
+│   │   ├── ModelFactory.php
+│   │   ├── Request.php
+│   │   └── Router.php
+│   ├── Deploy_database/
+│   │   ├── README.md
+│   │   └── database_schema.sql
 │   └── bootstrap.php
-├── storage/
+├── vendor/
 ├── .env
-└── composer.json
+├── Makefile
+├── phinx.php
+├── composer.json
+└── README.md
 ```
 
 ## Análisis de peticiones HTTP
@@ -89,21 +107,16 @@ Descripción:
 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu_usuario/tp3-pawprint.git cd tp3-pawprint
+git clone https://github.com/pfrovdev/matchmaking-futbol-paw.git
 ```
 
-2. Instalar dependencias
+2. Levantar el proyecto localmente
 
 ```bash
-composer update
+cd ~/matchmaking-futbol-paw
+make up
 ```
 
-3. Levantar el entorno de desarrollo
-
-```bash
-composer start
-```
-
-Esto iniciará un servidor PHP local en `http://localhost:9999`, sirviendo desde el directorio `public/`.
+Esto iniciará un servidor PHP local en `http://localhost:9999`.
 
 ## Recursos del proyecto

@@ -20,15 +20,15 @@ class QueryBuilder
         }
         return self::$instance;
     }
-    public function select($table){
-        $query = "SELECT * FROM {$table}";
-        $sentencia = $this->pdo->prepare($query);
-        $sentencia->setFetchMode(PDO::FETCH_ASSOC);
-        $sentencia->execute();
-        return $sentencia->fetchAll();
-    }
+    // public function select($table){
+    //     $query = "SELECT * FROM {$table}";
+    //     $sentencia = $this->pdo->prepare($query);
+    //     $sentencia->setFetchMode(PDO::FETCH_ASSOC);
+    //     $sentencia->execute();
+    //     return $sentencia->fetchAll();
+    // }
 
-    public function findByParams($table, array $params = []){
+    public function select($table, array $params = []){
         $query = "SELECT * FROM {$table}";
         $values = [];
 
@@ -44,9 +44,10 @@ class QueryBuilder
         }
 
         $statement = $this->pdo->prepare($query);
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
         $statement->execute($values);
 
-        return $statement->fetch();
+        return $statement->fetchAll();
     }
 
     public function insert(string $table, array $values): ?string{
