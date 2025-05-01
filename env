@@ -1,7 +1,0 @@
-DB_ROOT_PASSWORD=rootpasswordsecretsuper
-DB_NAME=match_making_db
-DB_USER=aeps_user
-DB_PASSWORD=aeps_pass_secret
-DB_HOST=127.0.0.1
-DB_PORT=3307
-DB_CHARSET=utf8mb4
