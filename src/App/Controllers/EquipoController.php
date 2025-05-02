@@ -70,7 +70,7 @@ class EquipoController extends AbstractController{
         header('Location: /create-team');
         exit;
     }
-
+    
     public function registerTeam(){   
         session_start();
         $errors = [];
@@ -135,5 +135,10 @@ class EquipoController extends AbstractController{
             $errors[] = "Hubo un error al registrar el equipo. Por favor intentalo nuevamente";
         }
     }
+
+    public function searchTeam(){   
+        require $this->viewsDir . 'search-team.php';
+    }
+    
 }
 ?>
