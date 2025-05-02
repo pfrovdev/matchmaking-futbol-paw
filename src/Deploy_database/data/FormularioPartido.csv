@@ -1,0 +1,6 @@
+id_formulario,equipo_id,partido_id,fecha,id_estado_partido,total_inscripciones,total_faltas,total_goles,tipo_formulario
+1,1,1,2025-05-02 19:00:00,3,10,2,5,FORMULARIO_MI_EQUIPO
+2,2,1,2025-05-02 19:05:00,3,9,1,3,FORMULARIO_EQUIPO_CONTRARIO
+3,3,3,2025-05-03 17:45:00,3,11,4,6,FORMULARIO_MI_EQUIPO
+4,4,3,2025-05-03 17:50:00,3,12,3,7,FORMULARIO_EQUIPO_CONTRARIO
+5,5,5,2025-05-05 20:30:00,1,8,5,3,FORMULARIO_MI_EQUIPO

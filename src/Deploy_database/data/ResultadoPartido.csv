@@ -1,0 +1,6 @@
+id_resultado,partido_id,equipo_ganador_id,equipo_perdedor_id,goles_equipo_ganador,goles_equipo_perdedor,elo_inicial_ganador,elo_final_ganador,elo_inicial_perdedor,elo_final_perdedor
+1,1,1,2,5,3,1200,1250,1800,1750
+2,3,3,4,6,5,1000,1050,2200,2150
+3,6,6,5,4,2,2100,2150,1600,1550
+4,7,7,8,4,0,1300,1350,900,850
+5,9,9,10,8,7,1500,1550,1400,1350
