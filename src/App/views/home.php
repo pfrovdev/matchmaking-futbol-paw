@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Página principal de PAWPrints, librería en línea con sugerencias y libros más vendidos.">
     <meta name="author" content="PAWPrints">
-    <title>Inicio | PAWPrints</title>
+    <title>Home</title>
     <link rel="stylesheet" href="./css/index.css">
 </head>
 <body>

@@ -71,7 +71,26 @@ class QueryBuilder
         }
     }
 
-
+    public function selectLike(string $table, array $params = []): array {
+        $query = "SELECT * FROM {$table}";
+        $values = [];
+    
+        if (!empty($params)) {
+            $conditions = [];
+            foreach ($params as $field => $value) {
+                $conditions[] = "$field LIKE ?";
+                $values[] = '%' . $value . '%';
+            }
+            $query .= " WHERE " . implode(" AND ", $conditions);
+        }
+    
+        $statement = $this->pdo->prepare($query);
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+        $statement->execute($values);
+    
+        return $statement->fetchAll();
+    }
+    
     public function update(){}
 
     public function delete(){}

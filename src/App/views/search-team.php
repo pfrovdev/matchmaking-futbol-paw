@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar sesión - PAWPrints</title>
+    <title>Buscar Equipo</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="./css/search-team.css">
 </head>
 <body>
@@ -20,24 +21,28 @@
         
             <section class="left-size" aria-labelledby="buscar-nombre">
                 <h2 id="buscar-nombre">Buscar por nombre</h2>
-                <form>
-                    <input type="text" id="nombre-equipo" placeholder="San Silencio de Amargo" />
+                <form method="get" action="/search-team">
+                    <input type="text" id="nombre-equipo" name="nombre_equipo" placeholder="Ejemplo FC" value="<?= htmlspecialchars($_GET['nombre_equipo'] ?? '') ?>" />
+                    <button type="submit">Buscar</button>
                 </form>
 
                 <ul class="lista-equipos">
-                    <li>
-                        <article>
-                        <header>
-                            <h3 class="team-name">Nombre-equipo</h3>
-                            <p>Deportividad: ⚽⚽⚽⚽⚽</p>
-                            <p>Lema: lema del equipo corto</p>
-                        </header>
-                        <p>ELO W/L/D: +10, -7, 0</p>
-                        <span class="rango">Principiante II</span>
-                        <a href="#">Ver perfil del equipo</a>
-                        <button type="button">Desafiar</button>
-                        </article>
-                    </li>
+                    <?php foreach ($equipos as $equipo): ?>
+                        <li>
+                            <article>
+                                <header>
+                                    <h3 class="team-name"><?= htmlspecialchars($equipo['nombre_equipo']) ?></h3>
+                                    <p>Deportividad: ⚽⚽⚽⚽</p>
+                                    <p>Lema: <?= htmlspecialchars($equipo['descripcion_lema']) ?></p>
+                                </header>
+                                <p>ELO W/L/D: +10, -7, 0</p>
+                                <span class="rango">Principiante II</span>
+                                <a href="#">Ver perfil del equipo</a>
+                                <button type="button">Desafiar</button>
+                            </article>
+                        </li><br>
+                        <?php $first = false; ?>
+                    <?php endforeach; ?>
                 </ul>
             </section>
 
@@ -71,7 +76,7 @@
                         <input type="number" id="kms" value="1" />
                     </form>
                     <figure>
-                        mapita
+                        <div id="map"></div>
                     </figure>
                 </section>
             </aside>
@@ -80,6 +85,22 @@
     <?php
         require "parts/footer.php";
     ?>
-    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Coordenadas por defecto (Luján, Buenos Aires)
+        const defaultLat = -34.6545508;
+        const defaultLng = -59.4168298;
+
+        const map = L.map('map').setView([defaultLat, defaultLng], 13);
+
+        // Capa base OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Marcador central
+        L.marker([defaultLat, defaultLng]).addTo(map)
+            .openPopup();
+    </script>
 </body>
 </html>

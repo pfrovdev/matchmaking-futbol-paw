@@ -38,7 +38,7 @@ class EquipoController extends AbstractController{
             $errors[] = "Los correos electrónicos no coinciden.";
         }
 
-        $equipoExistente =$this->model->findByParams(['email' => $email]);
+        $equipoExistente =$this->model->select(['email' => $email]);
         if ($equipoExistente) {
             $errors[] = "Ya existe un equipo registrado con ese correo electrónico.";
         }
@@ -136,7 +136,14 @@ class EquipoController extends AbstractController{
         }
     }
 
-    public function searchTeam(){   
+    public function searchTeam() {
+        $nombre = $_GET['nombre_equipo'] ?? null;
+        if ($nombre) {
+            $equipos = $this->model->selectLike(['nombre_equipo' => $nombre]);
+        } else {
+            $equipos = $this->model->select([]);
+        }
+    
         require $this->viewsDir . 'search-team.php';
     }
     

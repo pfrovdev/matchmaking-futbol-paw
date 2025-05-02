@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Formulario para crear una cuenta en PAWPrints">
     <meta name="keywords" content="Registro, Crear cuenta, PAWPrints, Libros">
-    <title>Crear Cuenta - PAWPrints</title>
+    <title>Crear Equipo</title>
     <link rel="stylesheet" href="./css/create-acount.css">
 </head>
 <body>

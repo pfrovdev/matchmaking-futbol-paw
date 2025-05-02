@@ -86,7 +86,7 @@ class Equipo extends AbstractModel
         return null;
     }
 
-    public function findByParams(array $params) {
+    public function select(array $params) {
         $queryBuilder = $this->getQueryBuilder();
         $result = $queryBuilder->select($this->table, $params);
         return $result;
@@ -95,5 +95,11 @@ class Equipo extends AbstractModel
     public function saveNewTeam(array $params): ?string{
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder->insert($this->table, $params);
+    }
+
+    public function selectLike(array $params): array{
+        $queryBuilder = $this->getQueryBuilder();
+        $result = $queryBuilder->selectLike($this->table, $params);
+        return $result;
     }
 }
