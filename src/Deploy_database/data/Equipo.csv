@@ -1,0 +1,4 @@
+email,password,nombre_equipo,acronimo,descripcion_lema,telefono,id_tipo_equipo
+demo1@example.com,1234,Equipo Demo 1,ED1,Lema demo 1,1123456789,1
+demo2@example.com,1234,Equipo Demo 2,ED2,Lema demo 2,1123456790,2
+demo3@example.com,1234,Equipo Demo 3,ED3,Lema demo 3,1123456791,3

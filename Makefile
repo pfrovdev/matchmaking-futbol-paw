@@ -39,6 +39,10 @@ reset_db: down_db
 	make drop_database
 	make create_database
 
+# Inserta datos demo
+insertar_datos_demo:
+	php src/Deploy_database/insert_demo_data.php
+
 # Ingresar a la shell de la base de datos
 db_shell:
 	docker exec -it match_making_db mysql -u $(DB_USER) -p$(DB_PASSWORD) $(DB_NAME)
