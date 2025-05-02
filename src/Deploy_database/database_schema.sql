@@ -92,7 +92,8 @@ CREATE TABLE
         id_comentario INT AUTO_INCREMENT PRIMARY KEY,
         equipo_comentado_id INT,
         equipo_comentador_id INT,
-        descripcion TEXT,
+        comentario TEXT,
+        deportividad INT constraint check (deportividad >= 0 and deportividad <= 5),
         fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (equipo_comentado_id) REFERENCES Equipo (id_equipo),
         FOREIGN KEY (equipo_comentador_id) REFERENCES Equipo (id_equipo)
