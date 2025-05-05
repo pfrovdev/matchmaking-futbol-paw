@@ -30,68 +30,93 @@
  * Recordar de contar con el archivo .env en la raiz del repositorio
  */
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../Core/Database/Database.php';
-require_once __DIR__ . '/../Core/Database/ConnectionBuilder.php';
-
-$config = require __DIR__ . '/../../src/Config/config.php';
-
+ require_once __DIR__ . '/../../vendor/autoload.php';
+ require_once __DIR__ . '/../Core/Database/Database.php';
+ require_once __DIR__ . '/../Core/Database/ConnectionBuilder.php';
+ 
+ $config = require __DIR__ . '/../../src/Config/config.php';
+ 
 // Inicializamos la base de datos
-use Paw\Core\Database\Database;
-echo "DB_PASSWORD=[" . getenv('DB_PASSWORD') . "]\n";
-Database::initialize($config['database'],new \Monolog\Logger('db') );
-$pdo = Database::getConnection();
-
-// Ruta a la carpeta con CSVs
-$dataDir = __DIR__ . '/data';
-$csvFiles = glob($dataDir . '/*.csv');
-
-if (empty($csvFiles)) {
-    die("No se encontraron archivos CSV en $dataDir.\n");
-}
-
-foreach ($csvFiles as $csvPath) {
-    $tableName = pathinfo($csvPath, PATHINFO_FILENAME);
-
-    echo "Insertando datos en la tabla '$tableName' desde '$csvPath'...\n";
-
-    $handle = fopen($csvPath, 'r');
-    if (!$handle) {
-        echo "No se pudo abrir el archivo: $csvPath\n";
-        continue;
-    }
-
-    $headers = fgetcsv($handle);
-    if (!$headers) {
-        echo "Archivo CSV vacío o malformado: $csvPath\n";
-        fclose($handle);
-        continue;
-    }
-
-    $placeholders = array_map(fn($col) => ":$col", $headers);
-    $insertQuery = sprintf(
-        "INSERT INTO %s (%s) VALUES (%s)",
-        $tableName,
-        implode(', ', $headers),
-        implode(', ', $placeholders)
-    );
-
-    $stmt = $pdo->prepare($insertQuery);
-
-    $rowCount = 0;
-    while (($data = fgetcsv($handle)) !== false) {
-        $row = array_combine($headers, $data);
-
-        if (isset($row['password'])) {
-            $row['password'] = password_hash($row['password'], PASSWORD_DEFAULT);
-        }
-
-        $stmt->execute($row);
-        $rowCount++;
-    }
-
-    fclose($handle);
-    echo "Insertadas $rowCount filas en '$tableName'.\n";
-}
-
-echo "Carga de datos demo completada.\n";
+ use Paw\Core\Database\Database;
+ echo "DB_PASSWORD=[" . getenv('DB_PASSWORD') . "]\n";
+ Database::initialize($config['database'], new \Monolog\Logger('db'));
+ $pdo = Database::getConnection();
+ 
+ $dataDir = __DIR__ . '/data';
+ 
+ $orderedTables = [
+     'Equipo',
+     'Comentario',
+     'Partido',
+     'Desafio',
+     'FormularioPartido',
+     'ResultadoPartido'
+ ];
+ 
+ foreach ($orderedTables as $tableName) {
+     $csvPath = "$dataDir/$tableName.csv";
+ 
+     if (!file_exists($csvPath)) {
+         echo "Archivo no encontrado: $csvPath. Se salta...\n";
+         continue;
+     }
+ 
+     echo "Insertando datos en la tabla '$tableName' desde '$csvPath'...\n";
+ 
+     $handle = fopen($csvPath, 'r');
+     if (!$handle) {
+         echo "No se pudo abrir el archivo: $csvPath\n";
+         continue;
+     }
+ 
+     $headers = fgetcsv($handle);
+     if (!$headers) {
+         echo "Archivo CSV vacío o malformado: $csvPath\n";
+         fclose($handle);
+         continue;
+     }
+ 
+     $rowCount = 0;
+     while (($data = fgetcsv($handle)) !== false) {
+         $row = array_combine($headers, $data);
+ 
+         if (isset($row['password'])) {
+             $row['password'] = password_hash($row['password'], PASSWORD_DEFAULT);
+         }
+ 
+         $columns = [];
+         $placeholders = [];
+         $params = [];
+ 
+         foreach ($headers as $col) {
+             $columns[] = $col;
+ 
+             if (str_starts_with($row[$col], 'ST_GeomFromText(')) {
+                 $placeholders[] = $row[$col];
+             } else {
+                 $placeholders[] = ":$col";
+                 $params[$col] = $row[$col];
+             }
+         }
+ 
+         $insertQuery = sprintf(
+             "INSERT INTO %s (%s) VALUES (%s)",
+             $tableName,
+             implode(', ', $columns),
+             implode(', ', $placeholders)
+         );
+ 
+         try {
+             $stmt = $pdo->prepare($insertQuery);
+             $stmt->execute($params);
+             $rowCount++;
+         } catch (PDOException $e) {
+             echo "Error al insertar fila en $tableName: " . $e->getMessage() . "\n";
+         }
+     }
+ 
+     fclose($handle);
+     echo "Insertadas $rowCount filas en '$tableName'.\n";
+ }
+ 
+ echo "Carga de datos demo completada.\n";
