@@ -76,9 +76,11 @@ VALUES
 CREATE TABLE
     Equipo (
         id_equipo INT AUTO_INCREMENT PRIMARY KEY,
-        email VARCHAR(255) NOT NULL UNIQUE,
-        nombre VARCHAR(100) NOT NULL,
-        descripcion TEXT,
+        email VARCHAR(100) NOT NULL UNIQUE,
+        nombre VARCHAR(30) NOT NULL,
+        contrasena VARCHAR(100),
+        lema VARCHAR(200),
+        ubicacion POINT SRID 4326 NOT NULL, SPATIAL INDEX(ubicacion),
         id_tipo_equipo INT,
         id_nivel_elo INT,
         elo_actual INT,
