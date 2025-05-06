@@ -43,6 +43,17 @@
                         <?php $first = false; ?>
                     <?php endforeach; ?>
                 </ul>
+                <section>
+                    <?php if ($paginaActual > 1): ?>
+                        <a href="?<?= http_build_query(array_merge($_GET, ['page' => $paginaActual - 1])) ?>">Anterior</a>
+                    <?php endif; ?>
+
+                    Página <?= $paginaActual ?> de <?= $totalPaginas ?>
+
+                    <?php if ($paginaActual < $totalPaginas): ?>
+                        <a href="?<?= http_build_query(array_merge($_GET, ['page' => $paginaActual + 1])) ?>">Siguiente</a>
+                    <?php endif; ?>
+                </section>
             </section>
 
             <aside>

@@ -139,20 +139,28 @@ class EquipoController extends AbstractController{
     }
 
     public function searchTeam() {
-
         $nombre = $_GET['nombre'] ?? null;
+        $paginaActual = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $porPagina = 3;
+        $offset = ($paginaActual - 1) * $porPagina;
 
         if ($nombre) {
-            $equipos = $this->model->selectLike(['nombre' => $nombre]);
+            $todosLosEquipos = $this->model->selectLike(['nombre' => $nombre]);
         } else {
-            $equipos = $this->model->select([]);
+            $todosLosEquipos = $this->model->select([]);
         }
+
+        $totalEquipos = count($todosLosEquipos);
+        $totalPaginas = ceil($totalEquipos / $porPagina);
+
+        $equipos = array_slice($todosLosEquipos, $offset, $porPagina);
+
         $nivelEloModel = $this->getModel(NivelElo::class);
         $comentarioModel = $this->getModel(Comentario::class);
         $comentarios = $comentarioModel->select([]);
-        
+
         $deportividadPorEquipo = [];
-    
+
         foreach ($comentarios as $comentario) {
             $id = $comentario['equipo_comentado_id'];
             if (!isset($deportividadPorEquipo[$id])) {
@@ -161,11 +169,11 @@ class EquipoController extends AbstractController{
             $deportividadPorEquipo[$id]['total'] += (float)$comentario['deportividad'];
             $deportividadPorEquipo[$id]['cantidad']++;
         }
-    
+
         foreach ($equipos as &$equipo) {
             $idEquipo = $equipo['id_equipo'];
             $nivelElo = $nivelEloModel->select(['id_nivel_elo' => $equipo['id_nivel_elo']]);
-            $equipo['nivel_elo_descripcion'] = $nivelElo[0]['descripcion'];
+            $equipo['nivel_elo_descripcion'] = $nivelElo[0]['descripcion'] ?? 'Sin nivel';
             if (isset($deportividadPorEquipo[$idEquipo])) {
                 $total = $deportividadPorEquipo[$idEquipo]['total'];
                 $cantidad = $deportividadPorEquipo[$idEquipo]['cantidad'];
@@ -174,7 +182,7 @@ class EquipoController extends AbstractController{
                 $equipo['deportividad'] = null;
             }
         }
-        
+
         require $this->viewsDir . 'search-team.php';
     }
     
