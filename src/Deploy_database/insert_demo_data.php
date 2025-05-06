@@ -50,7 +50,8 @@
      'Partido',
      'Desafio',
      'FormularioPartido',
-     'ResultadoPartido'
+     'ResultadoPartido',
+     'Estadisticas'
  ];
  
  foreach ($orderedTables as $tableName) {
