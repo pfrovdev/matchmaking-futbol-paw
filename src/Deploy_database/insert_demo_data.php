@@ -20,7 +20,7 @@
  * Archivo: src/Deploy_database/data/Equipo.csv
  * 
  * Contenido:
- * email,password,nombre,acronimo,descripcion_lema,telefono,id_tipo_equipo
+ * email,password,nombre,acronimo,lema,telefono,id_tipo_equipo
  * ejemplo@mail.com,123456,Mi Equipo,EQP,"Lema demo",1123456789,1
  * 
  * USO:
@@ -80,8 +80,8 @@
      while (($data = fgetcsv($handle)) !== false) {
          $row = array_combine($headers, $data);
  
-         if (isset($row['password'])) {
-             $row['password'] = password_hash($row['password'], PASSWORD_DEFAULT);
+         if (isset($row['contrasena'])) {
+             $row['contrasena'] = password_hash($row['contrasena'], PASSWORD_DEFAULT);
          }
  
          $columns = [];

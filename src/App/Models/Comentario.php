@@ -4,7 +4,7 @@ namespace Paw\App\Models;
 use Paw\Core\AbstractModel;
 
 class Comentario extends AbstractModel{
-    public $table = "TipoEquipo";
+    public $table = "Comentario";
     public $fields = [
         "id_comentario" => null,
         "equipo_comentado_id" => null,

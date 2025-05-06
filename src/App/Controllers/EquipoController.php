@@ -1,9 +1,11 @@
 <?php
 
 namespace Paw\App\Controllers;
+use Paw\App\Models\NivelElo;
 use Paw\Core\AbstractController;
 use Paw\App\Models\Equipo;
 use Paw\App\Models\TipoEquipo;
+use Paw\App\Models\Comentario;
 
 class EquipoController extends AbstractController{
 
@@ -137,13 +139,42 @@ class EquipoController extends AbstractController{
     }
 
     public function searchTeam() {
+
         $nombre = $_GET['nombre'] ?? null;
+
         if ($nombre) {
             $equipos = $this->model->selectLike(['nombre' => $nombre]);
         } else {
             $equipos = $this->model->select([]);
         }
+        $nivelEloModel = $this->getModel(NivelElo::class);
+        $comentarioModel = $this->getModel(Comentario::class);
+        $comentarios = $comentarioModel->select([]);
+        
+        $deportividadPorEquipo = [];
     
+        foreach ($comentarios as $comentario) {
+            $id = $comentario['equipo_comentado_id'];
+            if (!isset($deportividadPorEquipo[$id])) {
+                $deportividadPorEquipo[$id] = ['total' => 0, 'cantidad' => 0];
+            }
+            $deportividadPorEquipo[$id]['total'] += (float)$comentario['deportividad'];
+            $deportividadPorEquipo[$id]['cantidad']++;
+        }
+    
+        foreach ($equipos as &$equipo) {
+            $idEquipo = $equipo['id_equipo'];
+            $nivelElo = $nivelEloModel->select(['id_nivel_elo' => $equipo['id_nivel_elo']]);
+            $equipo['nivel_elo_descripcion'] = $nivelElo[0]['descripcion'];
+            if (isset($deportividadPorEquipo[$idEquipo])) {
+                $total = $deportividadPorEquipo[$idEquipo]['total'];
+                $cantidad = $deportividadPorEquipo[$idEquipo]['cantidad'];
+                $equipo['deportividad'] = round($total / $cantidad, 2);
+            } else {
+                $equipo['deportividad'] = null;
+            }
+        }
+        
         require $this->viewsDir . 'search-team.php';
     }
     

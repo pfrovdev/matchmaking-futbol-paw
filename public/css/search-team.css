@@ -39,7 +39,7 @@ main header > p:nth-of-type(1) {
 
 .rango {
     display: inline-block;
-    background-color: gold;
+    background-color: rgb(186, 151, 52);
     color: #000;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;

@@ -29,8 +29,7 @@ class TipoEquipo extends AbstractModel{
         return $this->getQueryBuilder()->select($this->table, $params);
     }
 
-    public function __get($name)
-    {
+    public function __get($name){
         if (array_key_exists($name, $this->fields)) {
             return $this->fields[$name];
         }

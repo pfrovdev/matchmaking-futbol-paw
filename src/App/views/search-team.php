@@ -30,13 +30,12 @@
                     <?php foreach ($equipos as $equipo): ?>
                         <li>
                             <article>
-                                <img src="" alt="">
-                                <p>principiante</p>
+                                <img src="<?= !empty($equipo['url_foto_perfil']) ? htmlspecialchars($equipo['url_foto_perfil']) : '/icons/defaultTeamIcon.png' ?>" alt="imagen del equipo">
+                                <span class="rango"><?= htmlspecialchars($equipo['nivel_elo_descripcion']) ?></span>
                                 <h3 class="team-name"><?= htmlspecialchars($equipo['nombre']) ?></h3>
-                                <p>Deportividad: ⚽⚽⚽⚽</p>
-                                <p>Lema: <?= htmlspecialchars($equipo['descripcion_lema']) ?></p>
-                                <p>ELO W/L/D: +10, -7, 0</p>
-                                <span class="rango">Principiante II</span>
+                                <p>Deportividad: <?= isset($equipo['deportividad']) ? number_format($equipo['deportividad'], 2) : 'Sin datos' ?></p>
+                                <p>Lema: <?= htmlspecialchars($equipo['lema']) ?></p>
+                                <p>ELO: <?= htmlspecialchars($equipo['elo_actual']) ?></p>
                                 <a href="#">Ver perfil del equipo</a>
                                 <button type="button">Desafiar</button>
                             </article>
