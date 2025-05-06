@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Página con informacion de la historia, la mision y servicios ofrecidos a la comunidad local.">
-    <meta name="keywords" content="PAWPrints, nosotros, historia, mision, servicios">
-    <meta name="author" content="PAWPrints" />
+    <meta name="keywords" content="F5 Futbol Match, nosotros, historia, mision, servicios">
+    <meta name="author" content="F5 Futbol Match" />
     <link rel="stylesheet" href="./css/about-us.css" />
-    <title>Nosotros - PAWPrints</title>
+    <title>Nosotros - F5 Futbol Match</title>
 </head>
 <body>
     <?php

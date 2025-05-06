@@ -8,7 +8,7 @@
 </head>
 <body>
     <?php
-        require "parts/header.php";
+        require "parts/header-no-account.php";
     ?>
     <main>
         

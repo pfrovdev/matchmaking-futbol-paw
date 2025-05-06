@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Formulario para crear una cuenta en PAWPrints">
-    <meta name="keywords" content="Registro, Crear cuenta, PAWPrints, Libros">
+    <meta name="description" content="Formulario para crear una cuenta en F5 Futbol Match">
+    <meta name="keywords" content="Registro, Crear cuenta, F5 Futbol Match">
     <title>Crear Equipo</title>
     <link rel="stylesheet" href="./css/create-acount.css">
 </head>
@@ -15,7 +15,7 @@
         $equipo_temp = $_SESSION['equipo_temp'] ?? [];
     ?>
     <?php
-        require "parts/header.php";
+        require "parts/header-no-account.php";
     ?>
 
     <main>       
