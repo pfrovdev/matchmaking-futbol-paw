@@ -162,7 +162,7 @@ class EquipoController extends AbstractController{
         $deportividadPorEquipo = [];
 
         foreach ($comentarios as $comentario) {
-            $id = $comentario['equipo_comentado_id'];
+            $id = $comentario['id_equipo_comentado'];
             if (!isset($deportividadPorEquipo[$id])) {
                 $deportividadPorEquipo[$id] = ['total' => 0, 'cantidad' => 0];
             }

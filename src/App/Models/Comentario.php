@@ -7,8 +7,8 @@ class Comentario extends AbstractModel{
     public $table = "Comentario";
     public $fields = [
         "id_comentario" => null,
-        "equipo_comentado_id" => null,
-        "equipo_comentador_id" => null,
+        "id_equipo_comentado" => null,
+        "id_equipo_comentador" => null,
         "comentario" => null,
         "deportividad" => null,
         "fecha_creacion" => null,
@@ -19,11 +19,11 @@ class Comentario extends AbstractModel{
     }
 
     public function setEquipoComentadoId(int $equipoComentadoId){
-        $this->fields["equipo_comentado_id"] = $equipoComentadoId;
+        $this->fields["id_equipo_comentado"] = $equipoComentadoId;
     }
 
     public function setEquipoComentadorId(int $equipoComentadorId){
-        $this->fields["equipo_comentador_id"] = $equipoComentadorId;
+        $this->fields["id_equipo_comentador"] = $equipoComentadorId;
     }
 
     public function setComentario(string $comentario){
