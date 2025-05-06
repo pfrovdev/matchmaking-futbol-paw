@@ -5,67 +5,63 @@ use Exception;
 use Paw\Core\AbstractModel;
 use Paw\Core\Exceptions\InvalidValueFormatException;
 
-class Equipo extends AbstractModel
-{
+class Equipo extends AbstractModel{
     public $table = "Equipo";
     public $fields = [
         "id_equipo" => null,
         "email" => null,
+        "nombre" => null,
         "password" => null,
-        "nombre_equipo" => null,
         "acronimo" => null,
-        "descripcion_lema" => null,
+        "lema" => null,
         "telefono" => null,
-        "geolocalizacion" => null,
-        "tipo_equipo" => null,
+        "ubicacion" => null,
+        "id_nivel_elo" => null,
+        "elo_actual" => null,
+        "id_tipo_equipo" => null,
+        "fecha_creacion" => null,
+        "id_estadisitca" => null,
+        "url_foto_perfil" => null,
     ];
 
-    public function setIdEquipo(int $id)
-    {
+    public function setIdEquipo(int $id){
         $this->fields["id_equipo"] = $id;
     }
 
-    public function setEmail(string $email)
-    {
+    public function setEmail(string $email){
         if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
             throw new InvalidValueFormatException("Formato de email no válido");
         }
         $this->fields["email"] = $email;
     }
 
-    public function setPassword(string $password)
-    {
+    public function setPassword(string $password){
         $this->fields["password"] = $password;
     }
 
-    public function setNombreEquipo(string $nombre)
-    {
-        $this->fields["nombre_equipo"] = $nombre;
+    public function setNombreEquipo(string $nombre){
+        $this->fields["nombre"] = $nombre;
     }
 
-    public function setAcronimo(?string $acronimo)
-    {
+    public function setAcronimo(?string $acronimo){
         $this->fields["acronimo"] = $acronimo;
     }
 
-    public function setDescripcionLema(?string $descripcion)
-    {
-        $this->fields["descripcion_lema"] = $descripcion;
+    public function setLema(?string $lema){
+        $this->fields["lema"] = $lema;
     }
 
-    public function setTelefono(?string $telefono)
-    {
+    public function setTelefono(?string $telefono){
         $this->fields["telefono"] = $telefono;
     }
 
-    public function setGeolocalizacion($geolocalizacion)
+    public function setUbicacion($ubicacion)
     {
-        $this->fields["geolocalizacion"] = $geolocalizacion;
+        $this->fields["ubicacion"] = $ubicacion;
     }
 
-    public function setTipoEquipo(string $tipo)
-    {
-        $this->fields["tipo_equipo"] = $tipo;
+    public function setIdTipoEquipo(string $id_tipo_equipo){
+        $this->fields["id_tipo_equipo"] = $id_tipo_equipo;
     }
 
     public function set(array $values){
@@ -78,8 +74,7 @@ class Equipo extends AbstractModel
         }
     }
 
-    public function __get($name)
-    {
+    public function __get($name){
         if (array_key_exists($name, $this->fields)) {
             return $this->fields[$name];
         }

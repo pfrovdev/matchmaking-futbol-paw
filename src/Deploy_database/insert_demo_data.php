@@ -20,7 +20,7 @@
  * Archivo: src/Deploy_database/data/Equipo.csv
  * 
  * Contenido:
- * email,password,nombre_equipo,acronimo,descripcion_lema,telefono,id_tipo_equipo
+ * email,password,nombre,acronimo,descripcion_lema,telefono,id_tipo_equipo
  * ejemplo@mail.com,123456,Mi Equipo,EQP,"Lema demo",1123456789,1
  * 
  * USO:

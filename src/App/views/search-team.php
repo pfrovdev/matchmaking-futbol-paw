@@ -22,7 +22,7 @@
             <section class="left-size" aria-labelledby="buscar-nombre">
                 <h2 id="buscar-nombre">Buscar por nombre</h2>
                 <form method="get" action="/search-team">
-                    <input type="text" id="nombre-equipo" name="nombre_equipo" placeholder="Ejemplo FC" value="<?= htmlspecialchars($_GET['nombre_equipo'] ?? '') ?>" />
+                    <input type="text" id="nombre" name="nombre" placeholder="Ejemplo FC" value="<?= htmlspecialchars($_GET['nombre'] ?? '') ?>" />
                     <button type="submit">Buscar</button>
                 </form>
 
@@ -30,11 +30,11 @@
                     <?php foreach ($equipos as $equipo): ?>
                         <li>
                             <article>
-                                <header>
-                                    <h3 class="team-name"><?= htmlspecialchars($equipo['nombre_equipo']) ?></h3>
-                                    <p>Deportividad: ⚽⚽⚽⚽</p>
-                                    <p>Lema: <?= htmlspecialchars($equipo['descripcion_lema']) ?></p>
-                                </header>
+                                <img src="" alt="">
+                                <p>principiante</p>
+                                <h3 class="team-name"><?= htmlspecialchars($equipo['nombre']) ?></h3>
+                                <p>Deportividad: ⚽⚽⚽⚽</p>
+                                <p>Lema: <?= htmlspecialchars($equipo['descripcion_lema']) ?></p>
                                 <p>ELO W/L/D: +10, -7, 0</p>
                                 <span class="rango">Principiante II</span>
                                 <a href="#">Ver perfil del equipo</a>

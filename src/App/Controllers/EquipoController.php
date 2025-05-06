@@ -116,11 +116,11 @@ class EquipoController extends AbstractController{
             'email' => $_SESSION['equipo_temp']['email'],
             'password' => $_SESSION['equipo_temp']['password'],
             'telefono' => $_SESSION['equipo_temp']['telefono'],
-            'nombre_equipo' => $teamName,
+            'nombre' => $teamName,
             'acronimo' => $teamAcronym,
             'id_tipo_equipo' => $id_tipo_equipo[0]['id_tipo_equipo'],
-            'geolocalizacion' => $geolocalizacion ?? null,
-            'descripcion_lema' => $teamMotto,
+            'ubicacion' => $geolocalizacion ?? null,
+            'lema' => $teamMotto,
         ];
         
         // Guardamos en la base de datos
@@ -137,9 +137,9 @@ class EquipoController extends AbstractController{
     }
 
     public function searchTeam() {
-        $nombre = $_GET['nombre_equipo'] ?? null;
+        $nombre = $_GET['nombre'] ?? null;
         if ($nombre) {
-            $equipos = $this->model->selectLike(['nombre_equipo' => $nombre]);
+            $equipos = $this->model->selectLike(['nombre' => $nombre]);
         } else {
             $equipos = $this->model->select([]);
         }

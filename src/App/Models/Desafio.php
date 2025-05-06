@@ -2,66 +2,62 @@
 
 namespace Paw\App\Models;
 
+use Paw\Core\AbstractModel;
 use Paw\Core\Database\Database;
 
-class Desafio
-{
-    public int $id_desafio;
-    public int $equipo1_id;
-    public int $equipo2_id;
-    public string $estado;
-    public string $fecha_creacion;
+class Desafio extends AbstractModel{
+    public $table = "Desafio";
+    public $fields = [
+        "id_desafio" => null,
+        "equipo_desafiante_id" => null,
+        "equipo_desafiado_id" => null,
+        "fecha_creacion" => null,
+        "fecha_aceptacion" => null,
+        "id_estado_desafio" => null,
+        "id_partido" => null,
+    ];
 
-    public function __construct($data = [])
-    {
-        if (!empty($data)) {
-            $this->id_desafio = $data['id_desafio'] ?? 0;
-            $this->equipo1_id = $data['equipo1_id'] ?? 0;
-            $this->equipo2_id = $data['equipo2_id'] ?? 0;
-            $this->estado = $data['estado'] ?? 'pendiente';
-            $this->fecha_creacion = $data['fecha_creacion'] ?? '';
-        }
+    public function setIdDesafio(int $idDesafio){
+        $this->fields["id_desafio"] = $idDesafio;
     }
 
-    public static function find($id)
-    {
-        $stmt = Database::getConnection()->prepare("SELECT * FROM desafio WHERE id_desafio = :id");
-        $stmt->execute([':id' => $id]);
-        $data = $stmt->fetch();
-        return $data ? new self($data) : null;
+    public function setEquipoDesafianteId(int $equipoDesafianteId){
+        $this->fields["equipo_desafiante_id"] = $equipoDesafianteId;
     }
 
-    public function save()
-    {
-        $stmt = Database::getConnection()->prepare("INSERT INTO desafio (equipo1_id, equipo2_id, estado, fecha_creacion) 
-        VALUES (:equipo1_id, :equipo2_id, :estado, :fecha_creacion)");
+    public function setEquipoDesafiadoId(int $equipoDesafiadoId){
+        $this->fields["equipo_desafiado_id"] = $equipoDesafiadoId;
+    }
 
-        $stmt->execute([
-            ':equipo1_id' => $this->equipo1_id,
-            ':equipo2_id' => $this->equipo2_id,
-            ':estado' => $this->estado,
-            ':fecha_creacion' => $this->fecha_creacion
-        ]);
+    public function setFechaCreacion(int $fechaCreacion){
+        $this->fields["fecha_creacion"] = $fechaCreacion;
+    }
+
+    public function setIdEstadoDesafio(int $idEstadoDesafio){
+        $this->fields["id_estado_desafio"] = $idEstadoDesafio;
+    }
+
+    public function setIdPartido(int $idPartido){
+        $this->fields["id_partido"] = $idPartido;
+    }
+
+    public function select(array $params) {
+        $queryBuilder = $this->getQueryBuilder();
+        $result = $queryBuilder->select($this->table, $params);
+        return $result;
+    }
+
+    public function saveNewTeam(array $params): ?string{
+        $queryBuilder = $this->getQueryBuilder();
+        return $queryBuilder->insert($this->table, $params);
+    }
+
+    public function selectLike(array $params): array{
+        $queryBuilder = $this->getQueryBuilder();
+        $result = $queryBuilder->selectLike($this->table, $params);
+        return $result;
     }
     
-    public function update()
-    {
-        $stmt = Database::getConnection()->prepare("UPDATE desafio SET equipo1_id = :equipo1_id, equipo2_id = :equipo2_id, 
-        estado = :estado WHERE id_desafio = :id");
-
-        $stmt->execute([
-            ':id' => $this->id_desafio,
-            ':equipo1_id' => $this->equipo1_id,
-            ':equipo2_id' => $this->equipo2_id,
-            ':estado' => $this->estado
-        ]);
-    }
-
-    public function delete()
-    {
-        $stmt = Database::getConnection()->prepare("DELETE FROM desafio WHERE id_desafio = :id");
-        $stmt->execute([':id' => $this->id_desafio]);
-    }
 }
 
 ?>
