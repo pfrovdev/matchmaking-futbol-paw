@@ -173,6 +173,95 @@ class Equipo extends AbstractModel
         $qb = $this->getQueryBuilder();
         return $qb->selectLike($this->table, $params);
     }
+    public function getComentarios(int $page = 1, int $perPage = 5, ?string $orderBy = 'fecha_creacion', ?string $direction = 'DESC'): array
+    {
+        $comentarioModel = new Comentario();
+        $qb = $this->getQueryBuilder();
+    
+        $offset = ($page - 1) * $perPage;
+        $data = $qb->select(
+            $comentarioModel->table,
+            ['id_equipo_comentado' => $this->fields['id_equipo']],
+            $orderBy,
+            $direction,
+            $perPage,
+            $offset
+        );
+    
+        $comentarios = [];
+    
+        foreach ($data as $row) {
+            $comentario = new Comentario($qb);
+            $comentario->set($row);
+            $comentarios[] = $comentario;
+        }
+    
+        return $comentarios;
+    }
+
+    public function getDesafiosRecibidos(int $page = 1, int $perPage = 5, string $orderBy = 'fecha_creacion', string $direction = 'DESC'): array
+    {
+        $desafioModel = new Desafio();
+        $qb = $this->getQueryBuilder();
+        $offset = ($page - 1) * $perPage;
+        $data = $qb->select(
+            $desafioModel->table, 
+            ['id_equipo_desafiado' => $this->fields['id_equipo']],
+            $orderBy, 
+            $direction, 
+            $perPage, 
+            $offset
+        );
+
+        $result = [];
+        foreach ($data as $row) {
+            $desafio = new Desafio($qb);
+            $desafio->set($row);
+            $result[] = $desafio;
+        }
+
+        return $result;
+    }
+
+    public function getNivelElo(): string {
+        $qb = $this->getQueryBuilder();
+        $nivelElo = new NivelElo();
+        
+        $data = $qb->select(
+            $nivelElo->table, 
+            ['id_nivel_elo' => $this->fields['id_nivel_elo']]
+        );
+        
+        if (empty($data)) {
+            throw new Exception("Nivel Elo no encontrado para el equipo");
+        }
+        
+        $nivelElo->set($data[0]);
+        return (string)($nivelElo->fields['descripcion'] ?? "Sin descripción");
+    }
+
+    public function promediarDeportividad(): float {
+        $qb = $this->getQueryBuilder();
+        $comentarioModel = new Comentario();
+    
+        $data = $qb->select(
+            $comentarioModel->table, 
+            ['id_equipo_comentado' => $this->fields['id_equipo']]
+        );
+    
+        if (count($data) === 0) {
+            return 0.0;
+        }
+    
+        $total = 0;
+        foreach ($data as $row) {
+            $comentario = new Comentario();
+            $comentario->set($row);
+            $total += $comentario->fields['deportividad'];
+        }
+    
+        return $total / count($data);
+    }
 
     public function __toString(): string
     {

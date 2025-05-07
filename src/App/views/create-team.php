@@ -6,7 +6,7 @@
     <meta name="description" content="Formulario para crear un equipo en F5 Futbol Match">
     <meta name="keywords" content="Registro equipo, Crear equipo, F5 Futbol Match">
     <title>Crear Equipo</title>
-    <link rel="stylesheet" href="./css/register-login-form.css">
+    <link rel="stylesheet" href="css/register-login-form.css">
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
