@@ -6,6 +6,8 @@ use Paw\Core\AbstractController;
 use Paw\App\Models\Equipo;
 use Paw\App\Models\TipoEquipo;
 use Paw\App\Models\Comentario;
+use Paw\App\Models\EquipoCollection;
+use Paw\Core\Middelware\AuthMiddelware;
 
 class EquipoController extends AbstractController{
 
@@ -116,7 +118,7 @@ class EquipoController extends AbstractController{
         // Seteamos todos los valores en el modelo
         $params = [
             'email' => $_SESSION['equipo_temp']['email'],
-            'password' => $_SESSION['equipo_temp']['password'],
+            'contrasena' => $_SESSION['equipo_temp']['password'],
             'telefono' => $_SESSION['equipo_temp']['telefono'],
             'nombre' => $teamName,
             'acronimo' => $teamAcronym,
@@ -194,6 +196,42 @@ class EquipoController extends AbstractController{
         }
 
         require $this->viewsDir . 'search-team.php';
+    }
+
+    public function dashboard(){
+
+        $equipo_jwt_data = AuthMiddelware::verificar();
+        
+        $equipo = $this->getEquipo($equipo_jwt_data->id_equipo);
+
+        $page  = max(1, (int)($_GET['page'] ?? 1));
+        $per   = 3;
+        $order = $_GET['order'] ?? 'fecha_creacion';
+        $dir   = strtoupper($_GET['dir'] ?? 'DESC') === 'ASC' ? 'ASC' : 'DESC';
+
+        $comentariosPag = $equipo->getComentarios($page, $per, $order, $dir);
+        $desafiosRecib  = $equipo->getDesafiosRecibidos($page, $per, $order, $dir);
+
+        $nivelDesc    = $equipo->getNivelElo();
+        $deportividad = $equipo->promediarDeportividad();
+
+
+
+        require $this->viewsDir . 'dashboard.php';
+    }
+
+    // obtiene el equipo que le pertenece a la persona que se logeo
+    private function getEquipo(int $id_equipo): Equipo {
+        
+        $equipoCollection = $this->getModel(EquipoCollection::class);
+
+        $equipo_data_bd = $equipoCollection->getById($id_equipo)[0];
+
+        $equipo = $this->getModel(Equipo::class);
+
+        $equipo->set($equipo_data_bd);
+
+        return $equipo;
     }
     
 }

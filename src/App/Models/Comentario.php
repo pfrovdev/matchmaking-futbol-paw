@@ -2,6 +2,7 @@
 namespace Paw\App\Models;
 
 use Paw\Core\AbstractModel;
+use Paw\App\Models\Equipo;
 
 class Comentario extends AbstractModel{
     public $table = "Comentario";
@@ -38,6 +39,19 @@ class Comentario extends AbstractModel{
         $this->fields["fecha_creacion"] = $fechaCreacion;
     }
 
+    public function set(array $values)
+    {
+        foreach (array_keys($this->fields) as $field) {
+            if (!array_key_exists($field, $values)) {
+                continue;
+            }
+            $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $field)));
+            if (method_exists($this, $method)) {
+                $this->$method($values[$field]);
+            }
+        }
+    }
+
     public function select(array $params) {
         $queryBuilder = $this->getQueryBuilder();
         $result = $queryBuilder->select($this->table, $params);
@@ -54,6 +68,22 @@ class Comentario extends AbstractModel{
         $result = $queryBuilder->selectLike($this->table, $params);
         return $result;
     }
+
+    public function getEquipoComentador(): Equipo{
+
+        $qb = $this->getQueryBuilder(); 
+        $equipoComentador = new Equipo();
+        $data = $qb->select(
+            $equipoComentador->table,
+            ['id_equipo' => $this->fields['id_equipo_comentador']]
+        );
+    
+        if (!empty($data)) {
+            $equipoComentador->set($data[0]);
+        }
+    
+        return $equipoComentador;
+    }    
 }
 
 ?>

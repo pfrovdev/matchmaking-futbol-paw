@@ -1,0 +1,117 @@
+/* --- Contenedor general --- */
+.challenge-card {
+    display: flex;
+    background: var(--primary-color);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    color: var(--contrast-text-color);
+    font-family: sans-serif;
+
+  }
+  
+  /* --- Lado izquierdo con imagen o placeholder --- */
+  .card-side {
+    position: relative;
+    width: 40%;
+    background: #2a3648;
+  }
+  .team-image {
+    height: 100%;
+    border-radius: 0.75rem;
+    /* Puedes poner aquí un <img> de fondo usando background-image */
+    background: url('../icons/defaultTeamIcon.png') center/cover no-repeat;
+  }
+  .level-badge {
+    position: absolute;
+    bottom: 0;
+    left: 50%;                    
+    transform: translateX(-50%);
+    width: 95%;
+    background: var(--badge-bg-principiante);
+    text-align: center;
+    padding: 0.5rem 0;
+    font-weight: bold;
+    border-radius: 0.75rem;
+  }
+  
+  /* --- Zona principal de contenido --- */
+  .card-main {
+    flex: 1;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  /* --- Header: nombre y récord --- */
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .team-name {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--contrast-text-color);
+  }
+  .team-record {
+    font-size: 0.9rem;
+    color: var(--contrast-text-color);
+  }
+  
+  /* --- Body: iconos, lema y elo --- */
+  .card-body {
+    margin-top: 0.5rem;
+  }
+  .sport-icons {
+    margin-bottom: 0.25rem;
+  }
+  .sport-icons .icon {
+    margin-right: 0.2rem;
+  }
+  .team-motto {
+    margin: 0.25rem 0;
+    font-style: italic;
+  }
+  .elo {
+    display: block;
+    color: var(--contrast-text-color);
+    font-size: 0.8rem;
+  }
+  .profile-link {
+    display: inline-block;
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--muted-text-color);
+    text-decoration: none;
+  }
+  .profile-link:hover {
+    text-decoration: underline;
+  }
+  
+  /* --- Acciones: botones pill --- */
+  .card-actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+  .btn {
+    flex: 1;
+    padding: 0.5rem 0;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 2rem;
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .btn:hover {
+    transform: scale(1.02);
+  }
+  .btn-accept {
+    background: var(--button-primary-background-color);
+    color: var(--contrast-text-color);
+  }
+  .btn-reject {
+    background: var(--button-cancel-background-color);
+    color: var(--contrast-text-color);
+  }

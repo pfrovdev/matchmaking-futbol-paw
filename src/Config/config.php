@@ -19,7 +19,9 @@ return [
         ['path' => '/create-account', 'action' => 'EquipoController@createAccount', 'method' => 'GET'],
         ['path' => '/create-team', 'action' => 'EquipoController@createTeam', 'method' => 'GET'],
         ['path' => '/search-team', 'action' => 'EquipoController@searchTeam', 'method' => 'GET'],
+        ['path' => '/dashboard', 'action' => 'EquipoController@dashboard', 'method' => 'GET'],
         
+        ['path' => '/login', 'action' => 'AuthController@login', 'method' => 'POST'],
         ['path' => '/register', 'action' => 'EquipoController@register', 'method' => 'POST'],
         ['path' => '/register-team', 'action' => 'EquipoController@registerTeam', 'method' => 'POST'],
         

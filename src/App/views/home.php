@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Página principal de PAWPrints, librería en línea con sugerencias y libros más vendidos.">
-    <meta name="author" content="PAWPrints">
+    <meta name="description" content="Página principal de F5 Futbol Match, Busqueda y organizacion de partidos de futbol">
+    <meta name="author" content="F5 Futbol Match">
     <title>Home</title>
     <link rel="stylesheet" href="./css/index.css">
 </head>
 <body>
     <?php
-        require "parts/header.php";
+        require "parts/header-no-account.php";
     ?>
     
     <main>
