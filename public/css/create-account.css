@@ -2,6 +2,10 @@
 @import url('./header.css');
 @import url('./footer.css');
 
+.container{
+  margin: 0 5rem;
+}
+
 .register-container {
   padding: 5% 8%; /* 5% arriba/abajo, 8% izquierda/derecha */
 }
@@ -15,7 +19,7 @@
 }
 .register-header p {
   font-size: 1rem;
-  color: var(--muted-text-color);
+  color: var(--text-color);
   margin-bottom: 2rem;
 }
 
@@ -54,6 +58,37 @@
   border-radius: .5rem;
   font-size: 1rem;
 }
+
+.form-container fieldset {
+  display: flex;
+  flex-wrap: wrap;      
+  align-items: center;  
+  gap: 1.5rem;         
+  border: none;          
+  margin-bottom: 1.5rem; 
+  padding: 0;            
+}
+
+.form-container legend {
+  margin-right: 1rem;
+  font-weight: 500;
+}
+
+.form-container label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.form-container input[type="radio"] {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: var(--button-primary-background-color);
+}
+
 
 /* Wrapper para iconos en inputs */
 .input-with-icon {
@@ -124,8 +159,13 @@
 /* ------------ Media Queries ------------ */
 /* Tablet (768px–1024px) */
 @media (min-width: 768px) and (max-width: 1024px) {
+  .container{
+    margin: 0 1rem;
+  }
+  
   .register-container {
-    padding: 4% 6%;
+    /* Un poco menos de padding lateral */
+    padding: 3% 5%;
   }
   .register-body {
     gap: 3%;
@@ -137,20 +177,53 @@
     flex-basis: 35%;
   }
 }
+/* Móvil estándar (480px–767px) */
+@media (max-width: 767px) and (min-width: 480px) {
+  .container{
+    margin: 0 1rem;
+  }
 
-/* Móvil */
-@media (max-width: 767px) {
   .register-container {
-    padding: 4% 4%;
+    padding: 1rem 1.5rem; /* menos padding lateral */
   }
   .register-body {
     flex-direction: column;
-    gap: 5%;
+    gap: 2rem;
   }
   .form-container,
   .image-container {
-    flex: none;     /* que ocupen 100% en columna */
     width: 100%;
-    min-width: auto;
+    max-width: 100%;
+    margin: 0;           /* quita márgenes extra */
+    padding: 0;          /* si tenías padding específico, aquí lo eliminas */
+  }
+  .image-container {
+    display: none;
+  }
+}
+
+/* Pequeños móviles (<480px) */
+@media (max-width: 479px) {
+  .container{
+    margin: 0 1rem;
+  }
+  
+  .register-container {
+    padding: 0.75rem 1rem;  /* aún más ajustado */
+  }
+  .register-body {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .form-container,
+  .image-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  /* opcional: ocultar la imagen lateral si sigue muy apretado */
+  .image-container {
+    display: none;
   }
 }
