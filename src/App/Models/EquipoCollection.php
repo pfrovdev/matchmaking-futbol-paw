@@ -21,6 +21,11 @@ class EquipoCollection extends AbstractModel{
         return $this->getQueryBuilder()->select($this->table, ["email" => $email]);
     }
 
+    public function createEquipo(array $params){
+        $qb = $this->getQueryBuilder();
+        return $qb->insert($this->table, $params);
+    }
+
 }
 
 

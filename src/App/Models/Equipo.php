@@ -106,10 +106,12 @@ class Equipo extends AbstractModel
         $this->fields["fecha_creacion"] = $fecha;
     }
 
-    public function setUrlFotoPerfil(string $url)
+    public function setUrlFotoPerfil(?string $url)
     {
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new InvalidValueFormatException("URL de foto de perfil no válida");
+        if($url){
+            if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                throw new InvalidValueFormatException("URL de foto de perfil no válida");
+            }
         }
         $this->fields["url_foto_perfil"] = $url;
     }

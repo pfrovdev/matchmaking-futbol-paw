@@ -1,6 +1,7 @@
 <?php
 
 namespace Paw\App\Controllers;
+
 use Paw\App\Models\NivelElo;
 use Paw\Core\AbstractController;
 use Paw\App\Models\Equipo;
@@ -12,7 +13,7 @@ use Paw\Core\Middelware\AuthMiddelware;
 class EquipoController extends AbstractController{
 
     public ?string $modelName = Equipo::class;
-    
+
 
     public function createAccount(){
         require $this->viewsDir . 'create-account.php';
@@ -41,9 +42,7 @@ class EquipoController extends AbstractController{
         if ($email !== $confirmEmail) {
             $errors[] = "Los correos electrónicos no coinciden.";
         }
-
-        $equipoExistente =$this->model->select(['email' => $email]);
-        if ($equipoExistente) {
+        if ($this->model->select(['email' => $email])) {
             $errors[] = "Ya existe un equipo registrado con ese correo electrónico.";
         }
 
@@ -56,15 +55,16 @@ class EquipoController extends AbstractController{
         }
 
         if (!preg_match("/^\+54[0-9]{10,12}$/", $telefono)) {
-            $errors[] ='El número de teléfono es inválido. Ej: +542323444444';
+            $errors[] = 'El número de teléfono es inválido. Ej: +542323444444';
         }
 
-        if (!empty($errors)) {
+        if ($errors) {
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = $_POST;
             header('Location: /create-account');
             exit;
         }
+
         $_SESSION['equipo_temp'] = [
             'email' => $email,
             'password' => password_hash($password, PASSWORD_DEFAULT),
@@ -74,70 +74,71 @@ class EquipoController extends AbstractController{
         header('Location: /create-team');
         exit;
     }
-    
-    public function registerTeam(){   
-        session_start();
+
+    public function registerTeam(){
+        if (session_status() === PHP_SESSION_NONE) session_start();
         $errors = [];
+
         if (!isset($_SESSION['equipo_temp'])) {
-            $errors[] = "Error de session, por favor intentalo nuevamente.";
-            $_SESSION['errors'] = $errors;
+            $_SESSION['errors'] = ["Error de sesión, por favor intentalo nuevamente."];
             header('Location: /create-team');
             exit;
         }
-        
-        $teamName = $_POST['team-name'] ?? null;
+        $equipoTemp = $_SESSION['equipo_temp'];
+        unset($_SESSION['equipo_temp']);
+
+        $teamName    = $_POST['team-name']    ?? null;
         $teamAcronym = $_POST['team-acronym'] ?? null;
-        $teamTypeId = $_POST['tipo_equipo'] ?? null;
-        $teamZone = $_POST['team-zone'] ?? null;
-        $teamMotto = $_POST['team-motto'] ?? null;
-    
-        if (
-            empty($teamName) || 
-            empty($teamAcronym) || 
-            empty($teamTypeId) ||
-            empty($teamZone)
-        ) {
+        $teamTypeId  = $_POST['tipo_equipo']  ?? null;
+        $lat         = $_POST['lat']          ?? null;
+        $lng         = $_POST['lng']          ?? null;
+        $teamMotto   = $_POST['team-motto']   ?? null;
+
+        if (!$teamName || !$teamAcronym || !$teamTypeId || !$lat || !$lng) {
             $errors[] = "Por favor llená los campos obligatorios.";
-            header('Location: /create-account');
+            $_SESSION['errors'] = $errors;
+            $_SESSION['old'] = array_merge($equipoTemp, $_POST);
+            header('Location: /create-team');
             exit;
         }
-        if (isset($teamZone['lat']) && isset($teamZone['lng'])) {
-            $lat = floatval($teamZone['lat']);
-            $lng = floatval($teamZone['lng']);
-            $geolocalizacion = "POINT($lng $lat)";
-        } else {
-            $geolocalizacion = null;
-        }
+
+        $geolocalizacion = "ST_GeomFromText('POINT($lng $lat)', 4326)";
 
         $tipoEquipoModel = $this->getModel(TipoEquipo::class);
-        $id_tipo_equipo = $tipoEquipoModel->find(['id_tipo_equipo' => $teamTypeId]);
-        if (!$id_tipo_equipo) {
+        $tipoArr = $tipoEquipoModel->find(['id_tipo_equipo' => $teamTypeId]);
+        if (!$tipoArr) {
             $errors[] = "El tipo de equipo seleccionado no es válido.";
         }
+        if ($errors) {
+            $_SESSION['errors'] = $errors;
+            $_SESSION['old'] = array_merge($equipoTemp, $_POST);
+            header('Location: /create-team');
+            exit;
+        }
 
-        // Seteamos todos los valores en el modelo
         $params = [
-            'email' => $_SESSION['equipo_temp']['email'],
-            'contrasena' => $_SESSION['equipo_temp']['password'],
-            'telefono' => $_SESSION['equipo_temp']['telefono'],
-            'nombre' => $teamName,
-            'acronimo' => $teamAcronym,
-            'id_tipo_equipo' => $id_tipo_equipo[0]['id_tipo_equipo'],
-            'ubicacion' => $geolocalizacion ?? null,
-            'lema' => $teamMotto,
+            'email'           => $equipoTemp['email'],
+            'contrasena'      => $equipoTemp['password'],
+            'telefono'        => $equipoTemp['telefono'],
+            'nombre'          => $teamName,
+            'acronimo'        => $teamAcronym,
+            'id_tipo_equipo'  => $tipoArr[0]['id_tipo_equipo'],
+            'ubicacion'       => $geolocalizacion,
+            'lema'            => $teamMotto,
+            'id_nivel_elo' => 1, // Principiante
+            'id_rol' => 2 // Usuario
         ];
-        
-        // Guardamos en la base de datos
         $insertedId = $this->model->saveNewTeam($params);
 
-        if ($insertedId !== null) {
-            // Limpiamos la sesión temporal
-            unset($_SESSION['equipo_temp']);
+        if ($insertedId) {
             header('Location: /login');
             exit;
-        } else {
-            $errors[] = "Hubo un error al registrar el equipo. Por favor intentalo nuevamente";
         }
+
+        $_SESSION['errors'] = ["Hubo un error al registrar el equipo. Por favor intentalo nuevamente."];
+        $_SESSION['old']    = array_merge($equipoTemp, $_POST);
+        header('Location: /create-team');
+        exit;
     }
 
     public function searchTeam() {
@@ -201,7 +202,7 @@ class EquipoController extends AbstractController{
     public function dashboard(){
 
         $equipo_jwt_data = AuthMiddelware::verificar();
-        
+
         $equipo = $this->getEquipo($equipo_jwt_data->id_equipo);
 
         $page  = max(1, (int)($_GET['page'] ?? 1));
@@ -222,7 +223,7 @@ class EquipoController extends AbstractController{
 
     // obtiene el equipo que le pertenece a la persona que se logeo
     private function getEquipo(int $id_equipo): Equipo {
-        
+
         $equipoCollection = $this->getModel(EquipoCollection::class);
 
         $equipo_data_bd = $equipoCollection->getById($id_equipo)[0];
@@ -233,6 +234,5 @@ class EquipoController extends AbstractController{
 
         return $equipo;
     }
-    
 }
 ?>

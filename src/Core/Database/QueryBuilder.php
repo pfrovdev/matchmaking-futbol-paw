@@ -62,23 +62,35 @@ class QueryBuilder
         return $statement->fetchAll();
     }
 
-    public function insert(string $table, array $values): ?string{
+    public function insert(string $table, array $values): ?string {
         if (empty($values)) {
             throw new \InvalidArgumentException('No se proporcionaron valores para insertar.');
         }
-
-        $columns = implode(", ", array_keys($values));
-        $placeholders = implode(", ", array_fill(0, count($values), '?'));
-
-        $query = "INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})";
-
+    
+        $sets = [];
+        $params = [];
+        foreach ($values as $column => $value) {
+            if (is_string($value) && strpos($value, 'ST_GeomFromText(') === 0) {
+                $sets[] = "`$column` = $value";
+            } else {
+                $paramKey = ":$column";
+                $sets[] = "`$column` = $paramKey";
+                $params[$paramKey] = $value;
+            }
+        }
+    
+        $setClause = implode(', ', $sets);
+        $query = "INSERT INTO `$table` SET $setClause";
+    
         try {
-            $statement = $this->pdo->prepare($query);
-            $statement->execute(array_values($values));
-
+            $stmt = $this->pdo->prepare($query);
+            foreach ($params as $placeholder => $val) {
+                $stmt->bindValue($placeholder, $val);
+            }
+            $stmt->execute();
             return $this->pdo->lastInsertId();
         } catch (\PDOException $e) {
-            $this->logger->error("Error al insertar en {$table}: " . $e->getMessage());
+            $this->logger->error("Error al insertar en $table: " . $e->getMessage());
             return null;
         }
     }
