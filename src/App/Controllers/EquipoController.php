@@ -194,7 +194,18 @@ class EquipoController extends AbstractController{
         
         $equipo = $this->getEquipo($equipo_jwt_data->id_equipo);
 
-        $this->logger->info("Equipo dashboard: " . $equipo->__toString());
+        $page  = max(1, (int)($_GET['page'] ?? 1));
+        $per   = 3;
+        $order = $_GET['order'] ?? 'fecha_creacion';
+        $dir   = strtoupper($_GET['dir'] ?? 'DESC') === 'ASC' ? 'ASC' : 'DESC';
+
+        $comentariosPag = $equipo->getComentarios($page, $per, $order, $dir);
+        $desafiosRecib  = $equipo->getDesafiosRecibidos($page, $per, $order, $dir);
+
+        $nivelDesc    = $equipo->getNivelElo();
+        $deportividad = $equipo->promediarDeportividad();
+
+
 
         require $this->viewsDir . 'dashboard.php';
     }
@@ -206,7 +217,7 @@ class EquipoController extends AbstractController{
 
         $equipo_data_bd = $equipoCollection->getById($id_equipo)[0];
 
-        $equipo = new Equipo();
+        $equipo = $this->getModel(Equipo::class);
 
         $equipo->set($equipo_data_bd);
 

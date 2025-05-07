@@ -3,14 +3,14 @@
 namespace Paw\App\Models;
 
 use Paw\Core\AbstractModel;
-use Paw\Core\Database\Database;
+use Paw\App\Models\Equipo;
 
 class Desafio extends AbstractModel{
     public $table = "Desafio";
     public $fields = [
         "id_desafio" => null,
-        "equipo_desafiante_id" => null,
-        "equipo_desafiado_id" => null,
+        "id_equipo_desafiante" => null,
+        "id_equipo_desafiado" => null,
         "fecha_creacion" => null,
         "fecha_aceptacion" => null,
         "id_estado_desafio" => null,
@@ -29,7 +29,7 @@ class Desafio extends AbstractModel{
         $this->fields["equipo_desafiado_id"] = $equipoDesafiadoId;
     }
 
-    public function setFechaCreacion(int $fechaCreacion){
+    public function setFechaCreacion(string $fechaCreacion){
         $this->fields["fecha_creacion"] = $fechaCreacion;
     }
 
@@ -57,7 +57,27 @@ class Desafio extends AbstractModel{
         $result = $queryBuilder->selectLike($this->table, $params);
         return $result;
     }
-    
+
+    public function set(array $values)
+    {
+        foreach (array_keys($this->fields) as $field) {
+            if (!array_key_exists($field, $values)) {
+                continue;
+            }
+            $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $field)));
+            if (method_exists($this, $method)) {
+                $this->$method($values[$field]);
+            }
+        }
+    }
+
+    public function getEquipoDesafiante(): Equipo{
+        $qb = $this->getQueryBuilder();
+        $equipoDesafiante = new Equipo();
+        $data = $qb->select($equipoDesafiante->table, ['id_equipo' => $this->fields['id_equipo_desafiante']]);
+        $equipoDesafiante->set($data);
+        return $equipoDesafiante;
+    }
 }
 
 ?>
