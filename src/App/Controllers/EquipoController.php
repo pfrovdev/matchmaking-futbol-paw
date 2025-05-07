@@ -116,7 +116,7 @@ class EquipoController extends AbstractController{
         // Seteamos todos los valores en el modelo
         $params = [
             'email' => $_SESSION['equipo_temp']['email'],
-            'password' => $_SESSION['equipo_temp']['password'],
+            'contrasena' => $_SESSION['equipo_temp']['password'],
             'telefono' => $_SESSION['equipo_temp']['telefono'],
             'nombre' => $teamName,
             'acronimo' => $teamAcronym,
