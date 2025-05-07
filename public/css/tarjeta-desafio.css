@@ -115,3 +115,27 @@
     background: var(--button-cancel-background-color);
     color: var(--contrast-text-color);
   }
+
+  
+  .challenge-card--send .team-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0.75rem;
+  }
+ 
+  .challenge-card--send .team-record {
+    display: none;
+  }
+  
+  .challenge-card--send .card-body p {
+    margin: 0.25rem 0;
+  }
+  
+  .challenge-card--send .btn-reject {
+    display: none;
+  }
+  
+  .challenge-card--send .card-actions {
+    justify-content: center;
+  }

@@ -3,18 +3,18 @@
 // Ejemplo de uso antes de require:
 // $challenge = [
 //   'name'       => 'Nombre-equipo',
-//   'level'      => 'Principiante II',
-//   'icons'      => 5,                // número de pelotas/fútbol
-//   'motto'      => 'Lema del equipo corto',
+//   'id_nivel_elo'      => 'Principiante II',
+//   'deportividad'      => 5,                // número de pelotas/fútbol
+//   'lema'      => 'Lema del equipo corto',
 //   'elo'        => ['wins'=>10,'losses'=>7,'draws'=>0],
 //   'record'     => '10-7-2',         // texto en la esquina superior
-//   'profileUrl' => '#',
+//   'profile-link' => '#',
 // ];
 ?>
 <div class="challenge-card">
   <div class="card-side">
     <div class="team-image">
-      <span class="level-badge"><?php echo htmlspecialchars($challenge['level']) ?></span>
+      <span class="level-badge"><?php echo htmlspecialchars($challenge['id_nivel_elo']) ?></span>
     </div>
   </div>
 
@@ -28,18 +28,18 @@
       <div class="sport-icons">
             <!-- Faltaria hacer algo tipo, hasta la cantidad que me mandan
              pongo pelotitas, y relleno hasta 5 espacios vacios -->
-        <?php for($i=0;$i<$challenge['icons'];$i++): ?> 
+        <?php for($i=0;$i<$challenge['deportividad'];$i++): ?> 
           <span class="icon">⚽</span>
         <?php endfor; ?>
       </div>
-      <p class="team-motto"><?php echo htmlspecialchars($challenge['motto']) ?></p>
+      <p class="team-motto"><?php echo htmlspecialchars($challenge['lema']) ?></p>
       <small class="elo">
         Elo W/L/D: +
         <?php echo $challenge['elo']['wins'] ?>,
         -<?php echo $challenge['elo']['losses'] ?>,
         <?php echo $challenge['elo']['draws'] ?>
       </small>
-      <a href="<?php echo $challenge['profileUrl'] ?>" class="profile-link">ver perfil del equipo</a>
+      <a href="<?php echo $challenge['profile-link'] ?>" class="profile-link">ver perfil del equipo</a>
     </div>
 
     <div class="card-actions">
