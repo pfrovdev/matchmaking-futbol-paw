@@ -1,9 +1,9 @@
 <?php
-namespace Paw\Core\Middleware;
+namespace Paw\Core\Middelware;
 
 use Paw\Core\JWT\Auth;
 
-class AuthMiddleware
+class AuthMiddelware
 {
     // Verifica que el token sea válido y no haya expirado
     public static function verificar(): object

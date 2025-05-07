@@ -6,6 +6,8 @@ use Paw\Core\AbstractController;
 use Paw\App\Models\Equipo;
 use Paw\App\Models\TipoEquipo;
 use Paw\App\Models\Comentario;
+use Paw\App\Models\EquipoCollection;
+use Paw\Core\Middelware\AuthMiddelware;
 
 class EquipoController extends AbstractController{
 
@@ -184,6 +186,31 @@ class EquipoController extends AbstractController{
         }
 
         require $this->viewsDir . 'search-team.php';
+    }
+
+    public function dashboard(){
+
+        $equipo_jwt_data = AuthMiddelware::verificar();
+        
+        $equipo = $this->getEquipo($equipo_jwt_data->id_equipo);
+
+        $this->logger->info("Equipo dashboard: " . $equipo->__toString());
+
+        require $this->viewsDir . 'dashboard.php';
+    }
+
+    // obtiene el equipo que le pertenece a la persona que se logeo
+    private function getEquipo(int $id_equipo): Equipo {
+        
+        $equipoCollection = $this->getModel(EquipoCollection::class);
+
+        $equipo_data_bd = $equipoCollection->getById($id_equipo)[0];
+
+        $equipo = new Equipo();
+
+        $equipo->set($equipo_data_bd);
+
+        return $equipo;
     }
     
 }

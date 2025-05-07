@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Pagina principal del equipo de futbol del usuario">
     <title>Crear Equipo</title>
-    <link rel="stylesheet" href="http://127.0.0.1:5500/public/css/dashboard.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 <body>
   <?php
           require "parts/header.php";
@@ -26,8 +26,8 @@
             <button class="btn-link">Cargar un documento</button>
           </div>
           <div class="perfil-info">
-            <h2>Nombre equipo (PSG)</h2>
-            <p class="lema">Lema corto de equipo</p>
+            <h2><?= htmlspecialchars($equipo->__get('nombre'))?></h2>
+            <p class="lema"> <?= htmlspecialchars($equipo->__get('lema')) ?> </p>
             <div class="deportividad">
               Deportividad:
               <span class="icon-star"></span>
@@ -43,7 +43,7 @@
                 <div class="bar-fill" style="width:40%"></div>
               </div>
               <div class="elo-values">
-                <span>Elo: 1265</span> / <span>1300</span>
+                <span>Elo: <?= htmlspecialchars($equipo->__get('elo_actual')) ?> </span> / <span>1300</span>
               </div>
             </div>
           </div>

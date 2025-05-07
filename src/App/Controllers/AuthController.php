@@ -37,7 +37,7 @@ class AuthController extends AbstractController
                 'paw_token',
                 $token,
                 [
-                    'expires'  => time() + 3600,
+                    'expires'  => time() + getenv('JWT_EXP_SEGUNDOS'),
                     'path'     => '/',
                     'secure'   => false,          // en producción poner true con HTTPS
                     'httponly' => true,
@@ -45,7 +45,7 @@ class AuthController extends AbstractController
                 ]
             );
 
-            header('Location: /search-team');
+            header('Location: /dashboard');
             exit;
         }
 
