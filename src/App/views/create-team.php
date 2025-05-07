@@ -6,7 +6,7 @@
     <meta name="description" content="Formulario para crear una cuenta en F5 Futbol Match">
     <meta name="keywords" content="Registro, Crear cuenta, F5 Futbol Match">
     <title>Crear Equipo</title>
-    <link rel="stylesheet" href="./css/create-acount.css">
+    <link rel="stylesheet" href="css/create-account.css">
 </head>
 <body>
     <?php
