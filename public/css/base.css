@@ -11,6 +11,7 @@
     --background-contents: #ffffff; /* Para contenido como forms, sections*/
     --footer-background-color: #092469;
     --button-primary-background-color: #64C67C;
+    --button-cancel-background-color: #DF2727;
     --button-secondary-background-color: #ffffff;
 
     /* Colores de texto */
@@ -23,6 +24,12 @@
     /* Colores de textos botones */
     --primary-buttons-color:  #ffffff;
     --secondary-buttons-color: #64C67C;
+
+    /* Colores Rankings*/
+    --badge-bg-principiante: #804F01;
+    --badge-bg-amateur : #C3C3C3;
+    --badge-bg-semipro: #C2BB00;
+    --badge-bg-pro: #DF2727;
 }
 
 /* Estilos básicos generales */

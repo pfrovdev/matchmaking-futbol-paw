@@ -14,8 +14,9 @@ unset($_SESSION['errors']);
 </head>
 
 <body>
-    <?php require "parts/header.php"; ?>
-
+    <?php
+        require "parts/header-no-account.php";
+    ?>
     <main>
         <section class="container login-container">
             <h1>Iniciar sesión</h1>
