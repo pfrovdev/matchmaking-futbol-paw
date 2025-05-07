@@ -1,6 +1,19 @@
 USE match_making_db;
 
 CREATE TABLE
+    Roles (
+        id_rol INT AUTO_INCREMENT PRIMARY KEY,
+        rol VARCHAR(50) NOT NULL,
+        descripcion VARCHAR(50) NOT NULL
+    );
+
+INSERT INTO
+    Roles (rol, descripcion)
+VALUES
+    ('ADMIN', 'administrador'),
+    ('USUARIO', 'usuario');
+
+CREATE TABLE
     TipoEquipo (
         id_tipo_equipo INT AUTO_INCREMENT PRIMARY KEY,
         tipo VARCHAR(20),
@@ -74,8 +87,10 @@ CREATE TABLE
         url_foto_perfil VARCHAR(45),
         id_tipo_equipo INT,
         id_nivel_elo INT,
+        id_rol INT,
         FOREIGN KEY (id_tipo_equipo) REFERENCES TipoEquipo (id_tipo_equipo),
-        FOREIGN KEY (id_nivel_elo) REFERENCES NivelElo (id_nivel_elo)
+        FOREIGN KEY (id_nivel_elo) REFERENCES NivelElo (id_nivel_elo),
+        FOREIGN KEY (id_rol) REFERENCES Roles (id_rol)
     );
 
 CREATE TABLE
