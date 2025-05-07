@@ -7,10 +7,15 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="./css/search-team.css">
 </head>
+
 <body>
     <?php
         require "parts/header.php";
     ?>
+    <?php
+        // Capturamos el orden o ponemos “desc” por defecto
+        $orden = $_GET['orden'] ?? 'desc';
+        ?>
     <main>
         <header>
             <h1>Buscar desafío</h1>
@@ -49,75 +54,198 @@
                             <a href="?<?= http_build_query(array_merge($_GET, ['page' => $paginaActual - 1])) ?>">Anterior</a>
                         <?php endif; ?>
 
-                        Página <?= $paginaActual ?> de <?= $totalPaginas ?>
+                <ul class="lista-equipos">
+                    <?php
+                    // $equipos es tu array de equipos, cada uno con ['id_nivel_elo'] y ['nombre']
+                    switch ($orden) {
+                        case 'asc':
+                        usort($equipos, function($a, $b) {
+                            return $a['id_nivel_elo'] <=> $b['id_nivel_elo'];
+                        });
+                        break;
+                        case 'alpha':
+                        usort($equipos, function($a, $b) {
+                            return strcasecmp($a['nombre'], $b['nombre']);
+                        });
+                        break;
+                        case 'desc':
+                        default:
+                        usort($equipos, function($a, $b) {
+                            return $b['id_nivel_elo'] <=> $a['id_nivel_elo'];
+                        });
+                        break;
+                    }
+                    ?>
+                    <?php foreach ($equipos as $equipo): ?>
+                        <li>
+                            <?php
+                                require __DIR__ . '/parts/tarjeta-envio-desafio.php';
+                            ?>
+                        </li><br>
+                        <?php $first = false; ?>
+                    <?php endforeach; ?>
+                </ul>
+                <section class="pagination">
+                    <?php if ($paginaActual > 1): ?>
+                        <a href="?<?= http_build_query(array_merge($_GET, ['page' => $paginaActual - 1])) ?>" class="page-link prev">« Anterior</a>
+                    <?php endif; ?>
 
-                        <?php if ($paginaActual < $totalPaginas): ?>
-                            <a href="?<?= http_build_query(array_merge($_GET, ['page' => $paginaActual + 1])) ?>">Siguiente</a>
-                        <?php endif; ?>
-                    </section>
-                <?php else: ?>
-                    <p>No se han encontrado equipos</p>
-                <?php endif; ?>
+                    <span class="page-info">Página <?= $paginaActual ?> de <?= $totalPaginas ?></span>
+
+                    <?php if ($paginaActual < $totalPaginas): ?>
+                        <a href="?<?= http_build_query(array_merge($_GET, ['page' => $paginaActual + 1])) ?>" class="page-link next">Siguiente »</a>
+                    <?php endif; ?>
+                </section>
             </section>
 
-            <aside>
+            <aside> 
+                <?php
+                $rangoSeleccionado = $_GET['rango'] ?? '';
+                ?>
                 <section aria-labelledby="filtro-rango">
                 <h2 id="filtro-rango">Filtrar por rango</h2>
-                <ul class="filtros-rango">
-                <?php foreach ($nivelesElo as $nivel): ?>
-                    <li>
-                        <a href="?<?= http_build_query(array_merge($_GET, ['id_nivel_elo' => $nivel['id_nivel_elo']])) ?>">
-                            <?= htmlspecialchars($nivel['descripcion']) ?>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-                </ul>
+                <form method="get" class="filtros-rango-form">
+                    <ul class="filtros-rango">
+                    <?php
+                        // Definimos los rangos y su color semántico
+                        $rangos = [
+                        'Principiante'  => 'principiante',
+                        'Amateur'       => 'amateur',
+                        'SemiPro'       => 'semipro',
+                        'Profesional'   => 'profesional',
+                        ];
+                        foreach ($rangos as $label => $clase) {
+                        // ¿Es el que está seleccionado?
+                        $activo = ($rangoSeleccionado === $label) ? ' activo' : '';
+                        echo sprintf(
+                            '<li><button type="submit" name="rango" value="%1$s" class="%2$s%3$s">%1$s</button></li>',
+                            $label,
+                            $clase,
+                            $activo
+                        );
+                        }
+                    ?>
+                    </ul>
+                </form>
                 </section>
 
+                
                 <section aria-labelledby="ordenar">
                     <h2 id="ordenar">Ordenar por</h2>
-                    <form>
-                        <label><input type="radio" name="orden" checked> Mayor a menor ELO</label><br>
-                        <label><input type="radio" name="orden"> Menor a mayor ELO</label><br>
-                        <label><input type="radio" name="orden"> Alfabéticamente</label>
-                </form>
+                    <form class="radio-btns" method="get">
+                        <label>
+                        <input type="radio"
+                                name="orden"
+                                value="desc"
+                                <?= $orden === 'desc' ? 'checked' : '' ?>>
+                        Menor a mayor ELO
+                        </label><br>
+                        <label>
+                        <input type="radio"
+                                name="orden"
+                                value="asc"
+                                <?= $orden === 'asc' ? 'checked' : '' ?>>
+                        Mayor a menor ELO
+                        </label><br>
+                        <label>
+                        <input type="radio"
+                                name="orden"
+                                value="alpha"
+                                <?= $orden === 'alpha' ? 'checked' : '' ?>>
+                        Alfabéticamente
+                        </label><br>
+                        <button type="submit">Ordenar</button>
+                    </form>
                 </section>
 
                 <section aria-labelledby="zona-busqueda">
                     <h2 id="zona-busqueda">Zona de búsqueda</h2>
-                    <form>
-                        <label for="lugar">Buscar lugar</label>
-                        <input type="text" id="lugar" placeholder="La canchita, Luján" />
-
-                        <label for="kms">Rango búsqueda (KMS)</label>
-                        <input type="number" id="kms" value="1" />
+                    <form id="mapForm" action="procesar.php" method="POST">
+                        <div class="input-group">
+                            <label for="lat">Latitud:</label>
+                            <input type="text" id="lat" name="lat" readonly />
+                        </div>
+                        <div class="input-group">
+                            <label for="lng">Longitud:</label>
+                            <input type="text" id="lng" name="lng" readonly />
+                        </div>
+                        <div class="input-group">
+                            <label for="radiusSlider">Radio del área (km)</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="range" id="radiusSlider" name="radius_km" min="0.1" max="10" step="0.1" value="1">
+                            <span id="radiusValue">1.0</span>
+                        </div>
+                        <button type="submit">Enviar</button>
                     </form>
-                    <figure>
-                        <div id="map"></div>
-                    </figure>
+                    
                 </section>
+                <figure>
+                    <div id="map"></div>
+                </figure>
             </aside>
         </section>
     </main>
     <?php
         require "parts/footer.php";
     ?>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Coordenadas por defecto (Luján, Buenos Aires)
-        const defaultLat = -34.6545508;
-        const defaultLng = -59.4168298;
+    var map = L.map('map').setView([-34.57, -59.11], 13);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
 
-        const map = L.map('map').setView([defaultLat, defaultLng], 13);
+    var marker, circle;
+    var slider = document.getElementById('radiusSlider');
+    var output = document.getElementById('radiusValue');
+    output.textContent = slider.value;
 
-        // Capa base OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
+    function updateLatLngFields(lat, lng) {
+        document.getElementById('lat').value = lat.toFixed(6);
+        document.getElementById('lng').value = lng.toFixed(6);
+    }
 
-        // Marcador central
-        L.marker([defaultLat, defaultLng]).addTo(map)
-            .openPopup();
+    function placeMarker(e) {
+        var lat = e.latlng.lat;
+        var lng = e.latlng.lng;
+
+        if (!marker) {
+        marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+        marker.on('dragend', function(ev) {
+            var pos = ev.target.getLatLng();
+            updateLatLngFields(pos.lat, pos.lng);
+            updateCircle(pos);
+        });
+        } else {
+        marker.setLatLng([lat, lng]);
+        }
+
+        updateLatLngFields(lat, lng);
+        updateCircle(e);
+    }
+
+    function updateCircle(e) {
+        var km = parseFloat(slider.value);
+        var m = km * 1000;
+        if (!circle) {
+        circle = L.circle(e.latlng, { radius: m }).addTo(map);
+        } else {
+        circle.setLatLng(e.latlng);
+        circle.setRadius(m);
+        }
+    }
+
+    map.on('click', placeMarker);
+
+    slider.oninput = function() {
+        output.textContent = parseFloat(this.value).toFixed(1);
+        if (circle) {
+        var m = parseFloat(this.value) * 1000;
+        circle.setRadius(m);
+        }
+    };
     </script>
 </body>
 </html>
