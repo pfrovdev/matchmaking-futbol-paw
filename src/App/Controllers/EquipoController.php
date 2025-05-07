@@ -141,12 +141,21 @@ class EquipoController extends AbstractController{
     public function searchTeam() {
         $nombre = $_GET['nombre'] ?? null;
         $paginaActual = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $id_nivel_elo = isset($_GET['id_nivel_elo']) ? (int)$_GET['id_nivel_elo'] : null;
+        $id_equipo = isset($_GET['id_equipo_desafiar']) ? (int)$_GET['id_equipo_desafiar'] : null;
         $porPagina = 3;
         $offset = ($paginaActual - 1) * $porPagina;
 
-        if ($nombre) {
+        if ($id_equipo) {
+            //Armar desafío --> necesitamos el login
+        }
+        if ($nombre && $id_nivel_elo) {
+            $todosLosEquipos = $this->model->selectLike(['nombre' => $nombre, 'id_nivel_elo' => $id_nivel_elo]);
+        } elseif ($nombre){
             $todosLosEquipos = $this->model->selectLike(['nombre' => $nombre]);
-        } else {
+        } elseif ($id_nivel_elo){
+            $todosLosEquipos = $this->model->selectLike(['id_nivel_elo' => $id_nivel_elo]);
+        }else{
             $todosLosEquipos = $this->model->select([]);
         }
 
@@ -156,6 +165,7 @@ class EquipoController extends AbstractController{
         $equipos = array_slice($todosLosEquipos, $offset, $porPagina);
 
         $nivelEloModel = $this->getModel(NivelElo::class);
+        $nivelesElo = $nivelEloModel->select([]);
         $comentarioModel = $this->getModel(Comentario::class);
         $comentarios = $comentarioModel->select([]);
 

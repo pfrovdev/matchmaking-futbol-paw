@@ -25,45 +25,52 @@
                     <input type="text" id="nombre" name="nombre" placeholder="Ejemplo FC" value="<?= htmlspecialchars($_GET['nombre'] ?? '') ?>" />
                     <button type="submit">Buscar</button>
                 </form>
+                <?php if ($equipos): ?>
+                    <ul class="lista-equipos">
+                   
+                        <?php foreach ($equipos as $equipo): ?>
+                            <li>
+                                <article>
+                                    <img src="<?= !empty($equipo['url_foto_perfil']) ? htmlspecialchars($equipo['url_foto_perfil']) : '/icons/defaultTeamIcon.png' ?>" alt="imagen del equipo">
+                                    <span class="rango"><?= htmlspecialchars($equipo['nivel_elo_descripcion']) ?></span>
+                                    <h3 class="team-name"><?= htmlspecialchars($equipo['nombre']) ?></h3>
+                                    <p>Deportividad: <?= isset($equipo['deportividad']) ? number_format($equipo['deportividad'], 2) : 'Sin datos' ?></p>
+                                    <p>Lema: <?= htmlspecialchars($equipo['lema']) ?></p>
+                                    <p>ELO: <?= htmlspecialchars($equipo['elo_actual']) ?></p>
+                                    <a href="#">Ver perfil del equipo</a>
+                                    <a href="?<?= http_build_query(array_merge($_GET, ['id_equipo_desafiar' => $equipo['id_equipo']])) ?>">Desafiar</a>
+                                </article>
+                            </li><br>
+                            <?php $first = false; ?>
+                        <?php endforeach; ?>
+                    </ul>
+                    <section>
+                        <?php if ($paginaActual > 1): ?>
+                            <a href="?<?= http_build_query(array_merge($_GET, ['page' => $paginaActual - 1])) ?>">Anterior</a>
+                        <?php endif; ?>
 
-                <ul class="lista-equipos">
-                    <?php foreach ($equipos as $equipo): ?>
-                        <li>
-                            <article>
-                                <img src="<?= !empty($equipo['url_foto_perfil']) ? htmlspecialchars($equipo['url_foto_perfil']) : '/icons/defaultTeamIcon.png' ?>" alt="imagen del equipo">
-                                <span class="rango"><?= htmlspecialchars($equipo['nivel_elo_descripcion']) ?></span>
-                                <h3 class="team-name"><?= htmlspecialchars($equipo['nombre']) ?></h3>
-                                <p>Deportividad: <?= isset($equipo['deportividad']) ? number_format($equipo['deportividad'], 2) : 'Sin datos' ?></p>
-                                <p>Lema: <?= htmlspecialchars($equipo['lema']) ?></p>
-                                <p>ELO: <?= htmlspecialchars($equipo['elo_actual']) ?></p>
-                                <a href="#">Ver perfil del equipo</a>
-                                <button type="button">Desafiar</button>
-                            </article>
-                        </li><br>
-                        <?php $first = false; ?>
-                    <?php endforeach; ?>
-                </ul>
-                <section>
-                    <?php if ($paginaActual > 1): ?>
-                        <a href="?<?= http_build_query(array_merge($_GET, ['page' => $paginaActual - 1])) ?>">Anterior</a>
-                    <?php endif; ?>
+                        Página <?= $paginaActual ?> de <?= $totalPaginas ?>
 
-                    Página <?= $paginaActual ?> de <?= $totalPaginas ?>
-
-                    <?php if ($paginaActual < $totalPaginas): ?>
-                        <a href="?<?= http_build_query(array_merge($_GET, ['page' => $paginaActual + 1])) ?>">Siguiente</a>
-                    <?php endif; ?>
-                </section>
+                        <?php if ($paginaActual < $totalPaginas): ?>
+                            <a href="?<?= http_build_query(array_merge($_GET, ['page' => $paginaActual + 1])) ?>">Siguiente</a>
+                        <?php endif; ?>
+                    </section>
+                <?php else: ?>
+                    <p>No se han encontrado equipos</p>
+                <?php endif; ?>
             </section>
 
             <aside>
                 <section aria-labelledby="filtro-rango">
                 <h2 id="filtro-rango">Filtrar por rango</h2>
                 <ul class="filtros-rango">
-                    <li><button type="button">Principiante</button></li>
-                    <li><button type="button">Amateur</button></li>
-                    <li><button type="button">SemiPro</button></li>
-                    <li><button type="button" class="activo">Profesional ✕</button></li>
+                <?php foreach ($nivelesElo as $nivel): ?>
+                    <li>
+                        <a href="?<?= http_build_query(array_merge($_GET, ['id_nivel_elo' => $nivel['id_nivel_elo']])) ?>">
+                            <?= htmlspecialchars($nivel['descripcion']) ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
                 </ul>
                 </section>
 
