@@ -3,9 +3,6 @@
 @import url('./footer.css');
 @import url('./tarjeta-desafio.css');
 @import url('./tarjeta-historial.css');
-@import url('./side-navbar.css');
-
-
 
 /* -------------------------
    CONTENEDOR PRINCIPAL
@@ -62,7 +59,6 @@
     font-size: 0.9rem;
     color: #666;
     background: url('../icons/defaultTeamIcon.png') center/cover no-repeat;
-    max-width: 40%;
   }
   .perfil-foto .btn-link {
     margin-top: 0.5rem;

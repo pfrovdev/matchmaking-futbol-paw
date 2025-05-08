@@ -8,7 +8,6 @@ use Paw\App\Models\Equipo;
 use Paw\App\Models\TipoEquipo;
 use Paw\App\Models\Comentario;
 use Paw\App\Models\EquipoCollection;
-use Paw\App\Models\ResultadoPartido;
 use Paw\Core\Middelware\AuthMiddelware;
 use Paw\App\Utils\CalculadoraDeElo;
 
@@ -203,7 +202,8 @@ class EquipoController extends AbstractController{
 
     public function dashboard(){
 
-        $equipo_jwt_data = AuthMiddelware::verificarRoles(['ADMIN','USUARIO']);
+        $equipo_jwt_data = AuthMiddelware::verificar();
+
         $equipo = $this->getEquipo($equipo_jwt_data->id_equipo);
 
         $page  = max(1, (int)($_GET['page'] ?? 1));
@@ -213,19 +213,20 @@ class EquipoController extends AbstractController{
 
         $comentariosPag = $equipo->getComentarios($page, $per, $order, $dir);
         $desafiosRecib  = $equipo->getDesafiosRecibidos($page, $per, $order, $dir);
+
         $nivelDesc    = $equipo->getNivelElo();
         $deportividad = $equipo->promediarDeportividad();
-        $cantidadDeVotos = count($comentariosPag);
-        $historial = false;
-        
-        if($equipo->contieneHistorial()){
-            $ultimoPartidoJugado = $equipo->getHistorialPartidos(1,1)[0];
-            $soyGanador = $ultimoPartidoJugado->soyEquipoGanador($equipo);
-            $equipoLocal  = $equipo;
-            $equipoRival  = $ultimoPartidoJugado->getEquipoRival($equipoLocal);
-            $eloChange = CalculadoraDeElo::calcularCambioElo($ultimoPartidoJugado, $equipoLocal);
-            $historial = true;
-        }
+
+        $ultimoPartidoJugado = $equipo->getHistorialPartidos(1,1)[0];
+
+        $soyGanador = $ultimoPartidoJugado->soyEquipoGanador($equipo);
+
+        $this->logger->info("id partido jugado" . $ultimoPartidoJugado->fields['id_resultado']);
+
+        $equipoLocal  = $equipo;
+        $equipoRival  = $ultimoPartidoJugado->getEquipoRival($equipoLocal);
+
+        $eloChange = CalculadoraDeElo::calcularCambioElo($ultimoPartidoJugado, $equipoLocal);
 
         require $this->viewsDir . 'dashboard.php';
     }

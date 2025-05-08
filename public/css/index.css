@@ -4,21 +4,13 @@
 
 .home-container {
   background: linear-gradient(90deg, var(--primary-color) 0%, var(--gradient-primary-color) 100%);
-  padding: 5rem 0;    
-}
-
-.home-content {
   display: grid;
   grid-template-columns: auto 1fr;
-  grid-template-rows: repeat(3, auto);
+  grid-template-rows: auto auto auto;
   align-items: center;
+  padding: 4rem 2rem 4rem 9rem;
   column-gap: 2rem;
-  max-width: 80%;
-  margin: 0 auto;     
-  padding: 0 5rem;    
-
 }
-
 
 .home-container img {
   grid-column: 1;
@@ -124,7 +116,7 @@
 
 /* --- responsividad para tablet (768px – 1024px) --- */
 @media (min-width: 768px) and (max-width: 1024px) {
-  .home-content {
+  .home-container {
     /* pasa a dos columnas más estrechas */
     grid-template-columns: 1fr 1fr;
     padding: 3rem 2rem;
@@ -156,7 +148,7 @@
 
 /* --- responsividad para móvil (≤ 767px) --- */
 @media (max-width: 767px) {
-  .home-content {
+  .home-container {
     display: flex;
     flex-direction: column; 
     align-items: center;
