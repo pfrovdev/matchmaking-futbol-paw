@@ -2,6 +2,7 @@
 
 namespace Paw\App\Models;
 
+use Exception;
 use Paw\Core\AbstractModel;
 use Paw\App\Models\Equipo;
 
@@ -21,12 +22,12 @@ class Desafio extends AbstractModel{
         $this->fields["id_desafio"] = $idDesafio;
     }
 
-    public function setEquipoDesafianteId(int $equipoDesafianteId){
-        $this->fields["equipo_desafiante_id"] = $equipoDesafianteId;
+    public function setIdEquipoDesafiante(int $equipoDesafianteId){
+        $this->fields["id_equipo_desafiante"] = $equipoDesafianteId;
     }
 
-    public function setEquipoDesafiadoId(int $equipoDesafiadoId){
-        $this->fields["equipo_desafiado_id"] = $equipoDesafiadoId;
+    public function setIdEquipoDesafiado(int $equipoDesafiadoId){
+        $this->fields["id_equipo_desafiado"] = $equipoDesafiadoId;
     }
 
     public function setFechaCreacion(string $fechaCreacion){
@@ -73,9 +74,12 @@ class Desafio extends AbstractModel{
 
     public function getEquipoDesafiante(): Equipo{
         $qb = $this->getQueryBuilder();
-        $equipoDesafiante = new Equipo();
-        $data = $qb->select($equipoDesafiante->table, ['id_equipo' => $this->fields['id_equipo_desafiante']]);
-        $equipoDesafiante->set($data);
+        $equipoDesafiante = new Equipo($qb);
+        $data = $qb->select(
+            $equipoDesafiante->table,
+            ['id_equipo' => $this->fields['id_equipo_desafiante']]
+        );
+        $equipoDesafiante->set($data[0]);
         return $equipoDesafiante;
     }
 }

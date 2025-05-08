@@ -91,14 +91,17 @@
               <?php foreach ($desafiosRecib as $d): ?>
                 <?php $retador = $d->getEquipoDesafiante(); ?>
                 <li>
-                  <?php $challenge = [
+                  <?php 
+                  $challenge = [
                     'name'       => $retador->fields['nombre'],
-                    'level'      => '',
+                    'level'      => $retador->getNivelElo(),
                     'icons'      => 0,
-                    'motto'      => $retador->fields['lema'] ?? '',
+                    'lema'      => $retador->fields['lema'] ?? '',
                     'elo'        => ['wins'=>10,'losses'=>7,'draws'=>0],
                     'record'     => '',
-                    'profileUrl' => "/team/{$retador->fields['id_equipo']}",
+                    'id_nivel_elo' => $retador->getNivelElo(),
+                    'deportividad' => $retador->promediarDeportividad(),
+                    'profile-link' => "/team/{$retador->fields['id_equipo']}",
                   ];
                   require "parts/tarjeta-desafio.php";
                   ?>
