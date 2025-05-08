@@ -257,19 +257,11 @@
     font-size: 0.8rem;
   }
   
-/* -------------------------
-   MEDIA QUERIES
-   ------------------------- */
-
 
 /* -------------------------
    MEDIA QUERIES
    ------------------------- */
 
-/* -------------------------
-   LAPTOP / DESKTOP PEQUEÑO
-   Máx. 1024px
-   ------------------------- */
    @media (max-width: 1024px) {
     .side-navbar {
       display: none;
