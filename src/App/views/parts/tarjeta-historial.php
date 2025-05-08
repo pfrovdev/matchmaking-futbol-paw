@@ -1,6 +1,7 @@
 <?php
 // Antes de hacer el require, define el array $match con estos campos:
 // $match = [
+//   'soyGanador' => true/false                // para cambiar color de tarjeta
 //   'eloChange' => +20,                       // número positivo o negativo
 //   'matchUrl'  => '#',                       // enlace a detalle
 //   'date'      => '21/02/2025',
@@ -19,7 +20,7 @@
 //   'score'     => '4-0',
 // ];
 ?>
-<div class="history-card">
+<div class=<?= $soyGanador? "history-card-win" : "hostory-card-lose" ?> >
   <div class="hc-header">
     <span class="elo-change <?= $match['eloChange'] >= 0 ? 'up' : 'down' ?>">
       <?= ($match['eloChange'] >= 0 ? '+' : '') . $match['eloChange'] ?> ELO
