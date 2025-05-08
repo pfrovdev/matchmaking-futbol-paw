@@ -15,11 +15,15 @@
 
 <body>
   <?php require "parts/header.php"; ?>
-
+  <?php require "parts/side-navbar.php"; ?>
   <main>
+  
     <div class="dashboard-container">
+
+    
       <!-- GRID PRINCIPAL -->
       <div class="dashboard-grid">
+      
         <!-- Columna Izquierda -->
         <section class="col-left">
           <!-- Card 1: Perfil -->
@@ -220,8 +224,9 @@
           <?php endfor; ?>
         </ul>
       </section>
-
+      
     </div>
+   
   </main>
 
   <?php require "parts/footer.php"; ?>

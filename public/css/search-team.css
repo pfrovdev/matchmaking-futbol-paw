@@ -2,7 +2,7 @@
 @import url('./header.css');
 @import url('./footer.css');
 @import url('./tarjeta-desafio.css');
-
+@import url('side-navbar.css');
 main > header {
     margin: 5rem 5rem 2rem; 
 }
@@ -213,3 +213,60 @@ figure img {
     font-size: 0.9rem;
     color: var(--text-secondary);
   }
+
+  /* Tablets y móviles grandes */
+@media (max-width: 768px) {
+  main > header {
+    margin: 3rem 2rem 1.5rem;
+  }
+
+  main {
+    margin-bottom: 1rem;
+}
+
+  .grid-layout {
+    margin: 0 2rem;
+    grid-template-columns: 1fr;    /* Deja una sola columna */
+    gap: 1.5rem;
+  }
+
+  aside {
+    grid-template-columns: 1fr;    /* También una columna en el aside */
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  main > header {
+    margin: 2rem 1rem 1rem;
+  }
+  main {
+    margin-bottom: 1rem;
+}
+  .grid-layout {
+    margin: 0 1rem;
+    gap: 1rem;
+  }
+
+  .lista-equipos li,
+  .pagination {
+    width: 100%;                  /* Asegura que los bloques ocupen todo el ancho */
+  }
+
+  .radio-btns {
+    flex-direction: column;       /* Ya lo tienes, pero reafirmamos para móviles */
+  }
+
+  .filtros-rango {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  aside {
+    padding: 0.75rem;
+  }
+
+  #map {
+    aspect-ratio: 4 / 3;          /* Ajusta proporción si hace falta */
+  }
+}
