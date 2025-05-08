@@ -29,7 +29,7 @@ class AuthController extends AbstractController
             $payloadUsuario = [
                 'id_equipo' => $user['id_equipo'],
                 'email'     => $user['email'],
-                'role'      => $user['role'] ?? 'usuario',
+                'role'      => $user['id_rol'] == 2 ? 'USUARIO' : 'ADMIN',
             ];
             $token = Auth::generarToken($payloadUsuario);
 

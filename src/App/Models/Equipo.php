@@ -200,6 +200,29 @@ class Equipo extends AbstractModel
     
         return $comentarios;
     }
+    
+    public function promediarDeportividad(): float {
+        $qb = $this->getQueryBuilder();
+        $comentarioModel = new Comentario();
+    
+        $data = $qb->select(
+            $comentarioModel->table, 
+            ['id_equipo_comentado' => $this->fields['id_equipo']]
+        );
+    
+        if (count($data) === 0) {
+            return 0.0;
+        }
+    
+        $total = 0;
+        foreach ($data as $row) {
+            $comentario = new Comentario();
+            $comentario->set($row);
+            $total += $comentario->fields['deportividad'];
+        }
+    
+        return $total / count($data);
+    }
 
     public function getDesafiosRecibidos(int $page = 1, int $perPage = 5, string $orderBy = 'fecha_creacion', string $direction = 'DESC'): array
     {
@@ -240,29 +263,6 @@ class Equipo extends AbstractModel
         
         $nivelElo->set($data[0]);
         return (string)($nivelElo->fields['descripcion'] ?? "Sin descripción");
-    }
-
-    public function promediarDeportividad(): float {
-        $qb = $this->getQueryBuilder();
-        $comentarioModel = new Comentario();
-    
-        $data = $qb->select(
-            $comentarioModel->table, 
-            ['id_equipo_comentado' => $this->fields['id_equipo']]
-        );
-    
-        if (count($data) === 0) {
-            return 0.0;
-        }
-    
-        $total = 0;
-        foreach ($data as $row) {
-            $comentario = new Comentario();
-            $comentario->set($row);
-            $total += $comentario->fields['deportividad'];
-        }
-    
-        return $total / count($data);
     }
 
     public function getHistorialPartidos(int $page = 1, int $perPage = 5, string $orderBy = 'fecha_jugado', string $direction = 'DESC'): array{
@@ -321,6 +321,10 @@ class Equipo extends AbstractModel
         $tipoEquipoModel->set($data[0]);
 
         return (string)($tipoEquipoModel->fields['tipo'] ?? "Sin descripción");
+    }
+
+    public function contieneHistorial(): bool{
+        return count($this->getHistorialPartidos(1,1)) > 0;
     }
 
     public function __toString(): string

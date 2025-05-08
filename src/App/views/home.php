@@ -15,6 +15,7 @@
     
     <main>
         <section class="home-container">
+          <div class="home-content">
             <img src="../icons/picture_messi.png" alt="messi picture">
             <h2>¿Tenés equipo? Nosotros te conseguimos rival</h2>
             <p>
@@ -25,6 +26,7 @@
               <a href="create-account">Registrar mi equipo</a>
               <a href="login">Iniciar sesión</a>
             </div>
+          </div>
         </section>
       <section class="benefits-section">
         <header class="benefits-header">
