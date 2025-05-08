@@ -34,15 +34,17 @@
               <?php endif; ?>
             </div>
             <div class="perfil-info">
-              <h2><?= htmlspecialchars($equipo->fields['nombre']) ?></h2>
+              <h2><?= htmlspecialchars($equipo->fields['nombre']) . " (" . htmlspecialchars($equipo->fields['acronimo']) . ")" ?></h2>
               <p class="lema"><?= htmlspecialchars($equipo->fields['lema']) ?></p>
-              <div class="deportividad">
+              <div class="sport-icons">
                 Deportividad:
+                <!-- Faltaria hacer algo tipo, hasta la cantidad que me mandan
+                pongo pelotitas, y relleno hasta 5 espacios vacios -->
                 <?php for ($i = 1; $i <= 5; $i++): ?>
-                  <?php if ($i <= round($deportividad)): ?>
-                    <span class="icon-star"></span>
+                  <?php if ($i <= $equipo->promediarDeportividad()): ?>
+                    <span class="icon">⚽</span>
                   <?php else: ?>
-                    <span class="icon-star"></span>
+                    <span class="icon" style="opacity: 0.4; color: grey;">⚽</span>
                   <?php endif; ?>
                 <?php endfor; ?>
               </div>
@@ -59,30 +61,30 @@
             </div>
           </div>
 
-        <!-- Card 2: Último partido -->
-        <div class="card last-match-card">
+          <!-- Card 2: Último partido -->
+          <div class="card last-match-card">
             <?php
-              $match = [
-                   'eloChange' => +20,                       // número positivo o negativo
-                   'matchUrl'  => '#',                       // enlace a detalle
-                   'date'      => '21/02/2025',
-                   'home'      => [
-                     'abbr'      => 'CABJ',
-                     'name'      => 'Boca Juniors',
-                     'logo'      => 'defaultTeamIcon.png',              // ruta relativa a img/
-                     'tarjetas'     => ['yellow'=>1,'red'=>1], // cantidad de tarjetas
-                   ],
-                   'away'      => [
-                     'abbr'      => 'CASLA',
-                     'name'      => 'San Lorenzo',
-                     'logo'      => 'defaultTeamIcon.png',
-                     'tarjetas'     => ['yellow'=>1,'red'=>1],
-                   ],
-                   'score'     => '4-0',
-                  ];
-              require "parts/tarjeta-historial.php";
+            $match = [
+              'eloChange' => +20,                       // número positivo o negativo
+              'matchUrl'  => '#',                       // enlace a detalle
+              'date'      => '21/02/2025',
+              'home'      => [
+                'abbr'      => 'CABJ',
+                'name'      => 'Boca Juniors',
+                'logo'      => 'defaultTeamIcon.png',              // ruta relativa a img/
+                'tarjetas'     => ['yellow' => 1, 'red' => 1], // cantidad de tarjetas
+              ],
+              'away'      => [
+                'abbr'      => 'CASLA',
+                'name'      => 'San Lorenzo',
+                'logo'      => 'defaultTeamIcon.png',
+                'tarjetas'     => ['yellow' => 1, 'red' => 1],
+              ],
+              'score'     => '4-0',
+            ];
+            require "parts/tarjeta-historial.php";
             ?>
-        </div>
+          </div>
 
           <!-- Card 3: Desafíos recibidos -->
           <div class="card challenges-card">
@@ -91,13 +93,13 @@
               <?php foreach ($desafiosRecib as $d): ?>
                 <?php $retador = $d->getEquipoDesafiante(); ?>
                 <li>
-                  <?php 
+                  <?php
                   $challenge = [
                     'name'       => $retador->fields['nombre'],
                     'level'      => $retador->getNivelElo(),
                     'icons'      => 0,
                     'lema'      => $retador->fields['lema'] ?? '',
-                    'elo'        => ['wins'=>10,'losses'=>7,'draws'=>0],
+                    'elo'        => ['wins' => 10, 'losses' => 7, 'draws' => 0],
                     'record'     => '',
                     'id_nivel_elo' => $retador->getNivelElo(),
                     'deportividad' => $retador->promediarDeportividad(),

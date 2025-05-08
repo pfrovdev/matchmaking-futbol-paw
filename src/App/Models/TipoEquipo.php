@@ -21,6 +21,19 @@ class TipoEquipo extends AbstractModel{
         $this->fields["descripcion_corta"] = $descripcionCorta;
     }
 
+    public function set(array $values)
+    {
+        foreach (array_keys($this->fields) as $field) {
+            if (!array_key_exists($field, $values)) {
+                continue;
+            }
+            $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $field)));
+            if (method_exists($this, $method)) {
+                $this->$method($values[$field]);
+            }
+        }
+    }
+
     public function all(){
         return $this->getQueryBuilder()->select($this->table);
     }

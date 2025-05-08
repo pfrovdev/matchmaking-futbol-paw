@@ -265,6 +265,23 @@ class Equipo extends AbstractModel
         return $total / count($data);
     }
 
+    public function getTipoEquipo(): string {
+        $qb = $this->getQueryBuilder();
+        $tipoEquipoModel = new TipoEquipo();
+        
+        $data = $qb->select(
+            $tipoEquipoModel->table, 
+            ['id_tipo_equipo' => $this->fields['id_tipo_equipo']]
+        );
+        
+        if (empty($data)) {
+            throw new Exception("Nivel Elo no encontrado para el equipo");
+        }
+        
+        $tipoEquipoModel->set($data[0]);
+        return (string)($nivelElo->fields['descripcion'] ?? "Sin descripción");
+    }
+
     public function __toString(): string
     {
         $output = [];

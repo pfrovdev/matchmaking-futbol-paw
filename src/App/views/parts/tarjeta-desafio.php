@@ -26,10 +26,15 @@
 
     <div class="card-body">
       <div class="sport-icons">
-            <!-- Faltaria hacer algo tipo, hasta la cantidad que me mandan
+        <!-- Faltaria hacer algo tipo, hasta la cantidad que me mandan
              pongo pelotitas, y relleno hasta 5 espacios vacios -->
-        <?php for($i=0;$i<$challenge['deportividad'];$i++): ?> 
-          <span class="icon">⚽</span>
+        Deportividad: 
+        <?php for ($i = 1; $i <= 5; $i++): ?>
+          <?php if ($i <= $challenge['deportividad']): ?>
+            <span class="icon">⚽</span>
+          <?php else: ?>
+            <span class="icon" style="opacity: 0.4; color: grey;">⚽</span>
+          <?php endif; ?>
         <?php endfor; ?>
       </div>
       <p class="team-motto"><?php echo htmlspecialchars($challenge['lema']) ?></p>
