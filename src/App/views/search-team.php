@@ -57,6 +57,7 @@ switch ($orden) {
 </head>
 <body>
     <?php require "parts/header.php"; ?>
+    <?php require "parts/side-navbar.php"; ?>
     <?php
         $queryParams = $_GET;
         unset($queryParams['page']);

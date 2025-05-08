@@ -2,7 +2,7 @@
 @import url('./header.css');
 @import url('./footer.css');
 @import url('./tarjeta-desafio.css');
-
+@import url('side-navbar.css');
 main > header {
     margin: 5rem 5rem 2rem; 
 }

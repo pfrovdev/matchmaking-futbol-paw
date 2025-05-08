@@ -1,0 +1,35 @@
+.side-navbar {
+    float: left;
+    width:  64px;         
+    height: 100vh;      
+    background: linear-gradient(180deg, var(--primary-color) 0%, var(--gradient-primary-color) 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;             
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  }
+  
+  .side-navbar a {
+    display: block;
+    text-decoration: none;
+    margin: 8px 0;       
+    background-color: #fff;
+    padding: 8px;        
+    border-radius: 50px; 
+    transition: background-color 0.2s;
+  }
+  
+  .side-navbar a:hover {
+    background-color: #f0f0f0;
+  }
+
+  .side-navbar img {
+    width: 48px;  
+    height: 48px;
+    transition: transform 0.2s ease;
+  }
+  
+  .side-navbar img:hover {
+    transform: scale(1.1);
+  }
