@@ -82,6 +82,25 @@ class Desafio extends AbstractModel{
         $equipoDesafiante->set($data[0]);
         return $equipoDesafiante;
     }
+
+    public function aceptar(){
+        $qb = $this->getQueryBuilder();
+        $estadoDesafio = new EstadoDesafio($qb);
+        $estadosDesafio = $qb->select($estadoDesafio->table);
+        $idAceptado = null;
+        foreach ($estadosDesafio as $estado) {
+            if ($estado['descripcion_corta'] == 'aceptado') {
+                $idAceptado = $estado['id_estado_desafio'];
+            }
+        }
+        $qb->update(
+            $this->table,
+            ['id_desafio' => $this->fields['id_desafio']],
+            ['id_estado_desafio' => $idAceptado]
+        );
+        $partidoNuevo = new Partido($qb);
+        $partidoNuevo->crearPendiente($this);
+    }
 }
 
 ?>

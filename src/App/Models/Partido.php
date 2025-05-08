@@ -51,6 +51,28 @@ class Partido extends AbstractModel{
         $result = $queryBuilder->selectLike($this->table, $params);
         return $result;
     }
+
+    public function crearPendiente(Desafio $desafio){
+        $qb = $this->getQueryBuilder();
+        $estadoPartido = new EstadoPartido($qb);
+        $estadosPartido = $qb->select($estadoPartido->table);
+        $idPendiente = null;
+        foreach ($estadosPartido as $estado) {
+            if ($estado['descripcion_corta'] == 'pendiente') {
+                $idPendiente = $estado['id_estado_partido'];
+            }
+        }
+        $qb->insert(
+            $this->table,
+            [
+                'fecha_creacion' => date('Y-m-d H:i:s'),
+                'fecha_finalizacion' => null,
+                'id_estado_partido' => $idPendiente,
+                'finalizado' => false
+            ]
+        );
+        
+    }
 }
 
 ?>

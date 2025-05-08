@@ -327,6 +327,20 @@ class Equipo extends AbstractModel
         return count($this->getHistorialPartidos(1,1)) > 0;
     }
 
+    public function aceptarDesafio(int $desafioId): void{
+        $qb = $this->getQueryBuilder();
+        $desafioModel = new Desafio($qb);
+        $data = $qb->select(
+            $desafioModel->table,
+            ['id_desafio' => $desafioId]
+        );
+        if (empty($data)) {
+            throw new Exception("Desafio no encontrado");
+        }
+        $desafioModel->set($data[0]);
+        $desafioModel->aceptar();
+    }
+
     public function __toString(): string
     {
         $output = [];

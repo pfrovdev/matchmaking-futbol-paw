@@ -119,6 +119,8 @@
                 <li>
                   <?php
                   $challenge = [
+                    'id_equipo' => $equipoLocal->fields['id_equipo'],
+                    'id_desafio' => $d->fields['id_desafio'],
                     'name'       => $retador->fields['nombre'],
                     'level'      => $retador->getNivelElo(),
                     'icons'      => 0,
