@@ -15,15 +15,11 @@
 
 <body>
   <?php require "parts/header.php"; ?>
-  <?php require "parts/side-navbar.php"; ?>
-  <main>
-  
-    <div class="dashboard-container">
 
-    
+  <main>
+    <div class="dashboard-container">
       <!-- GRID PRINCIPAL -->
       <div class="dashboard-grid">
-      
         <!-- Columna Izquierda -->
         <section class="col-left">
           <!-- Card 1: Perfil -->
@@ -51,7 +47,6 @@
                     <span class="icon" style="opacity: 0.4; color: grey;">⚽</span>
                   <?php endif; ?>
                 <?php endfor; ?>
-                <?= "(".$cantidadDeVotos.")" ?>
               </div>
               <p>Género: <?= htmlspecialchars($equipo->getTipoEquipo()) ?></p>
               <div class="elo-bar">
@@ -68,50 +63,44 @@
 
           <!-- Card 2: Último partido -->
           <div class="card last-match-card">
-            <?php if ($historial):
-              // Construyo el array $match
-              $match = [
-                'soyGanador' => $soyGanador,
-                'eloChange'  => $eloChange,
-                'matchUrl'   => '#',
-                'date'       => (new \DateTime($ultimoPartidoJugado->fields['fecha_jugado']))->format('d-m-Y'),
-                'home'       => [
-                  'abbr'      => $equipoLocal->fields['acronimo'],
-                  'name'      => $equipoLocal->fields['nombre'],
-                  'logo'      => $equipoLocal->fields['url_foto_perfil'],
-                  'tarjetas'  => [
-                    'yellow' => $soyGanador
-                      ? $ultimoPartidoJugado->fields['total_amarillas_ganador']
-                      : $ultimoPartidoJugado->fields['total_amarillas_perdedor'],
-                    'red'    => $soyGanador
-                      ? $ultimoPartidoJugado->fields['total_rojas_ganador']
-                      : $ultimoPartidoJugado->fields['total_rojas_perdedor'],
-                  ],
-                ],
-                'away'       => [
-                  'abbr'      => $equipoRival->fields['acronimo'],
-                  'name'      => $equipoRival->fields['nombre'],
-                  'logo'      => $equipoRival->fields['url_foto_perfil'],
-                  'tarjetas'  => [
-                    'yellow' => !$soyGanador
-                      ? $ultimoPartidoJugado->fields['total_amarillas_ganador']
-                      : $ultimoPartidoJugado->fields['total_amarillas_perdedor'],
-                    'red'    => !$soyGanador
-                      ? $ultimoPartidoJugado->fields['total_rojas_ganador']
-                      : $ultimoPartidoJugado->fields['total_rojas_perdedor'],
-                  ],
-                ],
-                'score'      => $soyGanador
-                  ? $ultimoPartidoJugado->fields['goles_equipo_ganador'] . '-' . $ultimoPartidoJugado->fields['goles_equipo_perdedor']
-                  : $ultimoPartidoJugado->fields['goles_equipo_perdedor'] . '-' . $ultimoPartidoJugado->fields['goles_equipo_ganador'],
-              ];
-
-              // Incluyo la tarjeta de historial
-              require 'parts/tarjeta-historial.php';
-
-            else: ?>
-              <p>No jugó ningún partido aún.</p>
-            <?php endif; ?>
+            <?php
+            $match = [
+              'soyGanador' => $soyGanador,
+              'eloChange' => $eloChange,                       // número positivo o negativo
+              'matchUrl'  => '#',                       // enlace a detalle
+              'date' => (new \DateTime($ultimoPartidoJugado->fields['fecha_jugado']))->format('d-m-Y'),
+              'home'      => [
+                'abbr'      => $equipoLocal->fields['acronimo'],
+                'name'      => $equipoLocal->fields['nombre'],
+                'logo'      => $equipoLocal->fields['url_foto_perfil'],              // ruta relativa a img/
+                'tarjetas' => [
+                  'yellow' => $soyGanador
+                    ? $ultimoPartidoJugado->fields['total_amarillas_ganador']
+                    : $ultimoPartidoJugado->fields['total_amarillas_perdedor'],
+                  'red'    => $soyGanador
+                    ? $ultimoPartidoJugado->fields['total_rojas_ganador']
+                    : $ultimoPartidoJugado->fields['total_rojas_perdedor'],
+                ], // cantidad de tarjetas
+              ],
+              'away'      => [
+                'abbr'      => $equipoRival->fields['acronimo'],
+                'name'      => $equipoRival->fields['nombre'],
+                'logo'      => $equipoRival->fields['url_foto_perfil'],
+                'tarjetas' => [
+                  'yellow' => !$soyGanador
+                    ? $ultimoPartidoJugado->fields['total_amarillas_ganador']
+                    : $ultimoPartidoJugado->fields['total_amarillas_perdedor'],
+                  'red'    => !$soyGanador
+                    ? $ultimoPartidoJugado->fields['total_rojas_ganador']
+                    : $ultimoPartidoJugado->fields['total_rojas_perdedor'],
+                ], // cantidad de tarjetas
+              ],
+              'score'     => $soyGanador? 
+                              $ultimoPartidoJugado->fields['goles_equipo_ganador'] . "-" .  $ultimoPartidoJugado->fields['goles_equipo_perdedor'] :
+                              $ultimoPartidoJugado->fields['goles_equipo_perdedor'] . "-" .  $ultimoPartidoJugado->fields['goles_equipo_ganador'] ,
+            ];
+            require "parts/tarjeta-historial.php";
+            ?>
           </div>
 
           <!-- Card 3: Desafíos recibidos -->
@@ -222,9 +211,8 @@
           <?php endfor; ?>
         </ul>
       </section>
-      
+
     </div>
-   
   </main>
 
   <?php require "parts/footer.php"; ?>
