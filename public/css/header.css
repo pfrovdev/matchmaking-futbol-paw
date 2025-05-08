@@ -1,0 +1,241 @@
+/* HEADER */
+#header{
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--gradient-primary-color) 100%);
+    width: 100%;
+    height: 8rem;
+}
+#header h1{
+    display: inline-block;
+    position: relative;
+    top: .5rem;
+}
+#enterprise-icon{
+    width: 10rem;
+    display: inline-block;
+}
+
+.hamburger-menu{
+    margin: 0 1rem;
+    display: inline-block;
+}
+
+.hamburger-menu button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+h1 a{
+    font-size: 0;
+}
+
+.header-my-account{
+    width: 9rem;
+    display: inline-block;
+    position:absolute;
+    top: 2rem;
+    right: 0;
+}
+
+.icon{
+    width: 3rem;
+}
+
+.header-my-account button{
+    padding: 0;
+    border: none;
+    font-size: 0;
+    background: none;
+    margin: 0 1rem 0 .5rem;
+}
+
+.header-my-account ul{
+    display: none;
+}
+
+.hamburger-checkbox {
+    display: none;
+}
+
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 20rem;
+    height: 100%;
+    background-color: var(--background-contents);
+    transition: left 0.3s ease;
+    z-index: 1000;
+    color: var(--muted-text-color);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.mobile-menu::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 10rem;
+    height: 10rem;
+    background: var(--background-contents);
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    z-index: -1;
+}
+
+.mobile-menu::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 10rem;
+    height: 13rem;
+    background: rgba(0, 0, 0, 0.5);
+    clip-path: polygon(0 100%, 0 0, 100% 0);
+    opacity: 0.5;
+    z-index: -1;
+}
+
+
+.mobile-menu ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 5rem;
+    display: block;
+} 
+
+.mobile-menu ul li {
+    padding: 1rem;
+    border-bottom: 1px solid #ccc;
+}
+
+.enterprise-icon{
+    width: 10rem;
+    display: block;
+    margin: 0 auto;
+    padding-bottom: 2rem;
+}
+
+.mobile-menu ul li a {
+    text-decoration: none;
+    color: var(--contrast-text-color);
+    font-weight: bold;
+}
+
+.hamburger-checkbox:checked ~ .mobile-menu {
+    left: 0;
+}
+
+.close-menu {
+    display: block;
+    text-align: right;
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.close-menu img {
+    width: 2rem;
+}
+
+.desktop-nav {
+    display: none;
+}
+
+@media (min-width: 814px) {
+    .hamburger-checkbox{
+        display: none;
+    }
+    .hamburger-menu{
+        display: none;
+    }
+
+    #header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 6rem;
+        position: relative;
+    }
+
+    #header h1 {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        padding-left: 1rem;
+    }
+
+    #enterprise-icon {
+        width: 10rem;
+        margin-left: 0.5rem;
+    }
+
+    header section img:first-of-type{
+        border-radius: 10rem;
+    }
+
+    .header-my-account {
+        width: 25rem;
+        position: static;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-right: 1rem;
+    }
+
+    .header-my-account button{
+        font-size: 1.2rem;
+        margin: 0;
+        width: 70%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .header-my-account ul {
+        display: none;
+    }
+
+    .header-my-account .icon{
+        margin-right: .7em;
+    }
+
+    .header-shopping-cart-link {
+        margin-right: .5rem;
+    }
+    .header-search__form img {
+        right: 0;
+        bottom: -1rem;
+    }
+    .desktop-nav {
+        display: block;
+        background-color: var(--footer-background-color);
+        padding: 0.5rem 1rem;
+        position: absolute;
+        top: 6rem;
+        width: 100%;
+        left: 0;
+    }
+
+    .desktop-nav ul {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .desktop-nav ul li a {
+        text-decoration: none;
+        color: var(--contrast-text-color);
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-right: 1px solid var(--contrast-text-color);
+    }
+
+    .desktop-nav ul li a:hover {
+        background-color: var(--background-contents);
+        border-radius: 0.5rem;
+    }
+}

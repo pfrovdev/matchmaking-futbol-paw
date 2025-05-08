@@ -1,0 +1,149 @@
+@import url('./reset.css');
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Montserrat:wght@300;400;500;700&display=swap');
+
+:root {
+    /* Colores principales*/
+    --primary-color: #092469;
+    --gradient-primary-color: #030E31;
+
+    /* Colores de fondo */
+    --background-color: #F4F6F5;
+    --background-contents: #ffffff; /* Para contenido como forms, sections*/
+    --footer-background-color: #092469;
+    --button-primary-background-color: #64C67C;
+    --button-cancel-background-color: #DF2727;
+    --button-secondary-background-color: #ffffff;
+
+    /* Colores de texto */
+    --text-color:  #000000;
+    --secondary-text-color:  #ffffff;
+    --muted-text-color: #64C67C;
+    --contrast-text-color: #ffffff;
+    --link-color: #000000;
+    
+    /* Colores de textos botones */
+    --primary-buttons-color:  #ffffff;
+    --secondary-buttons-color: #64C67C;
+
+    /* Colores Rankings*/
+    --badge-bg-principiante: #804F01;
+    --badge-bg-amateur : #C3C3C3;
+    --badge-bg-semipro: #C2BB00;
+    --badge-bg-pro: #DF2727;
+}
+
+/* Estilos básicos generales */
+html {
+    font-size: 16px;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+a {
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--secondary-color);
+}
+
+button {
+    font-family: inherit;
+    background-color: var(--button-primary-background-color);
+    color: var(--primary-buttons-color);
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--primary-buttons-color);
+    border-radius: .5rem;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--contrast-text-color);
+    color: var(--muted-text-color);
+    border: 2px solid var(--muted-text-color);
+}
+
+input{
+    border-radius: .5rem;
+}
+
+main nav {
+    display: none;
+}
+
+footer {
+    background: linear-gradient(180deg, var(--primary-color) 0%, var(--gradient-primary-color) 100%);
+    color: var(--contrast-text-color);
+}
+
+.icon {
+    width: 2rem;
+}
+
+.icon-forms {
+    cursor: pointer;
+    width: 2rem;
+}
+
+.container{
+    background-color: var(--background-color);
+    margin: 0 10rem; 
+}
+
+
+@media (min-width: 842px) and (max-width: 1139px) {
+    html{
+        font-size: 1.2rem;
+    }
+}
+
+@media (min-width: 1140px) {
+    html{
+        font-size: 1.5rem;
+    }
+
+    input{
+        border-radius: .5rem;
+        height: 3rem;
+        margin-bottom: .5rem;
+    }
+    .container h1,
+    .container > p:nth-of-type(1) {
+        margin-left: -2rem;
+    }
+
+    .container form{
+        width: 35rem;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .container form button{
+        margin: 0 auto;
+        width: 15rem;
+    }
+}

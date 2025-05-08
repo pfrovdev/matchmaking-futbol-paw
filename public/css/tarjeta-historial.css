@@ -1,0 +1,124 @@
+.history-card-win {
+    background: #3c8d40;           /* verde dashboard */
+    border-radius: .75rem;
+    overflow: hidden;
+    color: #fff;
+    font-family: sans-serif;
+    margin-bottom: 1rem;
+  }
+
+  .history-card-lose {
+    background: #f79696;           /* verde dashboard */
+    border-radius: .75rem;
+    overflow: hidden;
+    color: #fff;
+    font-family: sans-serif;
+    margin-bottom: 1rem;
+  }
+  
+  /* HEADER */
+  .hc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .5rem 1rem;
+    background: rgba(0,0,0,0.1);
+    font-size: .85rem;
+  }
+  
+  .hc-header .elo-change {
+    font-weight: bold;
+  }
+  .hc-header .elo-change.up { color: #cfffcf; }
+  .hc-header .elo-change.down { color: #ffbebe; }
+  
+  .hc-btn-link {
+    background: rgba(255,255,255,0.2);
+    padding: .25rem .5rem;
+    border-radius: .25rem;
+    font-size: .8rem;
+    color: #fff;
+    text-decoration: none;
+  }
+  .hc-btn-link:hover {
+    background: rgba(255,255,255,0.3);
+  }
+  
+  .match-date {
+    font-size: .8rem;
+    color: rgba(255,255,255,0.7);
+  }
+  
+  /* BODY */
+  .hc-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .75rem 1rem;
+  }
+  
+  /* BLOQUE DE EQUIPO */
+  .team-block {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+  .team-block.home { justify-content: flex-start; }
+  .team-block.away { justify-content: flex-end; }
+  
+  .team-img {
+    position: relative;
+    width: 128px;
+    height: 128px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-right: .5rem;
+  }
+  
+  .team-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .team-block.away .team-info { align-items: center; }
+  
+  .team-img .team-abbr {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: .7rem;
+    font-weight: bold;
+    color: var(--text-color);
+    text-shadow: 0 0 2px rgba(0,0,0,0.8);
+    pointer-events: none;
+  }
+  
+  
+  .tarjetas {
+    display: flex;
+    gap: .25rem;
+    margin-top: 3rem;
+    margin-left: .25rem;
+    margin-right: .25rem;
+  }
+
+  .tarjeta {
+    display: inline-block;
+    font-size: .7rem;
+    font-weight: bold;
+    padding: .3rem .3rem;
+    border-radius: .25rem;
+    color: #333;
+  }
+  .tarjeta.yellow { background: #ffeb3b; }
+  .tarjeta.red    { background: #e53935; color: #fff; }
+  
+  /* MARCADOR CENTRAL */
+  .hc-score {
+    font-size: 1.5rem;
+    font-weight: bold;
+    flex: 0 0 auto;
+    margin: 0 1rem;
+  }
