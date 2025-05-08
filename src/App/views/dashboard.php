@@ -48,7 +48,7 @@
                   <?php endif; ?>
                 <?php endfor; ?>
               </div>
-              <p>Género: <?= htmlspecialchars($equipo->fields['id_tipo_equipo']) ?></p>
+              <p>Género: <?= htmlspecialchars($equipo->getTipoEquipo()) ?></p>
               <div class="elo-bar">
                 <span class="label"><?= htmlspecialchars($nivelDesc) ?></span>
                 <div class="bar-bg">

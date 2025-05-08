@@ -273,13 +273,14 @@ class Equipo extends AbstractModel
             $tipoEquipoModel->table, 
             ['id_tipo_equipo' => $this->fields['id_tipo_equipo']]
         );
-        
+
         if (empty($data)) {
             throw new Exception("Nivel Elo no encontrado para el equipo");
         }
         
         $tipoEquipoModel->set($data[0]);
-        return (string)($nivelElo->fields['descripcion'] ?? "Sin descripción");
+
+        return (string)($tipoEquipoModel->fields['tipo'] ?? "Sin descripción");
     }
 
     public function __toString(): string
