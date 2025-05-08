@@ -129,6 +129,7 @@
                     'lema'      => $retador->fields['lema'] ?? '',
                     'elo'        => ['wins' => 10, 'losses' => 7, 'draws' => 0],
                     'record'     => '',
+                    'url_foto_perfil' =>$retador->fields['url_foto_perfil'],
                     'id_nivel_elo' => $retador->getNivelElo(),
                     'deportividad' => $retador->promediarDeportividad(),
                     'profile-link' => "/team/{$retador->fields['id_equipo']}",
