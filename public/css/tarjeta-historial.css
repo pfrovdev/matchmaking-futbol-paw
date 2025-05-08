@@ -1,5 +1,14 @@
-.history-card {
+.history-card-win {
     background: #3c8d40;           /* verde dashboard */
+    border-radius: .75rem;
+    overflow: hidden;
+    color: #fff;
+    font-family: sans-serif;
+    margin-bottom: 1rem;
+  }
+
+  .history-card-lose {
+    background: #d15050;           /* verde dashboard */
     border-radius: .75rem;
     overflow: hidden;
     color: #fff;

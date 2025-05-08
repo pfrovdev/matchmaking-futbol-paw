@@ -265,6 +265,46 @@ class Equipo extends AbstractModel
         return $total / count($data);
     }
 
+    public function getHistorialPartidos(int $page = 1, int $perPage = 5, string $orderBy = 'fecha_jugado', string $direction = 'DESC'): array{
+        $qb = $this->getQueryBuilder();
+        $model = new ResultadoPartido($qb);
+        $equipoId = $this->fields['id_equipo'];
+
+        $rowsPerdidos = $qb->select(
+            $model->table,
+            ['id_equipo_perdedor' => $equipoId],
+            $orderBy,
+            $direction
+        );
+        $rowsGanados  = $qb->select(
+            $model->table,
+            ['id_equipo_ganador'  => $equipoId],
+            $orderBy,
+            $direction
+        );
+        $allRows = array_merge($rowsPerdidos, $rowsGanados);
+        usort($allRows, function (array $a, array $b) use ($orderBy, $direction) {
+            $dtA = new \DateTime($a[$orderBy]);
+            $dtB = new \DateTime($b[$orderBy]);
+            if ($dtA == $dtB) {
+                return 0;
+            }
+            $cmp = ($dtA < $dtB) ? -1 : 1;
+            return $direction === 'DESC' ? -$cmp : $cmp;
+        });
+
+        $offset = ($page - 1) * $perPage;
+        $slice  = array_slice($allRows, $offset, $perPage);
+
+        $result = [];
+        foreach ($slice as $row) {
+            $rp = new ResultadoPartido($qb);
+            $rp->set($row);
+            $result[] = $rp;
+        }
+        return $result;
+    }
+
     public function getTipoEquipo(): string {
         $qb = $this->getQueryBuilder();
         $tipoEquipoModel = new TipoEquipo();
@@ -273,13 +313,14 @@ class Equipo extends AbstractModel
             $tipoEquipoModel->table, 
             ['id_tipo_equipo' => $this->fields['id_tipo_equipo']]
         );
-        
+
         if (empty($data)) {
             throw new Exception("Nivel Elo no encontrado para el equipo");
         }
         
         $tipoEquipoModel->set($data[0]);
-        return (string)($nivelElo->fields['descripcion'] ?? "Sin descripción");
+
+        return (string)($tipoEquipoModel->fields['tipo'] ?? "Sin descripción");
     }
 
     public function __toString(): string

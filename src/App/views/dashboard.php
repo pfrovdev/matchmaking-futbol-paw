@@ -1,6 +1,6 @@
 <?php
 // src/App/views/dashboard.php
-// Variables: $equipo, $comentariosPag (array de Comentario), $desafiosRecib (array de Desafio), $nivelDesc, $deportividad, $page, $per, $order, $dir
+// Variables: $equipo, $comentariosPag (array de Comentario), $desafiosRecib (array de Desafio), $nivelDesc, $deportividad, $ultimoPartidoJugado $page, $per, $order, $dir
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -48,7 +48,7 @@
                   <?php endif; ?>
                 <?php endfor; ?>
               </div>
-              <p>Género: <?= htmlspecialchars($equipo->fields['id_tipo_equipo']) ?></p>
+              <p>Género: <?= htmlspecialchars($equipo->getTipoEquipo()) ?></p>
               <div class="elo-bar">
                 <span class="label"><?= htmlspecialchars($nivelDesc) ?></span>
                 <div class="bar-bg">
@@ -65,22 +65,39 @@
           <div class="card last-match-card">
             <?php
             $match = [
-              'eloChange' => +20,                       // número positivo o negativo
+              'soyGanador' => $soyGanador,
+              'eloChange' => $eloChange,                       // número positivo o negativo
               'matchUrl'  => '#',                       // enlace a detalle
-              'date'      => '21/02/2025',
+              'date' => (new \DateTime($ultimoPartidoJugado->fields['fecha_jugado']))->format('d-m-Y'),
               'home'      => [
-                'abbr'      => 'CABJ',
-                'name'      => 'Boca Juniors',
-                'logo'      => 'defaultTeamIcon.png',              // ruta relativa a img/
-                'tarjetas'     => ['yellow' => 1, 'red' => 1], // cantidad de tarjetas
+                'abbr'      => $equipoLocal->fields['acronimo'],
+                'name'      => $equipoLocal->fields['nombre'],
+                'logo'      => $equipoLocal->fields['url_foto_perfil'],              // ruta relativa a img/
+                'tarjetas' => [
+                  'yellow' => $soyGanador
+                    ? $ultimoPartidoJugado->fields['total_amarillas_ganador']
+                    : $ultimoPartidoJugado->fields['total_amarillas_perdedor'],
+                  'red'    => $soyGanador
+                    ? $ultimoPartidoJugado->fields['total_rojas_ganador']
+                    : $ultimoPartidoJugado->fields['total_rojas_perdedor'],
+                ], // cantidad de tarjetas
               ],
               'away'      => [
-                'abbr'      => 'CASLA',
-                'name'      => 'San Lorenzo',
-                'logo'      => 'defaultTeamIcon.png',
-                'tarjetas'     => ['yellow' => 1, 'red' => 1],
+                'abbr'      => $equipoRival->fields['acronimo'],
+                'name'      => $equipoRival->fields['nombre'],
+                'logo'      => $equipoRival->fields['url_foto_perfil'],
+                'tarjetas' => [
+                  'yellow' => !$soyGanador
+                    ? $ultimoPartidoJugado->fields['total_amarillas_ganador']
+                    : $ultimoPartidoJugado->fields['total_amarillas_perdedor'],
+                  'red'    => !$soyGanador
+                    ? $ultimoPartidoJugado->fields['total_rojas_ganador']
+                    : $ultimoPartidoJugado->fields['total_rojas_perdedor'],
+                ], // cantidad de tarjetas
               ],
-              'score'     => '4-0',
+              'score'     => $soyGanador? 
+                              $ultimoPartidoJugado->fields['goles_equipo_ganador'] . "-" .  $ultimoPartidoJugado->fields['goles_equipo_perdedor'] :
+                              $ultimoPartidoJugado->fields['goles_equipo_perdedor'] . "-" .  $ultimoPartidoJugado->fields['goles_equipo_ganador'] ,
             ];
             require "parts/tarjeta-historial.php";
             ?>
