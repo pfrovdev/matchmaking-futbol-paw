@@ -14,6 +14,12 @@
 <div class="challenge-card">
   <div class="card-side">
     <div class="team-image">
+      <img
+          src="<?= !empty($challenge['url_foto_perfil'])
+                  ? htmlspecialchars($challenge['url_foto_perfil'])
+                  : '/icons/defaultTeamIcon.png' ?>"
+          alt=""
+      >
       <span class="level-badge"><?php echo htmlspecialchars($challenge['id_nivel_elo']) ?></span>
     </div>
   </div>
