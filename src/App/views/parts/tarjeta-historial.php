@@ -20,7 +20,7 @@
 //   'score'     => '4-0',
 // ];
 ?>
-<div class=<?= $soyGanador? "history-card-win" : "hostory-card-lose" ?> >
+<div class=<?= $soyGanador? "history-card-win" : "history-card-lose" ?> >
   <div class="hc-header">
     <span class="elo-change <?= $match['eloChange'] >= 0 ? 'up' : 'down' ?>">
       <?= ($match['eloChange'] >= 0 ? '+' : '') . $match['eloChange'] ?> ELO
