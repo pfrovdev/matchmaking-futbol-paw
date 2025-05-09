@@ -1,6 +1,6 @@
 <?php
 // src/App/views/dashboard.php
-// Variables: $equipo, $comentariosPag (array de Comentario), $desafiosRecib (array de Desafio), $nivelDesc, $deportividad, $ultimoPartidoJugado $page, $per, $order, $dir
+// Variables: $miEquipo, $comentariosPag (array de Comentario), $desafiosRecib (array de Desafio), $nivelDesc, $deportividad, $ultimoPartidoJugado $page, $per, $order, $dir
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -9,7 +9,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Pagina principal del equipo de futbol del usuario">
-  <title>Dashboard - <?= htmlspecialchars($equipo->fields['nombre']) ?></title>
+  <title>Dashboard - <?= htmlspecialchars($miEquipo->fields['nombre']) ?></title>
   <link rel="stylesheet" href="css/dashboard.css">
 </head>
 
@@ -29,8 +29,8 @@
           <!-- Card 1: Perfil -->
           <div class="card perfil-card">
             <div class="perfil-foto">
-              <?php if ($equipo->fields['url_foto_perfil']): ?>
-                <img src="<?= htmlspecialchars($equipo->fields['url_foto_perfil']) ?>" alt="Foto de perfil">
+              <?php if ($miEquipo->fields['url_foto_perfil']): ?>
+                <img src="<?= htmlspecialchars($miEquipo->fields['url_foto_perfil']) ?>" alt="Foto de perfil">
               <?php else: ?>
                 <div class="placeholder-foto">Arrastra-soltar la foto de tu equipo aquí<br>
                   <button class="btn-link">Cargar un documento</button>
@@ -38,14 +38,14 @@
               <?php endif; ?>
             </div>
             <div class="perfil-info">
-              <h2><?= htmlspecialchars($equipo->fields['nombre']) . " (" . htmlspecialchars($equipo->fields['acronimo']) . ")" ?></h2>
-              <p class="lema"><?= htmlspecialchars($equipo->fields['lema']) ?></p>
+              <h2><?= htmlspecialchars($miEquipo->fields['nombre']) . " (" . htmlspecialchars($miEquipo->fields['acronimo']) . ")" ?></h2>
+              <p class="lema"><?= htmlspecialchars($miEquipo->fields['lema']) ?></p>
               <div class="sport-icons">
                 Deportividad:
                 <!-- Faltaria hacer algo tipo, hasta la cantidad que me mandan
                 pongo pelotitas, y relleno hasta 5 espacios vacios -->
                 <?php for ($i = 1; $i <= 5; $i++): ?>
-                  <?php if ($i <= $equipo->promediarDeportividad()): ?>
+                  <?php if ($i <= $miEquipo->promediarDeportividad()): ?>
                     <span class="icon">⚽</span>
                   <?php else: ?>
                     <span class="icon" style="opacity: 0.4; color: grey;">⚽</span>
@@ -53,14 +53,14 @@
                 <?php endfor; ?>
                 <?= "(".$cantidadDeVotos.")" ?>
               </div>
-              <p>Género: <?= htmlspecialchars($equipo->getTipoEquipo()) ?></p>
+              <p>Género: <?= htmlspecialchars($miEquipo->getTipoEquipo()) ?></p>
               <div class="elo-bar">
                 <span class="label"><?= htmlspecialchars($nivelDesc) ?></span>
                 <div class="bar-bg">
-                  <div class="bar-fill" style="width:<?= min(100, ($equipo->fields['elo_actual'] / 1300) * 100) ?>%"></div>
+                  <div class="bar-fill" style="width:<?= min(100, ($miEquipo->fields['elo_actual'] / 1300) * 100) ?>%"></div>
                 </div>
                 <div class="elo-values">
-                  <span>Elo: <?= htmlspecialchars($equipo->fields['elo_actual']) ?></span> / <span>1300</span>
+                  <span>Elo: <?= htmlspecialchars($miEquipo->fields['elo_actual']) ?></span> / <span>1300</span>
                 </div>
               </div>
             </div>

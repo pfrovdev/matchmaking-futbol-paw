@@ -63,18 +63,24 @@
     align-items: center;
     flex: 1;
   }
-  .team-block.home { justify-content: flex-start; }
-  .team-block.away { justify-content: flex-end; }
-  
+
+
   .team-img {
     position: relative;
-    width: 128px;
-    height: 128px;
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    margin-right: .5rem;
+    width: 80%;
+    height: 100%;
+    margin-right: 0.5rem;
+    flex-shrink: 0;
   }
+
+  .team-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    border-radius: 0.25rem;
+  }
+  
   
   .team-info {
     display: flex;
@@ -85,16 +91,17 @@
   
   .team-img .team-abbr {
     position: absolute;
-    bottom: 0;
+    bottom: 0.25rem;
     left: 50%;
     transform: translateX(-50%);
-    font-size: .7rem;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 0.15rem 0.3rem;
+    font-size: 0.7rem;
     font-weight: bold;
-    color: var(--text-color);
-    text-shadow: 0 0 2px rgba(0,0,0,0.8);
+    border-radius: 0.25rem;
     pointer-events: none;
   }
-  
   
   .tarjetas {
     display: flex;
