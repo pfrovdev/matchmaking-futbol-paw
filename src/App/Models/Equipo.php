@@ -306,14 +306,15 @@ class Equipo extends AbstractModel
         return $total / count($data);
     }
 
-    public function getDesafiosRecibidos(int $page = 1, int $perPage = 5, string $orderBy = 'fecha_creacion', string $direction = 'DESC'): array
-    {
+    public function getDesafiosPendientes(int $page = 1, int $perPage = 5, string $orderBy = 'fecha_creacion', string $direction = 'DESC'): array {
         $desafioModel = new Desafio();
         $qb = $this->getQueryBuilder();
+        $estadoDesafio = new EstadoDesafio($qb);
+        $idPendiente = $estadoDesafio->select(["descripcion_corta" => "pendiente"])[0]['id_estado_desafio'];
         $offset = ($page - 1) * $perPage;
         $data = $qb->select(
             $desafioModel->table, 
-            ['id_equipo_desafiado' => $this->fields['id_equipo']],
+            ['id_equipo_desafiado' => $this->fields['id_equipo'], 'id_estado_desafio' => $idPendiente],
             $orderBy, 
             $direction, 
             $perPage, 
