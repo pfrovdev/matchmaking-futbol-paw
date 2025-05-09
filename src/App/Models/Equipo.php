@@ -451,6 +451,21 @@ class Equipo extends AbstractModel
         return $desafioModel;
     }
 
+    public function rechazarDesafio(int $desafioId): Desafio{
+        $qb = $this->getQueryBuilder();
+        $desafioModel = new Desafio($qb);
+        $data = $qb->select(
+            $desafioModel->table,
+            ['id_desafio' => $desafioId]
+        );
+        if (empty($data)) {
+            throw new Exception("Desafio no encontrado");
+        }
+        $desafioModel->set($data[0]);
+        $desafioModel->rechazar();
+        return $desafioModel;
+    }
+
     public function __toString(): string
     {
         $output = [];

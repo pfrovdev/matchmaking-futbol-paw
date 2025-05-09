@@ -26,7 +26,7 @@ return [
         ['path' => '/register-team', 'action' => 'EquipoController@registerTeam', 'method' => 'POST'],
 
         ['path' => '/acept-desafio', 'action' => 'DesafioController@aceptDesafio', 'method' => 'POST'],
-        ['path' => '/reject-desafio', 'action' => 'DesafioController@rejectDesafio', 'method' => 'DELETE']
+        ['path' => '/reject-desafio', 'action' => 'DesafioController@rejectDesafio', 'method' => 'POST']
     ],
 
 
