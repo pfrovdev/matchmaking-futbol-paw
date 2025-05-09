@@ -1,6 +1,7 @@
 <?php
 namespace Paw\App\Controllers;
 
+use Paw\App\Commons\NotificadorEmail;
 use Paw\App\Models\Equipo;
 use Paw\App\Models\EquipoCollection;
 use Paw\Core\AbstractController;
@@ -8,20 +9,28 @@ use Paw\Core\Middelware\AuthMiddelware;
 
 class DesafioController extends AbstractController{
 
-    public function aceptDesafio(int $equipoId, int $desafioId){
+    public function aceptDesafio(){
         $equipo_jwt_data = AuthMiddelware::verificarRoles(['USUARIO']);
         $equipo = $this->getEquipo($equipo_jwt_data->id_equipo);
+        
+        $equipoId  = (int) ($_POST['id_equipo']  ?? 0);
+        $desafioId = (int) ($_POST['id_desafio'] ?? 0);
 
         if($equipo->fields['id_equipo'] != $equipoId){
             // implementar logica
             echo "no coinciden los ids";
         }
 
-        $equipo->aceptarDesafio($desafioId);
-        require $this->viewsDir . 'home.php';
+        $desafioAceptado = $equipo->aceptarDesafio($desafioId);
+        $equipoDesafiante = $desafioAceptado->getEquipoDesafiante();
+
+        $notificador = new NotificadorEmail();
+        $notificador->enviarNotificacionDesafioAceptado($equipo, $equipoDesafiante, $desafioAceptado);
+
+        header("Location: /dashboard");
     }
 
-    public function rejectDesafio(int $equipoId, int $desafioId){
+    public function rejectDesafio(){
 
         require $this->viewsDir . 'home.php';
     }

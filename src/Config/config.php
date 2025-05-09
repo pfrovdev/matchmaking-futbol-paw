@@ -25,8 +25,8 @@ return [
         ['path' => '/register', 'action' => 'EquipoController@register', 'method' => 'POST'],
         ['path' => '/register-team', 'action' => 'EquipoController@registerTeam', 'method' => 'POST'],
 
-        ['path' => '/acept-desafio/{equipoId}/{desafioId}', 'action' => 'DesafioController@aceptDesafio', 'method' => 'PUT'],
-        ['path' => '/reject-desafio/{equipoId}/{desafioId}', 'action' => 'DesafioController@rejectDesafio', 'method' => 'PUT']
+        ['path' => '/acept-desafio', 'action' => 'DesafioController@aceptDesafio', 'method' => 'POST'],
+        ['path' => '/reject-desafio', 'action' => 'DesafioController@rejectDesafio', 'method' => 'DELETE']
     ],
 
 

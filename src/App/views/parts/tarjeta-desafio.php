@@ -15,11 +15,10 @@
   <div class="card-side">
     <div class="team-image">
       <img
-          src="<?= !empty($challenge['url_foto_perfil'])
-                  ? htmlspecialchars($challenge['url_foto_perfil'])
-                  : '/icons/defaultTeamIcon.png' ?>"
-          alt=""
-      >
+        src="<?= !empty($challenge['url_foto_perfil'])
+                ? htmlspecialchars($challenge['url_foto_perfil'])
+                : '/icons/defaultTeamIcon.png' ?>"
+        alt="">
       <span class="level-badge"><?php echo htmlspecialchars($challenge['id_nivel_elo']) ?></span>
     </div>
   </div>
@@ -55,13 +54,17 @@
 
     <div class="card-actions">
       <!-- Aceptar desafío -->
-      <form action="/acept-desafio/<?= $challenge['id_equipo'] ?>/<?= $challenge['id_desafio'] ?>" method="PUT" style="display:inline">
+      <form action="/acept-desafio" method="POST" style="display:inline">
+        <input type="hidden" name="id_equipo" value="<?= $challenge['id_equipo'] ?>">
+        <input type="hidden" name="id_desafio" value="<?= $challenge['id_desafio'] ?>">
         <button type="submit" class="btn btn-accept">Aceptar desafío</button>
       </form>
 
       <!-- Rechazar desafío -->
-      <form action="/reject-desafio/<?= $challenge['id_equipo'] ?>/<?= $challenge['id_desafio'] ?>" method="PUT" style="display:inline">
+      <form action="/reject-desafio" method="POST" style="display:inline">
         <input type="hidden" name="_method" value="DELETE">
+        <input type="hidden" name="id_equipo" value="<?= $challenge['id_equipo'] ?>">
+        <input type="hidden" name="id_desafio" value="<?= $challenge['id_desafio'] ?>">
         <button type="submit" class="btn btn-reject">Rechazar desafío</button>
       </form>
     </div>

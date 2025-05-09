@@ -435,7 +435,7 @@ class Equipo extends AbstractModel
         return count($this->getHistorialPartidos(1,1)) > 0;
     }
 
-    public function aceptarDesafio(int $desafioId): void{
+    public function aceptarDesafio(int $desafioId): Desafio{
         $qb = $this->getQueryBuilder();
         $desafioModel = new Desafio($qb);
         $data = $qb->select(
@@ -447,6 +447,7 @@ class Equipo extends AbstractModel
         }
         $desafioModel->set($data[0]);
         $desafioModel->aceptar();
+        return $desafioModel;
     }
 
     public function __toString(): string

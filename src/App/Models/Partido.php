@@ -3,7 +3,6 @@
 namespace Paw\App\Models;
 
 use Paw\Core\AbstractModel;
-use Paw\Core\Database\Database;
 
 class Partido extends AbstractModel{
     public $table = "Partido";
@@ -52,26 +51,29 @@ class Partido extends AbstractModel{
         return $result;
     }
 
-    public function crearPendiente(Desafio $desafio){
+    public function crearPendiente(){
+
         $qb = $this->getQueryBuilder();
         $estadoPartido = new EstadoPartido($qb);
         $estadosPartido = $qb->select($estadoPartido->table);
         $idPendiente = null;
+
         foreach ($estadosPartido as $estado) {
-            if ($estado['descripcion_corta'] == 'pendiente') {
+            if ($estado['descripcion_corta'] === 'pendiente') {
                 $idPendiente = $estado['id_estado_partido'];
+                break;
             }
         }
+
         $qb->insert(
             $this->table,
             [
                 'fecha_creacion' => date('Y-m-d H:i:s'),
                 'fecha_finalizacion' => null,
                 'id_estado_partido' => $idPendiente,
-                'finalizado' => false
+                'finalizado' => 0
             ]
         );
-        
     }
 }
 

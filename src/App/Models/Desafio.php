@@ -88,16 +88,20 @@ class Desafio extends AbstractModel{
         $estadoDesafio = new EstadoDesafio($qb);
         $estadosDesafio = $qb->select($estadoDesafio->table);
         $idAceptado = null;
+
         foreach ($estadosDesafio as $estado) {
-            if ($estado['descripcion_corta'] == 'aceptado') {
+            if ($estado['descripcion_corta'] === 'aceptado') {
                 $idAceptado = $estado['id_estado_desafio'];
+                break;
             }
         }
+
         $qb->update(
             $this->table,
-            ['id_desafio' => $this->fields['id_desafio']],
-            ['id_estado_desafio' => $idAceptado]
+            ['id_estado_desafio' => $idAceptado],
+            ['id_desafio' => $this->fields['id_desafio']]
         );
+
         $partidoNuevo = new Partido($qb);
         $partidoNuevo->crearPendiente($this);
     }
