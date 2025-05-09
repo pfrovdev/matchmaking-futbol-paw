@@ -115,7 +115,50 @@ class QueryBuilder
         return $statement->fetchAll();
     }
     
-    public function update(){}
+    public function update(string $table, array $values, array $where): int|bool{
+        if (empty($values)) {
+            throw new \InvalidArgumentException('No se proporcionaron valores para actualizar.');
+        }
+        if (empty($where)) {
+            throw new \InvalidArgumentException('No se proporcionaron condiciones WHERE para la actualización.');
+        }
+
+        $sets   = [];
+        $params = [];
+        foreach ($values as $column => $value) {
+            if (is_string($value) && strpos($value, 'ST_GeomFromText(') === 0) {
+                $sets[] = "`$column` = $value";
+            } else {
+                $paramKey       = ":upd_$column";
+                $sets[]         = "`$column` = $paramKey";
+                $params[$paramKey] = $value;
+            }
+        }
+
+        $wheres = [];
+        foreach ($where as $column => $value) {
+            $paramKey         = ":where_$column";
+            $wheres[]         = "`$column` = $paramKey";
+            $params[$paramKey] = $value;
+        }
+
+        $setClause   = implode(', ', $sets);
+        $whereClause = implode(' AND ', $wheres);
+        $sql         = "UPDATE `$table` SET $setClause WHERE $whereClause";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            foreach ($params as $placeholder => $val) {
+                $stmt->bindValue($placeholder, $val);
+            }
+            $stmt->execute();
+
+            return $stmt->rowCount();
+        } catch (\PDOException $e) {
+            $this->logger->error("Error al actualizar en $table: " . $e->getMessage());
+            return false;
+        }
+    }
 
     public function delete(){}
 }

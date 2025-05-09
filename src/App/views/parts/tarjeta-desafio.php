@@ -15,11 +15,10 @@
   <div class="card-side">
     <div class="team-image">
       <img
-          src="<?= !empty($challenge['url_foto_perfil'])
-                  ? htmlspecialchars($challenge['url_foto_perfil'])
-                  : '/icons/defaultTeamIcon.png' ?>"
-          alt=""
-      >
+        src="<?= !empty($challenge['url_foto_perfil'])
+                ? htmlspecialchars($challenge['url_foto_perfil'])
+                : '/icons/defaultTeamIcon.png' ?>"
+        alt="">
       <span class="level-badge"><?php echo htmlspecialchars($challenge['id_nivel_elo']) ?></span>
     </div>
   </div>
@@ -34,7 +33,7 @@
       <div class="sport-icons">
         <!-- Faltaria hacer algo tipo, hasta la cantidad que me mandan
              pongo pelotitas, y relleno hasta 5 espacios vacios -->
-        Deportividad: 
+        Deportividad:
         <?php for ($i = 1; $i <= 5; $i++): ?>
           <?php if ($i <= $challenge['deportividad']): ?>
             <span class="icon">⚽</span>
@@ -54,8 +53,21 @@
     </div>
 
     <div class="card-actions">
-      <button class="btn btn-accept">Aceptar desafío</button>
-      <button class="btn btn-reject">Rechazar desafío</button>
+      <!-- Aceptar desafío -->
+      <form action="/acept-desafio" method="POST" style="display:inline">
+        <input type="hidden" name="id_equipo" value="<?= $challenge['id_equipo'] ?>">
+        <input type="hidden" name="id_desafio" value="<?= $challenge['id_desafio'] ?>">
+        <button type="submit" class="btn btn-accept">Aceptar desafío</button>
+      </form>
+
+      <!-- Rechazar desafío -->
+      <form action="/reject-desafio" method="POST" style="display:inline">
+        <input type="hidden" name="_method" value="DELETE">
+        <input type="hidden" name="id_equipo" value="<?= $challenge['id_equipo'] ?>">
+        <input type="hidden" name="id_desafio" value="<?= $challenge['id_desafio'] ?>">
+        <button type="submit" class="btn btn-reject">Rechazar desafío</button>
+      </form>
     </div>
+
   </div>
 </div>

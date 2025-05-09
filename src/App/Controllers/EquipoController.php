@@ -203,7 +203,7 @@ class EquipoController extends AbstractController{
         $dir   = strtoupper($_GET['dir'] ?? 'DESC') === 'ASC' ? 'ASC' : 'DESC';
         
         $comentariosPag = $miEquipo->getComentarios($page, $per, $order, $dir);
-        $desafiosRecib  = $miEquipo->getDesafiosRecibidos($page, $per, $order, $dir);
+        $desafiosRecib  = $miEquipo->getDesafiosPendientes($page, $per, $order, $dir);
         $nivelDesc    = $miEquipo->getNivelElo();
         $deportividad = $miEquipo->promediarDeportividad();
         $cantidadDeVotos = count($comentariosPag);
