@@ -13,12 +13,14 @@
   .card-side {
     position: relative;
     width: 40%;
-    background: #2a3648;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
   }
-  .team-image {
+  .team-image img {
+    width: 100%;
     height: 100%;
+    object-fit: cover;
     border-radius: 0.75rem;
-    /* Puedes poner aquí un <img> de fondo usando background-image */
     background: url('../icons/defaultTeamIcon.png') center/cover no-repeat;
   }
   .level-badge {

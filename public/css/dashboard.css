@@ -54,20 +54,22 @@
     gap: 1rem;
   }
   .perfil-foto {
+    display: flex;                    
+    align-items: center;             
+    justify-content: center;         
     flex: 1;
-    border: 2px dashed #ccc;
+
     border-radius: 8px;
-    text-align: center;
-    font-size: 0.9rem;
-    color: #666;
-    background: url('../icons/defaultTeamIcon.png') center/cover no-repeat;
-    max-width: 40%;  
+    overflow: hidden;                
   }
 
-  .perfil-foto img{
+  .perfil-foto img {
     max-width: 100%;
-    height: 100%;
-    border-radius: 8px;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;              
+    display: block;
   }
 
   .perfil-foto .btn-link {
@@ -77,7 +79,7 @@
     color: var(--primary-color);
   }
   .perfil-info {
-    flex: 2;
+    flex: 1;
   }
   .perfil-info h2 {
     margin-bottom: 0.25rem;
@@ -285,7 +287,7 @@
     }
     .card-side {
       width: 100%;
-      height: 150px;
+      height: 100%;
     }
   
     /* Tarjetas de historial: reduce tamaño de imagen */
@@ -316,6 +318,12 @@
       grid-template-columns: 1fr;
       grid-gap: 1.25rem;
     }
+
+    .card-side {
+      width: 100%;
+      height: 100%;
+    }
+  
   
     /* Perfil: apilar foto e info */
     .perfil-card {
@@ -383,6 +391,11 @@
       font-size: 0.9rem;
     }
   
+    .card-side {
+      width: 100%;
+      height: 100%;
+    }
+
     /* Cards reducidas */
     .card {
       padding: 0.75rem;
@@ -390,8 +403,8 @@
   
     /* Perfil: foto circular y más pequeña */
     .perfil-foto {
-      width: 120px;
-      height: 120px;
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
       background-size: cover;
     }
@@ -417,5 +430,10 @@
     .match-item {
       flex-direction: column;
       align-items: flex-start;
+    }
+
+    .team-block .team-img {
+      width: 100%;
+      height: 50%;
     }
   }

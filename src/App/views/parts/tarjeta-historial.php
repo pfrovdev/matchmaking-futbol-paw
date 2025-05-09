@@ -32,20 +32,25 @@
   <div class="hc-body">
     <!-- Equipo local -->
     <div class="team-block home">
-        <div class="team-img" style="background-image:url('../../../public/icons/<?= $match['home']['logo'] ?>')">
-            <span class="team-abbr"><?= htmlspecialchars($match['home']['abbr']) ?></span>
+      <?php
+        $logoHome = !empty($match['home']['logo'])
+          ? $match['home']['logo']
+          : '/icons/defaultTeamIcon.png';
+      ?>
+      <div class="team-img">
+        <img src="<?= htmlspecialchars($logoHome) ?>" alt="<?= htmlspecialchars($match['home']['name']) ?>">
+        <span class="team-abbr"><?= htmlspecialchars($match['home']['abbr']) ?></span>
+      </div>
+      <div class="team-info">
+        <div class="tarjetas">
+          <?php if ($match['home']['tarjetas']['yellow']): ?>
+            <span class="tarjeta yellow"><?= $match['home']['tarjetas']['yellow'] ?></span>
+          <?php endif; ?>
+          <?php if ($match['home']['tarjetas']['red']): ?>
+            <span class="tarjeta red"><?= $match['home']['tarjetas']['red'] ?></span>
+          <?php endif; ?>
         </div>
-        <div class="team-info">
-            
-            <div class="tarjetas">
-                <?php if ($match['home']['tarjetas']['yellow']): ?>
-                <span class="tarjeta yellow"><?= $match['home']['tarjetas']['yellow'] ?></span>
-                <?php endif; ?>
-                <?php if ($match['home']['tarjetas']['red']): ?>
-                <span class="tarjeta red"><?= $match['home']['tarjetas']['red'] ?></span>
-                <?php endif; ?>
-            </div>
-        </div>
+      </div>
     </div>
 
     <!-- Marcador -->
@@ -53,21 +58,25 @@
 
     <!-- Equipo visitante -->
     <div class="team-block away">
-        <div class="team-info">
-                
-                <div class="tarjetas">
-                    <?php if ($match['away']['tarjetas']['yellow']): ?>
-                    <span class="tarjeta yellow"><?= $match['away']['tarjetas']['yellow'] ?></span>
-                    <?php endif; ?>
-                    <?php if ($match['away']['tarjetas']['red']): ?>
-                    <span class="tarjeta red"><?= $match['away']['tarjetas']['red'] ?></span>
-                    <?php endif; ?>
-                </div>
-            </div>
-        <div class="team-img" style="background-image:url('../../../public/icons/<?= $match['away']['logo'] ?>')">
-            <span class="team-abbr"><?= htmlspecialchars($match['away']['abbr']) ?></span>
+      <div class="team-info">
+        <div class="tarjetas">
+          <?php if ($match['away']['tarjetas']['yellow']): ?>
+            <span class="tarjeta yellow"><?= $match['away']['tarjetas']['yellow'] ?></span>
+          <?php endif; ?>
+          <?php if ($match['away']['tarjetas']['red']): ?>
+            <span class="tarjeta red"><?= $match['away']['tarjetas']['red'] ?></span>
+          <?php endif; ?>
         </div>
-        
+      </div>
+      <?php
+        $logoAway = !empty($match['away']['logo'])
+          ? $match['away']['logo']
+          : '/icons/defaultTeamIcon.png';
+      ?>
+      <div class="team-img">
+        <img src="<?= htmlspecialchars($logoAway) ?>" alt="<?= htmlspecialchars($match['away']['name']) ?>">
+        <span class="team-abbr"><?= htmlspecialchars($match['away']['abbr']) ?></span>
+      </div>
     </div>
   </div>
 </div>
