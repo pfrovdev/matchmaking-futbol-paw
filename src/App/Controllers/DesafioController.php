@@ -31,8 +31,24 @@ class DesafioController extends AbstractController{
     }
 
     public function rejectDesafio(){
+        $equipo_jwt_data = AuthMiddelware::verificarRoles(['USUARIO']);
+        $equipo = $this->getEquipo($equipo_jwt_data->id_equipo);
+        
+        $equipoId  = (int) ($_POST['id_equipo']  ?? 0);
+        $desafioId = (int) ($_POST['id_desafio'] ?? 0);
 
-        require $this->viewsDir . 'home.php';
+        if($equipo->fields['id_equipo'] != $equipoId){
+            // implementar logica
+            echo "no coinciden los ids";
+        }
+
+        $desafioRechazado = $equipo->rechazarDesafio($desafioId);
+        $equipoDesafiante = $desafioRechazado->getEquipoDesafiante();
+
+        $notificador = new NotificadorEmail();
+        $notificador->enviarNotificacionDesafioRechazado($equipo, $equipoDesafiante, $desafioRechazado);
+
+        header("Location: /dashboard");
     }
 
     private function getEquipo(int $id_equipo): Equipo {
