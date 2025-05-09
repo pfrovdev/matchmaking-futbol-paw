@@ -144,59 +144,50 @@ class EquipoController extends AbstractController{
     }
 
     public function searchTeam() {
+        $equipoJwtData = AuthMiddelware::verificarRoles(['ADMIN','USUARIO']);
+        $miEquipo = $this->getEquipo($equipoJwtData->id_equipo);
+        if (!$miEquipo) {
+            require $this->viewsDir . 'not-found.php';
+        }
+
         $nombre = $_GET['nombre'] ?? null;
         $paginaActual = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $id_nivel_elo = isset($_GET['id_nivel_elo']) ? (int)$_GET['id_nivel_elo'] : null;
         $id_equipo = isset($_GET['id_equipo_desafiar']) ? (int)$_GET['id_equipo_desafiar'] : null;
+        
         $porPagina = 3;
         $offset = ($paginaActual - 1) * $porPagina;
 
+        $paginaActual  = max(1, (int)($_GET['page'] ?? 1));
+
         if ($id_equipo) {
-            //Armar desafío --> necesitamos el login
+            $insertedId = $this->model->insertarDesafio($miEquipo->id_equipo, $id_equipo);
+                
+            if ($insertedId) {
+                header('Location: /dashboard');
+                exit;
+            }
+    
+            $_SESSION['errors'] = ["Hubo un error al registrar el equipo. Por favor intentalo nuevamente."];
+            $_SESSION['old']    = array_merge($equipoTemp, $_POST);
+            header('Location: /search-team');
+            exit;
         }
-        if ($nombre && $id_nivel_elo) {
-            $todosLosEquipos = $this->model->selectLike(['nombre' => $nombre, 'id_nivel_elo' => $id_nivel_elo]);
-        } elseif ($nombre){
-            $todosLosEquipos = $this->model->selectLike(['nombre' => $nombre]);
-        } elseif ($id_nivel_elo){
-            $todosLosEquipos = $this->model->selectLike(['id_nivel_elo' => $id_nivel_elo]);
-        }else{
-            $todosLosEquipos = $this->model->select([]);
+        
+        $selectParams = [
+            'nombre' => $nombre,
+            'miEquipo' => $miEquipo,
+            'id_nivel_elo' => $id_nivel_elo,
+        ];
+        $todosLosEquipos = $this->model->getTeams($selectParams);
+        if (empty($todosLosEquipos)) {
+            $todosLosEquipos = $this->getAllTeamsExceptMy($equipoJwtData->id_equipo);
+            $todosLosEquipos = $this->model->setDeportividadEloDescripcion($todosLosEquipos);
         }
 
         $totalEquipos = count($todosLosEquipos);
         $totalPaginas = ceil($totalEquipos / $porPagina);
-
         $equipos = array_slice($todosLosEquipos, $offset, $porPagina);
-
-        $nivelEloModel = $this->getModel(NivelElo::class);
-        $nivelesElo = $nivelEloModel->select([]);
-        $comentarioModel = $this->getModel(Comentario::class);
-        $comentarios = $comentarioModel->select([]);
-
-        $deportividadPorEquipo = [];
-
-        foreach ($comentarios as $comentario) {
-            $id = $comentario['id_equipo_comentado'];
-            if (!isset($deportividadPorEquipo[$id])) {
-                $deportividadPorEquipo[$id] = ['total' => 0, 'cantidad' => 0];
-            }
-            $deportividadPorEquipo[$id]['total'] += (float)$comentario['deportividad'];
-            $deportividadPorEquipo[$id]['cantidad']++;
-        }
-
-        foreach ($equipos as &$equipo) {
-            $idEquipo = $equipo['id_equipo'];
-            $nivelElo = $nivelEloModel->select(['id_nivel_elo' => $equipo['id_nivel_elo']]);
-            $equipo['nivel_elo_descripcion'] = $nivelElo[0]['descripcion'] ?? 'Sin nivel';
-            if (isset($deportividadPorEquipo[$idEquipo])) {
-                $total = $deportividadPorEquipo[$idEquipo]['total'];
-                $cantidad = $deportividadPorEquipo[$idEquipo]['cantidad'];
-                $equipo['deportividad'] = round($total / $cantidad, 2);
-            } else {
-                $equipo['deportividad'] = null;
-            }
-        }
 
         require $this->viewsDir . 'search-team.php';
     }
@@ -204,24 +195,24 @@ class EquipoController extends AbstractController{
     public function dashboard(){
 
         $equipo_jwt_data = AuthMiddelware::verificarRoles(['ADMIN','USUARIO']);
-        $equipo = $this->getEquipo($equipo_jwt_data->id_equipo);
+        $miEquipo = $this->getEquipo($equipo_jwt_data->id_equipo);
 
         $page  = max(1, (int)($_GET['page'] ?? 1));
         $per   = 3;
         $order = $_GET['order'] ?? 'fecha_creacion';
         $dir   = strtoupper($_GET['dir'] ?? 'DESC') === 'ASC' ? 'ASC' : 'DESC';
-
-        $comentariosPag = $equipo->getComentarios($page, $per, $order, $dir);
-        $desafiosRecib  = $equipo->getDesafiosRecibidos($page, $per, $order, $dir);
-        $nivelDesc    = $equipo->getNivelElo();
-        $deportividad = $equipo->promediarDeportividad();
+        
+        $comentariosPag = $miEquipo->getComentarios($page, $per, $order, $dir);
+        $desafiosRecib  = $miEquipo->getDesafiosRecibidos($page, $per, $order, $dir);
+        $nivelDesc    = $miEquipo->getNivelElo();
+        $deportividad = $miEquipo->promediarDeportividad();
         $cantidadDeVotos = count($comentariosPag);
         $historial = false;
         
-        if($equipo->contieneHistorial()){
-            $ultimoPartidoJugado = $equipo->getHistorialPartidos(1,1)[0];
-            $soyGanador = $ultimoPartidoJugado->soyEquipoGanador($equipo);
-            $equipoLocal  = $equipo;
+        if($miEquipo->contieneHistorial()){
+            $ultimoPartidoJugado = $miEquipo->getHistorialPartidos(1,1)[0];
+            $soyGanador = $ultimoPartidoJugado->soyEquipoGanador($miEquipo);
+            $equipoLocal  = $miEquipo;
             $equipoRival  = $ultimoPartidoJugado->getEquipoRival($equipoLocal);
             $eloChange = CalculadoraDeElo::calcularCambioElo($ultimoPartidoJugado, $equipoLocal);
             $historial = true;
@@ -243,5 +234,16 @@ class EquipoController extends AbstractController{
 
         return $equipo;
     }
+
+    private function getAllTeamsExceptMy(int $id_equipo): array {
+        $equipoCollection = $this->getModel(EquipoCollection::class);
+    
+        $allTeams = $equipoCollection->getAll();
+    
+        return array_values(array_filter($allTeams, function ($equipo) use ($id_equipo) {
+            return $equipo['id_equipo'] !== $id_equipo;
+        }));
+    }
+    
 }
 ?>

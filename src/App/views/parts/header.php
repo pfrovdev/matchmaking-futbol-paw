@@ -10,19 +10,16 @@
         </a>
     </h1>
    
-
-    <section class="header-my-account">
-        <button type="button" aria-label="Mi equipo">
-            <img src="../icons/defaultTeamIcon.png" class="icon">
-            Mi equipo
-        </button>
-        <button type="button" aria-label="Abrir menú de cuenta">
-            <img src="../icons/UserIcon.png" class="icon">
-            Nombre del adm del equipo
-        </button>
-        <ul>
-            <li><a href="./perfil.html">Mi Perfil</a></li>
-            <li><a href="./index.html">Cerrar sesión</a></li>
-        </ul>
-    </section>    
+    <?php if ($miEquipo->fields['nombre']): ?>
+        <section class="header-my-account">
+            <button type="button" aria-label="Mi equipo">
+                <img src="../icons/defaultTeamIcon.png" class="icon">
+                <?= htmlspecialchars($miEquipo->fields['nombre']) ?>
+            </button>   
+            <ul>
+                <li><a href="./perfil.html">Mi Perfil</a></li>
+                <li><a href="./index.html">Cerrar sesión</a></li>
+            </ul>
+        </section>
+    <?php endif; ?>
 </header>

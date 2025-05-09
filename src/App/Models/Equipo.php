@@ -175,6 +175,88 @@ class Equipo extends AbstractModel
         $qb = $this->getQueryBuilder();
         return $qb->selectLike($this->table, $params);
     }
+
+    public function getTeams(array $selectParams): array{
+        $qb = $this->getQueryBuilder();
+
+        $nombre = $selectParams['nombre'] ?? null;
+        $id_nivel_elo = $selectParams['id_nivel_elo'] ?? null;
+        $miEquipo = $selectParams['miEquipo'] ?? null;
+
+        $todosLosEquipos = [];
+        if ($nombre && $id_nivel_elo) {
+            $todosLosEquipos = $qb->selectLike(
+                $this->table,
+                ['nombre' => $nombre, 'id_nivel_elo' => $id_nivel_elo],
+            );
+                       
+        } elseif ($nombre){
+            $todosLosEquipos = $qb->selectLike(
+                $this->table,
+                ['nombre' => $nombre],
+            );
+        } elseif ($id_nivel_elo){
+            $todosLosEquipos = $qb->select(
+                $this->table,
+                ['id_nivel_elo' => $id_nivel_elo],
+            );
+        }
+
+        $todosLosEquipos = $this->setDeportividadEloDescripcion($todosLosEquipos);
+        return $todosLosEquipos;   
+    }
+
+    public function setTeams(array $todosLosEquipos){
+        $teams = [];
+        foreach ($todosLosEquipos as $row) {
+            
+            $this->model->set($row);
+            $teams[] = $this->model;
+        }
+        return $teams;
+    }
+
+    public function setDeportividadEloDescripcion(array $todosLosEquipos){
+        $qb = $this->getQueryBuilder();
+        $nivelElo = new NivelElo();
+        $comentarioModel = new Comentario();
+        $comentarios = $qb->select(
+            $comentarioModel->table,
+            [],
+            null,
+            null,
+            null,
+            null
+        );
+        $deportividadPorEquipo = [];
+
+        foreach ($comentarios as $comentario) {
+            $id = $comentario['id_equipo_comentado'];
+            if (!isset($deportividadPorEquipo[$id])) {
+                $deportividadPorEquipo[$id] = ['total' => 0, 'cantidad' => 0];
+            }
+            $deportividadPorEquipo[$id]['total'] += (float)$comentario['deportividad'];
+            $deportividadPorEquipo[$id]['cantidad']++;
+        }
+        foreach ($todosLosEquipos as &$equipo) {
+            $idEquipo = $equipo['id_equipo'];
+            $nivelEloData = $qb->select(
+                $nivelElo->table, 
+                ['id_nivel_elo' => $equipo['id_nivel_elo']]
+            );
+            //$nivelElo = $nivelElo->select(['id_nivel_elo' => $equipo['id_nivel_elo']]);
+            $equipo['nivel_elo_descripcion'] = $nivelEloData[0]['descripcion'] ?? 'Sin nivel';
+            if (isset($deportividadPorEquipo[$idEquipo])) {
+                $total = $deportividadPorEquipo[$idEquipo]['total'];
+                $cantidad = $deportividadPorEquipo[$idEquipo]['cantidad'];
+                $equipo['deportividad'] = round($total / $cantidad, 2);
+            } else {
+                $equipo['deportividad'] = null;
+            }
+        }
+        return $todosLosEquipos;
+    }
+    
     public function getComentarios(int $page = 1, int $perPage = 5, ?string $orderBy = 'fecha_creacion', ?string $direction = 'DESC'): array
     {
         $comentarioModel = new Comentario();
@@ -265,6 +347,32 @@ class Equipo extends AbstractModel
         return (string)($nivelElo->fields['descripcion'] ?? "Sin descripción");
     }
 
+    public function insertarDesafio($miEquipo, $equipoDesafiado){
+        $qb = $this->getQueryBuilder();
+        $model = new Desafio($qb);
+        $params = [
+            "id_equipo_desafiante" => $miEquipo,
+            "id_equipo_desafiado" => $equipoDesafiado,
+            "fecha_creacion" => null,
+            "fecha_aceptacion" => null,
+            "id_estado_desafio" => $this->getEstadoDesafioInicial(),
+            "id_partido" => null,
+        ];
+
+        $insertedId = $model->saveNewTeam($params);
+        return $insertedId;
+    }
+
+    public function getEstadoDesafioInicial(){
+        $qb = $this->getQueryBuilder();
+        $modeloDesafio = new EstadoDesafio($qb);
+        $estadoDesafio = $qb->select(
+            $modeloDesafio->table,
+            ['descripcion_corta' => 'pendiente']
+        );
+        return $estadoDesafio[0]['id_estado_desafio'];
+    }
+
     public function getHistorialPartidos(int $page = 1, int $perPage = 5, string $orderBy = 'fecha_jugado', string $direction = 'DESC'): array{
         $qb = $this->getQueryBuilder();
         $model = new ResultadoPartido($qb);
@@ -337,4 +445,5 @@ class Equipo extends AbstractModel
         }
         return implode(", ", $output);
     }
+    
 }

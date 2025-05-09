@@ -40,7 +40,9 @@
     </div>
 
     <div class="card-actions">
-      <button class="btn btn-accept">Desafiar</button>
+      <a href="?<?= http_build_query(array_merge($_GET, ['id_equipo_desafiar' => $equipo['id_equipo']])) ?>" class="btn btn-accept">
+        Desafiar
+      </a>
     </div>
 
   </div>
