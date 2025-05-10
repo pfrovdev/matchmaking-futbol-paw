@@ -4,9 +4,6 @@ $nombre        = trim($_GET['nombre'] ?? '');
 $rangoSelected = $_GET['rango']  ?? '';
 $rangoSelectedId = isset($_GET['id_nivel_elo']) ? (int) $_GET['id_nivel_elo'] : '';
 $rangoSelected   = $mapaRangos[$rangoSelectedId] ?? '';
-$orden         = $_GET['orden']  ?? 'desc';
-
-
 
 $mapaRangos = [
     1 => 'Principiante',
@@ -22,29 +19,12 @@ if ($nombre !== '') {
     });
 }
 
-
 if ($rangoSelected !== '') {
     $equipos = array_filter($equipos, function($e) use($rangoSelected, $mapaRangos) {
         return isset($mapaRangos[$e['id_nivel_elo']])
             && $mapaRangos[$e['id_nivel_elo']] === $rangoSelected;
     });
 }
-
-
-switch ($orden) {
-    case 'asc':
-        usort($equipos, fn($a,$b)=> $a['id_nivel_elo'] <=> $b['id_nivel_elo']);
-        break;
-    case 'alpha':
-        usort($equipos, fn($a,$b)=> strcasecmp($a['nombre'],$b['nombre']));
-        break;
-    case 'desc':
-    default:
-        usort($equipos, fn($a,$b)=> $b['id_nivel_elo'] <=> $a['id_nivel_elo']);
-}
-
-
-
 ?>
 <!DOCTYPE html>
 <html lang="es">

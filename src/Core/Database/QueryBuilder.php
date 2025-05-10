@@ -28,7 +28,10 @@ class QueryBuilder
     //     return $sentencia->fetchAll();
     // }
 
-    public function select($table, array $params = [], ?string $orderBy = null, ?string $direction = 'ASC', ?int $limit = null, ?int $offset = null)
+    public function select($table, array $params = [], ?string $orderBy = null, 
+                        ?string $direction = 'ASC',
+                        ?int $limit = null, 
+                        ?int $offset = null)
     {
         $query = "SELECT * FROM {$table}";
         $values = [];
@@ -54,7 +57,42 @@ class QueryBuilder
                 $query .= " OFFSET {$offset}";
             }
         }
+        $statement = $this->pdo->prepare($query);
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+        $statement->execute($values);
     
+        return $statement->fetchAll();
+    }
+
+    public function selectLike(string $table, array $params = [], 
+                                ?string $orderBy = null, 
+                                ?string $direction = 'ASC', 
+                                ?int $limit = null, 
+                                ?int $offset = null): array {
+        $query = "SELECT * FROM {$table}";
+        $values = [];
+    
+        if (!empty($params)) {
+            $conditions = [];
+            foreach ($params as $field => $value) {
+                $conditions[] = "$field LIKE ?";
+                $values[] = '%' . $value . '%';
+            }
+            $query .= " WHERE " . implode(" AND ", $conditions);
+        } else {
+            $query .= " WHERE 1=1";
+        }
+        
+        if ($orderBy) {
+            $query .= " ORDER BY {$orderBy} {$direction}";
+        }
+        if ($limit !== null) {
+            $query .= " LIMIT {$limit}";
+            if ($offset !== null) {
+                $query .= " OFFSET {$offset}";
+            }
+        }
+
         $statement = $this->pdo->prepare($query);
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         $statement->execute($values);
@@ -95,25 +133,7 @@ class QueryBuilder
         }
     }
 
-    public function selectLike(string $table, array $params = []): array {
-        $query = "SELECT * FROM {$table}";
-        $values = [];
     
-        if (!empty($params)) {
-            $conditions = [];
-            foreach ($params as $field => $value) {
-                $conditions[] = "$field LIKE ?";
-                $values[] = '%' . $value . '%';
-            }
-            $query .= " WHERE " . implode(" AND ", $conditions);
-        }
-    
-        $statement = $this->pdo->prepare($query);
-        $statement->setFetchMode(PDO::FETCH_ASSOC);
-        $statement->execute($values);
-    
-        return $statement->fetchAll();
-    }
     
     public function update(string $table, array $values, array $where): int|bool{
         if (empty($values)) {

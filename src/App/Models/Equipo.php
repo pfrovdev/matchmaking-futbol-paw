@@ -176,35 +176,41 @@ class Equipo extends AbstractModel
         return $qb->selectLike($this->table, $params);
     }
 
-    public function getTeams(array $selectParams): array{
+    public function getTeams(array $selectParams, 
+                                string $orderBy = 'id_nivel_elo', 
+                                string $direction = 'DESC'): array {
         $qb = $this->getQueryBuilder();
-
         $nombre = $selectParams['nombre'] ?? null;
         $id_nivel_elo = $selectParams['id_nivel_elo'] ?? null;
         $miEquipo = $selectParams['miEquipo'] ?? null;
 
-        $todosLosEquipos = [];
-        if ($nombre && $id_nivel_elo) {
-            $todosLosEquipos = $qb->selectLike(
-                $this->table,
-                ['nombre' => $nombre, 'id_nivel_elo' => $id_nivel_elo],
-            );
-                       
-        } elseif ($nombre){
-            $todosLosEquipos = $qb->selectLike(
-                $this->table,
-                ['nombre' => $nombre],
-            );
-        } elseif ($id_nivel_elo){
-            $todosLosEquipos = $qb->select(
-                $this->table,
-                ['id_nivel_elo' => $id_nivel_elo],
-            );
+        $filtros = [];
+    
+        if ($nombre) $filtros['nombre'] = $nombre;
+        if ($id_nivel_elo) $filtros['id_nivel_elo'] = $id_nivel_elo;
+        if ($miEquipo && isset($miEquipo->id_equipo)) {
+            $filtros['id_equipo !='] = $miEquipo->id_equipo;
         }
 
-        $todosLosEquipos = $this->setDeportividadEloDescripcion($todosLosEquipos);
-        return $todosLosEquipos;   
+        if (!empty($filtros)) {
+            $todosLosEquipos = $qb->selectLike(
+                $this->table,
+                $filtros,
+                $orderBy,
+                $direction
+            );
+        } else {
+            $todosLosEquipos = $qb->select(
+                $this->table,
+                [],
+                $orderBy,
+                $direction
+            );
+        }
+    
+        return $this->setDeportividadEloDescripcion($todosLosEquipos);
     }
+    
 
     public function setTeams(array $todosLosEquipos){
         $teams = [];

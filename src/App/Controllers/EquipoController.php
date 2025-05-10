@@ -146,20 +146,22 @@ class EquipoController extends AbstractController{
     public function searchTeam() {
         $equipoJwtData = AuthMiddelware::verificarRoles(['ADMIN','USUARIO']);
         $miEquipo = $this->getEquipo($equipoJwtData->id_equipo);
+        $orden = $_GET['orden'] ?? 'desc';
+        $orden = in_array($orden, ['asc', 'desc', 'alpha']) ? $orden : 'desc';
+        
+        $paginaActual = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $porPagina = 3;
+        $offset = ($paginaActual - 1) * $porPagina;
+        
         if (!$miEquipo) {
             require $this->viewsDir . 'not-found.php';
         }
 
         $nombre = $_GET['nombre'] ?? null;
-        $paginaActual = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+
         $id_nivel_elo = isset($_GET['id_nivel_elo']) ? (int)$_GET['id_nivel_elo'] : null;
         $id_equipo = isset($_GET['id_equipo_desafiar']) ? (int)$_GET['id_equipo_desafiar'] : null;
-        
-        $porPagina = 3;
-        $offset = ($paginaActual - 1) * $porPagina;
-
-        $paginaActual  = max(1, (int)($_GET['page'] ?? 1));
-
+        // Si hay equipo desafiarlo
         if ($id_equipo) {
             $insertedId = $this->model->insertarDesafio($miEquipo->id_equipo, $id_equipo);
                 
@@ -173,17 +175,21 @@ class EquipoController extends AbstractController{
             header('Location: /search-team');
             exit;
         }
+
+        if ($orden === 'alpha') {
+            $orderBy = 'nombre';
+            $direction = 'ASC';
+        } else {
+            $orderBy = 'elo_actual';
+            $direction = strtoupper($orden);
+        }
         
         $selectParams = [
             'nombre' => $nombre,
             'miEquipo' => $miEquipo,
             'id_nivel_elo' => $id_nivel_elo,
         ];
-        $todosLosEquipos = $this->model->getTeams($selectParams);
-        if (empty($todosLosEquipos)) {
-            $todosLosEquipos = $this->getAllTeamsExceptMy($equipoJwtData->id_equipo);
-            $todosLosEquipos = $this->model->setDeportividadEloDescripcion($todosLosEquipos);
-        }
+        $todosLosEquipos = $this->model->getTeams($selectParams, $orderBy, $direction);
 
         $totalEquipos = count($todosLosEquipos);
         $totalPaginas = ceil($totalEquipos / $porPagina);
@@ -233,16 +239,6 @@ class EquipoController extends AbstractController{
         $equipo->set($equipo_data_bd);
 
         return $equipo;
-    }
-
-    private function getAllTeamsExceptMy(int $id_equipo): array {
-        $equipoCollection = $this->getModel(EquipoCollection::class);
-    
-        $allTeams = $equipoCollection->getAll();
-    
-        return array_values(array_filter($allTeams, function ($equipo) use ($id_equipo) {
-            return $equipo['id_equipo'] !== $id_equipo;
-        }));
     }
     
 }
