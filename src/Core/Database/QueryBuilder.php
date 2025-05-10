@@ -20,19 +20,11 @@ class QueryBuilder
         }
         return self::$instance;
     }
-    // public function select($table){
-    //     $query = "SELECT * FROM {$table}";
-    //     $sentencia = $this->pdo->prepare($query);
-    //     $sentencia->setFetchMode(PDO::FETCH_ASSOC);
-    //     $sentencia->execute();
-    //     return $sentencia->fetchAll();
-    // }
-
+    
     public function select($table, array $params = [], ?string $orderBy = null, 
                         ?string $direction = 'ASC',
                         ?int $limit = null, 
-                        ?int $offset = null)
-    {
+                        ?int $offset = null){
         $query = "SELECT * FROM {$table}";
         $values = [];
     
@@ -57,6 +49,47 @@ class QueryBuilder
                 $query .= " OFFSET {$offset}";
             }
         }
+        $statement = $this->pdo->prepare($query);
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+        $statement->execute($values);
+    
+        return $statement->fetchAll();
+    }
+
+    public function selectAdvanced(string $table, 
+                                    array $conditions = [], 
+                                    array $rawConditions = [], 
+                                    ?string $orderBy = null, 
+                                    ?string $direction = 'ASC'): array {
+        $query = "SELECT * FROM {$table}";
+        $values = [];
+        $where = [];
+    
+        foreach ($conditions as $field => $value) {
+            if (is_array($value) && isset($value['operator'], $value['value'])) {
+                $where[] = "{$field} {$value['operator']} ?";
+                $values[] = $value['value'];
+            } else {
+                $where[] = "{$field} = ?";
+                $values[] = $value;
+            }
+        }
+    
+        foreach ($rawConditions as $raw) {
+            $where[] = $raw['sql'];
+            foreach ($raw['params'] as $param) {
+                $values[] = $param;
+            }
+        }
+    
+        if ($where) {
+            $query .= " WHERE " . implode(" AND ", $where);
+        }
+    
+        if ($orderBy) {
+            $query .= " ORDER BY {$orderBy} {$direction}";
+        }
+    
         $statement = $this->pdo->prepare($query);
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         $statement->execute($values);

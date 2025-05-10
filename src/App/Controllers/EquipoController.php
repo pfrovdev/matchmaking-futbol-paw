@@ -147,6 +147,15 @@ class EquipoController extends AbstractController{
     public function searchTeam() {
         $equipoJwtData = AuthMiddelware::verificarRoles(['ADMIN','USUARIO']);
         $miEquipo = $this->getEquipo($equipoJwtData->id_equipo);
+        
+        $latitud = isset($_GET['lat']) ? (float) $_GET['lat'] : null;
+        $longitud = isset($_GET['lng']) ? (float) $_GET['lng'] : null;
+        $radio_km = isset($_GET['radius_km']) ? (float) $_GET['radius_km'] : null;
+
+        $nombre = $_GET['nombre'] ?? null;
+        $id_nivel_elo = isset($_GET['id_nivel_elo']) ? (int)$_GET['id_nivel_elo'] : null;
+        $id_equipo = isset($_GET['id_equipo_desafiar']) ? (int)$_GET['id_equipo_desafiar'] : null;
+
         $orden = $_GET['orden'] ?? 'desc';
         $orden = in_array($orden, ['asc', 'desc', 'alpha']) ? $orden : 'desc';
         
@@ -158,10 +167,6 @@ class EquipoController extends AbstractController{
             require $this->viewsDir . 'not-found.php';
         }
 
-        $nombre = $_GET['nombre'] ?? null;
-
-        $id_nivel_elo = isset($_GET['id_nivel_elo']) ? (int)$_GET['id_nivel_elo'] : null;
-        $id_equipo = isset($_GET['id_equipo_desafiar']) ? (int)$_GET['id_equipo_desafiar'] : null;
         // Si hay equipo desafiarlo
         if ($id_equipo) {
             $insertedId = $this->model->insertarDesafio($miEquipo->id_equipo, $id_equipo);
@@ -192,6 +197,9 @@ class EquipoController extends AbstractController{
             'nombre' => $nombre,
             'miEquipo' => $miEquipo,
             'id_nivel_elo' => $id_nivel_elo,
+            'lat' => $latitud,
+            'lng' => $longitud,
+            'radio_km' => $radio_km
         ];
         $todosLosEquipos = $this->model->getTeams($selectParams, $orderBy, $direction);
 
