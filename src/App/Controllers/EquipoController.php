@@ -2,6 +2,7 @@
 
 namespace Paw\App\Controllers;
 
+use Paw\App\Commons\NotificadorEmail;
 use Paw\App\Models\NivelElo;
 use Paw\Core\AbstractController;
 use Paw\App\Models\Equipo;
@@ -166,6 +167,9 @@ class EquipoController extends AbstractController{
             $insertedId = $this->model->insertarDesafio($miEquipo->id_equipo, $id_equipo);
                 
             if ($insertedId) {
+                $equipoDesafiado = $this->model->getEquipo($id_equipo);
+                $notificador = new NotificadorEmail();
+                $notificador->enviarNotificacionDesafioCreado($equipoDesafiado, $miEquipo );
                 header('Location: /dashboard');
                 exit;
             }

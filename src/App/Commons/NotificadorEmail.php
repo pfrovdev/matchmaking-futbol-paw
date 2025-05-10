@@ -12,6 +12,7 @@ class NotificadorEmail implements Notificador {
     protected string $viewsDir = __DIR__ . '/../views/';
     private string $aceptarDesafioTemplate = 'mail-desafio-aceptado.html';
     private string $rechazarDesafioTemplate = 'mail-desafio-rechazado.html';
+    private string $crearDesafioTemplate = 'mail-desafio-creado.html';
 
     public function enviarNotificacionDesafioAceptado(Equipo $equipoDesafiado, Equipo $equipoDesafiante, Desafio $desafioCreado): void {
         $this->enviarEmail(
@@ -33,6 +34,20 @@ class NotificadorEmail implements Notificador {
             [
                 'teamName' => $equipoDesafiado->fields['nombre'],
                 'link' => getenv('JWT_APP_URL') . '/search-team',
+            ]
+        );
+    }
+
+
+    public function enviarNotificacionDesafioCreado(Equipo $equipoDesafiado, Equipo $equipoDesafiante): void {
+        $this->enviarEmail(
+            $equipoDesafiado->fields['email']?? throw new Exception("Email destinatario no puede ser nulo id_equipo: {$equipoDesafiante->fields['id_equipo']}"),
+            "{$equipoDesafiante->fields['nombre']} te acaba de desafiar",
+            $this->crearDesafioTemplate,
+            [
+                'teamNameDesafiante' => $equipoDesafiante->fields['nombre'],
+                'teamNameDesafiado' => $equipoDesafiado->fields['nombre'],
+                'link' => getenv('JWT_APP_URL') . '/dashboard',
             ]
         );
     }

@@ -250,7 +250,6 @@ class Equipo extends AbstractModel
                 $nivelElo->table, 
                 ['id_nivel_elo' => $equipo['id_nivel_elo']]
             );
-            //$nivelElo = $nivelElo->select(['id_nivel_elo' => $equipo['id_nivel_elo']]);
             $equipo['nivel_elo_descripcion'] = $nivelEloData[0]['descripcion'] ?? 'Sin nivel';
             if (isset($deportividadPorEquipo[$idEquipo])) {
                 $total = $deportividadPorEquipo[$idEquipo]['total'];
@@ -368,6 +367,17 @@ class Equipo extends AbstractModel
 
         $insertedId = $model->saveNewTeam($params);
         return $insertedId;
+    }
+
+    public function getEquipo($id_equipo): Equipo{
+        $qb = $this->getQueryBuilder();
+        $equipo = new Equipo($qb);
+        $newEquipo = $qb->select(
+            $equipo->table,
+            ['id_equipo' => $id_equipo]
+        );
+        $equipo->set($newEquipo[0]);
+        return $equipo;
     }
 
     public function getEstadoDesafioInicial(){
