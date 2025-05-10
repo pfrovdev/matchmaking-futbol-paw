@@ -11,10 +11,49 @@
 │   └── index.php
 ├── src/
 │   ├── App/
-│   │   ├── Controller/
+│   │   ├── Controllers/
+│   │   │   ├──AuthController.php
+│   │   │   ├──EquipoController.php
+│   │   │   ├──EstadoDesafioController.php
+│   │   │   ├──EstadoIteracionController.php
+│   │   │   ├──EstadoPartidoController.php
+│   │   │   ├──PageController.php
+│   │   │   └──TipoEquipoController.php
 │   │   ├── Models/
+│   │   │   ├──Comentario.php
+│   │   │   ├──Desafio.php
+│   │   │   ├──Equipo.php
+│   │   │   ├──EquipoCollection.php
+│   │   │   ├──Estadisticas.php
+│   │   │   ├──EstadoDesafio.php
+│   │   │   ├──EstadoIteracion.php
+│   │   │   ├──EstadoPartido.php
+│   │   │   ├──NivelElo.php
+│   │   │   ├──Partido.php
+│   │   │   ├──ResultadoPartido.php
+│   │   │   └──TipoEquipo.php
+│   │   ├── Utils/
+│   │   │   └──CalculadoraDeElo.php
 │   │   ├── Views/
-│   │   │   └── Parts/
+│   │   │   └── parts/
+│   │   │       ├──footer.php
+│   │   │       ├──header-no-account.php
+│   │   │       ├──header.php
+│   │   │       ├──nav.php
+│   │   │       ├──side-navbar.php
+│   │   │       ├──tarjeta-desafio.php
+│   │   │       ├──tarjeta-envio-desafio.php
+│   │   │       └──tarjeta-historial.php
+│   │   │   ├──about-us.php
+│   │   │   ├──create-account.php
+│   │   │   ├──create-team.php
+│   │   │   ├──dashboard.php
+│   │   │   ├──home.php
+│   │   │   ├──internal-error.php
+│   │   │   ├──login.php
+│   │   │   ├──mail-desafio.html
+│   │   │   ├──not-found.php
+│   │   │   └──search-team.php
 │   ├── Config/
 │   │   └── config.php
 │   ├── Core/
@@ -25,6 +64,10 @@
 │   │   ├── Exceptions/
 │   │   │   ├── InvalidValueFormatException.php
 │   │   │   └── RouteNotFoundException.php
+│   │   ├── JWT/
+│   │   │   └── Auth.php
+│   │   ├── Middelware/
+│   │   │   └── AuthMiddelware.php
 │   │   ├── Traits/
 │   │   │   └── Loggeable.php
 │   │   ├── AbstractController.php
@@ -40,8 +83,7 @@
 ├── .env
 ├── Makefile
 ├── phinx.php
-├── composer.json
-└── README.md
+└── composer.json
 ```
 
 ## Análisis de peticiones HTTP
