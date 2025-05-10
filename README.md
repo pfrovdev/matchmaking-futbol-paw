@@ -1,13 +1,6 @@
-# TP Integrador. Match Making Futbol 5
+# TP Integrador Match Making Futbol 5
 
-## Autores:
-
-De Paola Agustín, depa.agustin@gmail.com
-Fedorov Pavlo, pfrov.dev@gmail.com
-Iarza Esteban, iarzaesteban94@gmail.com
-Juarez Sebastián, sebajuarezz@#gmail.com
-
-## Estructura del Proyecto PawPrint
+## Estructura del Proyecto
 
 ```bash
 .
@@ -119,4 +112,5 @@ make up
 
 Esto iniciará un servidor PHP local en `http://localhost:9999`.
 
-## Recursos del proyecto
+## Aplicación Web - Hosting
+[MatchMaking Futbol 5](https://red-dunlin-257226.hostingersite.com/)
