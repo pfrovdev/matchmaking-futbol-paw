@@ -1,7 +1,9 @@
 <?php
+
 namespace Paw\Core\Middelware;
 
 use Paw\Core\JWT\JsonFileStorage;
+use Paw\Core\JWT\RedisStorage;
 use Paw\Core\JWT\Services\TokenService;
 
 class AuthMiddelware
@@ -13,11 +15,16 @@ class AuthMiddelware
 
     public function __construct()
     {
-        $storage = new JsonFileStorage(__DIR__ . '/../blacklist.json');
-        $this->tokenService   = new TokenService($storage);
-        $this->accessTTL      = (int) getenv('JWT_ACCESS_TTL');
-        $this->refreshTTL     = (int) getenv('JWT_REFRESH_TTL');
-        $this->refreshWindow  = (int) getenv('JWT_REFRESH_WINDOW');
+        # $storage = new JsonFileStorage(__DIR__ . '/../blacklist.json');
+        $storage = new RedisStorage(
+            getenv('REDIS_HOST'),
+            (int)getenv('REDIS_PORT'),
+            'jwt:blacklist:'
+        );
+        $this->tokenService = new TokenService($storage);
+        $this->accessTTL = (int) getenv('JWT_ACCESS_TTL');
+        $this->refreshTTL = (int) getenv('JWT_REFRESH_TTL');
+        $this->refreshWindow = (int) getenv('JWT_REFRESH_WINDOW');
     }
 
     public function verificar(array $roles = []): object
@@ -32,7 +39,6 @@ class AuthMiddelware
             $this->unauthorized('Token inválido o expirado');
         }
 
-        // Auto-refresh logic
         $timeLeft = $payload->exp - time();
         if ($timeLeft < $this->refreshWindow) {
             $this->refreshTokens((array) $payload->data);
@@ -48,7 +54,6 @@ class AuthMiddelware
 
     private function refreshTokens(array $data): void
     {
-        // Revoke old refresh
         $oldRefresh = $_COOKIE['refresh_token'] ?? null;
         if ($oldRefresh) {
             $oldPayload = $this->tokenService->decodeToken($oldRefresh);
@@ -56,17 +61,23 @@ class AuthMiddelware
                 $this->tokenService->revokeToken($oldPayload->jti, $oldPayload->exp);
             }
         }
-        // Create new tokens
+
         $newAccess  = $this->tokenService->createToken($data, $this->accessTTL);
         $newRefresh = $this->tokenService->createToken($data, $this->refreshTTL);
 
         setcookie('access_token', $newAccess, [
-            'expires'=>time()+$this->accessTTL,
-            'path'=>'/','secure'=>false,'httponly'=>true,'samesite'=>'Strict',
+            'expires' => time() + $this->accessTTL,
+            'path' => '/',
+            'secure' => false,
+            'httponly' => true,
+            'samesite' => 'Strict',
         ]);
         setcookie('refresh_token', $newRefresh, [
-            'expires'=>time()+$this->refreshTTL,
-            'path'=>'/','secure'=>false,'httponly'=>true,'samesite'=>'Strict',
+            'expires' => time() + $this->refreshTTL,
+            'path' => '/',
+            'secure' => false,
+            'httponly' => true,
+            'samesite' => 'Strict',
         ]);
     }
 

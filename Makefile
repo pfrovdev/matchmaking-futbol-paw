@@ -11,7 +11,7 @@ endif
 # Levantar la App
 up:
 	composer update
-	docker-compose up -d db
+	docker-compose up -d db redis
 	composer start
 
 # Actualizar dependencias# Actualizar dependencias\update:
