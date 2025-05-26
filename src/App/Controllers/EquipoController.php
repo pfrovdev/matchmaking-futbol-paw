@@ -164,7 +164,8 @@ class EquipoController extends AbstractController{
         $offset = ($paginaActual - 1) * $porPagina;
         
         if (!$miEquipo) {
-            require $this->viewsDir . 'not-found.php';
+            header("HTTP/1.1 404 Not Found");
+            require $this->viewsDir . 'errors/not-found.php';
         }
 
         // Si hay equipo desafiarlo
@@ -205,6 +206,12 @@ class EquipoController extends AbstractController{
 
         $totalEquipos = count($todosLosEquipos);
         $totalPaginas = ceil($totalEquipos / $porPagina);
+        if ($paginaActual > $totalPaginas || $paginaActual < 1){
+            header("HTTP/1.1 404 Not Found");
+            require $this->viewsDir . 'errors/not-found.php';
+            exit;
+        }
+        
         $equipos = array_slice($todosLosEquipos, $offset, $porPagina);
 
         require $this->viewsDir . 'search-team.php';
