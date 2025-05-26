@@ -10,13 +10,13 @@ use Paw\App\Models\TipoEquipo;
 use Paw\App\Models\Comentario;
 use Paw\App\Models\EquipoCollection;
 use Paw\App\Models\ResultadoPartido;
-use Paw\Core\Middelware\AuthMiddelware;
 use Paw\App\Utils\CalculadoraDeElo;
+use Paw\Core\JWT\Auth;
+use Paw\Core\Middleware\AuthMiddleware;
 
 class EquipoController extends AbstractController{
 
     public ?string $modelName = Equipo::class;
-
 
     public function createAccount(){
         require $this->viewsDir . 'create-account.php';
@@ -145,7 +145,7 @@ class EquipoController extends AbstractController{
     }
 
     public function searchTeam() {
-        $equipoJwtData = AuthMiddelware::verificarRoles(['ADMIN','USUARIO']);
+        $equipoJwtData = $this->auth->verificar(['ADMIN','USUARIO']);
         $miEquipo = $this->getEquipo($equipoJwtData->id_equipo);
         
         $latitud = isset($_GET['lat']) ? (float) $_GET['lat'] : null;
@@ -212,8 +212,8 @@ class EquipoController extends AbstractController{
 
     public function dashboard(){
 
-        $equipo_jwt_data = AuthMiddelware::verificarRoles(['ADMIN','USUARIO']);
-        $miEquipo = $this->getEquipo($equipo_jwt_data->id_equipo);
+        $equipoJwtData = $this->auth->verificar(['ADMIN','USUARIO']);
+        $miEquipo = $this->getEquipo($equipoJwtData->id_equipo);
 
         $page  = max(1, (int)($_GET['page'] ?? 1));
         $per   = 3;

@@ -1,38 +1,97 @@
 <?php
+
 namespace Paw\Core\Middelware;
 
-use Paw\Core\JWT\Auth;
+use Paw\Core\JWT\JsonFileStorage;
+use Paw\Core\JWT\RedisStorage;
+use Paw\Core\JWT\Services\TokenService;
 
 class AuthMiddelware
 {
-    // Verifica que el token sea válido y no haya expirado
-    public static function verificar(): object
+    private TokenService $tokenService;
+    private int $accessTTL;
+    private int $refreshTTL;
+    private int $refreshWindow;
+
+    public function __construct()
     {
-        $jwt = $_COOKIE['paw_token'] ?? null;
-        if (! $jwt) {
-            http_response_code(401);
-            echo json_encode(['error' => 'No autenticado']);
-            exit;
-        }
-
-        $payload = Auth::validarToken($jwt);
-        if (! $payload) {
-            http_response_code(401);
-            echo json_encode(['error' => 'Token inválido o expirado']);
-            exit;
-        }
-
-        return $payload->data; 
+        # $storage = new JsonFileStorage(__DIR__ . '/../blacklist.json');
+        $storage = new RedisStorage(
+            getenv('REDIS_HOST'),
+            (int)getenv('REDIS_PORT'),
+            'jwt:blacklist:'
+        );
+        $this->tokenService = new TokenService($storage);
+        $this->accessTTL = (int) getenv('JWT_ACCESS_TTL');
+        $this->refreshTTL = (int) getenv('JWT_REFRESH_TTL');
+        $this->refreshWindow = (int) getenv('JWT_REFRESH_WINDOW');
     }
 
-    public static function verificarRoles(array $rolesPermitidos): object
+    public function verificar(array $roles = []): object
     {
-        $data = self::verificar();
-        if (!in_array($data->role, $rolesPermitidos, true)) {
-            http_response_code(403);
-            echo json_encode(['error' => 'Acceso prohibido para tu rol']);
-            exit;
+        $accessToken = $_COOKIE['access_token'] ?? null;
+        if (!$accessToken) {
+            $this->unauthorized('No autenticado');
         }
-        return $data;
+
+        $payload = $this->tokenService->decodeToken($accessToken);
+        if (!$payload || $this->tokenService->isTokenRevoked($payload->jti)) {
+            $this->unauthorized('Token inválido o expirado');
+        }
+
+        $timeLeft = $payload->exp - time();
+        if ($timeLeft < $this->refreshWindow) {
+            $this->refreshTokens((array) $payload->data);
+        }
+
+        $userData = $payload->data;
+        if ($roles && !in_array($userData->role, $roles, true)) {
+            $this->forbidden('Acceso prohibido para tu rol');
+        }
+
+        return $userData;
+    }
+
+    private function refreshTokens(array $data): void
+    {
+        $oldRefresh = $_COOKIE['refresh_token'] ?? null;
+        if ($oldRefresh) {
+            $oldPayload = $this->tokenService->decodeToken($oldRefresh);
+            if ($oldPayload) {
+                $this->tokenService->revokeToken($oldPayload->jti, $oldPayload->exp);
+            }
+        }
+
+        $newAccess  = $this->tokenService->createToken($data, $this->accessTTL);
+        $newRefresh = $this->tokenService->createToken($data, $this->refreshTTL);
+
+        setcookie('access_token', $newAccess, [
+            'expires' => time() + $this->accessTTL,
+            'path' => '/',
+            'secure' => false,
+            'httponly' => true,
+            'samesite' => 'Strict',
+        ]);
+        setcookie('refresh_token', $newRefresh, [
+            'expires' => time() + $this->refreshTTL,
+            'path' => '/',
+            'secure' => false,
+            'httponly' => true,
+            'samesite' => 'Strict',
+        ]);
+    }
+
+    private function unauthorized(string $message): void
+    {
+        http_response_code(401);
+        echo json_encode(['error' => $message]);
+        exit;
+    }
+
+    private function forbidden(string $message): void
+    {
+        http_response_code(403);
+        echo json_encode(['error' => $message]);
+        exit;
     }
 }
