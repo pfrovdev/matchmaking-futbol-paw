@@ -34,29 +34,16 @@ class Desafio extends AbstractModel{
         $this->fields["fecha_creacion"] = $fechaCreacion;
     }
 
+    public function setFechaAceptacion(string $fechaAceptacion){
+        $this->fields["fecha_creacion"] = $fechaAceptacion;
+    }
+
     public function setIdEstadoDesafio(int $idEstadoDesafio){
         $this->fields["id_estado_desafio"] = $idEstadoDesafio;
     }
 
     public function setIdPartido(int $idPartido){
         $this->fields["id_partido"] = $idPartido;
-    }
-
-    public function select(array $params) {
-        $queryBuilder = $this->getQueryBuilder();
-        $result = $queryBuilder->select($this->table, $params);
-        return $result;
-    }
-
-    public function saveNewTeam(array $params): ?string{
-        $queryBuilder = $this->getQueryBuilder();
-        return $queryBuilder->insert($this->table, $params);
-    }
-
-    public function selectLike(array $params): array{
-        $queryBuilder = $this->getQueryBuilder();
-        $result = $queryBuilder->selectLike($this->table, $params);
-        return $result;
     }
 
     public function set(array $values)
@@ -72,58 +59,20 @@ class Desafio extends AbstractModel{
         }
     }
 
-    public function getEquipoDesafiante(): Equipo{
-        $qb = $this->getQueryBuilder();
-        $equipoDesafiante = new Equipo($qb);
-        $data = $qb->select(
-            $equipoDesafiante->table,
-            ['id_equipo' => $this->fields['id_equipo_desafiante']]
-        );
-        $equipoDesafiante->set($data[0]);
-        return $equipoDesafiante;
+     public function aceptar(string $fechaAceptacion, int $nuevoEstado): void
+    {
+        $this->setFechaAceptacion($fechaAceptacion);
+        $this->setIdEstadoDesafio($nuevoEstado);
     }
 
-    public function aceptar(){
-        $qb = $this->getQueryBuilder();
-        $estadoDesafio = new EstadoDesafio($qb);
-        $estadosDesafio = $qb->select($estadoDesafio->table);
-        $idAceptado = null;
-
-        foreach ($estadosDesafio as $estado) {
-            if ($estado['descripcion_corta'] === 'aceptado') {
-                $idAceptado = $estado['id_estado_desafio'];
-                break;
-            }
-        }
-
-        $qb->update(
-            $this->table,
-            ['id_estado_desafio' => $idAceptado],
-            ['id_desafio' => $this->fields['id_desafio']]
-        );
-
-        $partidoNuevo = new Partido($qb);
-        $partidoNuevo->crearPendiente($this);
+    public function rechazar(int $nuevoEstado): void
+    {
+        $this->setIdEstadoDesafio($nuevoEstado);
     }
 
-    public function rechazar(){
-        $qb = $this->getQueryBuilder();
-        $estadoDesafio = new EstadoDesafio($qb);
-        $estadosDesafio = $qb->select($estadoDesafio->table);
-        $idRechazado = null;
-
-        foreach ($estadosDesafio as $estado) {
-            if ($estado['descripcion_corta'] === 'rechazado') {
-                $idRechazado = $estado['id_estado_desafio'];
-                break;
-            }
-        }
-
-        $qb->update(
-            $this->table,
-            ['id_estado_desafio' => $idRechazado],
-            ['id_desafio' => $this->fields['id_desafio']]
-        );
+    public function asignarPartido(int $partidoId): void
+    {
+        $this->setIdPartido($partidoId);
     }
 }
 

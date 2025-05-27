@@ -3,66 +3,90 @@ namespace Paw\App\Controllers;
 
 use Paw\App\Commons\NotificadorEmail;
 use Paw\App\Models\Equipo;
-use Paw\App\Models\EquipoCollection;
+use Paw\App\Services\DesafioService;
+use Paw\App\Services\NotificationService;
 use Paw\Core\AbstractController;
-use Paw\Core\Middelware\AuthMiddelware;
 
-class DesafioController extends AbstractController{
+class DesafioController extends AbstractController
+{
+    private DesafioService $desafioService;
+    private NotificationService $notificationService;
 
-    public function aceptDesafio(){
-        $equipo_jwt_data = AuthMiddelware::verificarRoles(['USUARIO']);
-        $equipo = $this->getEquipo($equipo_jwt_data->id_equipo);
-        
+    public function __construct()
+    {
+        parent::__construct();
+        $this->desafioService = $this->getService(DesafioService::class);
+        $this->notificationService = $this->getService(NotificationService::class);
+    }
+
+    public function aceptDesafio(): void
+    {
+        $jwtData = $this->auth->verificar(['ADMIN','USUARIO']);
+        $miEquipo = $this->getEquipo($jwtData->id_equipo);
+
         $equipoId  = (int) ($_POST['id_equipo']  ?? 0);
         $desafioId = (int) ($_POST['id_desafio'] ?? 0);
 
-        if($equipo->fields['id_equipo'] != $equipoId){
-            // implementar logica
-            echo "no coinciden los ids";
+        if ($miEquipo->fields['id_equipo'] !== $equipoId) {
+            echo "No tienes permiso para aceptar este desafío";
+            return;
         }
 
-        $desafioAceptado = $equipo->aceptarDesafio($desafioId);
-        $equipoDesafiante = $desafioAceptado->getEquipoDesafiante();
+        $desafio = $this->desafioService->acceptDesafio($desafioId);
 
-        $notificador = new NotificadorEmail();
-        $notificador->enviarNotificacionDesafioAceptado($equipo, $equipoDesafiante, $desafioAceptado);
+        $equipoDesafiante = $this->getEquipo(
+            $desafio->fields['id_equipo_desafiante']
+        );
+
+        $this->notificationService->notifyDesafioAccepted(
+            $miEquipo,
+            $equipoDesafiante,
+            $desafio
+        );
 
         header("Location: /dashboard");
     }
 
-    public function rejectDesafio(){
-        $equipo_jwt_data = AuthMiddelware::verificarRoles(['USUARIO']);
-        $equipo = $this->getEquipo($equipo_jwt_data->id_equipo);
-        
-        $equipoId  = (int) ($_POST['id_equipo']  ?? 0);
+    public function rejectDesafio(): void
+    {
+        $jwtData = $this->auth->verificar(['ADMIN','USUARIO']);
+        $miEquipo = $this->getEquipo($jwtData->id_equipo);
+
+        $equipoId = (int) ($_POST['id_equipo']  ?? 0);
         $desafioId = (int) ($_POST['id_desafio'] ?? 0);
 
-        if($equipo->fields['id_equipo'] != $equipoId){
-            // implementar logica
-            echo "no coinciden los ids";
+        if ($miEquipo->fields['id_equipo'] !== $equipoId) {
+            echo "No tienes permiso para rechazar este desafío";
+            return;
         }
 
-        $desafioRechazado = $equipo->rechazarDesafio($desafioId);
-        $equipoDesafiante = $desafioRechazado->getEquipoDesafiante();
+        $desafio = $this->desafioService->rejectDesafio($desafioId);
 
-        $notificador = new NotificadorEmail();
-        $notificador->enviarNotificacionDesafioRechazado($equipo, $equipoDesafiante, $desafioRechazado);
+        $equipoDesafiante = $this->getEquipo(
+            $desafio->fields['id_equipo_desafiante']
+        );
+
+        $this->notificationService->notifyDesafioRejected(
+            $miEquipo,
+            $equipoDesafiante,
+            $desafio
+        );
 
         header("Location: /dashboard");
     }
 
-    private function getEquipo(int $id_equipo): Equipo {
+    private function getEquipo(int $idEquipo): Equipo
+    {
+        $collection = $this->getModel(\Paw\App\Models\EquipoCollection::class);
+        $datosEquipo = $collection->getById($idEquipo)[0] ?? null;
 
-        $equipoCollection = $this->getModel(EquipoCollection::class);
-
-        $equipo_data_bd = $equipoCollection->getById($id_equipo)[0];
+        if (! $datosEquipo) {
+            throw new \RuntimeException("Equipo $idEquipo no encontrado");
+        }
 
         $equipo = $this->getModel(Equipo::class);
-
-        $equipo->set($equipo_data_bd);
+        $equipo->set($datosEquipo);
 
         return $equipo;
     }
-
 }
-?>

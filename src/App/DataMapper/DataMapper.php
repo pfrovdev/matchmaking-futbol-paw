@@ -1,0 +1,47 @@
+<?php
+
+namespace Paw\App\DataMapper;
+
+use Paw\Core\Database\QueryBuilder;
+
+abstract class DataMapper {
+    protected QueryBuilder $qb;
+    protected string $table;
+
+    public function __construct(QueryBuilder $qb, string $table) {
+        $this->qb = $qb;
+        $this->table = $table;
+    }
+
+    public function findById(int $id) {
+        $results = $this->qb->select($this->table, ['id' => $id]);
+        return $results[0] ?? null;
+    }
+
+    public function findAll(): array {
+        return $this->qb->select($this->table);
+    }
+
+    public function insert(array $data): ?string {
+        return $this->qb->insert($this->table, $data);
+    }
+
+    public function update(array $data, array $where): int|bool {
+        return $this->qb->update($this->table, $data, $where);
+    }
+
+    public function delete(array $where): int|bool {
+        return $this->qb->delete($this->table, $where);
+    }
+
+    public function findBy(array $where): array {
+        return $this->qb->select($this->table, $where);
+    }
+
+    abstract public function mapAll(array $rows): array;
+    abstract public function map(array $row): object;
+
+    public function getPdo(): \PDO {
+        return $this->qb->getPdo();
+    }
+}

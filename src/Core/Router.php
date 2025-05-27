@@ -19,6 +19,7 @@ class Router {
 
     public string $notFound = "not_found";
     public string $internalError = "internal_error";
+    private Container $container;
 
     public function __construct()
     {
@@ -29,6 +30,11 @@ class Router {
     public function loadRoutes($path, $action, $method = "GET")
     {
         $this->routes[$method][$path] = $action;
+    }
+
+    public function setContainer(Container $container)
+    {
+        $this->container = $container;
     }
 
     public function get($path, $action)
@@ -67,7 +73,7 @@ class Router {
     public function call($controller, $method)
     {
         $controller_name = "Paw\\App\\Controllers\\{$controller}";
-        $objController = new $controller_name($this->logger);
+        $objController = new $controller_name($this->logger,$this->container);
         $this->logger->info("Llamando al controlador: {$controller} y método: {$method}");
         $objController->$method();
     }
