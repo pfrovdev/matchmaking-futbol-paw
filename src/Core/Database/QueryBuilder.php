@@ -169,7 +169,7 @@ class QueryBuilder
 
         $setClause = implode(', ', $sets);
         $query = "INSERT INTO `$table` SET $setClause";
-
+        
         try {
             $stmt = $this->pdo->prepare($query);
             foreach ($params as $placeholder => $val) {
