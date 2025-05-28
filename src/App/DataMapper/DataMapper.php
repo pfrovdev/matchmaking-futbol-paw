@@ -13,8 +13,8 @@ abstract class DataMapper {
         $this->table = $table;
     }
 
-    public function findById(int $id) {
-        $results = $this->qb->select($this->table, ['id' => $id]);
+    public function findById(array $params) {
+        $results = $this->qb->select($this->table, $params);
         return $results[0] ?? null;
     }
 

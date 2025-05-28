@@ -11,16 +11,15 @@ class AuthController extends AbstractController
 {
     private TokenService $tokenService;
 
-    public function __construct($log,$container)
+    public function __construct($log, $container)
     {
-        parent::__construct($log,$container);
+        parent::__construct($log, $container);
         $storage = new JsonFileStorage(__DIR__ . '/../../Core/JWT/blacklist.json');
         $this->tokenService = new TokenService($storage);
     }
 
     public function login(): void
     {
-        session_start();
         $email    = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
         $model    = $this->getModel(Equipo::class);
@@ -60,7 +59,7 @@ class AuthController extends AbstractController
             }
             setcookie($cookie, '', ['expires'=>time()-3600,'path'=>'/']);
         }
-        session_start(); session_destroy();
+        session_destroy();
         header('Location: /login');
         exit;
     }
