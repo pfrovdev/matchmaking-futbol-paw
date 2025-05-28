@@ -11,9 +11,9 @@ class AuthController extends AbstractController
 {
     private TokenService $tokenService;
 
-    public function __construct($log)
+    public function __construct($log,$container)
     {
-        parent::__construct($log);
+        parent::__construct($log,$container);
         $storage = new JsonFileStorage(__DIR__ . '/../../Core/JWT/blacklist.json');
         $this->tokenService = new TokenService($storage);
     }
