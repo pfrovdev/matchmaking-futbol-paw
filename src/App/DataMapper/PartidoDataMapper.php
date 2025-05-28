@@ -24,9 +24,9 @@ class PartidoDataMapper extends DataMapper
         return array_map(fn($r) => $this->map($r), $rows);
     }
 
-    public function findById(int $id): ?Partido
+    public function findById(array $params): ?Partido
     {
-        $row = parent::findById($id);
+        $row = parent::findById($params);
         return $row ? $this->map($row) : null;
     }
 

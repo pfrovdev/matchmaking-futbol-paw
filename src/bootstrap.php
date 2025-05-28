@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
-
+session_start();
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Paw\Core\Container;

@@ -37,7 +37,7 @@ class PartidoServiceImpl implements PartidoService
 
     public function finalizarPartido(int $partidoId): void
     {
-        $p = $this->pdm->findById($partidoId);
+        $p = $this->pdm->findById(['id_partido' => $partidoId]);
         if (! $p) {
             throw new \InvalidArgumentException("Partido $partidoId no existe");
         }

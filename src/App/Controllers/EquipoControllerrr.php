@@ -2,38 +2,34 @@
 
 namespace Paw\App\Controllers;
 
-use Monolog\Logger;
 use Paw\App\Commons\NotificadorEmail;
-use Paw\App\Models\Equipo;
-use Paw\App\Services\DesafioService;
-use Paw\App\Services\NotificationService;
-use Paw\App\Services\EquipoService;
-use Paw\App\Utils\CalculadoraDeElo;
+use Paw\App\Models\NivelElo;
 use Paw\Core\AbstractController;
-use Paw\Core\Container;
+use Paw\App\Models\Equipo;
+use Paw\App\Models\TipoEquipo;
+use Paw\App\Models\Comentario;
+use Paw\App\Models\EquipoCollection;
+use Paw\App\Models\ResultadoPartido;
+use Paw\App\Utils\CalculadoraDeElo;
+use Paw\Core\JWT\Auth;
+use Paw\Core\Middleware\AuthMiddleware;
 
+class EquipoControllerrr extends AbstractController{
 
-class EquipoController extends AbstractController{
-
-    private DesafioService $desafioService;
-    private NotificationService $notificationService;
-    private EquipoService $equipoService;
-
-    public function __construct(Logger $logger, Container $container){
-        parent::__construct($logger,$container);
-        $this->equipoService = $this->getService(EquipoService::class);
-    }
+    public ?string $modelName = Equipo::class;
 
     public function createAccount(){
         require $this->viewsDir . 'create-account.php';
     }
 
     public function createTeam(){
-        $tipos = $this->equipoService->getAllTiposEquipos();
+        $tipoEquipoModel = $this->getModel(TipoEquipo::class);
+        $tipos = $tipoEquipoModel->all();
         require $this->viewsDir . 'create-team.php';
     }
 
     public function register(){
+        session_start();
         $email = $_POST['email'] ?? null;
         $confirmEmail = $_POST['confirm-email'] ?? null;
         $password = $_POST['password'] ?? null;
@@ -49,7 +45,7 @@ class EquipoController extends AbstractController{
         if ($email !== $confirmEmail) {
             $errors[] = "Los correos electrónicos no coinciden.";
         }
-        if ($this->getEquipo(null, $email)) {
+        if ($this->model->select(['email' => $email])) {
             $errors[] = "Ya existe un equipo registrado con ese correo electrónico.";
         }
 
@@ -83,6 +79,7 @@ class EquipoController extends AbstractController{
     }
 
     public function registerTeam(){
+        if (session_status() === PHP_SESSION_NONE) session_start();
         $errors = [];
 
         if (!isset($_SESSION['equipo_temp'])) {
@@ -108,9 +105,11 @@ class EquipoController extends AbstractController{
             exit;
         }
 
-        $typeTeam = $this->equipoService->getTypeTeamById($teamTypeId);
-        
-        if (!$typeTeam) {
+        $geolocalizacion = "ST_GeomFromText('POINT($lng $lat)', 4326)";
+
+        $tipoEquipoModel = $this->getModel(TipoEquipo::class);
+        $tipoArr = $tipoEquipoModel->find(['id_tipo_equipo' => $teamTypeId]);
+        if (!$tipoArr) {
             $errors[] = "El tipo de equipo seleccionado no es válido.";
         }
         if ($errors) {
@@ -119,21 +118,21 @@ class EquipoController extends AbstractController{
             header('Location: /create-team');
             exit;
         }
-        
-        $equipo = $this->getModel(Equipo::class);
-        $equipo->setEmail($equipoTemp['email']);
-        $equipo->setContrasena($equipoTemp['password']);
-        $equipo->setTelefono($equipoTemp['telefono']);
-        $equipo->setNombre($teamName);
-        $equipo->setAcronimo($teamAcronym);
-        $equipo->setIdTipoEquipo($typeTeam->id_tipo_equipo);
-        $equipo->setUbicacionFromCoords($lng, $lat);
-        $equipo->setLema($teamMotto);
-        $equipo->setEloActual(0);
-        $equipo->setIdNivelElo(1); // Principiante
-        $equipo->setIdRol(2); // Usuario
-        
-        $insertedId = $this->equipoService->saveNewTeam($equipo);
+
+        $params = [
+            'email'           => $equipoTemp['email'],
+            'contrasena'      => $equipoTemp['password'],
+            'telefono'        => $equipoTemp['telefono'],
+            'nombre'          => $teamName,
+            'acronimo'        => $teamAcronym,
+            'id_tipo_equipo'  => $tipoArr[0]['id_tipo_equipo'],
+            'ubicacion'       => $geolocalizacion,
+            'lema'            => $teamMotto,
+            'id_nivel_elo' => 1, // Principiante
+            'id_rol' => 2 // Usuario
+        ];
+        $insertedId = $this->model->saveNewTeam($params);
+
         if ($insertedId) {
             header('Location: /login');
             exit;
@@ -145,63 +144,9 @@ class EquipoController extends AbstractController{
         exit;
     }
 
-    private function getEquipo(?int $idEquipo = null, ?string $email = null): Equipo | null {
-        $collection = $this->getModel(\Paw\App\Models\EquipoCollection::class);
-
-        if (($idEquipo === null && $email === null) || ($idEquipo !== null && $email !== null)) {
-            throw new \InvalidArgumentException("Debes pasar exactamente uno: idEquipo o email.");
-        }
-
-        if ($idEquipo !== null) {
-            $datosEquipo = $collection->getById($idEquipo)[0] ?? null;
-        } else {
-            $datosEquipo = $collection->getByEmail($email)[0] ?? null;
-        }
-
-        if (!$datosEquipo) {
-            return null;
-        }
-
-        $equipo = $this->getModel(Equipo::class);
-        $equipo->set($datosEquipo);
-
-        return $equipo;
-    }
-
-
-    public function dashboard(){
-
-        $equipoJwtData = $this->auth->verificar(['ADMIN','USUARIO']);
-        $miEquipo = $this->getEquipo($equipoJwtData->id_equipo,null);
-
-        $page  = max(1, (int)($_GET['page'] ?? 1));
-        $per   = 3;
-        $order = $_GET['order'] ?? 'fecha_creacion';
-        $dir   = strtoupper($_GET['dir'] ?? 'DESC') === 'ASC' ? 'ASC' : 'DESC';
-        
-        $comentariosPag = $miEquipo->getComentarios($page, $per, $order, $dir);
-        $desafiosRecib  = $miEquipo->getDesafiosPendientes($page, $per, $order, $dir);
-        $nivelDesc    = $miEquipo->getNivelElo();
-        $deportividad = $miEquipo->promediarDeportividad();
-        $cantidadDeVotos = count($comentariosPag);
-        $historial = false;
-        
-        if($miEquipo->contieneHistorial()){
-            $ultimoPartidoJugado = $miEquipo->getHistorialPartidos(1,1)[0];
-            $soyGanador = $ultimoPartidoJugado->soyEquipoGanador($miEquipo);
-            $equipoLocal  = $miEquipo;
-            $equipoRival  = $ultimoPartidoJugado->getEquipoRival($equipoLocal);
-            $eloChange = CalculadoraDeElo::calcularCambioElo($ultimoPartidoJugado, $equipoLocal);
-            $historial = true;
-        }
-
-        require $this->viewsDir . 'dashboard.php';
-    }
-
-
     public function searchTeam() {
         $equipoJwtData = $this->auth->verificar(['ADMIN','USUARIO']);
-        $miEquipo = $this->getEquipo($equipoJwtData->id_equipo,null);
+        $miEquipo = $this->getEquipo($equipoJwtData->id_equipo);
         
         $latitud = isset($_GET['lat']) ? (float) $_GET['lat'] : null;
         $longitud = isset($_GET['lng']) ? (float) $_GET['lng'] : null;
@@ -221,7 +166,6 @@ class EquipoController extends AbstractController{
         if (!$miEquipo) {
             require $this->viewsDir . 'not-found.php';
         }
-        // TODO 
 
         // Si hay equipo desafiarlo
         if ($id_equipo) {
@@ -266,6 +210,48 @@ class EquipoController extends AbstractController{
         require $this->viewsDir . 'search-team.php';
     }
 
+    public function dashboard(){
 
+        $equipoJwtData = $this->auth->verificar(['ADMIN','USUARIO']);
+        $miEquipo = $this->getEquipo($equipoJwtData->id_equipo);
+
+        $page  = max(1, (int)($_GET['page'] ?? 1));
+        $per   = 3;
+        $order = $_GET['order'] ?? 'fecha_creacion';
+        $dir   = strtoupper($_GET['dir'] ?? 'DESC') === 'ASC' ? 'ASC' : 'DESC';
+        
+        $comentariosPag = $miEquipo->getComentarios($page, $per, $order, $dir);
+        $desafiosRecib  = $miEquipo->getDesafiosPendientes($page, $per, $order, $dir);
+        $nivelDesc    = $miEquipo->getNivelElo();
+        $deportividad = $miEquipo->promediarDeportividad();
+        $cantidadDeVotos = count($comentariosPag);
+        $historial = false;
+        
+        if($miEquipo->contieneHistorial()){
+            $ultimoPartidoJugado = $miEquipo->getHistorialPartidos(1,1)[0];
+            $soyGanador = $ultimoPartidoJugado->soyEquipoGanador($miEquipo);
+            $equipoLocal  = $miEquipo;
+            $equipoRival  = $ultimoPartidoJugado->getEquipoRival($equipoLocal);
+            $eloChange = CalculadoraDeElo::calcularCambioElo($ultimoPartidoJugado, $equipoLocal);
+            $historial = true;
+        }
+
+        require $this->viewsDir . 'dashboard.php';
+    }
+
+    // obtiene el equipo que le pertenece a la persona que se logeo
+    private function getEquipo(int $id_equipo): Equipo {
+
+        $equipoCollection = $this->getModel(EquipoCollection::class);
+
+        $equipo_data_bd = $equipoCollection->getById($id_equipo)[0];
+
+        $equipo = $this->getModel(Equipo::class);
+
+        $equipo->set($equipo_data_bd);
+
+        return $equipo;
+    }
+    
 }
 ?>

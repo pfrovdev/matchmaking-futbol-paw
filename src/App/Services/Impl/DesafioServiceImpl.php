@@ -42,7 +42,7 @@ class DesafioServiceImpl implements DesafioService
 
     public function acceptDesafio(int $desafioId): void
     {
-        $d = $this->dm->findById($desafioId);
+        $d = $this->dm->findById(['id_desafio' => $desafioId]);
         if (! $d) {
             throw new \InvalidArgumentException("Desafío $desafioId no existe");
         }
@@ -61,7 +61,7 @@ class DesafioServiceImpl implements DesafioService
 
     public function rejectDesafio(int $desafioId): void
     {
-        $d = $this->dm->findById($desafioId);
+        $d = $this->dm->findById(['id_desafio' => $desafioId]);
         if (! $d) {
             throw new \InvalidArgumentException("Desafío $desafioId no existe");
         }

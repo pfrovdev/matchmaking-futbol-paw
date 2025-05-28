@@ -24,9 +24,9 @@ class DesafioDataMapper extends DataMapper
         return array_map(fn($r) => $this->map($r), $rows);
     }
 
-    public function findById(int $id): ?Desafio
+    public function findById(array $params): ?Desafio
     {
-        $row = parent::findById($id);
+        $row = parent::findById($params);
         return $row ? $this->map($row) : null;
     }
 
