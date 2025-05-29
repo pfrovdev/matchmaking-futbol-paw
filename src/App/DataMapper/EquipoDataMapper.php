@@ -44,14 +44,17 @@ class EquipoDataMapper extends DataMapper
         return $row ? $this->map($row) : null;
     }
 
-    public function findByEmail(string $email)
+    public function findByEmail(string $email): ?Equipo
     {
-        return $this->map($this->findBy(['email' => $email])[0]);
+        if($this->existsByEmail($email)){
+            return $this->map($this->findBy(['email' => $email])[0]);
+        }
+        return null;
     }
 
-    public function existsByEmail(string $email)
+    public function existsByEmail(string $email): bool
     {
-        return $this->findBy(['email' => $email]) ?? false;
+        return ! empty($this->findBy(['email' => $email]));
     }
 
     public function findAllPaginated(array $selectParams, string $orderBy = 'id_nivel_elo', string $direction = 'DESC'): array

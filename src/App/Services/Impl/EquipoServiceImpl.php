@@ -53,7 +53,7 @@ class EquipoServiceImpl implements EquipoService
         return $typeTeams;
     }
 
-    public function getByEmail(string $email): Equipo
+    public function getByEmail(string $email): ?Equipo
     {
         return $this->equipoDataMapper->findByEmail($email);
     }
