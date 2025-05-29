@@ -8,4 +8,5 @@ interface PartidoService
 {
     public function crearPendienteParaDesafio(Desafio $d): int;
     public function finalizarPartido(int $partidoId): void;
+    function getHistorialPartidosByIdEquipo($idEquipo): array;
 }

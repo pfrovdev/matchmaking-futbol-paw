@@ -2,14 +2,15 @@
 
 namespace Paw\App\DataMapper;
 
+use Monolog\Logger;
 use Paw\App\Models\Partido;
 use Paw\Core\Database\QueryBuilder;
 
 class PartidoDataMapper extends DataMapper
 {
-    public function __construct(QueryBuilder $qb)
+    public function __construct(QueryBuilder $qb, Logger $logger)
     {
-        parent::__construct($qb, 'Partido');
+        parent::__construct($qb, 'Partido', $logger);
     }
 
     public function map(array $row): Partido
@@ -28,6 +29,11 @@ class PartidoDataMapper extends DataMapper
     {
         $row = parent::findById($params);
         return $row ? $this->map($row) : null;
+    }
+
+    public function findAllByEquipoAndFinalizado(int $idEquipo, int $finalizado)
+    {
+        return $this->mapAll($this->findBy(['id_equipo' => $idEquipo, 'finalizado' => $finalizado]));
     }
 
     public function insertPartido(Partido $p): int

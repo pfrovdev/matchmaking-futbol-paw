@@ -73,7 +73,7 @@ class Router {
     public function call($controller, $method)
     {
         $controller_name = "Paw\\App\\Controllers\\{$controller}";
-        $objController = new $controller_name($this->logger,$this->container);
+        $objController = $this->container->get($controller_name);
         $this->logger->info("Llamando al controlador: {$controller} y método: {$method}");
         $objController->$method();
     }

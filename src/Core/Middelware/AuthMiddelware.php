@@ -13,20 +13,13 @@ class AuthMiddelware
     private int $refreshTTL;
     private int $refreshWindow;
 
-    public function __construct()
+    public function __construct(TokenService $tokenService, int $accessTTL, int $refreshTTL, int $refreshWindow) 
     {
-        # $storage = new JsonFileStorage(__DIR__ . '/../blacklist.json');
-        $storage = new RedisStorage(
-            getenv('REDIS_HOST'),
-            (int)getenv('REDIS_PORT'),
-            'jwt:blacklist:'
-        );
-        $this->tokenService = new TokenService($storage);
-        $this->accessTTL = (int) getenv('JWT_ACCESS_TTL');
-        $this->refreshTTL = (int) getenv('JWT_REFRESH_TTL');
-        $this->refreshWindow = (int) getenv('JWT_REFRESH_WINDOW');
+        $this->tokenService = $tokenService;
+        $this->accessTTL = $accessTTL;
+        $this->refreshTTL = $refreshTTL;
+        $this->refreshWindow = $refreshWindow;
     }
-
     public function verificar(array $roles = []): object
     {
         $accessToken = $_COOKIE['access_token'] ?? null;

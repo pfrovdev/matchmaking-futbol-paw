@@ -1,11 +1,12 @@
 <?php
 namespace Paw\App\DataMapper;
 
+use Monolog\Logger;
 use Paw\Core\Database\QueryBuilder;
 
 class TipoEquipoDataMapper extends DataMapper{
-    public function __construct(QueryBuilder $qb){
-        parent::__construct($qb, 'TipoEquipo');
+    public function __construct(QueryBuilder $qb, Logger $logger){
+        parent::__construct($qb, 'TipoEquipo', $logger);
     }
 
     public function map(array $row): object{

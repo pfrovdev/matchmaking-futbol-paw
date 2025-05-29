@@ -12,24 +12,24 @@ use DateTime;
 
 class PartidoServiceImpl implements PartidoService
 {
-    private PartidoDataMapper $pdm;
-    private EstadoPartidoDataMapper $epdm;
+    private PartidoDataMapper $partidoDataMapper;
+    private EstadoPartidoDataMapper $estadoPartidoDataMapper;
 
-    public function __construct(QueryBuilder $qb)
+    public function __construct(PartidoDataMapper $partidoDataMapper, EstadoPartidoDataMapper $estadoPartidoDataMapper)
     {
-        $this->pdm  = new PartidoDataMapper($qb);
-        $this->epdm = new EstadoPartidoDataMapper($qb);
+        $this->partidoDataMapper  = $partidoDataMapper;
+        $this->estadoPartidoDataMapper = $estadoPartidoDataMapper;
     }
 
     public function crearPendienteParaDesafio(Desafio $d): int
     {
         $fechaPendiente = (new DateTime())->format('Y-m-d H:i:s');
-        $idPendiente = $this->epdm->findIdByCode('pendiente');
+        $idPendiente = $this->estadoPartidoDataMapper->findIdByCode('pendiente');
 
         $p = new Partido();
         $p->iniciarPendiente($fechaPendiente, $idPendiente);
 
-        $newId = $this->pdm->insertPartido($p);
+        $newId = $this->partidoDataMapper->insertPartido($p);
         $p->set(['id_partido' => $newId]);
 
         return $newId;
@@ -37,15 +37,21 @@ class PartidoServiceImpl implements PartidoService
 
     public function finalizarPartido(int $partidoId): void
     {
-        $p = $this->pdm->findById(['id_partido' => $partidoId]);
+        $p = $this->partidoDataMapper->findById(['id_partido' => $partidoId]);
         if (! $p) {
             throw new \InvalidArgumentException("Partido $partidoId no existe");
         }
 
         $fechaFinal = (new DateTime())->format('Y-m-d H:i:s');
-        $idFinal = $this->epdm->findIdByCode('finalizado');
+        $idFinal = $this->estadoPartidoDataMapper->findIdByCode('finalizado');
 
         $p->finalizar($fechaFinal, $idFinal);
-        $this->pdm->updatePartido($p);
+        $this->partidoDataMapper->updatePartido($p);
+    }
+
+    public function getHistorialPartidosByIdEquipo($idEquipo): array
+    {
+        $partidos = $this->partidoDataMapper->findAllByEquipoAndFinalizado($idEquipo, 1);
+        return $partidos;
     }
 }

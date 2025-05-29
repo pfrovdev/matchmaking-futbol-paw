@@ -6,7 +6,8 @@ use Exception;
 use Paw\Core\AbstractModel;
 use Paw\App\Models\Equipo;
 
-class Desafio extends AbstractModel{
+class Desafio extends AbstractModel
+{
     public $table = "Desafio";
     public $fields = [
         "id_desafio" => null,
@@ -18,32 +19,49 @@ class Desafio extends AbstractModel{
         "id_partido" => null,
     ];
 
-    public function setIdDesafio(int $idDesafio){
+    public function setIdDesafio(int $idDesafio)
+    {
         $this->fields["id_desafio"] = $idDesafio;
     }
 
-    public function setIdEquipoDesafiante(int $equipoDesafianteId){
+    public function setIdEquipoDesafiante(int $equipoDesafianteId)
+    {
         $this->fields["id_equipo_desafiante"] = $equipoDesafianteId;
     }
 
-    public function setIdEquipoDesafiado(int $equipoDesafiadoId){
+    public function setIdEquipoDesafiado(int $equipoDesafiadoId)
+    {
         $this->fields["id_equipo_desafiado"] = $equipoDesafiadoId;
     }
 
-    public function setFechaCreacion(string $fechaCreacion){
+    public function setFechaCreacion(string $fechaCreacion)
+    {
         $this->fields["fecha_creacion"] = $fechaCreacion;
     }
 
-    public function setFechaAceptacion(string $fechaAceptacion){
+    public function setFechaAceptacion(string $fechaAceptacion)
+    {
         $this->fields["fecha_creacion"] = $fechaAceptacion;
     }
 
-    public function setIdEstadoDesafio(int $idEstadoDesafio){
+    public function setIdEstadoDesafio(int $idEstadoDesafio)
+    {
         $this->fields["id_estado_desafio"] = $idEstadoDesafio;
     }
 
-    public function setIdPartido(int $idPartido){
+    public function setIdPartido(int $idPartido)
+    {
         $this->fields["id_partido"] = $idPartido;
+    }
+
+    public function getIdDesafio(): ?int
+    {
+        return $this->fields["id_desafio"];
+    }
+
+    public function getIdEquipoDesafiante(): ?int
+    {
+        return $this->fields["id_equipo_desafiante"];
     }
 
     public function set(array $values)
@@ -59,7 +77,7 @@ class Desafio extends AbstractModel{
         }
     }
 
-     public function aceptar(string $fechaAceptacion, int $nuevoEstado): void
+    public function aceptar(string $fechaAceptacion, int $nuevoEstado): void
     {
         $this->setFechaAceptacion($fechaAceptacion);
         $this->setIdEstadoDesafio($nuevoEstado);
@@ -75,5 +93,3 @@ class Desafio extends AbstractModel{
         $this->setIdPartido($partidoId);
     }
 }
-
-?>

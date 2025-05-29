@@ -1,4 +1,5 @@
 <?php
+
 namespace Paw\App\Services\Impl;
 
 use Paw\App\DataMapper\DesafioDataMapper;
@@ -8,23 +9,31 @@ use Paw\App\Services\PartidoService;
 use Paw\App\Models\Desafio;
 use Paw\Core\Database\QueryBuilder;
 use DateTime;
+use Paw\App\DataMapper\EquipoDataMapper;
+use Paw\App\Dtos\DesafioDto;
+use Paw\App\Models\Equipo;
+use Paw\App\Services\EquipoService;
+use Paw\Core\Container;
 
 class DesafioServiceImpl implements DesafioService
 {
-    private DesafioDataMapper $dm;
-    private EstadoDesafioDataMapper $edm;
-    private PartidoService $partidoSrv;
+    private DesafioDataMapper $desafioDataMapper;
+    private EstadoDesafioDataMapper $estadoDesafioDataMapper;
+    private PartidoService $partidoService;
+    private EquipoService $equipoService;
 
-    public function __construct(QueryBuilder $qb, PartidoService $partidoSrv) {
-        $this->dm = new DesafioDataMapper($qb);
-        $this->edm = new EstadoDesafioDataMapper($qb);
-        $this->partidoSrv= $partidoSrv;
+    public function __construct(DesafioDataMapper $desafioDataMapper, EstadoDesafioDataMapper $estadoDesafioDataMapper, PartidoService $partidoService, EquipoService $equipoService)
+    {
+        $this->desafioDataMapper = $desafioDataMapper;
+        $this->estadoDesafioDataMapper = $estadoDesafioDataMapper;
+        $this->partidoService = $partidoService;
+        $this->equipoService = $equipoService;
     }
 
     public function createDesafio(int $eqA, int $eqB): Desafio
     {
         $fecha = (new DateTime())->format('Y-m-d H:i:s');
-        $idPendiente = $this->edm->findIdByCode('pendiente');
+        $idPendiente = $this->estadoDesafioDataMapper->findIdByCode('pendiente');
 
         $d = new Desafio();
         $d->set([
@@ -34,40 +43,70 @@ class DesafioServiceImpl implements DesafioService
             'id_estado_desafio'    => $idPendiente,
         ]);
 
-        $newId = $this->dm->insertDesafio($d);
+        $newId = $this->desafioDataMapper->insertDesafio($d);
         $d->set(['id_desafio' => $newId]);
 
         return $d;
     }
 
-    public function acceptDesafio(int $desafioId): void
+    public function acceptDesafio(int $desafioId): Desafio
     {
-        $d = $this->dm->findById(['id_desafio' => $desafioId]);
+        $d = $this->desafioDataMapper->findById(['id_desafio' => $desafioId]);
         if (! $d) {
             throw new \InvalidArgumentException("Desafío $desafioId no existe");
         }
 
         $fecha = (new DateTime())->format('Y-m-d H:i:s');
-        $idAcepto = $this->edm->findIdByCode('aceptado');
+        $idAcepto = $this->estadoDesafioDataMapper->findIdByCode('aceptado');
         $d->aceptar($fecha, $idAcepto);
 
-        $this->dm->updateDesafio($d);
+        $this->desafioDataMapper->updateDesafio($d);
 
-        $partidoId = $this->partidoSrv->crearPendienteParaDesafio($d);
+        $partidoId = $this->partidoService->crearPendienteParaDesafio($d);
         $d->asignarPartido($partidoId);
 
-        $this->dm->updateDesafio($d);
+        $this->desafioDataMapper->updateDesafio($d);
+
+        return $d;
     }
 
-    public function rejectDesafio(int $desafioId): void
+    public function rejectDesafio(int $desafioId): Desafio
     {
-        $d = $this->dm->findById(['id_desafio' => $desafioId]);
+        $d = $this->desafioDataMapper->findById(['id_desafio' => $desafioId]);
         if (! $d) {
             throw new \InvalidArgumentException("Desafío $desafioId no existe");
         }
-        $idRechazo = $this->edm->findIdByCode('rechazado');
+        $idRechazo = $this->estadoDesafioDataMapper->findIdByCode('rechazado');
         $d->rechazar($idRechazo);
 
-        $this->dm->updateDesafio($d);
+        $this->desafioDataMapper->updateDesafio($d);
+        return $d;
+    }
+
+    public function getDesafiosByEquipoAndEstadoDesafio(int $equipoId, string $estado): array
+    {
+        $estadoId = $this->estadoDesafioDataMapper->findIdByCode($estado);
+        if (!$estadoId) {
+            throw new \RuntimeException("El estado $estado no existe");
+        }
+
+        $equipo = $this->equipoService->getEquipoById($equipoId);
+
+        if (!$equipo) {
+            throw new \RuntimeException("Equipo $equipoId no encontrado");
+        }
+
+        $desafios = $this->desafioDataMapper->findByEquipoAndEstado($equipoId, $estadoId);
+
+        $desafiosDtos = [];
+
+        foreach ($desafios as $desafio) {
+            $deportividadEquipoDesafiante = $this->equipoService->getDeportividadEquipo($desafio->getEquipoDesafiante());
+            $descripcionEloEquipoDesafiante = $this->equipoService->getDescripcionNivelEloById($desafio->getEquipoDesafiante());
+            $desafioDto = new DesafioDto($equipo, $desafio, $deportividadEquipoDesafiante, $descripcionEloEquipoDesafiante);
+            $desafiosDtos[] = $desafioDto;
+        }
+
+        return $this->desafioDataMapper->findByEquipoAndEstado($equipoId, $estadoId);
     }
 }

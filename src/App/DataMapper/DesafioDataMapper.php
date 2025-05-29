@@ -2,14 +2,15 @@
 
 namespace Paw\App\DataMapper;
 
+use Monolog\Logger;
 use Paw\App\Models\Desafio;
 use Paw\Core\Database\QueryBuilder;
 
 class DesafioDataMapper extends DataMapper
 {
-    public function __construct(QueryBuilder $qb)
+    public function __construct(QueryBuilder $qb, Logger $logger)
     {
-        parent::__construct($qb, 'Desafio');
+        parent::__construct($qb, 'Desafio', $logger);
     }
 
     public function map(array $row): Desafio
@@ -28,6 +29,12 @@ class DesafioDataMapper extends DataMapper
     {
         $row = parent::findById($params);
         return $row ? $this->map($row) : null;
+    }
+
+    public function findByEquipoAndEstado(int $equipoId, int $estadoId): array
+    {
+        $rows = $this->findBy(["id_equipo_desafiado" => $equipoId, "id_estado_desafio" => $estadoId]);
+        return $this->mapAll($rows);
     }
 
     public function insertDesafio(Desafio $d): int

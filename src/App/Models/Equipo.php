@@ -134,7 +134,7 @@ class Equipo extends AbstractModel
         $this->fields["id_rol"] = $id;
     }
 
-    public function getIdEquipo() {
+    public function getIdEquipo():  ?int {
         return $this->fields["id_equipo"];
     }
 
@@ -142,11 +142,11 @@ class Equipo extends AbstractModel
         return $this->fields["email"];
     }
 
-    public function getNombre() {
+    public function getNombre():  ?string {
         return $this->fields["nombre"];
     }
 
-    public function getContrasena() {
+    public function getContrasena(): ?string {
         return $this->fields["contrasena"];
     }
 
@@ -158,7 +158,7 @@ class Equipo extends AbstractModel
         return $this->fields["ubicacion"];
     }
 
-    public function getLema() {
+    public function getLema():   ?string {
         return $this->fields["lema"];
     }
 
@@ -174,7 +174,7 @@ class Equipo extends AbstractModel
         return $this->fields["fecha_creacion"];
     }
 
-    public function getUrlFotoPerfil() {
+    public function getUrlFotoPerfil(): ?string {
         return $this->fields["url_foto_perfil"];
     }
 
@@ -316,226 +316,6 @@ class Equipo extends AbstractModel
             }
         }
         return $todosLosEquipos;
-    }
-    
-    public function getComentarios(int $page = 1, int $perPage = 5, ?string $orderBy = 'fecha_creacion', ?string $direction = 'DESC'): array
-    {
-        $comentarioModel = new Comentario();
-        $qb = $this->getQueryBuilder();
-    
-        $offset = ($page - 1) * $perPage;
-        $data = $qb->select(
-            $comentarioModel->table,
-            ['id_equipo_comentado' => $this->fields['id_equipo']],
-            $orderBy,
-            $direction,
-            $perPage,
-            $offset
-        );
-    
-        $comentarios = [];
-    
-        foreach ($data as $row) {
-            $comentario = new Comentario($qb);
-            $comentario->set($row);
-            $comentarios[] = $comentario;
-        }
-    
-        return $comentarios;
-    }
-    
-    public function promediarDeportividad(): float {
-        $qb = $this->getQueryBuilder();
-        $comentarioModel = new Comentario();
-    
-        $data = $qb->select(
-            $comentarioModel->table, 
-            ['id_equipo_comentado' => $this->fields['id_equipo']]
-        );
-    
-        if (count($data) === 0) {
-            return 0.0;
-        }
-    
-        $total = 0;
-        foreach ($data as $row) {
-            $comentario = new Comentario();
-            $comentario->set($row);
-            $total += $comentario->fields['deportividad'];
-        }
-    
-        return $total / count($data);
-    }
-
-    public function getDesafiosPendientes(int $page = 1, int $perPage = 5, string $orderBy = 'fecha_creacion', string $direction = 'DESC'): array {
-        $desafioModel = new Desafio();
-        $qb = $this->getQueryBuilder();
-        $estadoDesafio = new EstadoDesafio($qb);
-        $idPendiente = $estadoDesafio->select(["descripcion_corta" => "pendiente"])[0]['id_estado_desafio'];
-        $offset = ($page - 1) * $perPage;
-        $data = $qb->select(
-            $desafioModel->table, 
-            ['id_equipo_desafiado' => $this->fields['id_equipo'], 'id_estado_desafio' => $idPendiente],
-            $orderBy, 
-            $direction, 
-            $perPage, 
-            $offset
-        );
-
-        $result = [];
-        foreach ($data as $row) {
-            $desafio = new Desafio($qb);
-            $desafio->set($row);
-            $result[] = $desafio;
-        }
-
-        return $result;
-    }
-
-    public function getNivelElo(): string {
-        $qb = $this->getQueryBuilder();
-        $nivelElo = new NivelElo();
-        
-        $data = $qb->select(
-            $nivelElo->table, 
-            ['id_nivel_elo' => $this->fields['id_nivel_elo']]
-        );
-        
-        if (empty($data)) {
-            throw new Exception("Nivel Elo no encontrado para el equipo");
-        }
-        
-        $nivelElo->set($data[0]);
-        return (string)($nivelElo->fields['descripcion'] ?? "Sin descripción");
-    }
-
-    public function insertarDesafio($miEquipo, $equipoDesafiado){
-        $qb = $this->getQueryBuilder();
-        $model = new Desafio($qb);
-        $params = [
-            "id_equipo_desafiante" => $miEquipo,
-            "id_equipo_desafiado" => $equipoDesafiado,
-            "fecha_creacion" => null,
-            "fecha_aceptacion" => null,
-            "id_estado_desafio" => $this->getEstadoDesafioInicial(),
-            "id_partido" => null,
-        ];
-
-        $insertedId = $model->saveNewTeam($params);
-        return $insertedId;
-    }
-
-    public function getEquipo($id_equipo): Equipo{
-        $qb = $this->getQueryBuilder();
-        $equipo = new Equipo($qb);
-        $newEquipo = $qb->select(
-            $equipo->table,
-            ['id_equipo' => $id_equipo]
-        );
-        $equipo->set($newEquipo[0]);
-        return $equipo;
-    }
-
-    public function getEstadoDesafioInicial(){
-        $qb = $this->getQueryBuilder();
-        $modeloDesafio = new EstadoDesafio($qb);
-        $estadoDesafio = $qb->select(
-            $modeloDesafio->table,
-            ['descripcion_corta' => 'pendiente']
-        );
-        return $estadoDesafio[0]['id_estado_desafio'];
-    }
-
-    public function getHistorialPartidos(int $page = 1, int $perPage = 5, string $orderBy = 'fecha_jugado', string $direction = 'DESC'): array{
-        $qb = $this->getQueryBuilder();
-        $model = new ResultadoPartido($qb);
-        $equipoId = $this->fields['id_equipo'];
-
-        $rowsPerdidos = $qb->select(
-            $model->table,
-            ['id_equipo_perdedor' => $equipoId],
-            $orderBy,
-            $direction
-        );
-        $rowsGanados  = $qb->select(
-            $model->table,
-            ['id_equipo_ganador'  => $equipoId],
-            $orderBy,
-            $direction
-        );
-        $allRows = array_merge($rowsPerdidos, $rowsGanados);
-        usort($allRows, function (array $a, array $b) use ($orderBy, $direction) {
-            $dtA = new \DateTime($a[$orderBy]);
-            $dtB = new \DateTime($b[$orderBy]);
-            if ($dtA == $dtB) {
-                return 0;
-            }
-            $cmp = ($dtA < $dtB) ? -1 : 1;
-            return $direction === 'DESC' ? -$cmp : $cmp;
-        });
-
-        $offset = ($page - 1) * $perPage;
-        $slice  = array_slice($allRows, $offset, $perPage);
-
-        $result = [];
-        foreach ($slice as $row) {
-            $rp = new ResultadoPartido($qb);
-            $rp->set($row);
-            $result[] = $rp;
-        }
-        return $result;
-    }
-
-    public function getTipoEquipo(): string {
-        $qb = $this->getQueryBuilder();
-        $tipoEquipoModel = new TipoEquipo();
-        
-        $data = $qb->select(
-            $tipoEquipoModel->table, 
-            ['id_tipo_equipo' => $this->fields['id_tipo_equipo']]
-        );
-
-        if (empty($data)) {
-            throw new Exception("Nivel Elo no encontrado para el equipo");
-        }
-        
-        $tipoEquipoModel->set($data[0]);
-
-        return (string)($tipoEquipoModel->fields['tipo'] ?? "Sin descripción");
-    }
-
-    public function contieneHistorial(): bool{
-        return count($this->getHistorialPartidos(1,1)) > 0;
-    }
-
-    public function aceptarDesafio(int $desafioId): Desafio{
-        $qb = $this->getQueryBuilder();
-        $desafioModel = new Desafio($qb);
-        $data = $qb->select(
-            $desafioModel->table,
-            ['id_desafio' => $desafioId]
-        );
-        if (empty($data)) {
-            throw new Exception("Desafio no encontrado");
-        }
-        $desafioModel->set($data[0]);
-        $desafioModel->aceptar();
-        return $desafioModel;
-    }
-
-    public function rechazarDesafio(int $desafioId): Desafio{
-        $qb = $this->getQueryBuilder();
-        $desafioModel = new Desafio($qb);
-        $data = $qb->select(
-            $desafioModel->table,
-            ['id_desafio' => $desafioId]
-        );
-        if (empty($data)) {
-            throw new Exception("Desafio no encontrado");
-        }
-        $desafioModel->set($data[0]);
-        $desafioModel->rechazar();
-        return $desafioModel;
     }
 
     public function __toString(): string

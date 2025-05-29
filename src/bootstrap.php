@@ -44,7 +44,7 @@ $request = new Request;
 // Instancio el contenedor para inyectar las dependencias
 $container = new Container();
 // se las inyecto
-ContainerConfig::configure($container);
+ContainerConfig::configure($container, $log);
 
 // Cargamos rutas desde config
 $router = new Router();

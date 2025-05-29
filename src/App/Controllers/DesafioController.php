@@ -1,92 +1,79 @@
 <?php
 namespace Paw\App\Controllers;
 
-use Paw\App\Commons\NotificadorEmail;
-use Paw\App\Models\Equipo;
+use Monolog\Logger;
 use Paw\App\Services\DesafioService;
+use Paw\App\Services\EquipoService;
 use Paw\App\Services\NotificationService;
 use Paw\Core\AbstractController;
+use Paw\Core\Container;
+use Paw\Core\Middelware\AuthMiddelware;
 
 class DesafioController extends AbstractController
 {
     private DesafioService $desafioService;
     private NotificationService $notificationService;
+    private EquipoService $equipoService;
 
-    public function __construct()
+    public function __construct(Logger $logger, DesafioService $desafioService, NotificationService $notificationService, EquipoService $equipoService, AuthMiddelware $authMiddelware)
     {
-        parent::__construct();
-        $this->desafioService = $this->getService(DesafioService::class);
-        $this->notificationService = $this->getService(NotificationService::class);
+        parent::__construct($logger,$authMiddelware);
+        $this->desafioService = $desafioService;
+        $this->notificationService = $notificationService;
+        $this->equipoService = $equipoService;
     }
 
-    public function aceptDesafio(): void
+
+    public function getDesafiosPendientes(): void
     {
-        $jwtData = $this->auth->verificar(['ADMIN','USUARIO']);
-        $miEquipo = $this->getEquipo($jwtData->id_equipo);
+        $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $equipo = $this->equipoService->getEquipoById($userData->id_equipo);
+        $desafios = $this->desafioService->getDesafiosByEquipoAndEstadoDesafio(
+            $equipo->getIdEquipo(),
+            'pendiente'
+        );
 
-        $equipoId  = (int) ($_POST['id_equipo']  ?? 0);
+        require $this->viewsDir . 'desafios-pendientes.php';
+    }
+
+    public function aceptarDesafio(): void
+    {
+        $userData = $this->auth->verificar(['ADMIN','USUARIO']);
+        $equipo = $this->equipoService->getEquipoById($userData->id_equipo);
+
         $desafioId = (int) ($_POST['id_desafio'] ?? 0);
-
-        if ($miEquipo->fields['id_equipo'] !== $equipoId) {
-            echo "No tienes permiso para aceptar este desafío";
-            return;
-        }
-
         $desafio = $this->desafioService->acceptDesafio($desafioId);
 
-        $equipoDesafiante = $this->getEquipo(
-            $desafio->fields['id_equipo_desafiante']
+        // notificar
+        $desafiante = $this->equipoService->getEquipoById(
+            $desafio->getIdDesafio()
         );
-
         $this->notificationService->notifyDesafioAccepted(
-            $miEquipo,
-            $equipoDesafiante,
+            $equipo,
+            $desafiante,
             $desafio
         );
 
-        header("Location: /dashboard");
+        header('Location: /dashboard');
     }
 
-    public function rejectDesafio(): void
+    public function rechazarDesafio(): void
     {
-        $jwtData = $this->auth->verificar(['ADMIN','USUARIO']);
-        $miEquipo = $this->getEquipo($jwtData->id_equipo);
+        $userData = $this->auth->verificar(['ADMIN','USUARIO']);
+        $equipo = $this->equipoService->getEquipoById($userData->id_equipo);
 
-        $equipoId = (int) ($_POST['id_equipo']  ?? 0);
         $desafioId = (int) ($_POST['id_desafio'] ?? 0);
-
-        if ($miEquipo->fields['id_equipo'] !== $equipoId) {
-            echo "No tienes permiso para rechazar este desafío";
-            return;
-        }
-
         $desafio = $this->desafioService->rejectDesafio($desafioId);
 
-        $equipoDesafiante = $this->getEquipo(
-            $desafio->fields['id_equipo_desafiante']
+        $desafiante = $this->equipoService->getEquipoById(
+            $desafio->getIdEquipoDesafiante()
         );
-
         $this->notificationService->notifyDesafioRejected(
-            $miEquipo,
-            $equipoDesafiante,
+            $equipo,
+            $desafiante,
             $desafio
         );
 
-        header("Location: /dashboard");
-    }
-
-    private function getEquipo(int $idEquipo): Equipo
-    {
-        $collection = $this->getModel(\Paw\App\Models\EquipoCollection::class);
-        $datosEquipo = $collection->getById($idEquipo)[0] ?? null;
-
-        if (! $datosEquipo) {
-            throw new \RuntimeException("Equipo $idEquipo no encontrado");
-        }
-
-        $equipo = $this->getModel(Equipo::class);
-        $equipo->set($datosEquipo);
-
-        return $equipo;
+        header('Location: /dashboard');
     }
 }
