@@ -2,36 +2,35 @@
 
 namespace Paw\App\Controllers;
 
+use Monolog\Logger;
 use Paw\Core\JWT\Services\TokenService;
 use Paw\Core\AbstractController;
-use Paw\Core\JWT\JsonFileStorage;
 use Paw\App\Models\Equipo;
+use Paw\App\Services\EquipoService;
+use Paw\Core\Middelware\AuthMiddelware;
 
 class AuthController extends AbstractController
 {
     private TokenService $tokenService;
+    private EquipoService  $equipoService;
 
-    public function __construct($log)
-    {
-        parent::__construct($log);
-        $storage = new JsonFileStorage(__DIR__ . '/../../Core/JWT/blacklist.json');
-        $this->tokenService = new TokenService($storage);
+    public function __construct( Logger $logger, TokenService $tokenService, EquipoService $equipoService, AuthMiddelware $auth) {
+        parent::__construct($logger, $auth);
+        $this->tokenService = $tokenService;
+        $this->equipoService = $equipoService;
     }
 
     public function login(): void
     {
-        session_start();
         $email    = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
-        $model    = $this->getModel(Equipo::class);
-        $users    = $model->select(['email' => $email]);
+        $user = $this->equipoService->getByEmail($email);
 
-        if ($users && password_verify($password, $users[0]['contrasena'])) {
-            $user = $users[0];
+        if ($user && password_verify($password, $user->getContrasena())) {
             $data = [
-                'id_equipo' => $user['id_equipo'],
-                'email'     => $user['email'],
-                'role'      => $user['id_rol'] == 2 ? 'USUARIO' : 'ADMIN',
+                'id_equipo' => $user->getIdEquipo(),
+                'email'     => $user->getEmail(),
+                'role'      => $user->getIdRol() == 2 ? 'USUARIO' : 'ADMIN',
             ];
 
             $accessTtl  = (int) getenv('JWT_ACCESS_TTL');
@@ -60,7 +59,7 @@ class AuthController extends AbstractController
             }
             setcookie($cookie, '', ['expires'=>time()-3600,'path'=>'/']);
         }
-        session_start(); session_destroy();
+        session_destroy();
         header('Location: /login');
         exit;
     }

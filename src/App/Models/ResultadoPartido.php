@@ -97,57 +97,81 @@ class ResultadoPartido extends AbstractModel
             }
         }
     }
-
-    public function select(array $params){
-        $queryBuilder = $this->getQueryBuilder();
-        $result = $queryBuilder->select($this->table, $params);
-        return $result;
+    public function getIdResultado(): ?int
+    {
+        return $this->fields['id_resultado'];
     }
 
-    public function saveNewTeam(array $params): ?string{
-        $queryBuilder = $this->getQueryBuilder();
-        return $queryBuilder->insert($this->table, $params);
+    public function getIdPartido(): ?int
+    {
+        return $this->fields['id_partido'];
     }
 
-    public function selectLike(array $params): array{
-        $queryBuilder = $this->getQueryBuilder();
-        $result = $queryBuilder->selectLike($this->table, $params);
-        return $result;
+    public function getIdEquipoGanador(): ?int
+    {
+        return $this->fields['id_equipo_ganador'];
     }
 
-    public function getEquipoGanador(): Equipo{
-        $qb = $this->getQueryBuilder(); 
-        $equipoGanador = new Equipo();
-        $data = $qb->select(
-            $equipoGanador->table,
-            ['id_equipo' => $this->fields['id_equipo_ganador']]
-        );
-        if (!empty($data)) {
-            $equipoGanador->set($data[0]);
-        } 
-        return $equipoGanador;
+    public function getIdEquipoPerdedor(): ?int
+    {
+        return $this->fields['id_equipo_perdedor'];
     }
 
-    public function getEquipoPerdedor(): Equipo{
-        $qb = $this->getQueryBuilder(); 
-        $equipoPerdedor = new Equipo();
-        $data = $qb->select(
-            $equipoPerdedor->table,
-            ['id_equipo' => $this->fields['id_equipo_perdedor']]
-        );
-        if (!empty($data)) {
-            $equipoPerdedor->set($data[0]);
-        } 
-        return $equipoPerdedor;
+    public function getGolesEquipoGanador(): ?int
+    {
+        return $this->fields['goles_equipo_ganador'];
     }
 
-    public function getEquipoRival(Equipo $equipo): Equipo{
-        return $this->soyEquipoGanador($equipo) ? $this->getEquipoPerdedor() : $this->getEquipoGanador();
+    public function getGolesEquipoPerdedor(): ?int
+    {
+        return $this->fields['goles_equipo_perdedor'];
     }
 
-    public function soyEquipoGanador(Equipo $equipo) : bool{
-        return $equipo->fields['id_equipo'] == $this->fields['id_equipo_ganador'];
+    public function getEloInicialGanador(): ?int
+    {
+        return $this->fields['elo_inicial_ganador'];
     }
+
+    public function getEloFinalGanador(): ?int
+    {
+        return $this->fields['elo_final_ganador'];
+    }
+
+    public function getEloInicialPerdedor(): ?int
+    {
+        return $this->fields['elo_inicial_perdedor'];
+    }
+
+    public function getEloFinalPerdedor(): ?int
+    {
+        return $this->fields['elo_final_perdedor'];
+    }
+
+    public function getTotalAmarillasGanador(): ?int
+    {
+        return $this->fields['total_amarillas_ganador'];
+    }
+
+    public function getTotalAmarillasPerdedor(): ?int
+    {
+        return $this->fields['total_amarillas_perdedor'];
+    }
+
+    public function getTotalRojasGanador(): ?int
+    {
+        return $this->fields['total_rojas_ganador'];
+    }
+
+    public function getTotalRojasPerdedor(): ?int
+    {
+        return $this->fields['total_rojas_perdedor'];
+    }
+
+    public function getFechaJugado(): ?string
+    {
+        return $this->fields['fecha_jugado'];
+    }
+
 }
 
 ?>

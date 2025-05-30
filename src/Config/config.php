@@ -26,8 +26,8 @@ return [
         ['path' => '/register-team', 'action' => 'EquipoController@registerTeam', 'method' => 'POST'],
         ['path' =>  '/logout', 'action' => 'AuthController@logout', 'method' => 'GET'],
 
-        ['path' => '/acept-desafio', 'action' => 'DesafioController@aceptDesafio', 'method' => 'POST'],
-        ['path' => '/reject-desafio', 'action' => 'DesafioController@rejectDesafio', 'method' => 'POST']
+        ['path' => '/accept-desafio', 'action' => 'DesafioController@aceptarDesafio', 'method' => 'POST'],
+        ['path' => '/reject-desafio', 'action' => 'DesafioController@rechazarDesafio', 'method' => 'POST']
     ],
 
 

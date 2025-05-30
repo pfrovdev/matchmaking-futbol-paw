@@ -1,6 +1,7 @@
 <?php
 namespace Paw\App\Models;
 
+use Monolog\Logger;
 use Paw\Core\AbstractModel;
 
 class NivelElo extends AbstractModel
@@ -17,6 +18,10 @@ class NivelElo extends AbstractModel
         parent::__construct($queryBuilder);
     }
 
+    public function setIdNivelElo(int $id)
+    {
+        $this->fields['id_nivel_elo'] = $id;
+    }
     public function setDescripcion(string $descripcion){
         $this->fields["descripcion"] = $descripcion;
     }
@@ -51,5 +56,20 @@ class NivelElo extends AbstractModel
                 $this->$method($values[$field]);
             }
         }
+    }
+
+    public function getIdNivelElo(): ?int
+    {
+        return $this->fields['id_nivel_elo'];
+    }
+
+    public function getDescripcion(): ?string
+    {
+        return $this->fields['descripcion'];
+    }
+
+    public function getDescripcionCorta(): ?string
+    {
+        return $this->fields['descripcion_corta'];
     }
 }

@@ -1,8 +1,10 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
-
+session_start();
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Paw\Core\Container;
+use Paw\Core\ContainerConfig;
 use Paw\Core\Router;
 use Paw\Core\Request;
 // use Paw\Core\Database\ConnectionBuilder;
@@ -39,9 +41,15 @@ $connection = $connectionBuilder->make($config['database']);
 
 $request = new Request;
 
+// Instancio el contenedor para inyectar las dependencias
+$container = new Container();
+// se las inyecto
+ContainerConfig::configure($container, $log);
+
 // Cargamos rutas desde config
 $router = new Router();
 $router->setLogger($log);
+$router->setContainer($container);
 
 foreach ($config['routes'] as $route) {
     $router->loadRoutes($route['path'], $route['action'], $route['method']);

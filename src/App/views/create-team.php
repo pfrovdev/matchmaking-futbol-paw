@@ -15,10 +15,9 @@
 
 <body>
   <?php
-  session_start();
-  $errors      = $_SESSION['errors'] ?? [];
-  $equipo_temp = $_SESSION['equipo_temp'] ?? []; 
-  unset($_SESSION['errors']);
+    $errors      = $_SESSION['errors'] ?? [];
+    $equipo_temp = $_SESSION['equipo_temp'] ?? []; 
+    unset($_SESSION['errors']);
   ?>
   <?php require "parts/header-no-account.php"; ?>
 
@@ -69,9 +68,9 @@
                 <input
                   type="radio"
                   name="tipo_equipo"
-                  value="<?= htmlspecialchars($tipo['id_tipo_equipo']) ?>"
+                  value="<?= htmlspecialchars($tipo->id_tipo_equipo) ?>"
                   <?= $first ? 'checked' : '' ?>>
-                <?= htmlspecialchars($tipo['tipo']); ?>
+                <?= htmlspecialchars($tipo->tipo); ?>
               </label>
             <?php $first = false;
             endforeach; ?>
