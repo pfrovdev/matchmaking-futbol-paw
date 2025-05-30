@@ -15,27 +15,28 @@ use Paw\App\DataMapper\ResultadoPartidoDataMapper;
 use Paw\App\Dtos\EquipoBannerDto;
 use Paw\App\Dtos\HistorialPartidoDto;
 use Paw\App\Dtos\ResultadoPartidoDto;
+use Paw\App\Services\EquipoService;
 
 class PartidoServiceImpl implements PartidoService
 {
     private PartidoDataMapper $partidoDataMapper;
     private EstadoPartidoDataMapper $estadoPartidoDataMapper;
     private DesafioDataMapper $desafioDataMapper;
-    private EquipoDataMapper $equipoDataMapper;
+    private EquipoService $equipoService;
     private NivelEloDataMapper $nivelEloDataMapper;
     private ResultadoPartidoDataMapper $resultadoPartidoDataMapper;
     public function __construct(
         PartidoDataMapper $partidoDataMapper,
         EstadoPartidoDataMapper $estadoPartidoDataMapper,
         DesafioDataMapper $desafioDataMapper,
-        EquipoDataMapper $equipoDataMapper,
+        EquipoService $equipoService,
         NivelEloDataMapper $nivelEloDataMapper,
         ResultadoPartidoDataMapper $resultadoPartidoDataMapper
     ) {
         $this->partidoDataMapper = $partidoDataMapper;
         $this->estadoPartidoDataMapper = $estadoPartidoDataMapper;
         $this->desafioDataMapper = $desafioDataMapper;
-        $this->equipoDataMapper = $equipoDataMapper;
+        $this->equipoService = $equipoService;
         $this->nivelEloDataMapper = $nivelEloDataMapper;
         $this->resultadoPartidoDataMapper = $resultadoPartidoDataMapper;
     }
@@ -119,9 +120,7 @@ class PartidoServiceImpl implements PartidoService
         int    $eloInicial,
         int    $eloFinal
     ): ResultadoPartidoDto {
-        $equipo      = $this->equipoDataMapper->findById(['id_equipo' => $idEquipo]);
-        $descElo     = $this->nivelEloDataMapper->findDescripcionById($equipo->getIdNivelElo());
-        $banner      = new EquipoBannerDto($equipo, $descElo);
+        $banner = $this->equipoService->getEquipoBanner($this->equipoService->getEquipoById($idEquipo));
         return new ResultadoPartidoDto(
             $banner,
             $amarillas,

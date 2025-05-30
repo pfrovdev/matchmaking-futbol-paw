@@ -41,7 +41,8 @@ class TipoEquipo extends AbstractModel{
         return null;
     }
 
-    public function getTipo(){
+    public function getTipo(): ?string{
         return $this->fields['tipo'];
     }
+
 }

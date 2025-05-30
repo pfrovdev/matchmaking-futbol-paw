@@ -54,7 +54,7 @@
 
     <div class="card-actions">
       <!-- Aceptar desafío -->
-      <form action="/acept-desafio" method="POST" style="display:inline">
+      <form action="/accept-desafio" method="POST" style="display:inline">
         <input type="hidden" name="id_equipo" value="<?= $challenge['id_equipo'] ?>">
         <input type="hidden" name="id_desafio" value="<?= $challenge['id_desafio'] ?>">
         <button type="submit" class="btn btn-accept">Aceptar desafío</button>

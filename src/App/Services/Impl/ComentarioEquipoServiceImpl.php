@@ -3,22 +3,21 @@
 namespace Paw\App\Services\Impl;
 
 use Paw\App\DataMapper\ComentarioDataMapper;
-use Paw\App\DataMapper\EquipoDataMapper;
 use Paw\App\Dtos\ComentarioEquipoDto;
 use Paw\App\Models\Comentario;
 use Paw\App\Models\Equipo;
 use Paw\App\Services\ComentarioEquipoService;
-use Paw\Core\Database\QueryBuilder;
+use Paw\App\Services\EquipoService;
 
 class ComentarioEquipoServiceImpl implements ComentarioEquipoService
 {
     private ComentarioDataMapper $comentarioDataMapper;
-    private EquipoDataMapper $equipoDataMapper;
+    private EquipoService $equipoService;
 
-    public function __construct(ComentarioDataMapper $comentarioDataMapper, EquipoDataMapper $equipoDataMapper)
+    public function __construct(ComentarioDataMapper $comentarioDataMapper, EquipoService $equipoService)
     {
         $this->comentarioDataMapper = $comentarioDataMapper;
-        $this->equipoDataMapper = $equipoDataMapper;
+        $this->equipoService = $equipoService;
     }
 
     function getComentariosByEquipo(int $idEquipo): array
@@ -27,7 +26,8 @@ class ComentarioEquipoServiceImpl implements ComentarioEquipoService
         $comentariosEquipoDtos = [];
         foreach ($comentarios as $comentario) {
             $equipoComentador = $this->getEquipoComentador($comentario);
-            $comentarioEquipoDto = new ComentarioEquipoDto($comentario, $equipoComentador);
+            $equipoComentadorBanner = $this->equipoService->getEquipoBanner($equipoComentador);
+            $comentarioEquipoDto = new ComentarioEquipoDto($comentario, $equipoComentadorBanner);
             $comentariosEquipoDtos[] = $comentarioEquipoDto;
         }
         return $comentariosEquipoDtos;
@@ -49,8 +49,6 @@ class ComentarioEquipoServiceImpl implements ComentarioEquipoService
         if (!$id) {
             throw new \RuntimeException("Comentario sin : " . $comentario->getComentario() . " id_equipo_comentador: " . $comentario->getEquipoComentadorId());
         }
-        return $this->equipoDataMapper->findById([
-            'id_equipo' => $id
-        ]);
+        return $this->equipoService->getEquipoById($id);
     }
 }

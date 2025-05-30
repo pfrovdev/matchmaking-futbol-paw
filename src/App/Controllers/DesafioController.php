@@ -46,7 +46,7 @@ class DesafioController extends AbstractController
 
         // notificar
         $desafiante = $this->equipoService->getEquipoById(
-            $desafio->getIdDesafio()
+            $desafio->getIdEquipoDesafiante()
         );
         $this->notificationService->notifyDesafioAccepted(
             $equipo,

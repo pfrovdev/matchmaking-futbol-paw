@@ -3,47 +3,36 @@
 namespace Paw\App\Dtos;
 
 use Paw\App\Models\Comentario;
-use Paw\App\Models\Equipo;
 
 class ComentarioEquipoDto
 {
     private int $idComentario;
-    private int $idEquipoComentador;
-    private string $nombreEquipoComentador;
+    private EquipoBannerDto $equipoComentador;
     private string $comentario;
-    private int $deportividad;
     private string $fechaCreacion;
 
-    public function __construct(Comentario $comentario, Equipo $equipoComentador)
+    public function __construct(Comentario $comentario, EquipoBannerDto $equipoComentador)
     {
         $this->idComentario = $comentario->getComentarioId();
-        $this->idEquipoComentador = $equipoComentador->getIdEquipo();
-        $this->nombreEquipoComentador = $equipoComentador->getNombre();
         $this->comentario = $comentario->getComentario();
-        $this->deportividad = $comentario->getDeportividad();
         $this->fechaCreacion = $comentario->getFechaCreacion();
+        $this->equipoComentador = $equipoComentador;
     }
 
     public function getIdComentario(): int
     {
         return $this->idComentario;
     }
-    public function getIdEquipoComentador(): int
-    {
-        return $this->idEquipoComentador;
-    }
-    public function getNombreEquipoComentador(): string
-    {
-        return $this->nombreEquipoComentador;
-    }
     public function getComentario(): string
     {
         return $this->comentario;
     }
-    public function getDeportividad(): int
+
+    public function getEquipoComentador(): EquipoBannerDto
     {
-        return $this->deportividad;
+        return $this->equipoComentador;
     }
+
     public function getFechaCreacion(): string
     {
         return $this->fechaCreacion;

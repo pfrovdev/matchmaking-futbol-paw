@@ -102,9 +102,8 @@ class DesafioServiceImpl implements DesafioService
         $desafiosDtos = [];
 
         foreach ($desafios as $desafio) {
-            $deportividadEquipoDesafiante = $this->equipoService->getDeportividadEquipo($desafio->getIdEquipoDesafiante());
-            $descripcionEloEquipoDesafiante = $this->equipoService->getDescripcionNivelEloById($desafio->getIdEquipoDesafiante());
-            $desafioDto = new DesafioDto($equipo, $desafio, $deportividadEquipoDesafiante, $descripcionEloEquipoDesafiante);
+            $equipoBanner = $this->equipoService->getEquipoBanner($this->equipoService->getEquipoById($desafio->getIdEquipoDesafiante()));
+            $desafioDto = new DesafioDto($equipoBanner, $desafio);
             $desafiosDtos[] = $desafioDto;
         }
 

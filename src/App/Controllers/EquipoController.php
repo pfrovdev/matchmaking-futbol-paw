@@ -3,6 +3,7 @@
 namespace Paw\App\Controllers;
 
 use Monolog\Logger;
+use Paw\App\Dtos\EquipoBannerDto;
 use Paw\App\Models\Equipo;
 use Paw\App\Services\ComentarioEquipoService;
 use Paw\App\Services\DesafioService;
@@ -165,18 +166,19 @@ class EquipoController extends AbstractController
         $order = $_GET['order'] ?? 'fecha_creacion';
         $dir   = strtoupper($_GET['dir'] ?? 'DESC') === 'ASC' ? 'ASC' : 'DESC';
 
+        // va a cambiar para obtener via ajax
         $comentarios = $this->comentarioEquipoService->getComentariosByEquipo($miEquipo->getIdEquipo());
         $comentariosPag = array_slice($comentarios, ($page - 1) * $per, $per);
+        $cantidadDeVotos = count($comentarios);
 
+        // va a cambiar para obtener via ajax
         $desafiosRecib = $this->desafioService->getDesafiosByEquipoAndEstadoDesafio($miEquipo->getIdEquipo(), 'pendiente');
 
-        $nivelDesc    = $this->equipoService->getDescripcionNivelEloById($miEquipo->getIdEquipo());
-        $deportividad = $this->equipoService->getDeportividadEquipo($miEquipo->getIdEquipo());
-        $tipoEquipo = $this->equipoService->getTypeTeamById($miEquipo->getIdEquipo());
+        $equipoBanner = $this->equipoService->getEquipoBanner($miEquipo);
 
-        $cantidadDeVotos = count($comentarios);
         $historial = false;
 
+        // ver esto 
         $historialPartidos = $this->partidoService->getHistorialPartidosByIdEquipo($miEquipo->getIdEquipo());
 
         if (!empty($historialPartidos)) {
@@ -245,7 +247,7 @@ class EquipoController extends AbstractController
             'radio_km'    => $radio_km
         ];
 
-        $todosLosEquipos = $this->equipoService->getAllEquipos($selectParams, $orderBy, $direction);
+        $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
 
         $totalEquipos = count($todosLosEquipos);
         $totalPaginas = ceil($totalEquipos / $porPagina);

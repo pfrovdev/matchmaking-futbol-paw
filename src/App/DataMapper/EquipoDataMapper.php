@@ -37,6 +37,12 @@ class EquipoDataMapper extends DataMapper
         return $row ? $this->map($row) : null;
     }
 
+    public function findAll(): array
+    {
+        $rows = parent::findAll();
+        return $this->mapAll($rows);
+    }
+
     public function findByEmail(string $email): ?Equipo
     {
         if($this->existsByEmail($email)){

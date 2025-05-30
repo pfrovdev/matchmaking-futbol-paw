@@ -9,7 +9,7 @@ use Paw\App\DataMapper\EquipoDataMapper;
 use Paw\App\DataMapper\EstadoDesafioDataMapper;
 use Paw\App\DataMapper\NivelEloDataMapper;
 use Paw\App\DataMapper\TipoEquipoDataMapper;
-
+use Paw\App\Dtos\EquipoBannerDto;
 use Paw\App\Services\EquipoService;
 use Paw\App\Services\PartidoService;
 
@@ -76,6 +76,30 @@ class EquipoServiceImpl implements EquipoService
         return $equipos;
     }
 
+    // devuelve EquipoBannerDto para representar la info de los equipos en las tarjetas del front
+    public function getAllEquiposBanner(): array
+    {
+        $equipos = $this->equipoDataMapper->findAll();
+
+        $equiposBanner = [];
+
+        foreach ($equipos as $equipo) {
+            $equipoBanner = $this->getEquipoBanner($equipo);
+            $equiposBanner[] = $equipoBanner;
+        }
+
+        return $equiposBanner;
+    }
+
+    public function getEquipoBanner(Equipo $equipo): EquipoBannerDto
+    {
+        $descElo = $this->getDescripcionNivelEloById($equipo->getIdNivelElo());
+        $deportividad = $this->getDeportividadEquipo($equipo->getIdEquipo());
+        $tipoEquipo = $this->tipoEquipoDataMapper->findById(['id_tipo_equipo' => $equipo->getIdTipoEquipo()]);
+        $equipoBanner = new EquipoBannerDto($equipo, $descElo, $deportividad, $tipoEquipo->getTipo());
+        return $equipoBanner;
+    }
+
     public function existsByEmail(string $email): bool
     {
         return $this->equipoDataMapper->existsByEmail($email);
@@ -113,7 +137,7 @@ class EquipoServiceImpl implements EquipoService
         $deportividad = array_reduce($comentarios, function ($acc, $comentario) {
             return $acc + $comentario->getDeportividad();
         }, 0);
-        return $deportividad / count($comentarios);
+        return count($comentarios) == 0? 0 : $deportividad / count($comentarios);
     }
 
     function getEquipoById(int $idEquipo): Equipo
@@ -134,4 +158,5 @@ class EquipoServiceImpl implements EquipoService
         $nivelElo = $this->nivelEloDataMapper->findById(['id_nivel_elo' => $equipo->getIdNivelElo()]);
         return $nivelElo->getDescripcion();
     }
+
 }

@@ -39,7 +39,7 @@ class Desafio extends AbstractModel
         $this->fields["fecha_creacion"] = $fechaCreacion;
     }
 
-    public function setFechaAceptacion(string $fechaAceptacion)
+    public function setFechaAceptacion(?string $fechaAceptacion)
     {
         $this->fields["fecha_creacion"] = $fechaAceptacion;
     }
@@ -49,7 +49,7 @@ class Desafio extends AbstractModel
         $this->fields["id_estado_desafio"] = $idEstadoDesafio;
     }
 
-    public function setIdPartido(int $idPartido)
+    public function setIdPartido(?int $idPartido)
     {
         $this->fields["id_partido"] = $idPartido;
     }

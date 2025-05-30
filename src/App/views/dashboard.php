@@ -29,8 +29,8 @@
           <!-- Card 1: Perfil -->
           <div class="card perfil-card">
             <div class="perfil-foto">
-              <?php if ($miEquipo->fields['url_foto_perfil']): ?>
-                <img src="<?= htmlspecialchars($miEquipo->fields['url_foto_perfil']) ?>" alt="Foto de perfil">
+              <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
+                <img src="<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil()) ?>" alt="Foto de perfil">
               <?php else: ?>
                 <div class="placeholder-foto">Arrastra-soltar la foto de tu equipo aquí<br>
                   <button class="btn-link">Cargar un documento</button>
@@ -38,14 +38,14 @@
               <?php endif; ?>
             </div>
             <div class="perfil-info">
-              <h2><?= htmlspecialchars($miEquipo->fields['nombre']) . " (" . htmlspecialchars($miEquipo->fields['acronimo']) . ")" ?></h2>
-              <p class="lema"><?= htmlspecialchars($miEquipo->fields['lema']) ?></p>
+              <h2><?= htmlspecialchars($equipoBanner->getNombreEquipo()) . " (" . htmlspecialchars($miEquipo->fields['acronimo']) . ")" ?></h2>
+              <p class="lema"><?= htmlspecialchars($equipoBanner->getLema()) ?></p>
               <div class="sport-icons">
                 Deportividad:
                 <!-- Faltaria hacer algo tipo, hasta la cantidad que me mandan
                 pongo pelotitas, y relleno hasta 5 espacios vacios -->
                 <?php for ($i = 1; $i <= 5; $i++): ?>
-                  <?php if ($i <= $deportividad): ?>
+                  <?php if ($i <= $equipoBanner->getDeportividad()): ?>
                     <span class="icon">⚽</span>
                   <?php else: ?>
                     <span class="icon" style="opacity: 0.4; color: grey;">⚽</span>
@@ -53,14 +53,14 @@
                 <?php endfor; ?>
                 <?= "(" . $cantidadDeVotos . ")" ?>
               </div>
-              <p>Género: <?= htmlspecialchars($tipoEquipo->getTipo()) ?></p>
+              <p>Género: <?= htmlspecialchars($equipoBanner->getTipoEquipo()) ?></p>
               <div class="elo-bar">
-                <span class="label"><?= htmlspecialchars($nivelDesc) ?></span>
+                <span class="label"><?= htmlspecialchars($equipoBanner->getDescripcionElo()) ?></span>
                 <div class="bar-bg">
-                  <div class="bar-fill" style="width:<?= min(100, ($miEquipo->fields['elo_actual'] / 1300) * 100) ?>%"></div>
+                  <div class="bar-fill" style="width:<?= min(100, ($equipoBanner->getEloActual() / 1300) * 100) ?>%"></div>
                 </div>
                 <div class="elo-values">
-                  <span>Elo: <?= htmlspecialchars($miEquipo->fields['elo_actual']) ?></span> / <span>1300</span>
+                  <span>Elo: <?= htmlspecialchars($equipoBanner->getEloActual()) ?></span> / <span>1300</span>
                 </div>
               </div>
             </div>
@@ -121,14 +121,15 @@
               <?php foreach ($desafiosRecib as $dto): ?>
                 <li>
                   <?php
+                  $equipoDesafiante = $dto->getEquipoDesafiante();
                   $challenge = [
-                    'id_equipo'         => $dto->getEquipoId(),
+                    'id_equipo'         => $equipoDesafiante->getIdEquipo(),
                     'id_desafio'        => $dto->getIdDesafio(),
-                    'id_nivel_elo'      => $dto->getIdNivelElo(),
-                    'name'              => $dto->getNombreEquipo(),
-                    'level'             => $dto->getDescripcionElo(),
+                    'id_nivel_elo'      => $equipoDesafiante->getDescripcionElo(),
+                    'name'              => $equipoDesafiante->getNombreEquipo(),
+                    'level'             => $equipoDesafiante->getDescripcionElo(),
                     'icons'             => 0,
-                    'lema'              => $dto->getLema(),
+                    'lema'              => $equipoDesafiante->getLema(),
                     'fecha_creacion'    => $dto->getFechaCreacion(),
                     'elo'               => [
                       'wins'   => 10,
@@ -136,9 +137,9 @@
                       'draws'  => 0
                     ],
                     'record'            => '',
-                    'url_foto_perfil'   => $dto->getUrlFotoDePerfil(),
-                    'deportividad'      => $dto->getDeportividad(),
-                    'profile-link'      => "/team/{$dto->getEquipoId()}",
+                    'url_foto_perfil'   => $equipoDesafiante->getUrlFotoPerfil(),
+                    'deportividad'      => $equipoDesafiante->getDeportividad(),
+                    'profile-link'      => "/team/{$equipoDesafiante->getIdEquipo()}",
                   ];
 
                   require "parts/tarjeta-desafio.php";
@@ -190,12 +191,13 @@
             <h3>Comentarios</h3>
             <ul class="comment-list">
               <?php foreach ($comentariosPag as $dto): ?>
+                <?php $equipoComentador = $dto->getEquipoComentador(); ?>
                 <li>
-                  <strong><?= htmlspecialchars($dto->getNombreEquipoComentador()) ?></strong>
+                  <strong><?= htmlspecialchars($equipoComentador->getNombreEquipo()) ?></strong>
                   <p>
                     Calificación:
-                    <?= str_repeat('●', $dto->getDeportividad()) ?>
-                    <?= str_repeat('○', 5 - $dto->getDeportividad()) ?>
+                    <?= str_repeat('●', $equipoComentador->getDeportividad()) ?>
+                    <?= str_repeat('○', 5 - $equipoComentador->getDeportividad()) ?>
                   </p>
                   <p>Comentario: <?= nl2br(htmlspecialchars($dto->getComentario())) ?></p>
                   <small class="comment-date"><?= htmlspecialchars($dto->getFechaCreacion()) ?></small>

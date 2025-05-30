@@ -166,7 +166,7 @@ class Equipo extends AbstractModel
         return $this->fields["acronimo"];
     }
 
-    public function getEloActual() {
+    public function getEloActual(): ?int {
         return $this->fields["elo_actual"];
     }
 

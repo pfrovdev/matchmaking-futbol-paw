@@ -15,9 +15,9 @@ class ResultadoPartidoDataMapper extends DataMapper
 
     public function findByIdPartido(int $idPartido): ?ResultadoPartido
     {
-        $result = $this->findBy(['id_partido' => $idPartido])[0];
+        $result = $this->findBy(['id_partido' => $idPartido]);
         if ($result) {
-            return $this->map($result);
+            return $this->map($result[0]);
         }
         return null;
     }
