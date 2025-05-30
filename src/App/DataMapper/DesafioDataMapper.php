@@ -31,10 +31,17 @@ class DesafioDataMapper extends DataMapper
         return $row ? $this->map($row) : null;
     }
 
+    // solo trae los desafios donde el equipo es desafiado
     public function findByEquipoAndEstado(int $equipoId, int $estadoId): array
     {
         $rows = $this->findBy(["id_equipo_desafiado" => $equipoId, "id_estado_desafio" => $estadoId]);
         return $this->mapAll($rows);
+    }
+
+    public function findAllByEquipoAndEstado(int $equipoId, int $estadoId){
+        $rowsDesafiado = $this->findBy(["id_equipo_desafiado" => $equipoId, "id_estado_desafio" => $estadoId]);
+        $rowsDesafiante = $this->findBy(["id_equipo_desafiante" => $equipoId, "id_estado_desafio" => $estadoId]);
+        return $this->mapAll(array_merge($rowsDesafiado, $rowsDesafiante));
     }
 
     public function insertDesafio(Desafio $d): int

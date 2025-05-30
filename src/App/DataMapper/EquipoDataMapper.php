@@ -16,15 +16,8 @@ class EquipoDataMapper extends DataMapper
 
     public function map(array $row): Equipo
     {
-        $this->logger->info('LOG DEL MAP PARA VER EL ROW DE EQUIPO');
-        foreach ($row as $key => $value) {
-            $valueString = is_array($value) ? json_encode($value) : $value;
-            $this->logger->info("key: $key value: $valueString");
-        }
-
         $equipo = new Equipo();
         $equipo->set($row);
-        $this->logger->info("equipo: ".$equipo);
         return $equipo;
     }
 
@@ -38,7 +31,7 @@ class EquipoDataMapper extends DataMapper
         return $equipos;
     }
 
-    public function findById(array $params)
+    public function findById(array $params): ?Equipo
     {
         $row = parent::findById($params);
         return $row ? $this->map($row) : null;
@@ -93,7 +86,7 @@ class EquipoDataMapper extends DataMapper
             $direction
         );
 
-        return $equipos;
+        return $this->mapAll($equipos);
     }
 
     public function findTeamById(int $TeamId)

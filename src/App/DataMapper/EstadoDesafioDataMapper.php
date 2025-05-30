@@ -24,7 +24,7 @@ class EstadoDesafioDataMapper extends DataMapper
 
     public function findIdByCode(string $code): int
     {
-        $row = $this->findBy(['descripcion_corta' => $code]);
+        $row = $this->findBy(['descripcion_corta' => $code])[0];
         if (! $row) {
             throw new \RuntimeException("Estado '$code' no encontrado");
         }

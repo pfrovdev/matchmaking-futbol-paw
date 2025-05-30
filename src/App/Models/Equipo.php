@@ -162,7 +162,7 @@ class Equipo extends AbstractModel
         return $this->fields["lema"];
     }
 
-    public function getAcronimo() {
+    public function getAcronimo(): ?string{
         return $this->fields["acronimo"];
     }
 
@@ -182,7 +182,7 @@ class Equipo extends AbstractModel
         return $this->fields["id_tipo_equipo"];
     }
 
-    public function getIdNivelElo() {
+    public function getIdNivelElo(): ?int {
         return $this->fields["id_nivel_elo"];
     }
 

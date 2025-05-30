@@ -19,11 +19,11 @@ class Comentario extends AbstractModel{
         $this->fields["id_comentario"] = $idComentario;
     }
 
-    public function setEquipoComentadoId(int $equipoComentadoId){
+    public function setIdEquipoComentado(int $equipoComentadoId){
         $this->fields["id_equipo_comentado"] = $equipoComentadoId;
     }
 
-    public function setEquipoComentadorId(int $equipoComentadorId){
+    public function setIdEquipoComentador(int $equipoComentadorId){
         $this->fields["id_equipo_comentador"] = $equipoComentadorId;
     }
 

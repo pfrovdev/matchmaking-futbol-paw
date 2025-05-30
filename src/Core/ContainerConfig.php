@@ -16,6 +16,7 @@ use Paw\App\DataMapper\EstadoDesafioDataMapper;
 use Paw\App\DataMapper\EstadoPartidoDataMapper;
 use Paw\App\DataMapper\NivelEloDataMapper;
 use Paw\App\DataMapper\PartidoDataMapper;
+use Paw\App\DataMapper\ResultadoPartidoDataMapper;
 use Paw\App\DataMapper\TipoEquipoDataMapper;
 use Paw\App\Services\ComentarioEquipoService;
 use Paw\App\Services\DesafioService;
@@ -74,6 +75,10 @@ class ContainerConfig
             $c->get(QueryBuilder::class),
             $logger
         ));
+        $c->set(ResultadoPartidoDataMapper::class, fn($c) => new ResultadoPartidoDataMapper(
+            $c->get(QueryBuilder::class),
+            $logger
+        ));
 
         // Token Storage (JWT)
         $c->set(TokenStorageInterface::class, function ($c) {
@@ -105,7 +110,11 @@ class ContainerConfig
 
         $c->set(PartidoService::class, fn($c) => new PartidoServiceImpl(
             $c->get(PartidoDataMapper::class),
-            $c->get(EstadoPartidoDataMapper::class)
+            $c->get(EstadoPartidoDataMapper::class),
+            $c->get(DesafioDataMapper::class),
+            $c->get(EquipoDataMapper::class),
+            $c->get(NivelEloDataMapper::class),
+            $c->get(ResultadoPartidoDataMapper::class)
         ));
 
         $c->set(EquipoService::class, fn($c) => new EquipoServiceImpl(

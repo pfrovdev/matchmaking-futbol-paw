@@ -17,13 +17,13 @@
   <?php require "parts/header.php"; ?>
   <?php require "parts/side-navbar.php"; ?>
   <main>
-  
+
     <div class="dashboard-container">
 
-    
+
       <!-- GRID PRINCIPAL -->
       <div class="dashboard-grid">
-      
+
         <!-- Columna Izquierda -->
         <section class="col-left">
           <!-- Card 1: Perfil -->
@@ -45,15 +45,15 @@
                 <!-- Faltaria hacer algo tipo, hasta la cantidad que me mandan
                 pongo pelotitas, y relleno hasta 5 espacios vacios -->
                 <?php for ($i = 1; $i <= 5; $i++): ?>
-                  <?php if ($i <= $miEquipo->promediarDeportividad()): ?>
+                  <?php if ($i <= $deportividad): ?>
                     <span class="icon">⚽</span>
                   <?php else: ?>
                     <span class="icon" style="opacity: 0.4; color: grey;">⚽</span>
                   <?php endif; ?>
                 <?php endfor; ?>
-                <?= "(".$cantidadDeVotos.")" ?>
+                <?= "(" . $cantidadDeVotos . ")" ?>
               </div>
-              <p>Género: <?= htmlspecialchars($miEquipo->getTipoEquipo()) ?></p>
+              <p>Género: <?= htmlspecialchars($tipoEquipo->getTipo()) ?></p>
               <div class="elo-bar">
                 <span class="label"><?= htmlspecialchars($nivelDesc) ?></span>
                 <div class="bar-bg">
@@ -74,18 +74,18 @@
                 'soyGanador' => $soyGanador,
                 'eloChange'  => $eloChange,
                 'matchUrl'   => '#',
-                'date'       => (new \DateTime($ultimoPartidoJugado->fields['fecha_jugado']))->format('d-m-Y'),
+                'date'       => (new \DateTime($ultimoPartidoJugado->getFechaFinalizacion()))->format('d-m-Y'),
                 'home'       => [
                   'abbr'      => $equipoLocal->fields['acronimo'],
                   'name'      => $equipoLocal->fields['nombre'],
                   'logo'      => $equipoLocal->fields['url_foto_perfil'],
                   'tarjetas'  => [
                     'yellow' => $soyGanador
-                      ? $ultimoPartidoJugado->fields['total_amarillas_ganador']
-                      : $ultimoPartidoJugado->fields['total_amarillas_perdedor'],
+                      ? $ultimoPartidoJugado->getResultadoGanador()->getTarjetasAmarillas()
+                      : $ultimoPartidoJugado->getResultadoPerdedor()->getTarjetasAmarillas(),
                     'red'    => $soyGanador
-                      ? $ultimoPartidoJugado->fields['total_rojas_ganador']
-                      : $ultimoPartidoJugado->fields['total_rojas_perdedor'],
+                      ? $ultimoPartidoJugado->getResultadoGanador()->getTarjetasRojas()
+                      : $ultimoPartidoJugado->getResultadoPerdedor()->getTarjetasRojas(),
                   ],
                 ],
                 'away'       => [
@@ -93,17 +93,17 @@
                   'name'      => $equipoRival->fields['nombre'],
                   'logo'      => $equipoRival->fields['url_foto_perfil'],
                   'tarjetas'  => [
-                    'yellow' => !$soyGanador
-                      ? $ultimoPartidoJugado->fields['total_amarillas_ganador']
-                      : $ultimoPartidoJugado->fields['total_amarillas_perdedor'],
-                    'red'    => !$soyGanador
-                      ? $ultimoPartidoJugado->fields['total_rojas_ganador']
-                      : $ultimoPartidoJugado->fields['total_rojas_perdedor'],
+                    'yellow' => $soyGanador
+                      ? $ultimoPartidoJugado->getResultadoGanador()->getTarjetasAmarillas()
+                      : $ultimoPartidoJugado->getResultadoPerdedor()->getTarjetasAmarillas(),
+                    'red'    => $soyGanador
+                      ? $ultimoPartidoJugado->getResultadoGanador()->getTarjetasRojas()
+                      : $ultimoPartidoJugado->getResultadoPerdedor()->getTarjetasRojas(),
                   ],
                 ],
                 'score'      => $soyGanador
-                  ? $ultimoPartidoJugado->fields['goles_equipo_ganador'] . '-' . $ultimoPartidoJugado->fields['goles_equipo_perdedor']
-                  : $ultimoPartidoJugado->fields['goles_equipo_perdedor'] . '-' . $ultimoPartidoJugado->fields['goles_equipo_ganador'],
+                  ? $ultimoPartidoJugado->getResultadoGanador()->getGoles() . '-' . $ultimoPartidoJugado->getResultadoPerdedor()->getGoles()
+                  : $ultimoPartidoJugado->getResultadoPerdedor()->getGoles() . '-' . $ultimoPartidoJugado->getResultadoGanador()->getGoles(),
               ];
 
               // Incluyo la tarjeta de historial
@@ -118,24 +118,29 @@
           <div class="card challenges-card">
             <h3>Últimos desafíos recibidos</h3>
             <ul class="challenge-list">
-              <?php foreach ($desafiosRecib as $d): ?>
-                <?php $retador = $d->getEquipoDesafiante(); ?>
+              <?php foreach ($desafiosRecib as $dto): ?>
                 <li>
                   <?php
                   $challenge = [
-                    'id_equipo' => $equipoLocal->fields['id_equipo'],
-                    'id_desafio' => $d->fields['id_desafio'],
-                    'name'       => $retador->fields['nombre'],
-                    'level'      => $retador->getNivelElo(),
-                    'icons'      => 0,
-                    'lema'      => $retador->fields['lema'] ?? '',
-                    'elo'        => ['wins' => 10, 'losses' => 7, 'draws' => 0],
-                    'record'     => '',
-                    'url_foto_perfil' =>$retador->fields['url_foto_perfil'],
-                    'id_nivel_elo' => $retador->getNivelElo(),
-                    'deportividad' => $retador->promediarDeportividad(),
-                    'profile-link' => "/team/{$retador->fields['id_equipo']}",
+                    'id_equipo'         => $dto->getEquipoId(),
+                    'id_desafio'        => $dto->getIdDesafio(),
+                    'id_nivel_elo'      => $dto->getIdNivelElo(),
+                    'name'              => $dto->getNombreEquipo(),
+                    'level'             => $dto->getDescripcionElo(),
+                    'icons'             => 0,
+                    'lema'              => $dto->getLema(),
+                    'fecha_creacion'    => $dto->getFechaCreacion(),
+                    'elo'               => [
+                      'wins'   => 10,
+                      'losses' => 7,
+                      'draws'  => 0
+                    ],
+                    'record'            => '',
+                    'url_foto_perfil'   => $dto->getUrlFotoDePerfil(),
+                    'deportividad'      => $dto->getDeportividad(),
+                    'profile-link'      => "/team/{$dto->getEquipoId()}",
                   ];
+
                   require "parts/tarjeta-desafio.php";
                   ?>
                 </li>
@@ -184,50 +189,56 @@
           <div class="card comments-card">
             <h3>Comentarios</h3>
             <ul class="comment-list">
-              <?php foreach ($comentariosPag as $c): ?>
-                <?php $autor = $c->getEquipoComentador(); ?>
+              <?php foreach ($comentariosPag as $dto): ?>
                 <li>
-                  <strong><?= htmlspecialchars($autor->fields['nombre']) ?></strong>
-                  <p>Calificación: <?= str_repeat('●', $c->fields['deportividad']) . str_repeat('○', 5 - $c->fields['deportividad']) ?></p>
-                  <p>comentario: <?= htmlspecialchars($c->fields['comentario']) ?></p>
+                  <strong><?= htmlspecialchars($dto->getNombreEquipoComentador()) ?></strong>
+                  <p>
+                    Calificación:
+                    <?= str_repeat('●', $dto->getDeportividad()) ?>
+                    <?= str_repeat('○', 5 - $dto->getDeportividad()) ?>
+                  </p>
+                  <p>Comentario: <?= nl2br(htmlspecialchars($dto->getComentario())) ?></p>
+                  <small class="comment-date"><?= htmlspecialchars($dto->getFechaCreacion()) ?></small>
                 </li>
               <?php endforeach; ?>
             </ul>
+
             <div class="pagination">
               <?php
               $totalC = count($comentariosPag);
               $pagesC = ceil($totalC / $per);
-              for ($p = 1; $p <= $pagesC; $p++): ?>
+              for ($p = 1; $p <= $pagesC; $p++):
+              ?>
                 <a href="?page=<?= $p ?>&order=<?= urlencode($order) ?>&dir=<?= $dir ?>"
-                  class="<?= $p === $page ? 'active' : '' ?>"><?= $p ?></a>
+                  class="<?= $p === $page ? 'active' : '' ?>">
+                  <?= $p ?>
+                </a>
               <?php endfor; ?>
             </div>
           </div>
-        </aside>
+
+          <!-- SECCIÓN INFERIOR: Proximos partidos full-width -->
+          <section class="next-matches">
+            <h3>Próximos partidos</h3>
+            <ul class="match-list">
+              <?php for ($i = 1; $i <= 2; $i++): ?>
+                <li class="match-item">
+                  <div class="match-info">
+                    <strong>Nombre-equipo</strong>
+                    <p>Principiante II</p>
+                  </div>
+                  <div class="match-actions">
+                    <button class="btn-secondary small">Abrir wapp</button>
+                    <button class="btn-primary small">Coordinar resultado</button>
+                    <button class="btn-danger small">Cancelar</button>
+                  </div>
+                </li>
+              <?php endfor; ?>
+            </ul>
+          </section>
+
       </div>
 
-      <!-- SECCIÓN INFERIOR: Proximos partidos full-width -->
-      <section class="next-matches">
-        <h3>Próximos partidos</h3>
-        <ul class="match-list">
-          <?php for ($i = 1; $i <= 2; $i++): ?>
-            <li class="match-item">
-              <div class="match-info">
-                <strong>Nombre-equipo</strong>
-                <p>Principiante II</p>
-              </div>
-              <div class="match-actions">
-                <button class="btn-secondary small">Abrir wapp</button>
-                <button class="btn-primary small">Coordinar resultado</button>
-                <button class="btn-danger small">Cancelar</button>
-              </div>
-            </li>
-          <?php endfor; ?>
-        </ul>
-      </section>
-      
-    </div>
-   
   </main>
 
   <?php require "parts/footer.php"; ?>

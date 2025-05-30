@@ -3,17 +3,13 @@
 namespace Paw\App\Controllers;
 
 use Monolog\Logger;
-use Paw\App\Commons\NotificadorEmail;
 use Paw\App\Models\Equipo;
 use Paw\App\Services\ComentarioEquipoService;
 use Paw\App\Services\DesafioService;
 use Paw\App\Services\NotificationService;
 use Paw\App\Services\EquipoService;
 use Paw\App\Services\PartidoService;
-use Paw\App\Utils\CalculadoraDeElo;
 use Paw\Core\AbstractController;
-use Paw\Core\Container;
-use Paw\Core\JWT\Auth;
 use Paw\Core\Middelware\AuthMiddelware;
 
 class EquipoController extends AbstractController
@@ -176,6 +172,8 @@ class EquipoController extends AbstractController
 
         $nivelDesc    = $this->equipoService->getDescripcionNivelEloById($miEquipo->getIdEquipo());
         $deportividad = $this->equipoService->getDeportividadEquipo($miEquipo->getIdEquipo());
+        $tipoEquipo = $this->equipoService->getTypeTeamById($miEquipo->getIdEquipo());
+
         $cantidadDeVotos = count($comentarios);
         $historial = false;
 
@@ -183,10 +181,10 @@ class EquipoController extends AbstractController
 
         if (!empty($historialPartidos)) {
             $ultimoPartidoJugado = $historialPartidos[0];
-            $soyGanador = $ultimoPartidoJugado->soyEquipoGanador($miEquipo);
+            $soyGanador = $ultimoPartidoJugado->getResultadoGanador()->getEquipo()->getIdEquipo() === $miEquipo->getIdEquipo();
             $equipoLocal  = $miEquipo;
-            $equipoRival  = $ultimoPartidoJugado->getEquipoRival($equipoLocal);
-            $eloChange = CalculadoraDeElo::calcularCambioElo($ultimoPartidoJugado, $equipoLocal);
+            $equipoRival  = $this->equipoService->getEquipoById($ultimoPartidoJugado->getResultadoPerdedor()->getEquipo()->getIdEquipo());
+            $eloChange = $ultimoPartidoJugado->getResultadoGanador()->getEloConseguido();
             $historial = true;
         }
 

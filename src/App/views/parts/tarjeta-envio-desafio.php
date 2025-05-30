@@ -8,42 +8,42 @@
   <div class="card-side">
     <div class="team-image">
       <img
-        src="<?= !empty($equipo['url_foto_perfil'])
-                ? htmlspecialchars($equipo['url_foto_perfil'])
-                : '/icons/defaultTeamIcon.png' ?>"
+        src="<?= htmlspecialchars($equipo->getUrlFotoPerfil() ?? '/icons/defaultTeamIcon.png') ?>"
         alt=""
       >
-      <span class="level-badge"><?= htmlspecialchars($equipo['nivel_elo_descripcion']) ?></span>
+      <span class="level-badge">
+       <!-- <?= htmlspecialchars($nivelEloDescripcion?? 'refactorizar') ?> -->
+      </span>
     </div>
   </div>
 
   <div class="card-main">
     <div class="card-header">
-      <h3 class="team-name"><?= htmlspecialchars($equipo['nombre']) ?></h3>
+      <h3 class="team-name"><?= htmlspecialchars($equipo->getNombre()) ?></h3>
       <div class="team-record"></div>
     </div>
 
     <div class="card-body">
       <p>Deportividad:
-        <?php for($i=0;$i<$equipo['deportividad'];$i++): ?> 
-            <span class="icon">⚽</span>
+        <?php for ($i = 0; $i < $equipo->promediarDeportividad(); $i++): ?> 
+          <span class="icon">⚽</span>
         <?php endfor; ?>
       </p>
-      <p class="team-motto"><?= htmlspecialchars($equipo['lema']) ?></p>
-      <small class="elo">ELO: <?= htmlspecialchars($equipo['elo_actual']) ?></small>
-      <a href="<?= !empty($equipo['profileUrl'])
-                   ? htmlspecialchars($equipo['profileUrl'])
-                   : '#' ?>"
+      <p class="team-motto"><?= htmlspecialchars($equipo->getLema()) ?></p>
+      <small class="elo">ELO: <?= htmlspecialchars((string)$equipo->getEloActual()) ?></small>
+      <a href="/team/<?= urlencode((string)$equipo->getIdEquipo()) ?>"
          class="profile-link">
         Ver perfil del equipo
       </a>
     </div>
 
     <div class="card-actions">
-      <a href="?<?= http_build_query(array_merge($_GET, ['id_equipo_desafiar' => $equipo['id_equipo']])) ?>" class="btn btn-accept">
+      <a href="?<?= http_build_query(array_merge($_GET, [
+            'id_equipo_desafiar' => $equipo->getIdEquipo()
+          ])) ?>"
+         class="btn btn-accept">
         Desafiar
       </a>
     </div>
-
   </div>
 </div>

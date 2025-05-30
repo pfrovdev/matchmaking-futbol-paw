@@ -47,7 +47,7 @@ class ComentarioEquipoServiceImpl implements ComentarioEquipoService
     {
         $id = $comentario->getEquipoComentadorId();
         if (!$id) {
-            throw new \RuntimeException("Comentario sin id_equipo_comentador");
+            throw new \RuntimeException("Comentario sin : " . $comentario->getComentario() . " id_equipo_comentador: " . $comentario->getEquipoComentadorId());
         }
         return $this->equipoDataMapper->findById([
             'id_equipo' => $id

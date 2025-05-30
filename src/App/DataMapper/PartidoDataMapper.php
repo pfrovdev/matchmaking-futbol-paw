@@ -17,6 +17,7 @@ class PartidoDataMapper extends DataMapper
     {
         $p = new Partido();
         $p->set($row);
+        $this->logger->info("partido " .$p->getIdPartido());
         return $p;
     }
 
@@ -29,6 +30,12 @@ class PartidoDataMapper extends DataMapper
     {
         $row = parent::findById($params);
         return $row ? $this->map($row) : null;
+    }
+
+    public function findByIdAndFinalizado(int $idPartido, bool $finalizado): ?Partido
+    {
+        $row = $this->findBy(['id_partido' => $idPartido, 'finalizado' => $finalizado? 1 : 0]);
+        return $row ? $this->map($row[0]) : null;
     }
 
     public function findAllByEquipoAndFinalizado(int $idEquipo, int $finalizado)

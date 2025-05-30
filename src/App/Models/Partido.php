@@ -53,6 +53,26 @@ class Partido extends AbstractModel
         $this->fields["id_estado_partido"] = $idEstadoPartido;
     }
 
+    public function getIdPartido(): ?int
+    {
+        return $this->fields["id_partido"];
+    }
+
+    public function getFechaInicio()
+    {
+        return $this->fields["fecha_inicio"];
+    }
+
+    public function getFechaFinalizacion(): ?string
+    {
+        return $this->fields["fecha_finalizacion"];
+    }
+
+    public function getIdEstadoPartido()
+    {
+        return $this->fields["id_estado_partido"];
+    }
+
     public function iniciarPendiente(string $fecha, int $estadoPendiente): void
     {
         $this->setFechaCreacion($fecha);

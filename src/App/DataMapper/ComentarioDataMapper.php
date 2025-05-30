@@ -46,7 +46,6 @@ class ComentarioDataMapper extends DataMapper
         foreach ($rows as $row) {
             $comentarios[] = $this->map($row);
         }
-        $this->logger->info("comentarios: ".$comentarios[0]->getEquipoComentadorId());
         return $comentarios;
     }
 }

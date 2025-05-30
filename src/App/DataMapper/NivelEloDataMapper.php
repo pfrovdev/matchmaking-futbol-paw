@@ -21,9 +21,6 @@ class NivelEloDataMapper extends DataMapper{
     public function findById(array $params): NivelElo
     {
         $nivelElo = parent::findById($params);
-        if  ($nivelElo) {
-            throw new \Exception("No existe el nivel de elo con id $params[id_nivel_elo]");
-        }
         return $this->map($nivelElo);
     }
 

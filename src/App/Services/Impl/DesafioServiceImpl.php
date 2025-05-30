@@ -83,6 +83,7 @@ class DesafioServiceImpl implements DesafioService
         return $d;
     }
 
+    // desafios donde el equipo es el equipo desafiado (para los desafios pendientes)
     public function getDesafiosByEquipoAndEstadoDesafio(int $equipoId, string $estado): array
     {
         $estadoId = $this->estadoDesafioDataMapper->findIdByCode($estado);
@@ -101,12 +102,13 @@ class DesafioServiceImpl implements DesafioService
         $desafiosDtos = [];
 
         foreach ($desafios as $desafio) {
-            $deportividadEquipoDesafiante = $this->equipoService->getDeportividadEquipo($desafio->getEquipoDesafiante());
-            $descripcionEloEquipoDesafiante = $this->equipoService->getDescripcionNivelEloById($desafio->getEquipoDesafiante());
+            $deportividadEquipoDesafiante = $this->equipoService->getDeportividadEquipo($desafio->getIdEquipoDesafiante());
+            $descripcionEloEquipoDesafiante = $this->equipoService->getDescripcionNivelEloById($desafio->getIdEquipoDesafiante());
             $desafioDto = new DesafioDto($equipo, $desafio, $deportividadEquipoDesafiante, $descripcionEloEquipoDesafiante);
             $desafiosDtos[] = $desafioDto;
         }
 
-        return $this->desafioDataMapper->findByEquipoAndEstado($equipoId, $estadoId);
+        return $desafiosDtos;
     }
+
 }
