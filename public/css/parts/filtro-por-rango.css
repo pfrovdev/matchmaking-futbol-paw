@@ -1,0 +1,41 @@
+.filters-container {
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  background-color: var(--background-contents);
+  margin-bottom: 2rem;
+}
+
+.filters-container li {
+  display: flex;
+  gap: 1rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.boton-filtro {
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.6rem;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  font-size: 1rem;
+  min-width: 120px;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+  width: 12rem;
+}
+
+.boton-filtro:hover {
+  transform: scale(1.05);
+  color: var(--text-color);
+  border: 0.2rem solid black;
+}
+
+.boton-filtro.activo {
+  border: 0.4rem solid var(--text-color);
+}

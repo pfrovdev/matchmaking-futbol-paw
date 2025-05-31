@@ -20,6 +20,8 @@ return [
         ['path' => '/create-team', 'action' => 'EquipoController@createTeam', 'method' => 'GET'],
         ['path' => '/search-team', 'action' => 'EquipoController@searchTeam', 'method' => 'GET'],
         ['path' => '/dashboard', 'action' => 'EquipoController@dashboard', 'method' => 'GET'],
+        ['path' => '/ranking-teams', 'action' => 'EquipoController@rankingTeams', 'method' => 'GET'],
+
         
         ['path' => '/login', 'action' => 'AuthController@login', 'method' => 'POST'],
         ['path' => '/register', 'action' => 'EquipoController@register', 'method' => 'POST'],

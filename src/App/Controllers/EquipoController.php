@@ -261,4 +261,54 @@ class EquipoController extends AbstractController
 
         require $this->viewsDir . 'search-team.php';
     }
+
+
+    public function rankingTeams(){
+        $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
+
+        $latitud    = isset($_GET['lat']) ? (float) $_GET['lat'] : null;
+        $longitud   = isset($_GET['lng']) ? (float) $_GET['lng'] : null;
+        $radio_km   = isset($_GET['radius_km']) ? (float) $_GET['radius_km'] : null;
+        
+        $id_nivel_elo = isset($_GET['id_nivel_elo']) ? (int)$_GET['id_nivel_elo'] : null;
+        $orden      = $_GET['orden'] ?? 'desc';
+        $orden      = in_array($orden, ['asc', 'desc', 'alpha']) ? $orden : 'asc';
+        
+        $paginaActual = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $porPagina = 3;
+        $offset = ($paginaActual - 1) * $porPagina;
+
+        if ($orden === 'alpha') {
+            $orderBy = 'nombre';
+            $direction = 'ASC';
+        } else {
+            $orderBy = 'elo_actual';
+            $direction = strtoupper($orden);
+        }
+
+        if (!$miEquipo) {
+            header("HTTP/1.1 404 Not Found");
+            require $this->viewsDir . 'errors/not-found.php';
+        }
+
+        $selectParams = [
+            'miEquipo'    => $miEquipo,
+            'id_nivel_elo' => $id_nivel_elo,
+        ];
+        $listLevelsElo = $this->equipoService->getAllNivelElo();
+        $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
+
+        $totalEquipos = count($todosLosEquipos);
+        $totalPaginas = ceil($totalEquipos / $porPagina);
+        if ($paginaActual > $totalPaginas || $paginaActual < 1){
+            header("HTTP/1.1 404 Not Found");
+            require $this->viewsDir . 'errors/not-found.php';
+            exit;
+        }
+        
+        $equipos = array_slice($todosLosEquipos, $offset, $porPagina);
+
+        require $this->viewsDir . 'ranking-teams.php';
+    }
 }

@@ -1,0 +1,25 @@
+@import url("./base.css");
+@import url("./header.css");
+@import url("side-navbar.css");
+@import url("./parts/pagination.css");
+@import url("./parts/tarjeta.css");
+@import url("./parts/filtro-por-rango.css");
+@import url("./footer.css");
+
+main > header {
+  margin: 5rem 5rem 2rem;
+}
+
+.teams-container {
+  margin: 0 auto;
+  padding: 2rem 0;
+  width: 90%;
+  background-color: var(--background-contents);
+}
+
+.teams-container li {
+  list-style: none;
+  list-style: none;
+  width: 95%;
+  margin: 0 auto;
+}

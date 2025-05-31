@@ -159,4 +159,9 @@ class EquipoServiceImpl implements EquipoService
         return $nivelElo->getDescripcion();
     }
 
+    function getAllNivelElo(): array{
+        $nivelElo = $this->nivelEloDataMapper->findAll();
+        return $nivelElo;
+    }
+
 }

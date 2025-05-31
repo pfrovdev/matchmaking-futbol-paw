@@ -1,0 +1,90 @@
+.ranking-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ranking-item {
+  margin-bottom: 1.5rem;
+}
+
+.team-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--primary-color), #191970);
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.team-image {
+  position: relative;
+  text-align: center;
+}
+
+.team-image img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.team-rank {
+  background-color: var(--secondary-color);
+  color: white;
+  font-weight: bold;
+  padding: 0.25rem 1rem;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  border-top-right-radius: 8px;
+}
+
+.team-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.team-name {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.team-sportsmanship span {
+  font-size: 1.2rem;
+}
+
+.team-record .wins {
+  color: green;
+}
+
+.team-record .losses {
+  color: red;
+}
+
+.team-record .draws {
+  color: gray;
+}
+
+.team-elo {
+  font-weight: bold;
+  text-align: right;
+}
+
+.btn-profile {
+  display: inline-block;
+  background-color: var(--highlight-color);
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.btn-profile:hover {
+  background-color: #2ea65a;
+}

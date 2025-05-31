@@ -18,4 +18,5 @@ interface EquipoService {
     function getEquipoBanner(Equipo $equipo): EquipoBannerDto;
 
     function getAllEquiposBanner(): array;
+    function getAllNivelElo(): array;
 }

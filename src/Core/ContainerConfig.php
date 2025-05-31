@@ -82,17 +82,20 @@ class ContainerConfig
 
         // Token Storage (JWT)
         $c->set(TokenStorageInterface::class, function ($c) {
-            $backend = getenv('JWT_STORAGE') ?: 'file';
-            return match (strtolower($backend)) {
-                'redis' => new RedisStorage(
-                    getenv('REDIS_HOST') ?: '127.0.0.1',
-                    (int)(getenv('REDIS_PORT') ?: 6379),
-                    getenv('JWT_REDIS_PREFIX') ?: 'jwt:blacklist:'
-                ),
-                default => new JsonFileStorage(
-                    __DIR__ . '/../../Core/JWT/blacklist.json'
-                ),
-            };
+            $backend = strtolower(getenv('JWT_STORAGE') ?: 'file');
+
+            switch ($backend) {
+                case 'redis':
+                    return new RedisStorage(
+                        getenv('REDIS_HOST') ?: '127.0.0.1',
+                        (int)(getenv('REDIS_PORT') ?: 6379),
+                        getenv('JWT_REDIS_PREFIX') ?: 'jwt:blacklist:'
+                    );
+                default:
+                    return new JsonFileStorage(
+                        __DIR__ . '/../../Core/JWT/blacklist.json'
+                    );
+            }
         });
 
         $c->set(AuthMiddelware::class, fn($c) => new AuthMiddelware(

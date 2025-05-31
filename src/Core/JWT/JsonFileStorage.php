@@ -10,6 +10,11 @@ class JsonFileStorage implements TokenStorageInterface
     public function __construct(string $filePath)
     {
         $this->file = $filePath;
+         $dir = dirname($filePath);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+
         if (file_exists($filePath)) {
             $this->cache = json_decode(file_get_contents($filePath), true) ?: [];
         }

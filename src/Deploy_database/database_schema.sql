@@ -31,16 +31,18 @@ CREATE TABLE
     NivelElo (
         id_nivel_elo INT AUTO_INCREMENT PRIMARY KEY,
         descripcion VARCHAR(20),
-        descripcion_corta VARCHAR(20)
+        descripcion_corta VARCHAR(20),
+        color_inicio VARCHAR(10),
+        color_fin VARCHAR(10)
     );
 
 INSERT INTO
-    NivelElo (descripcion, descripcion_corta)
+    NivelElo (descripcion, descripcion_corta, color_inicio, color_fin)
 VALUES
-    ('Principiante', 'principiante'),
-    ('Amateur', 'amateur'),
-    ('Semi profesional', 'semi_profesional'),
-    ('Profesional', 'profesional');
+    ('Principiante', 'principiante', '#AF6E06', '#804F01'),
+    ('Amateur', 'amateur', '#C3C3C3', '#5D5D5D'),
+    ('Semi profesional', 'semi_profesional', '#C2BB00', '#535039'),
+    ('Profesional', 'profesional', '#E67070', '#DF2727');
 
 CREATE TABLE
     EstadoDesafio (

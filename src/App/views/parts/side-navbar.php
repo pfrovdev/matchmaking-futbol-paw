@@ -10,6 +10,12 @@ $menuItems = [
         'icon' => '/icons/magnifying-glass.png',
         'alt'  => 'Buscar Equipos'
     ],
+    [
+        'href' => 'ranking-teams',
+        'icon' => '/icons/ranking-icon.png',
+        'alt'  => 'Buscar Equipos'
+    ],
+    
 ];
 ?>
 <nav class="side-navbar">
