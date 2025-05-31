@@ -25,7 +25,7 @@
             </p>
           </div>
           <div class="team-elo">
-            <strong>ELO:</strong> <span class="elo-score"><?= htmlspecialchars((string)$equipo->getEloActual()) ?></span>
+            <strong>ELO:</strong><span class="elo-score"><?= htmlspecialchars((string)$equipo->getEloActual()) ?></span>
           </div>
           <div class="team-actions">
             <a href="#" class="btn-profile">Ver perfil del equipo</a>

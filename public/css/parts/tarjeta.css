@@ -10,10 +10,12 @@
 
 .team-card {
   display: flex;
-  flex-direction: column;
-  border-radius: 12px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  border-radius: 0.5rem;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--primary-color), #191970);
+  background: linear-gradient(90deg, #223770, #180540);
   color: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   padding: 1rem;
@@ -21,34 +23,43 @@
 }
 
 .team-image {
+  width: 20rem;
   position: relative;
-  text-align: center;
+  flex-shrink: 0;
 }
 
 .team-image img {
-  max-width: 100%;
-  border-radius: 8px;
+  width: 100%;
+  border-radius: 0.5rem;
+  object-fit: cover;
 }
 
 .team-rank {
-  background-color: var(--secondary-color);
-  color: white;
+  background: linear-gradient(90deg, #af6e06, #804f01);
   font-weight: bold;
-  padding: 0.25rem 1rem;
+  padding: 0.5rem;
   position: absolute;
   bottom: 0;
   left: 0;
-  border-top-right-radius: 8px;
+  width: 100%;
+  text-align: left;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  display: flex;
+  justify-content: space-between;
 }
 
 .team-info {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-left: 2rem;
 }
 
 .team-name {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   margin: 0;
 }
 
@@ -70,21 +81,27 @@
 
 .team-elo {
   font-weight: bold;
-  text-align: right;
+  position: absolute;
+  right: 10%;
 }
 
 .btn-profile {
   display: inline-block;
-  background-color: var(--highlight-color);
-  color: white;
-  text-align: center;
+  background: var(--button-primary-background-color);
+  color: var(--primary-buttons-color);
+  border: 0.2rem solid var(--primary-buttons-color);
+  padding: 0.6rem 1.2rem;
+  border-radius: 1rem;
   text-decoration: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
+  transition: background 0.3s ease;
 }
 
 .btn-profile:hover {
-  background-color: #2ea65a;
+  background: var(--background-contents);
+  color: var(--muted-text-color);
+  border: 0.2rem solid var(--muted-text-color);
+}
+
+.team-actions {
+  align-self: flex-end;
 }
