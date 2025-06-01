@@ -116,7 +116,7 @@
 
           <!-- Card 3: Desafíos recibidos -->
           <div class="card challenges-card">
-            <h3>Últimos desafíos recibidos</h3>
+            <h3 class="title-subsection">Últimos desafíos recibidos</h3>
             <ul class="challenge-list">
               <?php foreach ($desafiosRecib as $dto): ?>
                 <li>
@@ -163,7 +163,7 @@
         <aside class="col-right">
           <!-- Card 4: Estadísticas -->
           <div class="card stats-card">
-            <h3>Estadísticas</h3>
+            <h3 class="title-subsection">Estadísticas</h3>
             <dl>
               <dt>G/P:</dt>
               <dd>1.2</dd>
@@ -187,21 +187,13 @@
           </div>
 
           <!-- Card 5: Comentarios -->
-          <div class="card comments-card">
-            <h3>Comentarios</h3>
+          <div class="card">
+            <h3 class="title-subsection">Comentarios</h3>
             <ul class="comment-list">
               <?php foreach ($comentariosPag as $dto): ?>
-                <?php $equipoComentador = $dto->getEquipoComentador(); ?>
-                <li>
-                  <strong><?= htmlspecialchars($equipoComentador->getNombreEquipo()) ?></strong>
-                  <p>
-                    Calificación:
-                    <?= str_repeat('●', $equipoComentador->getDeportividad()) ?>
-                    <?= str_repeat('○', 5 - $equipoComentador->getDeportividad()) ?>
-                  </p>
-                  <p>Comentario: <?= nl2br(htmlspecialchars($dto->getComentario())) ?></p>
-                  <small class="comment-date"><?= htmlspecialchars($dto->getFechaCreacion()) ?></small>
-                </li>
+                <div class="comments-card">
+                  <?php require __DIR__ . '/parts/comentario.php'; ?>
+                </div>
               <?php endforeach; ?>
             </ul>
 
@@ -218,25 +210,44 @@
               <?php endfor; ?>
             </div>
           </div>
+        </aside>
 
           <!-- SECCIÓN INFERIOR: Proximos partidos full-width -->
           <section class="next-matches">
-            <h3>Próximos partidos</h3>
+            <h3 class="title-subsection">Próximos partidos</h3>
             <ul class="match-list">
-              <?php for ($i = 1; $i <= 2; $i++): ?>
-                <li class="match-item">
-                  <div class="match-info">
-                    <strong>Nombre-equipo</strong>
-                    <p>Principiante II</p>
-                  </div>
-                  <div class="match-actions">
-                    <button class="btn-secondary small">Abrir wapp</button>
-                    <button class="btn-primary small">Coordinar resultado</button>
-                    <button class="btn-danger small">Cancelar</button>
-                  </div>
+              <?php
+                // array $proximosPartidos con todos los $match
+                // Cada $match debería tener: 
+                //   'name', 'nivel', 'deportividad', 'lema', 'record', 'url_logo'
+                //foreach ($proximosPartidos as $match):
+                  // $match = [
+                  //   'name' => $equipo->getNombreEquipo(),
+                  //   'nivel' => $equipo->getDescripcionElo(),
+                  //   'deportividad' => $equipo->getDeportividad(),
+                  //   'lema' => $equipo->getLema(),
+                  //   'record' => $equipo->getWins() . '-' . $equipo->getLosses() . '-' . $equipo->getDraws(),
+                  //   'url_logo' => $equipo->getUrlFotoPerfil(),
+                  //   'profile-link' =>  "/team/{$equipo->getIdEquipo()}"
+                  // ];
+              ?>
+                <li>
+                  <?php require __DIR__ . '/parts/tarjeta-proximo.php'; ?>
                 </li>
-              <?php endfor; ?>
+                <li>
+                  <?php require __DIR__ . '/parts/tarjeta-proximo.php'; ?>
+                </li>
+              <?php //endforeach; ?>
             </ul>
+            <div class="pagination">
+              <?php
+              $totalC = count($comentariosPag);
+              $pagesC = ceil($totalC / $per);
+              for ($p = 1; $p <= $pagesC; $p++): ?>
+                <a href="?page=<?= $p ?>&amp;order=<?= urlencode($order) ?>&amp;dir=<?= $dir ?>"
+                  class="<?= ($p === $page) ? 'active' : '' ?>"><?= $p ?></a>
+              <?php endfor; ?>
+            </div>
           </section>
 
       </div>
@@ -244,6 +255,8 @@
   </main>
 
   <?php require "parts/footer.php"; ?>
+
+  <script src="/js/sidebar.js"></script>
 </body>
 
 </html>

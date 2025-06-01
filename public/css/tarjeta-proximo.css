@@ -1,0 +1,191 @@
+
+  /* -------------------------------
+     3.2 Estilos de la tarjeta (nm-card)
+     ------------------------------- */
+  .nm-card {
+    display: flex;
+    background: var(--primary-color);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    color: var(--contrast-text-color);
+    font-family: sans-serif;
+    /* Si quieres que la tarjeta esté siempre al 100% del ancho del contenedor: */
+    width: 100%;
+    /* Un pequeño shadow si lo deseas: */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  /* Lado izquierdo con logo y badge de nivel */
+  .nm-card-side {
+    position: relative;
+    width: 30%;            /* Ajusta según tu preferencia */
+    min-width: 100px;      /* Para que no se achique demasiado */
+  }
+  
+  .nm-team-image {
+    width: 100%;
+    padding-top: 60%;   
+    overflow: hidden;
+  }
+  
+  .nm-team-image img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0.5rem;
+  }
+  
+  .nm-level-badge {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    background: var(--badge-bg-principiante);
+    text-align: center;
+
+    font-weight: bold;
+    border-radius: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--contrast-text-color);
+  }
+  
+  
+  /* Zona principal de contenido (derecha) */
+  .nm-card-main {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  /* Encabezado: nombre de equipo y récord */
+  .nm-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  
+  .nm-team-name {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--contrast-text-color);
+  }
+  
+  .nm-team-record {
+    font-size: 0.9rem;
+    color: var(--contrast-text-color);
+  }
+  
+  /* Cuerpo: iconos, lema */
+  .nm-card-body {
+    margin-top: 0.5rem;
+  }
+  
+  .nm-sport-icons {
+    margin-bottom: 0.25rem;
+  }
+  
+  .nm-icon {
+    margin-right: 0.2rem;
+  }
+  
+  .nm-team-motto {
+    margin: 0.25rem 0;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--contrast-text-color);
+  }
+  
+  /* Acciones: botones alineados al fondo de la tarjeta */
+  .nm-card-actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  
+  /* -------------------------------
+     3.3 Botones únicos para Next Matches
+     ------------------------------- */
+  
+  /* Pequeña variante de tamaño de fuente para esta sección */
+  .nm-small {
+    font-size: 0.8rem;
+  }
+  
+  /* Botón “abrir wapp” (secundario) */
+  .nm-btn-secondary {
+    background-color: var(--button-secondary-background-color);
+    color: var(--muted-text-color);
+    border: 1px solid var(--muted-text-color);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    flex: 1;
+    transition: transform 0.1s;
+  }
+  .nm-btn-secondary:hover {
+    transform: scale(1.02);
+  }
+  
+  /* Botón “coordinar resultado” (primario) */
+  .nm-btn-primary {
+    background-color: var(--button-primary-background-color);
+    color: var(--primary-buttons-color);
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    flex: 1;
+    transition: transform 0.1s;
+  }
+  .nm-btn-primary:hover {
+    transform: scale(1.02);
+  }
+  
+  /* Botón “cancelar” (peligro) */
+  .nm-btn-danger {
+    background-color: var(--button-cancel-background-color);
+    color: var(--contrast-text-color);
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    flex: 1;
+    transition: transform 0.1s;
+  }
+  .nm-btn-danger:hover {
+    transform: scale(1.02);
+  }
+  
+  
+  /* -------------------------------
+     3.4 Media queries para este componente
+     ------------------------------- */
+  @media (max-width: 768px) {
+    .nm-card {
+      flex-direction: column;
+    }
+    .nm-card-side {
+      width: 100%;
+      min-width: unset;
+    }
+    .nm-team-image {
+      padding-top: 50%; /* más rectangular en pantallas pequeñas */
+    }
+    .nm-card-main {
+      padding: 0.5rem 0.75rem;
+    }
+    .nm-card-actions {
+      flex-direction: column;
+    }
+    .nm-btn-secondary,
+    .nm-btn-primary,
+    .nm-btn-danger {
+      width: 100%;
+    }
+  }
