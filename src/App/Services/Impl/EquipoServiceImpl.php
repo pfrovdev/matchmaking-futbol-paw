@@ -77,9 +77,12 @@ class EquipoServiceImpl implements EquipoService
     }
 
     // devuelve EquipoBannerDto para representar la info de los equipos en las tarjetas del front
-    public function getAllEquiposBanner(): array
-    {
-        $equipos = $this->equipoDataMapper->findAll();
+    public function getAllEquiposBanner(
+        array $selectParams = [],
+        ?string $orderBy = null,
+        ?string $direction = null
+    ): array    {
+        $equipos = $this->equipoDataMapper->findAll($selectParams, $orderBy, $direction);
 
         $equiposBanner = [];
 
@@ -149,11 +152,11 @@ class EquipoServiceImpl implements EquipoService
         return $equipo;
     }
 
-    function getDescripcionNivelEloById(int $idEquipo): string
+    function getDescripcionNivelEloById(int $id_nivel_elo): string
     {
-        $equipo = $this->equipoDataMapper->findById(['id_equipo' => $idEquipo]);
+        $equipo = $this->equipoDataMapper->findById(['id_nivel_elo' => $id_nivel_elo]);
         if (!$equipo) {
-            throw new \RuntimeException("Equipo $idEquipo no encontrado");
+            throw new \RuntimeException("Equipo $id_nivel_elo no encontrado");
         }
         $nivelElo = $this->nivelEloDataMapper->findById(['id_nivel_elo' => $equipo->getIdNivelElo()]);
         return $nivelElo->getDescripcion();

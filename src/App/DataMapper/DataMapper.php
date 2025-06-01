@@ -24,9 +24,9 @@ abstract class DataMapper
         return $results[0] ?? null;
     }
 
-    public function findAll(): array
+    public function findAll(array $selectParams = [], string $orderBy = null, string $direction = null): array
     {
-        return $this->qb->select($this->table);
+        return $this->qb->select($this->table, $selectParams, $orderBy, $direction);
     }
 
     public function selectAdvanced(

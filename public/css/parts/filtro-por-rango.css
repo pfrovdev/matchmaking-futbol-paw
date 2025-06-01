@@ -1,12 +1,16 @@
 .filters-container {
-  width: 90%;
-  margin: 0 auto;
-  display: flex;
-  gap: 1rem;
+  margin: 0 4rem 2rem;
+  /* display: flex;
+  gap: 1rem; */
   padding: 1rem 2rem;
   background-color: var(--background-contents);
   margin-bottom: 2rem;
   border-radius: 0.5rem;
+}
+
+.filters-container form ul {
+  display: flex;
+  gap: 3rem;
 }
 
 .filters-container li {

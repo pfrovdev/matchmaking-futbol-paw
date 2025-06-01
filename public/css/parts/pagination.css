@@ -24,7 +24,8 @@
 }
 
 .pagination .page-link:hover {
-  background: var(--secondary-color);
+  opacity: 0.8;
+  border: 0.2rem solid black;
   transform: translateY(-2px);
 }
 

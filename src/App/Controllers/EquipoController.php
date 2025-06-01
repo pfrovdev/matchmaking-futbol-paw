@@ -281,7 +281,7 @@ class EquipoController extends AbstractController
 
         if ($orden === 'alpha') {
             $orderBy = 'nombre';
-            $direction = 'ASC';
+            $direction = 'desc';
         } else {
             $orderBy = 'elo_actual';
             $direction = strtoupper($orden);
@@ -291,14 +291,21 @@ class EquipoController extends AbstractController
             header("HTTP/1.1 404 Not Found");
             require $this->viewsDir . 'errors/not-found.php';
         }
-
-        $selectParams = [
-            'miEquipo'    => $miEquipo,
-            'id_nivel_elo' => $id_nivel_elo,
-        ];
+        $selectParams = [];
+        if ($id_nivel_elo) {
+            $selectParams = [
+                'id_nivel_elo' => $id_nivel_elo,
+            ];
+        }
+        
         $listLevelsElo = $this->equipoService->getAllNivelElo();
+        
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
-
+        
+        // Quitamos nuestro equipo
+        $todosLosEquipos = array_filter($todosLosEquipos, function($equipo) use ($miEquipo) {
+            return (int)$equipo->id_equipo !== (int)$miEquipo->id_equipo;
+        });
         $totalEquipos = count($todosLosEquipos);
         $totalPaginas = ceil($totalEquipos / $porPagina);
         if ($paginaActual > $totalPaginas || $paginaActual < 1){

@@ -35,7 +35,7 @@
 }
 
 .team-rank {
-  background: linear-gradient(90deg, #af6e06, #804f01);
+  /* background: linear-gradient(90deg, #af6e06, #804f01); */
   font-weight: bold;
   padding: 0.5rem;
   position: absolute;
@@ -59,6 +59,7 @@
 }
 
 .team-name {
+  color: white;
   font-size: 1.5rem;
   margin: 0;
 }
