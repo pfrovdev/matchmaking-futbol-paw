@@ -164,7 +164,7 @@ if ($rangoSelected !== '') {
     </main>
 
     <?php require "parts/footer.php"; ?>
-
+    <script src="/js/sidebar.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         var map = L.map('map').setView([-34.57, -59.11], 13);

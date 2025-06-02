@@ -21,13 +21,15 @@ return [
         ['path' => '/search-team', 'action' => 'EquipoController@searchTeam', 'method' => 'GET'],
         ['path' => '/dashboard', 'action' => 'EquipoController@dashboard', 'method' => 'GET'],
         ['path' => '/ranking-teams', 'action' => 'EquipoController@rankingTeams', 'method' => 'GET'],
-
+        ['path' => '/comentarios', 'action' => 'ComentarioController@index', 'method' => 'GET'],
+         
+        ['path' => '/coordinar-resultado', 'action' => 'EquipoController@coordinarResultado', 'method' => 'GET'],
         
         ['path' => '/login', 'action' => 'AuthController@login', 'method' => 'POST'],
         ['path' => '/register', 'action' => 'EquipoController@register', 'method' => 'POST'],
         ['path' => '/register-team', 'action' => 'EquipoController@registerTeam', 'method' => 'POST'],
         ['path' =>  '/logout', 'action' => 'AuthController@logout', 'method' => 'GET'],
-
+        
         ['path' => '/accept-desafio', 'action' => 'DesafioController@aceptarDesafio', 'method' => 'POST'],
         ['path' => '/reject-desafio', 'action' => 'DesafioController@rechazarDesafio', 'method' => 'POST']
     ],

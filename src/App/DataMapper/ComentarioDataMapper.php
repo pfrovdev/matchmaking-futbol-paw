@@ -29,6 +29,23 @@ class ComentarioDataMapper extends DataMapper
         return $this->mapAll($result);
     }
 
+    public function findByEquipoPaginated(int $idEquipo, int $limit, int $offset, string $orderBy, string $direction): array {
+        $rawRows = $this->qb->select(
+            $this->table,
+            ['id_equipo_comentado' => $idEquipo],
+            $orderBy,
+            $direction,
+            $limit,
+            $offset
+        );
+
+        return $this->mapAll($rawRows);
+    }
+
+    public function countByEquipo(int $idEquipo): int {
+        return $this->qb->count($this->table, ['id_equipo_comentado' => $idEquipo]);
+    }
+    
     public function saveNewComentario(Comentario $comentario){
         $this->qb->insert($this->table, $comentario->fields);
     }
