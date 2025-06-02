@@ -87,13 +87,6 @@ aside > figure {
   grid-column: 1 / -1;
 }
 
-#map {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
 .radio-btns {
   display: flex;
   flex-direction: column;
@@ -141,7 +134,6 @@ aside input[type="radio"] {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* Colores por rango */
 .filtros-rango .principiante.activo {
   background: var(--badge-bg-principiante);
   color: white;
@@ -168,60 +160,7 @@ figure img {
   border-radius: 8px;
   margin-top: 1rem;
 }
-.pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: var(--background-contents);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin: 2rem auto;
-  max-width: fit-content;
-}
 
-.pagination .page-link {
-  display: inline-block;
-  padding: 0.5rem 0.75rem;
-  border-radius: 4px;
-  background: var(--primary-color);
-  color: var(--background-contents);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.pagination .page-link:hover {
-  background: var(--gradient-primary-color);
-  transform: translateY(-2px);
-}
-
-.pagination .page-link:active {
-  transform: translateY(0);
-}
-
-.pagination .page-link.prev {
-  margin-right: auto;
-}
-
-.pagination .page-link.next {
-  margin-left: auto;
-}
-
-.pagination .page-link.disabled,
-.pagination .page-link.disabled:hover {
-  background: #ccc;
-  color: #666;
-  cursor: default;
-  transform: none;
-}
-
-.pagination .page-info {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-}
-
-/* Tablets y móviles grandes */
 @media (max-width: 768px) {
   main > header {
     margin: 3rem 2rem 1.5rem;
@@ -233,16 +172,15 @@ figure img {
 
   .grid-layout {
     margin: 0 2rem;
-    grid-template-columns: 1fr; /* Deja una sola columna */
+    grid-template-columns: 1fr;
     gap: 1.5rem;
   }
 
   aside {
-    grid-template-columns: 1fr; /* También una columna en el aside */
+    grid-template-columns: 1fr;
   }
 }
 
-/* Móviles pequeños */
 @media (max-width: 480px) {
   main > header {
     margin: 2rem 1rem 1rem;
@@ -255,13 +193,12 @@ figure img {
     gap: 1rem;
   }
 
-  .lista-equipos li,
-  .pagination {
-    width: 100%; /* Asegura que los bloques ocupen todo el ancho */
+  .lista-equipos li {
+    width: 100%;
   }
 
   .radio-btns {
-    flex-direction: column; /* Ya lo tienes, pero reafirmamos para móviles */
+    flex-direction: column;
   }
 
   .filtros-rango {
@@ -271,9 +208,5 @@ figure img {
 
   aside {
     padding: 0.75rem;
-  }
-
-  #map {
-    aspect-ratio: 4 / 3; /* Ajusta proporción si hace falta */
   }
 }

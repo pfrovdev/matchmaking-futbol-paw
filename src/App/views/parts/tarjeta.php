@@ -16,7 +16,8 @@
       <li class="ranking-item">
         <article class="team-card">
           <figure class="team-image">
-            <img src="<?= htmlspecialchars($equipo->getUrlFotoPerfil() ?? '/icons/defaultTeamIcon.png') ?>" alt="Escudo del equipo Nombre-equipo" />
+            <img src="<?= htmlspecialchars($equipo->getUrlFotoPerfil() ?? '/icons/defaultTeamIcon.png') ?>"
+                  alt="Escudo del equipo <?= htmlspecialchars($equipo->getNombreEquipo()) ?>" />
             <figcaption class="team-rank" style="background: <?= htmlspecialchars($gradient) ?>;">
                 <?= htmlspecialchars($equipo->getDescripcionElo()) ?>
             </figcaption>

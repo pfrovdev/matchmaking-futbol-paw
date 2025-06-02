@@ -4,6 +4,7 @@
 @import url("./parts/pagination.css");
 @import url("./parts/tarjeta.css");
 @import url("./parts/filtro-por-rango.css");
+@import url("./parts/filtro-por-ubicacion.css");
 @import url("./footer.css");
 
 main > header {

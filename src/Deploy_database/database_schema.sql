@@ -86,7 +86,7 @@ CREATE TABLE
         acronimo VARCHAR(5),
         elo_actual INT NOT NULL DEFAULT 800,
         fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-        url_foto_perfil VARCHAR(45),
+        url_foto_perfil VARCHAR(100),
         id_tipo_equipo INT,
         id_nivel_elo INT,
         id_rol INT,

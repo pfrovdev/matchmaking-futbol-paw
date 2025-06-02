@@ -248,7 +248,7 @@ class EquipoController extends AbstractController
         ];
 
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
-        $todosLosEquipos = $this->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);
+        $todosLosEquipos = $this->equipoService->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);
         
         $totalEquipos = count($todosLosEquipos);
         $totalPaginas = ceil($totalEquipos / $porPagina);
@@ -293,20 +293,33 @@ class EquipoController extends AbstractController
             require $this->viewsDir . 'errors/not-found.php';
         }
         $selectParams = [];
-        if ($id_nivel_elo) {
+        if ($id_nivel_elo ) {
             $selectParams = [
                 'id_nivel_elo' => $id_nivel_elo,
+            ];
+        }
+        if($latitud && $longitud && $radio_km){
+            $selectParams = [
+                'lat'         => $latitud,
+                'lng'         => $longitud,
+                'radio_km'    => $radio_km
             ];
         }
         
         $listLevelsElo = $this->equipoService->getAllNivelElo();
         
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
-        $todosLosEquipos = $this->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);
-        $todosLosEquipos = $this->setRestultadosPartido($todosLosEquipos);
+        $todosLosEquipos = $this->equipoService->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);
+        $todosLosEquipos = $this->equipoService->setRestultadosPartido($todosLosEquipos);
         
         $totalEquipos = count($todosLosEquipos);
         $totalPaginas = ceil($totalEquipos / $porPagina);
+        if($totalEquipos === 0){
+            $equipos = [];
+            require $this->viewsDir . 'ranking-teams.php';
+            exit;
+        }
+        
         if ($paginaActual > $totalPaginas || $paginaActual < 1){
             header("HTTP/1.1 404 Not Found");
             require $this->viewsDir . 'errors/not-found.php';
@@ -331,47 +344,12 @@ class EquipoController extends AbstractController
             exit;
         }
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner([], '', '');
-        $todosLosEquipos = $this->setRestultadosPartido($todosLosEquipos);
+        $todosLosEquipos = $this->equipoService->setRestultadosPartido($todosLosEquipos);
         $listLevelsElo = $this->equipoService->getAllNivelElo();
         $equipo = $this->equipoService->getEquipoById($id_equipo);
-        $equipo = $this->getAllEquiposbyId($equipo->getIdEquipo(), $todosLosEquipos);
+        $equipo = $this->equipoService->getAllEquiposbyId($equipo->getIdEquipo(), $todosLosEquipos);
                
         require $this->viewsDir . 'details-team.php';
-    }
-
-    public function quitarMiEquipoDeEquipos(array $todosLosEquipos, Equipo $miEquipo){
-        // Quitamos nuestro equipo
-        $todosLosEquipos = array_filter($todosLosEquipos, function($equipo) use ($miEquipo) {
-            return (int)$equipo->id_equipo !== (int)$miEquipo->id_equipo;
-        });
-        return $todosLosEquipos;
-    }
-
-    public function setRestultadosPartido(array $todosLosEquipos): array {
-        // Recorremos y agregamos los datos solo al equipo que matchea por id
-        foreach ($todosLosEquipos as &$equipo) {
-            $resultadoPartidos = $this->partidoService->getResultadoPartidosByIdEquipo((int)$equipo->id_equipo);
-            if ((int)$equipo->id_equipo === (int)$resultadoPartidos['id_equipo']) {
-                $equipo->ganados = $resultadoPartidos['ganados'];
-                $equipo->perdidos = $resultadoPartidos['perdidos'];
-                $equipo->empatados = $resultadoPartidos['empatados'];
-            } else {
-                // Setear 0 en caso de que no sea el equipo que jugó
-                $equipo->ganados = 0;
-                $equipo->perdidos = 0;
-                $equipo->empatados = 0;
-            }
-        }
-        return $todosLosEquipos;
-    }
-
-    public function getAllEquiposbyId(int $id_equipo, array $todosLosEquipos) {
-        foreach ($todosLosEquipos as &$equipo) {
-            if ((int)$equipo->id_equipo === (int)$id_equipo) {
-                return $equipo;
-            }
-        }
-        return null;
     }
 
 }
