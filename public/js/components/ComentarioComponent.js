@@ -33,11 +33,25 @@ export default class ComentarioComponent {
 
       // 2) Calificación (deportividad)
       const pCalif = document.createElement('p');
-      let estrellas = '';
-      for (let i = 0; i < c.deportividad; i++) estrellas += '⚽ ';
-      for (let i = c.deportividad; i < 5; i++) estrellas += '○ ';
-      pCalif.textContent = `Calificación: ${estrellas}`;
-      li.appendChild(pCalif);
+      pCalif.classList.add('comment-rating');
+      pCalif.textContent = 'Calificación: ';
+
+      // Estrellas llenas (⚽ sin clase "empty")
+      for (let i = 0; i < c.deportividad; i++) {
+        const spanLlena = document.createElement('span');
+        spanLlena.classList.add('rating-icon');
+        spanLlena.textContent = '⚽';
+        pCalif.appendChild(spanLlena);
+      }
+      // Estrellas vacías (⚽ con clase "empty" para que herede opacity:0.4 y color:grey)
+      for (let i = c.deportividad; i < 5; i++) {
+        const spanVacia = document.createElement('span');
+        spanVacia.classList.add('rating-icon', 'empty');
+        spanVacia.textContent = '⚽';
+        pCalif.appendChild(spanVacia);
+      }
+
+    li.appendChild(pCalif);
 
       // 3) Texto del comentario (escapando < & > y convirtiendo saltos de línea en <br>)
       const pComent = document.createElement('p');

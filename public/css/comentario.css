@@ -120,7 +120,7 @@
   
   .comment-list li .rating-icon {
     margin-right: 0.2rem;
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
   
   .comment-list li .rating-icon.empty {
@@ -168,8 +168,7 @@
   .comment-list p:first-of-type {
     font-weight: bold;
   }
-  
-  
+
   /* -----------------------------------------
      MEDIA QUERIES (para pantallas más pequeñas)
      ----------------------------------------- */
