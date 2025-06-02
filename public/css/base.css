@@ -87,7 +87,7 @@ button {
 button:hover {
     background-color: var(--contrast-text-color);
     color: var(--muted-text-color);
-    border: 2px solid var(--muted-text-color);
+    border: 1px solid var(--muted-text-color);
 }
 
 input{
