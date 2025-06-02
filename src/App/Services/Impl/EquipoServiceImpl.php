@@ -100,7 +100,7 @@ class EquipoServiceImpl implements EquipoService
 
     public function getEquipoBanner(Equipo $equipo): EquipoBannerDto
     {
-        $descElo = $this->getDescripcionNivelEloById($equipo->getIdNivelElo());
+        $descElo = $this->getDescripcionNivelEloById($equipo->getIdEquipo());
         $deportividad = $this->getDeportividadEquipo($equipo->getIdEquipo());
         $tipoEquipo = $this->tipoEquipoDataMapper->findById(['id_tipo_equipo' => $equipo->getIdTipoEquipo()]);
         $equipoBanner = new EquipoBannerDto($equipo, $descElo, $deportividad, $tipoEquipo->getTipo());
@@ -156,11 +156,11 @@ class EquipoServiceImpl implements EquipoService
         return $equipo;
     }
 
-    function getDescripcionNivelEloById(int $id_nivel_elo): string
+    function getDescripcionNivelEloById(int $idEquipo): string
     {
-        $equipo = $this->equipoDataMapper->findById(['id_nivel_elo' => $id_nivel_elo]);
+        $equipo = $this->equipoDataMapper->findById(['id_equipo' => $idEquipo]);
         if (!$equipo) {
-            throw new \RuntimeException("Equipo $id_nivel_elo no encontrado");
+            throw new \RuntimeException("Equipo $idEquipo no encontrado");
         }
         $nivelElo = $this->nivelEloDataMapper->findById(['id_nivel_elo' => $equipo->getIdNivelElo()]);
         return $nivelElo->getDescripcion();
