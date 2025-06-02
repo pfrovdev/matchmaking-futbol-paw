@@ -49,7 +49,7 @@
     <div class="nm-card-actions">
       <!-- Botones de acción para cada partido -->
       <button class="nm-btn-secondary nm-small">Abrir wapp</button>
-      <button class="nm-btn-primary nm-small">Coordinar resultado</button>
+      <a href="/coordinar-resultado" class="nm-btn-primary nm-small">Coordinar resultado</a>
       <button class="nm-btn-danger nm-small">Cancelar</button>
     </div>
   </div>
