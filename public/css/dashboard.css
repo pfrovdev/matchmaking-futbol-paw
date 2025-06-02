@@ -182,7 +182,7 @@
     font-size: 0.9rem;
   }
   
-
+  
   /* ----- PRÓXIMOS PARTIDOS (full-width) ----- */
   .next-matches {
     background-color: #fff;
@@ -257,6 +257,7 @@
   .title-subsection{
     border-bottom: 1px solid #eee;
   }
+
 
 /* -------------------------
    MEDIA QUERIES

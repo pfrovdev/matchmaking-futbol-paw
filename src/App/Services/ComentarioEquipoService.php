@@ -7,7 +7,7 @@ use Paw\App\Models\Equipo;
 
 interface ComentarioEquipoService
 {
-    function getComentariosByEquipo(int $idEquipo): array;
+    function getComentariosByEquipoPaginated(int $idEquipo, int $page, int $perPage, string $orderBy, string $direction): array;
     function getComentarioById(int $idComentario);
     function saveNewComentario(Comentario $comentario);
     function getEquipoComentador(Comentario $comentario): ?Equipo;

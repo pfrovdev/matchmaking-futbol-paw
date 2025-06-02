@@ -11,9 +11,11 @@
   <meta name="description" content="Pagina principal del equipo de futbol del usuario">
   <title>Dashboard - <?= htmlspecialchars($miEquipo->fields['nombre']) ?></title>
   <link rel="stylesheet" href="css/dashboard.css">
+  <script type="module" src="js/pages/Dashboard.js" defer></script>
 </head>
 
-<body>
+<body data-profile-id="<?= htmlspecialchars($equipoVistoId, ENT_QUOTES) ?>">
+
   <?php require "parts/header.php"; ?>
   <?php require "parts/side-navbar.php"; ?>
   <main>
@@ -147,15 +149,6 @@
                 </li>
               <?php endforeach; ?>
             </ul>
-            <div class="pagination">
-              <?php
-              $totalC = count($comentariosPag);
-              $pagesC = ceil($totalC / $per);
-              for ($p = 1; $p <= $pagesC; $p++): ?>
-                <a href="?page=<?= $p ?>&amp;order=<?= urlencode($order) ?>&amp;dir=<?= $dir ?>"
-                  class="<?= ($p === $page) ? 'active' : '' ?>"><?= $p ?></a>
-              <?php endfor; ?>
-            </div>
           </div>
         </section>
 
@@ -187,28 +180,21 @@
           </div>
 
           <!-- Card 5: Comentarios -->
-          <div class="card">
+          <div class="card comments-card">
             <h3 class="title-subsection">Comentarios</h3>
-            <ul class="comment-list">
-              <?php foreach ($comentariosPag as $dto): ?>
-                <div class="comments-card">
-                  <?php require __DIR__ . '/parts/comentario.php'; ?>
-                </div>
-              <?php endforeach; ?>
-            </ul>
-
-            <div class="pagination">
-              <?php
-              $totalC = count($comentariosPag);
-              $pagesC = ceil($totalC / $per);
-              for ($p = 1; $p <= $pagesC; $p++):
-              ?>
-                <a href="?page=<?= $p ?>&order=<?= urlencode($order) ?>&dir=<?= $dir ?>"
-                  class="<?= $p === $page ? 'active' : '' ?>">
-                  <?= $p ?>
-                </a>
-              <?php endfor; ?>
+            <div class="comment-filter">
+              <label for="filtroComentarios">Ordenar por:</label>
+              <select id="filtroComentarios" name="filtroComentarios">
+                <option value="fecha_creacion-DESC" selected>Más recientes</option>
+                <option value="fecha_creacion-ASC">Más antiguos</option>
+                <option value="deportividad-DESC">Deportividad (mayor a menor)</option>
+                <option value="deportividad-ASC">Deportividad (menor a mayor)</option>
+              </select>
             </div>
+
+            <ul id="comment-list" class="comment-list"></ul>
+            <div id="comment-pagination" class="pagination"></div>
+            
           </div>
         </aside>
 
@@ -240,13 +226,7 @@
               <?php //endforeach; ?>
             </ul>
             <div class="pagination">
-              <?php
-              $totalC = count($comentariosPag);
-              $pagesC = ceil($totalC / $per);
-              for ($p = 1; $p <= $pagesC; $p++): ?>
-                <a href="?page=<?= $p ?>&amp;order=<?= urlencode($order) ?>&amp;dir=<?= $dir ?>"
-                  class="<?= ($p === $page) ? 'active' : '' ?>"><?= $p ?></a>
-              <?php endfor; ?>
+              
             </div>
           </section>
 
