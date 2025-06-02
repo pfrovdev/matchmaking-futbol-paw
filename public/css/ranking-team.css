@@ -24,4 +24,13 @@ main > header {
   list-style: none;
   width: 95%;
   margin: 0 auto;
+
+  background: linear-gradient(
+    90deg,
+    var(--primary-color) 0%,
+    var(--gradient-primary-color) 100%
+  );
+  color: var(--background-contents);
+  border-radius: 0.5rem;
+  padding: 1rem;
 }

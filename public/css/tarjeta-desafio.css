@@ -1,143 +1,157 @@
 /* --- Contenedor general --- */
 .challenge-card {
-    display: flex;
-    background: var(--primary-color);
-    border-radius: 0.5rem;
-    overflow: hidden;
-    color: var(--contrast-text-color);
-    font-family: sans-serif;
+  display: flex;
+  background: var(--primary-color);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  color: var(--contrast-text-color);
+  font-family: sans-serif;
+}
 
-  }
-  
-  /* --- Lado izquierdo con imagen o placeholder --- */
-  .card-side {
-    position: relative;
-    width: 40%;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-  }
-  .team-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 0.75rem;
-    background: url('../icons/defaultTeamIcon.png') center/cover no-repeat;
-  }
-  .level-badge {
-    position: absolute;
-    bottom: 0;
-    left: 50%;                    
-    transform: translateX(-50%);
-    width: 95%;
-    background: var(--badge-bg-principiante);
-    text-align: center;
-    padding: 0.5rem 0;
-    font-weight: bold;
-    border-radius: 0.75rem;
-  }
-  
-  /* --- Zona principal de contenido --- */
-  .card-main {
-    flex: 1;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  
-  /* --- Header: nombre y récord --- */
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-  }
-  .team-name {
-    margin: 0;
-    font-size: 1.25rem;
-    color: var(--contrast-text-color);
-  }
-  .team-record {
-    font-size: 0.9rem;
-    color: var(--contrast-text-color);
-  }
-  
-  /* --- Body: iconos, lema y elo --- */
-  .card-body {
-    margin-top: 0.5rem;
-  }
-  .sport-icons {
-    margin-bottom: 0.25rem;
-  }
-  .sport-icons .icon {
-    margin-right: 0.2rem;
-  }
-  .team-motto {
-    margin: 0.25rem 0;
-    font-style: italic;
-  }
-  .elo {
-    display: block;
-    color: var(--contrast-text-color);
-    font-size: 0.8rem;
-  }
-  .profile-link {
-    display: inline-block;
-    margin-top: 0.25rem;
-    font-size: 0.8rem;
-    color: var(--muted-text-color);
-    text-decoration: none;
-  }
-  .profile-link:hover {
-    text-decoration: underline;
-  }
-  
-  /* --- Acciones: botones pill --- */
-  .card-actions {
-    margin-top: 1rem;
-    display: flex;
-    gap: 0.5rem;
-  }
-  .btn {
-    flex: 1;
-    padding: 0.5rem 0;
-    font-size: 0.9rem;
-    border: none;
-    border-radius: 2rem;
-    cursor: pointer;
-    transition: transform 0.1s;
-  }
-  .btn:hover {
-    transform: scale(1.02);
-  }
-  .btn-accept {
-    background: var(--button-primary-background-color);
-    color: var(--contrast-text-color);
-  }
-  .btn-reject {
-    background: var(--button-cancel-background-color);
-    color: var(--contrast-text-color);
-  }
+/* --- Lado izquierdo con imagen o placeholder --- */
+.card-side {
+  position: relative;
+  width: 40%;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
 
-  
-  .challenge-card--send .team-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 0.75rem;
-  }
- 
-  .challenge-card--send .team-record {
-    display: none;
-  }
-  
-  .challenge-card--send .card-body p {
-    margin: 0.25rem 0;
-  }
-  
-  .challenge-card--send .btn-reject {
-    display: none;
-  }
-  
-  .challenge-card--send .card-actions {
-    justify-content: center;
-  }
+.team-image {
+  position: relative;
+  height: 13rem;
+}
+
+.team-image img {
+  width: 100%;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.team-rank {
+  font-weight: bold;
+  padding: 0.5rem;
+  position: absolute;
+  bottom: -1rem;
+  left: 0;
+  width: 100%;
+  text-align: left;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.level-badge {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95%;
+  background: var(--badge-bg-principiante);
+  text-align: center;
+  padding: 0.5rem 0;
+  font-weight: bold;
+  border-radius: 0.75rem;
+}
+
+/* --- Zona principal de contenido --- */
+.card-main {
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* --- Header: nombre y récord --- */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.team-name {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--contrast-text-color);
+}
+.team-record {
+  font-size: 0.9rem;
+  color: var(--contrast-text-color);
+}
+
+/* --- Body: iconos, lema y elo --- */
+.card-body {
+  margin-top: 0.5rem;
+}
+.sport-icons {
+  margin-bottom: 0.25rem;
+}
+.sport-icons .icon {
+  margin-right: 0.2rem;
+}
+.team-motto {
+  margin: 0.25rem 0;
+  font-style: italic;
+}
+.elo {
+  display: block;
+  color: var(--contrast-text-color);
+  font-size: 0.8rem;
+}
+.profile-link {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--muted-text-color);
+  text-decoration: none;
+}
+.profile-link:hover {
+  text-decoration: underline;
+}
+
+/* --- Acciones: botones pill --- */
+.card-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-accept {
+  background: var(--button-primary-background-color);
+  color: var(--contrast-text-color);
+  border: 0.1rem solid var(--contrast-text-color);
+}
+
+.btn-accept:hover {
+  background: var(--button-secondary-background-color);
+  color: var(--muted-text-color);
+  border: 0.1rem solid var(--muted-text-color);
+}
+
+.btn-reject {
+  background: var(--button-cancel-background-color);
+  color: var(--contrast-text-color);
+}
+
+.challenge-card--send .team-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.75rem;
+}
+
+.challenge-card--send .team-record {
+  display: none;
+}
+
+.challenge-card--send .card-body p {
+  margin: 0.25rem 0;
+}
+
+.challenge-card--send .btn-reject {
+  display: none;
+}
+
+.challenge-card--send .card-actions {
+  justify-content: center;
+}

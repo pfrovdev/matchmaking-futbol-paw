@@ -1,16 +1,26 @@
 <?php
-// parts/tarjeta-envio-desafio.php
-// Espera un array $equipo con de EquipoBannerDto 
+    $equipoDescripcionElo = $equipo->getDescripcionElo();
+    $gradient = '';
+
+    foreach ($listLevelsElo as $row) {
+        if ($row['descripcion'] === $equipoDescripcionElo) {
+            $colorInicio = $row['color_inicio'];
+            $colorFin = $row['color_fin'];
+            $gradient = "linear-gradient(90deg, $colorInicio, $colorFin)";
+            break;
+        }
+    }
 ?>
 <div class="challenge-card challenge-card--send">
   <div class="card-side">
     <div class="team-image">
-      <img
-        src="<?= htmlspecialchars($equipo->getUrlFotoPerfil() ?? '/icons/defaultTeamIcon.png') ?>"
-        alt="">
-      <span class="level-badge">
-        <?= htmlspecialchars($equipo->getDescripcionElo()) ?>
-      </span>
+      <figure class="team-image">
+          <img src="<?= htmlspecialchars($equipo->getUrlFotoPerfil() ?? '/icons/defaultTeamIcon.png') ?>"
+                alt="Escudo del equipo <?= htmlspecialchars($equipo->getNombreEquipo()) ?>" />
+          <figcaption class="team-rank" style="background: <?= htmlspecialchars($gradient) ?>;">
+              <?= htmlspecialchars($equipo->getDescripcionElo()) ?>
+          </figcaption>
+        </figure>
     </div>
   </div>
 

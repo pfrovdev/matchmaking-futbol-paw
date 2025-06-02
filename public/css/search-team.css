@@ -1,9 +1,10 @@
 @import url("./base.css");
 @import url("./header.css");
 @import url("./parts/pagination.css");
-@import url("./footer.css");
 @import url("./tarjeta-desafio.css");
 @import url("side-navbar.css");
+@import url("./footer.css");
+
 main > header {
   margin: 5rem 5rem 2rem;
 }
@@ -13,7 +14,7 @@ main > header {
   margin-bottom: 5rem;
   display: grid;
   grid-template-columns: 1.5fr 1.5fr;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .left-size {
@@ -159,6 +160,31 @@ figure img {
   max-width: 100%;
   border-radius: 8px;
   margin-top: 1rem;
+}
+
+.filters-container form ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filters-container form ul li {
+  display: flex;
+  gap: 1rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.boton-filtro:hover {
+  transform: scale(1.05);
+  color: var(--text-color);
+  border: 0.1rem solid black;
+}
+
+.boton-filtro.activo {
+  border: 0.2rem solid var(--text-color);
+  font-size: 0.9rem;
 }
 
 @media (max-width: 768px) {

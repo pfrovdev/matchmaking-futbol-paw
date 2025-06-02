@@ -132,6 +132,19 @@ footer {
   height: 15rem;
 }
 
+.btn {
+  flex: 1;
+  padding: 0.5rem 0;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.1s;
+  text-align: center;
+}
+.btn:hover {
+  transform: scale(1.02);
+}
+
 .boton-filtro {
   border: none;
   padding: 0.5rem 1rem;

@@ -27,7 +27,6 @@
 
         <?php if (!empty($listLevelsElo)): ?>
             <?php require "parts/filtro-por-rango.php"; ?>
-            
         <?php endif ;?>
 
         <?php require "parts/filtro-por-ubicacion.php"; ?>

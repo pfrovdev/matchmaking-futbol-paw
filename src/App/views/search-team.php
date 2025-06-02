@@ -14,6 +14,7 @@ $mapaRangos = [
     4 => 'Profesional',
 ];
 
+$rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
 
 if ($nombre !== '') {
     $equipos = array_filter($equipos, function($e) use($nombre) {
@@ -21,12 +22,7 @@ if ($nombre !== '') {
     });
 }
 
-if ($rangoSelected !== '') {
-    $equipos = array_filter($equipos, function($e) use($rangoSelected, $mapaRangos) {
-        return isset($mapaRangos[$e['id_nivel_elo']])
-            && $mapaRangos[$e['id_nivel_elo']] === $rangoSelected;
-    });
-}
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -70,37 +66,19 @@ if ($rangoSelected !== '') {
                             <?php require __DIR__ . '/parts/tarjeta-envio-desafio.php'; ?>
                         </li>
                         <br>
-                    <?php endforeach; endif; ?>
+                    <?php endforeach; ?>
+                    <?php require "parts/pagination.php"; ?>
+               <?php  endif; ?>
                 </ul>
-                <?php require "parts/pagination.php"; ?>
+                
             </section>
 
             <!-- === COLUMNA DERECHA: FILTROS y MAPA === -->
             <aside>
                 <!-- FILTRAR POR RANGO -->
-                <section aria-labelledby="filtro-rango">
-                    <h2 id="filtro-rango">Filtrar por rango</h2>
-                    <form method="get">
-
-                        <input type="hidden" name="nombre" value="<?= htmlspecialchars($nombre) ?>">
-                        <input type="hidden" name="orden" value="<?= htmlspecialchars($orden) ?>">
-                        <ul class="filtros-rango">
-                            <?php foreach ($mapaRangos as $id => $label): 
-                                $clase = strtolower($label);
-                                $activo = ($rangoSelectedId == $id) ? ' activo' : '';
-                            ?>
-                                <li>
-                                    <button type="submit"
-                                        name="id_nivel_elo"
-                                        value="<?= $id ?>"
-                                        class="<?= strtolower($label) . $activo ?>">
-                                        <?= $label ?>>
-                                    </button>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </form>
-                </section>
+                <?php if (!empty($listLevelsElo)): ?>
+                    <?php require "parts/filtro-por-rango.php"; ?>
+                <?php endif ;?>
 
                 <!-- ORDENAR -->
                 <section aria-labelledby="ordenar">

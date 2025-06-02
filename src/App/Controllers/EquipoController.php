@@ -246,12 +246,17 @@ class EquipoController extends AbstractController
             'lng'         => $longitud,
             'radio_km'    => $radio_km
         ];
-
+        $listLevelsElo = $this->equipoService->getAllNivelElo();
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
         $todosLosEquipos = $this->equipoService->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);
         
         $totalEquipos = count($todosLosEquipos);
         $totalPaginas = ceil($totalEquipos / $porPagina);
+        if($totalEquipos === 0){
+            $equipos = [];
+            require $this->viewsDir . 'search-team.php';
+            exit;
+        }
         if ($paginaActual > $totalPaginas || $paginaActual < 1){
             header("HTTP/1.1 404 Not Found");
             require $this->viewsDir . 'errors/not-found.php';
