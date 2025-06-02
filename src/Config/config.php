@@ -21,8 +21,8 @@ return [
         ['path' => '/search-team', 'action' => 'EquipoController@searchTeam', 'method' => 'GET'],
         ['path' => '/dashboard', 'action' => 'EquipoController@dashboard', 'method' => 'GET'],
         ['path' => '/ranking-teams', 'action' => 'EquipoController@rankingTeams', 'method' => 'GET'],
-
-        
+        ['path' => '/comentarios', 'action' => 'ComentarioController@index', 'method' => 'GET'],
+         
         ['path' => '/login', 'action' => 'AuthController@login', 'method' => 'POST'],
         ['path' => '/register', 'action' => 'EquipoController@register', 'method' => 'POST'],
         ['path' => '/register-team', 'action' => 'EquipoController@registerTeam', 'method' => 'POST'],

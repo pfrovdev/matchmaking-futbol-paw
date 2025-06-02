@@ -260,4 +260,26 @@ class QueryBuilder
             return false;
         }
     }
+    public function count(string $table, array $params = []): int
+    {
+        $query  = "SELECT COUNT(*) AS total FROM {$table}";
+        $values = [];
+
+        if (!empty($params)) {
+            $conditions = [];
+            foreach ($params as $field => $value) {
+                $conditions[] = "$field = ?";
+                $values[]     = $value;
+            }
+            $query .= " WHERE " . implode(" AND ", $conditions);
+        } else {
+            $query .= " WHERE 1=1";
+        }
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute($values);
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int) $row['total'];
+    }
 }

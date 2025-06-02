@@ -20,17 +20,35 @@ class ComentarioEquipoServiceImpl implements ComentarioEquipoService
         $this->equipoService = $equipoService;
     }
 
-    function getComentariosByEquipo(int $idEquipo): array
+    public function getComentariosByEquipoPaginated(int $idEquipo, int $page, int $perPage, string $orderBy, string $direction): array
     {
-        $comentarios = $this->comentarioDataMapper->findByEquipo($idEquipo);
+        $offset = ($page - 1) * $perPage;
+
+        $comentariosRaw = $this->comentarioDataMapper->findByEquipoPaginated($idEquipo, $perPage, $offset, $orderBy, $direction);
+
         $comentariosEquipoDtos = [];
-        foreach ($comentarios as $comentario) {
-            $equipoComentador = $this->getEquipoComentador($comentario);
+        foreach ($comentariosRaw as $comentario) {
+            $equipoComentador       = $this->getEquipoComentador($comentario);
             $equipoComentadorBanner = $this->equipoService->getEquipoBanner($equipoComentador);
-            $comentarioEquipoDto = new ComentarioEquipoDto($comentario, $equipoComentadorBanner);
-            $comentariosEquipoDtos[] = $comentarioEquipoDto;
+            $comentarioEquipoDto    = new ComentarioEquipoDto($comentario, $equipoComentadorBanner);
+            $comentariosEquipoDtos[]  = $comentarioEquipoDto;
         }
-        return $comentariosEquipoDtos;
+
+        $totalItems = $this->comentarioDataMapper->countByEquipo($idEquipo);
+
+        $totalPages = (int) ceil($totalItems / $perPage);
+
+        $meta = [
+            'totalItems' => $totalItems,
+            'perPage' => $perPage,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+        ];
+
+        return [
+            'data' => $comentariosEquipoDtos,
+            'meta' => $meta,
+        ];
     }
 
     function getComentarioById(int $idComentario)
