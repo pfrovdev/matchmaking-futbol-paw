@@ -302,8 +302,9 @@ class EquipoController extends AbstractController
         $listLevelsElo = $this->equipoService->getAllNivelElo();
         
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
-
         $todosLosEquipos = $this->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);
+        $todosLosEquipos = $this->setRestultadosPartido($todosLosEquipos);
+        
         $totalEquipos = count($todosLosEquipos);
         $totalPaginas = ceil($totalEquipos / $porPagina);
         if ($paginaActual > $totalPaginas || $paginaActual < 1){
@@ -324,4 +325,23 @@ class EquipoController extends AbstractController
         });
         return $todosLosEquipos;
     }
+
+    public function setRestultadosPartido(array $todosLosEquipos): array {
+        // Recorremos y agregamos los datos solo al equipo que matchea por id
+        foreach ($todosLosEquipos as &$equipo) {
+            $resultadoPartidos = $this->partidoService->getResultadoPartidosByIdEquipo((int)$equipo->id_equipo);
+            if ((int)$equipo->id_equipo === (int)$resultadoPartidos['id_equipo']) {
+                $equipo->ganados = $resultadoPartidos['ganados'];
+                $equipo->perdidos = $resultadoPartidos['perdidos'];
+                $equipo->empatados = $resultadoPartidos['empatados'];
+            } else {
+                // Setear 0 en caso de que no sea el equipo que jugó
+                $equipo->ganados = 0;
+                $equipo->perdidos = 0;
+                $equipo->empatados = 0;
+            }
+        }
+    return $todosLosEquipos;
+}
+
 }

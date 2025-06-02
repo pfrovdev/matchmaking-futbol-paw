@@ -34,9 +34,9 @@
             </p>
             <p class="team-lema"><?= htmlspecialchars($equipo->getLema()) ?></p>
             <p class="team-record">
-              W/L/D: <span class="wins">10</span>, 
-              <span class="losses">7</span>, 
-              <span class="draws">0</span>
+              W/L/D: <span class="wins"><?= htmlspecialchars($equipo->ganados) ?></span>, 
+              <span class="losses"><?= htmlspecialchars($equipo->perdidos) ?></span>, 
+              <span class="draws"><?= htmlspecialchars($equipo->empatados) ?></span>
             </p>
           </div>
           <div class="team-elo">

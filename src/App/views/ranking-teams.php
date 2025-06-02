@@ -31,10 +31,9 @@
             <?php if (empty($equipos)): ?>
                 <li>No se encontraron equipos.</li>
             <?php else: foreach ($equipos as $equipo): ?>
-                
-                    <li>
-                        <?php require __DIR__ . '/parts/tarjeta.php'; ?>
-                    </li>
+                <li>
+                    <?php require __DIR__ . '/parts/tarjeta.php'; ?>
+                </li>
                 <br>
             <?php endforeach; endif; ?>
             <?php require "parts/pagination.php"; ?>

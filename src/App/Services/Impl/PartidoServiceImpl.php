@@ -69,6 +69,11 @@ class PartidoServiceImpl implements PartidoService
         $this->partidoDataMapper->updatePartido($p);
     }
 
+    public function getResultadoPartidosByIdEquipo(int $idEquipo): array{
+        $resultadoPartidosDisputados = $this->resultadoPartidoDataMapper->findByIdEquipo($idEquipo);
+        return $resultadoPartidosDisputados;
+    }
+
     public function getHistorialPartidosByIdEquipo(int $idEquipo): array
     {
         $desafios = $this->desafioDataMapper->findAllByEquipoAndEstado($idEquipo, 1);
@@ -80,21 +85,21 @@ class PartidoServiceImpl implements PartidoService
             if ($partido && $resultado) {
                 // ahora uso un único método para ganador y perdedor
                 $dtoGanador  = $this->buildResultadoDtoPorEquipo(
-                    $resultado->getIdEquipoGanador(),
-                    $resultado->getTotalAmarillasGanador(),
-                    $resultado->getTotalRojasGanador(),
-                    $resultado->getGolesEquipoGanador(),
-                    $resultado->getEloInicialGanador(),
-                    $resultado->getEloFinalGanador()
+                    $resultado->getIdEquipoLocal(),
+                    $resultado->getTotalAmarillasLocal(),
+                    $resultado->getTotalRojasLocal(),
+                    $resultado->getGolesEquipoLocal(),
+                    $resultado->getEloInicialLocal(),
+                    $resultado->getEloFinalLocal()
                 );
 
                 $dtoPerdedor = $this->buildResultadoDtoPorEquipo(
-                    $resultado->getIdEquipoPerdedor(),
-                    $resultado->getTotalAmarillasPerdedor(),
-                    $resultado->getTotalRojasPerdedor(),
-                    $resultado->getGolesEquipoPerdedor(),
-                    $resultado->getEloInicialPerdedor(),
-                    $resultado->getEloFinalPerdedor()
+                    $resultado->getIdEquipoVisitante(),
+                    $resultado->getTotalAmarillasVisitante(),
+                    $resultado->getTotalRojasVisitante(),
+                    $resultado->getGolesEquipoVisitante(),
+                    $resultado->getEloInicialVisitante(),
+                    $resultado->getEloFinalVisitante()
                 );
 
                 $soyDesafiante = ($idEquipo === $desafio->getIdEquipoDesafiante());
