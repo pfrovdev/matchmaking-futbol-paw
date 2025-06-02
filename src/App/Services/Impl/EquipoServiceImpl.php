@@ -25,11 +25,15 @@ class EquipoServiceImpl implements EquipoService
     private ComentarioDataMapper $comentarioDataMapper;
     private NivelEloDataMapper $nivelEloDataMapper;
 
-    public function __construct(TipoEquipoDataMapper $tipoEquipoDataMapper, EquipoDataMapper $equipoDataMapper, ComentarioDataMapper $comentarioDataMapper, NivelEloDataMapper   $nivelEloDataMapper)
+    public function __construct(TipoEquipoDataMapper $tipoEquipoDataMapper, 
+                                EquipoDataMapper $equipoDataMapper, 
+                                ComentarioDataMapper $comentarioDataMapper, 
+                                NivelEloDataMapper   $nivelEloDataMapper)
     {
         $this->tipoEquipoDataMapper = $tipoEquipoDataMapper;
         $this->equipoDataMapper = $equipoDataMapper;
         $this->comentarioDataMapper = $comentarioDataMapper;
+        $this->nivelEloDataMapper = $nivelEloDataMapper;
         $this->nivelEloDataMapper = $nivelEloDataMapper;
     }
 
@@ -78,11 +82,11 @@ class EquipoServiceImpl implements EquipoService
 
     // devuelve EquipoBannerDto para representar la info de los equipos en las tarjetas del front
     public function getAllEquiposBanner(
-        array $selectParams = [],
+        ?array $selectParams = [],
         ?string $orderBy = null,
         ?string $direction = null
     ): array    {
-        $equipos = $this->equipoDataMapper->findAll($selectParams, $orderBy, $direction);
+        $equipos = $this->equipoDataMapper->findAllPaginated($selectParams, $orderBy, $direction);
 
         $equiposBanner = [];
 
@@ -166,5 +170,4 @@ class EquipoServiceImpl implements EquipoService
         $nivelElo = $this->nivelEloDataMapper->findAll();
         return $nivelElo;
     }
-
 }

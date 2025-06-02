@@ -240,7 +240,7 @@ class EquipoController extends AbstractController
 
         $selectParams = [
             'nombre'      => $nombre,
-            'miEquipo'    => $miEquipo,
+            'id_equipo'    => $miEquipo->getIdEquipo(),
             'id_nivel_elo' => $id_nivel_elo,
             'lat'         => $latitud,
             'lng'         => $longitud,
@@ -248,7 +248,8 @@ class EquipoController extends AbstractController
         ];
 
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
-
+        $todosLosEquipos = $this->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);
+        
         $totalEquipos = count($todosLosEquipos);
         $totalPaginas = ceil($totalEquipos / $porPagina);
         if ($paginaActual > $totalPaginas || $paginaActual < 1){
@@ -258,7 +259,7 @@ class EquipoController extends AbstractController
         }
         
         $equipos = array_slice($todosLosEquipos, $offset, $porPagina);
-
+        
         require $this->viewsDir . 'search-team.php';
     }
 
@@ -301,11 +302,8 @@ class EquipoController extends AbstractController
         $listLevelsElo = $this->equipoService->getAllNivelElo();
         
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
-        
-        // Quitamos nuestro equipo
-        $todosLosEquipos = array_filter($todosLosEquipos, function($equipo) use ($miEquipo) {
-            return (int)$equipo->id_equipo !== (int)$miEquipo->id_equipo;
-        });
+
+        $todosLosEquipos = $this->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);
         $totalEquipos = count($todosLosEquipos);
         $totalPaginas = ceil($totalEquipos / $porPagina);
         if ($paginaActual > $totalPaginas || $paginaActual < 1){
@@ -317,5 +315,13 @@ class EquipoController extends AbstractController
         $equipos = array_slice($todosLosEquipos, $offset, $porPagina);
 
         require $this->viewsDir . 'ranking-teams.php';
+    }
+
+    public function quitarMiEquipoDeEquipos(array $todosLosEquipos, Equipo $miEquipo){
+        // Quitamos nuestro equipo
+        $todosLosEquipos = array_filter($todosLosEquipos, function($equipo) use ($miEquipo) {
+            return (int)$equipo->id_equipo !== (int)$miEquipo->id_equipo;
+        });
+        return $todosLosEquipos;
     }
 }
