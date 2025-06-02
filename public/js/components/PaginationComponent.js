@@ -36,25 +36,22 @@ export default class PaginationComponent {
   }
 
   render() {
-    // Vaciar el contenido anterior
     this.container.innerHTML = '';
 
     const maxPage = this.getMaxPage();
     const wrapper = document.createElement('div');
-    wrapper.classList.add('pagination');
+    wrapper.classList.add('pagination-wrapper');
 
-    // Generar un enlace para cada página
     for (let i = 1; i <= maxPage; i++) {
       const a = document.createElement('a');
       a.href = '#';
       a.textContent = i;
+      a.classList.add('pagination-link');
 
       if (i === this.currentPage) {
         a.classList.add('active');
       }
 
-      // Cuando el usuario hace clic, prevenimos el comportamiento por defecto
-      // y llamamos a onPageChange(i)
       a.addEventListener('click', (e) => {
         e.preventDefault();
         if (i === this.currentPage) return;
