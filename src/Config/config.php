@@ -21,6 +21,7 @@ return [
         ['path' => '/search-team', 'action' => 'EquipoController@searchTeam', 'method' => 'GET'],
         ['path' => '/dashboard', 'action' => 'EquipoController@dashboard', 'method' => 'GET'],
         ['path' => '/ranking-teams', 'action' => 'EquipoController@rankingTeams', 'method' => 'GET'],
+        ['path' => '/details-team', 'action' => 'EquipoController@detailsTeam', 'method' => 'GET'],
 
         
         ['path' => '/login', 'action' => 'AuthController@login', 'method' => 'POST'],

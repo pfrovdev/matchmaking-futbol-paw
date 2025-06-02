@@ -318,6 +318,27 @@ class EquipoController extends AbstractController
         require $this->viewsDir . 'ranking-teams.php';
     }
 
+
+    public function detailsTeam(){
+        $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
+
+        $id_equipo = isset($_GET['id']) ? (int)$_GET['id'] : null;
+        
+        if (!$id_equipo){
+             header("HTTP/1.1 404 Not Found");
+            require $this->viewsDir . 'errors/not-found.php';
+            exit;
+        }
+        $todosLosEquipos = $this->equipoService->getAllEquiposBanner([], '', '');
+        $todosLosEquipos = $this->setRestultadosPartido($todosLosEquipos);
+        $listLevelsElo = $this->equipoService->getAllNivelElo();
+        $equipo = $this->equipoService->getEquipoById($id_equipo);
+        $equipo = $this->getAllEquiposbyId($equipo->getIdEquipo(), $todosLosEquipos);
+               
+        require $this->viewsDir . 'details-team.php';
+    }
+
     public function quitarMiEquipoDeEquipos(array $todosLosEquipos, Equipo $miEquipo){
         // Quitamos nuestro equipo
         $todosLosEquipos = array_filter($todosLosEquipos, function($equipo) use ($miEquipo) {
@@ -341,7 +362,16 @@ class EquipoController extends AbstractController
                 $equipo->empatados = 0;
             }
         }
-    return $todosLosEquipos;
-}
+        return $todosLosEquipos;
+    }
+
+    public function getAllEquiposbyId(int $id_equipo, array $todosLosEquipos) {
+        foreach ($todosLosEquipos as &$equipo) {
+            if ((int)$equipo->id_equipo === (int)$id_equipo) {
+                return $equipo;
+            }
+        }
+        return null;
+    }
 
 }

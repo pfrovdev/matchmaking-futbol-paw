@@ -43,7 +43,9 @@
             <strong>ELO:</strong><span class="elo-score"><?= htmlspecialchars((string)$equipo->getEloActual()) ?></span>
           </div>
           <div class="team-actions">
-            <a href="#" class="btn-profile">Ver perfil del equipo</a>
+            <a href="/details-team?id=<?= urlencode((string)$equipo->getIdEquipo()) ?>" class="btn-profile">
+                Ver perfil del equipo
+            </a>
           </div>
         </article>
       </li>
