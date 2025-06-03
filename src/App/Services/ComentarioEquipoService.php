@@ -11,4 +11,5 @@ interface ComentarioEquipoService
     function getComentarioById(int $idComentario);
     function saveNewComentario(Comentario $comentario);
     function getEquipoComentador(Comentario $comentario): ?Equipo;
+    function getCantidadDeVotosByIdEquipo(int $idEquipo): int;
 }
