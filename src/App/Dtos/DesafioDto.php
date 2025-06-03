@@ -2,10 +2,11 @@
 
 namespace Paw\App\Dtos;
 
+use JsonSerializable;
 use Paw\App\Models\Desafio;
 use Paw\App\Models\Equipo;
 
-class DesafioDto
+class DesafioDto implements JsonSerializable
 {
     private int $idDesafio;
     private ?string $fechaCreacion;
@@ -31,5 +32,14 @@ class DesafioDto
     public function getEquipoDesafiante(): EquipoBannerDto
     {
         return $this->equipoDesafiante;
+    }
+
+    public function jsonSerialize() : array
+    {
+        return [
+            'id_desafio' => $this->getIdDesafio(),
+            'fecha_creacion' => $this->getFechaCreacion(),
+            'equipo_desafiante' => $this->getEquipoDesafiante()
+        ];
     }
 }

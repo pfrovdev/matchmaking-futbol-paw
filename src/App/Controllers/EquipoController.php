@@ -163,7 +163,6 @@ class EquipoController extends AbstractController
         $equipoVistoId = $miEquipo->getIdEquipo();
         $cantidadDeVotos = $this->comentarioEquipoService->getCantidadDeVotosByIdEquipo($equipoVistoId);
 
-
         $equipoBanner = $this->equipoService->getEquipoBanner($miEquipo);
 
         $historial = false;

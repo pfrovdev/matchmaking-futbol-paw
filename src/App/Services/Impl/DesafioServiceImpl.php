@@ -84,7 +84,7 @@ class DesafioServiceImpl implements DesafioService
     }
 
     // desafios donde el equipo es el equipo desafiado (para los desafios pendientes)
-    public function getDesafiosByEquipoAndEstadoDesafio(int $equipoId, string $estado): array
+    public function getDesafiosByEquipoAndEstadoDesafio(int $equipoId, string $estado, int $page, int $perPage, string $orderBy, string $direction): array
     {
         $estadoId = $this->estadoDesafioDataMapper->findIdByCode($estado);
         if (!$estadoId) {
@@ -97,7 +97,9 @@ class DesafioServiceImpl implements DesafioService
             throw new \RuntimeException("Equipo $equipoId no encontrado");
         }
 
-        $desafios = $this->desafioDataMapper->findByEquipoAndEstado($equipoId, $estadoId);
+        $offset = ($page - 1) * $perPage;
+
+        $desafios = $this->desafioDataMapper->findByEquipoAndEstadoPaginated($equipoId, $estadoId, $perPage, $offset, $orderBy, $direction);
 
         $desafiosDtos = [];
 
@@ -107,7 +109,21 @@ class DesafioServiceImpl implements DesafioService
             $desafiosDtos[] = $desafioDto;
         }
 
-        return $desafiosDtos;
+        $totalItems = $this->desafioDataMapper->countByEquipoAndEstado($equipoId, $estadoId);
+
+        $totalPages = (int) ceil($totalItems / $perPage);
+
+        $meta = [
+            'totalItems' => $totalItems,
+            'perPage' => $perPage,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+        ];
+
+        return [
+            'data' => $desafiosDtos,
+            'meta' => $meta,
+        ];
     }
 
 }

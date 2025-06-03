@@ -6,7 +6,6 @@ use Paw\App\Services\DesafioService;
 use Paw\App\Services\EquipoService;
 use Paw\App\Services\NotificationService;
 use Paw\Core\AbstractController;
-use Paw\Core\Container;
 use Paw\Core\Middelware\AuthMiddelware;
 
 class DesafioController extends AbstractController
@@ -24,16 +23,28 @@ class DesafioController extends AbstractController
     }
 
 
-    public function getDesafiosPendientes(): void
+    // obtiene los desafios pendientes del equipo que esta logueado (se muestra en el dashboard - renderizado en js)
+    public function index(): void
     {
         $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $equipo = $this->equipoService->getEquipoById($userData->id_equipo);
+        
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $perPage = $_GET ['per_page'] ?? 3; 
+        $order = $_GET['order'] ?? 'fecha_creacion';
+        $dir = $_GET['dir']   ?? 'DESC';
+
         $desafios = $this->desafioService->getDesafiosByEquipoAndEstadoDesafio(
             $equipo->getIdEquipo(),
-            'pendiente'
+            'pendiente',
+            $page,
+            $perPage,
+            $order,
+            $dir
         );
 
-        require $this->viewsDir . 'desafios-pendientes.php';
+        header('Content-Type: application/json');
+        echo json_encode($desafios);
     }
 
     public function aceptarDesafio(): void
