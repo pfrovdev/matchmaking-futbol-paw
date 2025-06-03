@@ -2,6 +2,7 @@
 
 namespace Paw\Core;
 
+use Paw\App\Controllers\ComentarioController;
 use Monolog\Logger;
 use Paw\App\Commons\Notificador;
 use Paw\App\Commons\NotificadorEmail;
@@ -165,6 +166,13 @@ class ContainerConfig
             $logger,
             $c->get(DesafioService::class),
             $c->get(NotificationService::class),
+            $c->get(EquipoService::class),
+            $c->get(AuthMiddelware::class)
+        ));
+
+        $c->set(ComentarioController::class, fn($c) => new ComentarioController(
+            $logger,
+            $c->get(ComentarioEquipoService::class),
             $c->get(EquipoService::class),
             $c->get(AuthMiddelware::class)
         ));

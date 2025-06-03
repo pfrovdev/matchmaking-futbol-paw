@@ -2,9 +2,10 @@
 
 namespace Paw\App\Dtos;
 
+use JsonSerializable;
 use Paw\App\Models\Equipo;
 
-class EquipoBannerDto
+class EquipoBannerDto implements JsonSerializable
 {
     public string $id_equipo;
     public string $nombre_equipo;
@@ -72,5 +73,20 @@ class EquipoBannerDto
     public function getTipoEquipo(): string
     {
         return $this->tipoEquipo;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id_equipo' => $this->id_equipo,
+            'nombre_equipo' => $this->nombre_equipo,
+            'acronimo' => $this->acronimo,
+            'url_foto_perfil' => $this->url_foto_perfil,
+            'lema' => $this->lema,
+            'elo_actual' => $this->elo_actual,
+            'descripcion_elo' => $this->descripcion_elo,
+            'deportividad' => $this->deportividad,
+            'tipoEquipo'=> $this->tipoEquipo,
+        ];
     }
 }

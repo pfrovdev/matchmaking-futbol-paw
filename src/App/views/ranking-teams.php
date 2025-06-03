@@ -46,5 +46,6 @@
             
     </main>
   <?php require "parts/footer.php"; ?>
+  <script src="/js/sidebar.js"></script>
 </body>
 </html>
