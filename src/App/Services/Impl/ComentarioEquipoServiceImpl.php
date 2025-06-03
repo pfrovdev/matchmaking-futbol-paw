@@ -51,6 +51,11 @@ class ComentarioEquipoServiceImpl implements ComentarioEquipoService
         ];
     }
 
+    function getCantidadDeVotosByIdEquipo(int $idEquipo): int
+    {
+        return $this->comentarioDataMapper->countByEquipo($idEquipo);
+    }
+
     function getComentarioById(int $idComentario)
     {
         return $this->comentarioDataMapper->findById(['id_comentario' => $idComentario]);

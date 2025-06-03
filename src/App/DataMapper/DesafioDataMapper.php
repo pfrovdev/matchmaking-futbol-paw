@@ -31,14 +31,30 @@ class DesafioDataMapper extends DataMapper
         return $row ? $this->map($row) : null;
     }
 
-    // solo trae los desafios donde el equipo es desafiado
-    public function findByEquipoAndEstado(int $equipoId, int $estadoId): array
+    // solo trae los desafios donde el equipo tiene desafios con el estado $estadoId
+    public function findByEquipoAndEstadoPaginated(int $equipoId, int $estadoId, int $limit, int $offset, string $orderBy, string $direction): array
     {
-        $rows = $this->findBy(["id_equipo_desafiado" => $equipoId, "id_estado_desafio" => $estadoId]);
+        $rows = $this->qb->select(
+            $this->table,
+            ["id_equipo_desafiado" => $equipoId, "id_estado_desafio" => $estadoId],
+            $orderBy,
+            $direction,
+            $limit,
+            $offset
+        );
         return $this->mapAll($rows);
     }
 
-    public function findAllByEquipoAndEstado(int $equipoId, int $estadoId){
+    public function countByEquipoAndEstado(int $equipoId, int $estadoId): int
+    {
+        return $this->qb->count(
+            $this->table,
+            ["id_equipo_desafiado" => $equipoId, "id_estado_desafio" => $estadoId]
+        );
+    }
+
+    public function findAllByEquipoAndEstado(int $equipoId, int $estadoId)
+    {
         $rowsDesafiado = $this->findBy(["id_equipo_desafiado" => $equipoId, "id_estado_desafio" => $estadoId]);
         $rowsDesafiante = $this->findBy(["id_equipo_desafiante" => $equipoId, "id_estado_desafio" => $estadoId]);
         return $this->mapAll(array_merge($rowsDesafiado, $rowsDesafiante));

@@ -24,6 +24,7 @@ return [
         ['path' => '/details-team', 'action' => 'EquipoController@detailsTeam', 'method' => 'GET'],
         ['path' => '/comentarios', 'action' => 'ComentarioController@index', 'method' => 'GET'],
         ['path' => '/coordinar-resultado', 'action' => 'EquipoController@coordinarResultado', 'method' => 'GET'],
+        ['path' => '/desafios', 'action' => 'DesafioController@index', 'method' => 'GET'],
         
         ['path' => '/login', 'action' => 'AuthController@login', 'method' => 'POST'],
         ['path' => '/register', 'action' => 'EquipoController@register', 'method' => 'POST'],

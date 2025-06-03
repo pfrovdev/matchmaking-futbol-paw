@@ -161,11 +161,7 @@ class EquipoController extends AbstractController
         $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
         $equipoVistoId = $miEquipo->getIdEquipo();
-
-        $cantidadDeVotos = 2;
-
-        // va a cambiar para obtener via ajax
-        $desafiosRecib = $this->desafioService->getDesafiosByEquipoAndEstadoDesafio($miEquipo->getIdEquipo(), 'pendiente');
+        $cantidadDeVotos = $this->comentarioEquipoService->getCantidadDeVotosByIdEquipo($equipoVistoId);
 
         $equipoBanner = $this->equipoService->getEquipoBanner($miEquipo);
 
