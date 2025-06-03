@@ -70,31 +70,76 @@ class PartidoServiceImpl implements PartidoService
         $this->partidoDataMapper->updatePartido($p);
     }
 
-    public function getResultadoPartidosByIdEquipo(int $idEquipo): array{
+    public function getResultadoPartidosByIdEquipo(int $idEquipo): array
+    {
         $resultadoPartidosDisputados = $this->resultadoPartidoDataMapper->findByIdEquipo($idEquipo);
         return $resultadoPartidosDisputados;
     }
 
-    public function getProximosPartidos(int $idEquipo): array{
+    public function getProximosPartidos(int $idEquipo, int $page, int $perPage, string $orderBy, string $direction): array
+    {
         $estadoPartidoPendiente = $this->estadoPartidoDataMapper->findIdByCode('pendiente');
         //Obtenemos todos los partidos pendientes
         $partidosPendientes = $this->partidoDataMapper->getAll(['id_estado_partido' => $estadoPartidoPendiente]);
         $misPartidosPendientes = [];
         foreach ($partidosPendientes as $partidoPendiente) {
             // Obtenemos el desafio a partir del partido para obtener el equipo
-            $getDesafio = $this->desafioDataMapper->findById(['id_partido' => $partidoPendiente->getIdPartido()]);       
-            
-            if($getDesafio && ((int)$getDesafio->getIdEquipoDesafiante() === (int)$idEquipo || (int)$getDesafio->getIdEquipoDesafiado() === (int)$idEquipo)){
-                
-                if ($getDesafio->getIdEquipoDesafiante() !== $idEquipo){
+            $getDesafio = $this->desafioDataMapper->findById(['id_partido' => $partidoPendiente->getIdPartido()]);
+
+            if ($getDesafio && ((int)$getDesafio->getIdEquipoDesafiante() === (int)$idEquipo || (int)$getDesafio->getIdEquipoDesafiado() === (int)$idEquipo)) {
+
+                if ($getDesafio->getIdEquipoDesafiante() !== $idEquipo) {
                     $equipo = $this->equipoService->getEquipoBanner($this->equipoService->getEquipoById((int)$getDesafio->getIdEquipoDesafiante()));
-                }else{
+                } else {
                     $equipo = $this->equipoService->getEquipoBanner($this->equipoService->getEquipoById((int)$getDesafio->getIdEquipoDesafiado()));
                 }
-                $misPartidosPendientes[] = new PartidoDto($equipo, $partidoPendiente->getIdPartido(), $partidoPendiente->getFinalizado());
+                $misPartidosPendientes[] = new PartidoDto($equipo, $partidoPendiente->getIdPartido(), $partidoPendiente->getFinalizado(), $partidoPendiente->getFechaCreacion());
             }
         }
-        return $misPartidosPendientes;
+
+        $totalPages = (int) ceil(count($misPartidosPendientes) / $perPage);
+
+        $meta = [
+            'totalItems' => count($misPartidosPendientes),
+            'perPage' => $perPage,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+        ];
+
+        return [
+            'data' => $this->proximosPartidosPaginated($misPartidosPendientes, $page, $perPage, $orderBy, $direction),
+            'meta' => $meta,
+        ];
+    }
+
+    private function proximosPartidosPaginated(array $misPartidosPendientes, int $page, int $perPage, string $orderBy, string $direction)
+    {
+        $orderBy = strtolower($orderBy);
+        $direction = strtolower($direction) === 'desc' ? 'desc' : 'asc';
+
+        if ($orderBy === 'fecha_creacion') {
+            usort($misPartidosPendientes, function (PartidoDto $a, PartidoDto $b) use ($direction) {
+                $fa = $a->getFechaCreacion() ? strtotime($a->getFechaCreacion()) : 0;
+                $fb = $b->getFechaCreacion() ? strtotime($b->getFechaCreacion()) : 0;
+
+                if ($fa === $fb) {
+                    return 0;
+                }
+
+                if ($direction === 'asc') {
+                    return $fa <=> $fb;
+                } else {
+                    return $fb <=> $fa;
+                }
+            });
+        }
+
+        $page = max(1, $page);
+        $perPage = max(1, $perPage);
+        $offset = ($page - 1) * $perPage;
+        $sliced = array_slice($misPartidosPendientes, $offset, $perPage);
+
+        return $sliced;
     }
 
     public function getHistorialPartidosByIdEquipo(int $idEquipo): array
