@@ -166,7 +166,7 @@ class EquipoController extends AbstractController
         $equipoBanner = $this->equipoService->getEquipoBanner($miEquipo);
 
         $historial = false;
-        $proximosPartidos = $this->partidoService->getProximosPartidos($miEquipo->getIdEquipo()) ;
+        
         // ver esto 
         $historialPartidos = $this->partidoService->getHistorialPartidosByIdEquipo($miEquipo->getIdEquipo());
 

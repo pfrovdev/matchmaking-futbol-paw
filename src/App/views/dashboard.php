@@ -178,35 +178,15 @@
         <!-- SECCIÓN INFERIOR: Proximos partidos full-width -->
         <section class="next-matches">
           <h3 class="title-subsection">Próximos partidos</h3>
-          <ul class="match-list">
-
-            <?php
-            // array $proximosPartidos con todos los $match
-            // Cada $match debería tener: 
-            //   'name', 'nivel', 'deportividad', 'lema', 'record', 'url_logo'
-
-            foreach ($proximosPartidos as $match):
-              $equipo = $match->getEquipo();
-              $equipoResultados = $equipo->getResultadosEquipo();
-              $isFinalizado = $match->getFinalizado();
-              $match = [
-                'name' => $equipo->getNombreEquipo(),
-                'nivel' => $equipo->getDescripcionElo(),
-                'deportividad' => $equipo->getDeportividad(),
-                'lema' => $equipo->getLema(),
-                'record' => $equipoResultados['ganados'] . '-' . $equipoResultados['perdidos'] . '-' . $equipoResultados['empates'],
-                'url_logo' => $equipo->getUrlFotoPerfil(),
-                'profile-link' =>  "/team/{$equipo->getIdEquipo()}"
-              ];
-            ?>
-              <li>
-                <?php require __DIR__ . '/parts/tarjeta-proximo.php'; ?>
-              </li>
-            <?php endforeach; ?>
-          </ul>
-          <div class="pagination">
-
+          <div class="comment-filter">
+            <label for="filtroProximosPartidos">Ordenar por:</label>
+            <select id="filtroProximosPartidos" name="filtroProximosPartidos">
+              <option value="fecha_creacion-DESC" selected>Más recientes</option>
+              <option value="fecha_creacion-ASC">Más antiguos</option>
+            </select>
           </div>
+          <ul class="match-list" id="match-list"></ul>
+          <div class="pagination" id="partidos-pagination"></div>
         </section>
 
       </div>

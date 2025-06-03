@@ -1,5 +1,6 @@
 import ComentarioController from '../controllers/ComentarioController.js';
-import DesafioController    from '../controllers/DesafioController.js';
+import DesafioController from '../controllers/DesafioController.js';
+import PartidoController from '../controllers/PartidoController.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // ----------- Inicialización de Comentarios -----------
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     const comentarioController = new ComentarioController({
       comentarioContainer,
-      filterSelect:       filterComentarios,
+      filterSelect: filterComentarios,
       paginationContainer: paginationComentarios
     });
     comentarioController.init();
@@ -25,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ----------- Inicialización de Desafíos ------------
   const desafioContainer = document.getElementById('challenge-list');
   const filterDesafios = document.getElementById('filtroDesafios');
-  const paginationDesafios  = document.getElementById('desafios-pagination');
+  const paginationDesafios = document.getElementById('desafios-pagination');
 
   if (!desafioContainer || !filterDesafios || !paginationDesafios) {
     console.error('Falta algún elemento HTML para Desafíos:', {
@@ -36,9 +37,30 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     const desafioController = new DesafioController({
       desafioContainer,
-      filterSelect:       filterDesafios,
+      filterSelect: filterDesafios,
       paginationContainer: paginationDesafios
     });
     desafioController.init();
   }
+
+  // ----------- Inicialización de partidos proximos ------------
+  const partidoContainer = document.getElementById('match-list');
+  const filterSelect = document.getElementById('filtroProximosPartidos');
+  const paginationContainer = document.getElementById('partidos-pagination');
+
+  if (!partidoContainer || !filterSelect || !paginationContainer) {
+    console.error('Faltan elementos HTML para Partidos:', {
+      partidoContainer,
+      filterSelect,
+      paginationContainer
+    });
+  } else {
+    const controller = new PartidoController({
+      partidoContainer,
+      filterSelect,
+      paginationContainer
+    });
+    controller.init();
+  }
+
 });
