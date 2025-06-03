@@ -37,7 +37,7 @@ class EquipoDataMapper extends DataMapper
         return $row ? $this->map($row) : null;
     }
 
-    public function findAll(array $selectParams = [], string $orderBy = null, string $direction = null): array
+    public function findAll(?array $selectParams = [], ?string $orderBy = null, ?string $direction = null): array
     {
         $rows = parent::findAll($selectParams, $orderBy, $direction);
         return $this->mapAll($rows);

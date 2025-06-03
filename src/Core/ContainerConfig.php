@@ -125,7 +125,8 @@ class ContainerConfig
             $c->get(TipoEquipoDataMapper::class),
             $c->get(EquipoDataMapper::class),
             $c->get(ComentarioDataMapper::class),
-            $c->get(NivelEloDataMapper::class)
+            $c->get(NivelEloDataMapper::class),
+            $c->get(ResultadoPartidoDataMapper::class)
         ));
 
         $c->set(DesafioService::class, fn($c) => new DesafioServiceImpl(

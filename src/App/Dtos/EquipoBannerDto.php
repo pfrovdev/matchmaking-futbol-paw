@@ -22,7 +22,7 @@ class EquipoBannerDto implements JsonSerializable
         $this->id_equipo = $equipo->getIdEquipo();
         $this->nombre_equipo = $equipo->getNombre();
         $this->acronimo = $equipo->getAcronimo();
-        $this->url_foto_perfil = $equipo->getUrlFotoPerfil()?? '';
+        $this->url_foto_perfil = $equipo->getUrlFotoPerfil() ?? '';
         $this->lema = $equipo->getLema();
         $this->elo_actual = $equipo->getEloActual();
         $this->descripcion_elo = $descripcion_elo;

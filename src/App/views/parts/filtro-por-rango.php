@@ -1,4 +1,3 @@
-
 <section class="filters-container">
     <h2>Filtrar por rango</h2>
     <form method="GET" action="">

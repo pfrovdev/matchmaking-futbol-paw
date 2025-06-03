@@ -10,7 +10,7 @@
 
 .team-card {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-items: stretch;
   border-radius: 0.5rem;
@@ -35,7 +35,6 @@
 }
 
 .team-rank {
-  /* background: linear-gradient(90deg, #af6e06, #804f01); */
   font-weight: bold;
   padding: 0.5rem;
   position: absolute;
@@ -105,4 +104,10 @@
 
 .team-actions {
   align-self: flex-end;
+}
+
+@media (min-width: 1080px) {
+  .team-card {
+    flex-direction: row;
+  }
 }

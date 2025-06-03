@@ -11,75 +11,79 @@ class ResultadoPartido extends AbstractModel
     public $fields = [
         "id_resultado" => null,
         "id_partido" => null,
-        "id_equipo_ganador" => null,
-        "id_equipo_perdedor" => null,
-        "goles_equipo_ganador" => null,
-        "goles_equipo_perdedor" => null,
-        "elo_inicial_ganador" => null,
-        "elo_final_ganador" => null,
-        "elo_inicial_perdedor" => null,
-        "elo_final_perdedor" => null,
-        "total_amarillas_ganador" => null,
-        "total_amarillas_perdedor" => null,
-        "total_rojas_ganador" => null,
-        "total_rojas_perdedor" => null,
+        "id_equipo_local" => null,
+        "id_equipo_visitante" => null,
+        "goles_equipo_local" => null,
+        "goles_equipo_visitante" => null,
+        "elo_inicial_local" => null,
+        "elo_final_local" => null,
+        "elo_inicial_visitante" => null,
+        "elo_final_visitante" => null,
+        "total_amarillas_local" => null,
+        "total_amarillas_visitante" => null,
+        "total_rojas_local" => null,
+        "total_rojas_visitante" => null,
+        "resultado" => null,
         "fecha_jugado" => null,
     ];
 
     public function setIdResultado(int $idResultado){
         $this->fields["id_resultado"] = $idResultado;
     }
+    public function setResultado(string $resultado){
+        $this->fields["resultado"] = $resultado;
+    }
 
     public function setIdPartido(int $idPartido){
         $this->fields["id_partido"] = $idPartido;
     }
 
-    public function setIdEquipoGanador(int $equipoGanadorId){
-        $this->fields["id_equipo_ganador"] = $equipoGanadorId;
+    public function setIdEquipoLocal(int $equipoGanadorId){
+        $this->fields["id_equipo_local"] = $equipoGanadorId;
     }
 
-    public function setIdEquipoPerdedor(int $equipoPerdedorId){
-        $this->fields["id_equipo_perdedor"] = $equipoPerdedorId;
+    public function setIdEquipoVisitante(int $equipoPerdedorId){
+        $this->fields["id_equipo_visitante"] = $equipoPerdedorId;
     }
 
-    public function setGolesEquipoGanador(int $goles){
-        $this->fields["goles_equipo_ganador"] = $goles;
+    public function setGolesEquipoLocal(int $goles){
+        $this->fields["goles_equipo_local"] = $goles;
     }
 
-    public function setGolesEquipoPerdedor(int $goles){
-        $this->fields["goles_equipo_perdedor"] = $goles;
+    public function setGolesEquipoVisitante(int $goles){
+        $this->fields["goles_equipo_visitante"] = $goles;
     }
 
-    public function setEloInicialGanador(int $elo){
-        $this->fields["elo_inicial_ganador"] = $elo;
+    public function setEloInicialLocal(int $elo){
+        $this->fields["elo_inicial_local"] = $elo;
     }
 
-    public function setEloFinalGanador(int $elo){
-        $this->fields["elo_final_ganador"] = $elo;
+    public function setEloFinalLocal(int $elo){
+        $this->fields["elo_final_local"] = $elo;
     }
 
-    public function setEloInicialPerdedor(int $elo){
-        $this->fields["elo_inicial_perdedor"] = $elo;
+    public function setEloInicialVisitante(int $elo){
+        $this->fields["elo_inicial_visitante"] = $elo;
     }
 
-    public function setEloFinalPerdedor(int $elo){
-        $this->fields["elo_final_perdedor"] = $elo;
+    public function setEloFinalVisitante(int $elo){
+        $this->fields["elo_final_visitante"] = $elo;
     }
 
-    public function setTotalAmarillasGanador(int $amarillas){
-        $this->fields["total_amarillas_ganador"] = $amarillas;
+    public function setTotalAmarillasLocal(int $amarillas){
+        $this->fields["total_amarillas_local"] = $amarillas;
     }
 
-    public function setTotalAmarillasPerdedor(int $amarillas){
-        $this->fields["total_amarillas_perdedor"] = $amarillas;
+    public function setTotalAmarillasVisitante(int $amarillas){
+        $this->fields["total_amarillas_visitante"] = $amarillas;
     }
 
-    public function setTotalRojasGanador(int $rojas){
-        $this->fields["total_rojas_ganador"] = $rojas;
+    public function setTotalRojasLocal(int $rojas){
+        $this->fields["total_rojas_local"] = $rojas;
     }
 
-    public function setTotalRojasPerdedor(int $rojas){
-        $this->fields["total_rojas_perdedor"] = $rojas;
+    public function setTotalRojasVisitante(int $rojas){
+        $this->fields["total_rojas_visitante"] = $rojas;
     }
 
     public function setFechaJugado(string $fecha){
@@ -107,64 +111,68 @@ class ResultadoPartido extends AbstractModel
         return $this->fields['id_partido'];
     }
 
-    public function getIdEquipoGanador(): ?int
-    {
-        return $this->fields['id_equipo_ganador'];
+    public function getResultado(){
+        return $this->fields["resultado"];
     }
 
-    public function getIdEquipoPerdedor(): ?int
+    public function getIdEquipoLocal(): ?int
     {
-        return $this->fields['id_equipo_perdedor'];
+        return $this->fields['id_equipo_local'];
     }
 
-    public function getGolesEquipoGanador(): ?int
+    public function getIdEquipoVisitante(): ?int
     {
-        return $this->fields['goles_equipo_ganador'];
+        return $this->fields['id_equipo_visitante'];
     }
 
-    public function getGolesEquipoPerdedor(): ?int
+    public function getGolesEquipoLocal(): ?int
     {
-        return $this->fields['goles_equipo_perdedor'];
+        return $this->fields['goles_equipo_local'];
     }
 
-    public function getEloInicialGanador(): ?int
+    public function getGolesEquipoVisitante(): ?int
     {
-        return $this->fields['elo_inicial_ganador'];
+        return $this->fields['goles_equipo_visitante'];
     }
 
-    public function getEloFinalGanador(): ?int
+    public function getEloInicialLocal(): ?int
     {
-        return $this->fields['elo_final_ganador'];
+        return $this->fields['elo_inicial_local'];
     }
 
-    public function getEloInicialPerdedor(): ?int
+    public function getEloFinalLocal(): ?int
     {
-        return $this->fields['elo_inicial_perdedor'];
+        return $this->fields['elo_final_local'];
     }
 
-    public function getEloFinalPerdedor(): ?int
+    public function getEloInicialVisitante(): ?int
     {
-        return $this->fields['elo_final_perdedor'];
+        return $this->fields['elo_inicial_visitante'];
     }
 
-    public function getTotalAmarillasGanador(): ?int
+    public function getEloFinalVisitante(): ?int
     {
-        return $this->fields['total_amarillas_ganador'];
+        return $this->fields['elo_final_visitante'];
     }
 
-    public function getTotalAmarillasPerdedor(): ?int
+    public function getTotalAmarillasLocal(): ?int
     {
-        return $this->fields['total_amarillas_perdedor'];
+        return $this->fields['total_amarillas_local'];
     }
 
-    public function getTotalRojasGanador(): ?int
+    public function getTotalAmarillasVisitante(): ?int
     {
-        return $this->fields['total_rojas_ganador'];
+        return $this->fields['total_amarillas_visitante'];
     }
 
-    public function getTotalRojasPerdedor(): ?int
+    public function getTotalRojasLocal(): ?int
     {
-        return $this->fields['total_rojas_perdedor'];
+        return $this->fields['total_rojas_local'];
+    }
+
+    public function getTotalRojasVisitante(): ?int
+    {
+        return $this->fields['total_rojas_visitante'];
     }
 
     public function getFechaJugado(): ?string

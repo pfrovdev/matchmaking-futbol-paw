@@ -233,17 +233,23 @@ class EquipoController extends AbstractController
 
         $selectParams = [
             'nombre'      => $nombre,
-            'miEquipo'    => $miEquipo,
+            'id_equipo'    => $miEquipo->getIdEquipo(),
             'id_nivel_elo' => $id_nivel_elo,
             'lat'         => $latitud,
             'lng'         => $longitud,
             'radio_km'    => $radio_km
         ];
-
+        $listLevelsElo = $this->equipoService->getAllNivelElo();
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
-
+        $todosLosEquipos = $this->equipoService->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);
+        
         $totalEquipos = count($todosLosEquipos);
         $totalPaginas = ceil($totalEquipos / $porPagina);
+        if($totalEquipos === 0){
+            $equipos = [];
+            require $this->viewsDir . 'search-team.php';
+            exit;
+        }
         if ($paginaActual > $totalPaginas || $paginaActual < 1){
             header("HTTP/1.1 404 Not Found");
             require $this->viewsDir . 'errors/not-found.php';
@@ -251,7 +257,7 @@ class EquipoController extends AbstractController
         }
         
         $equipos = array_slice($todosLosEquipos, $offset, $porPagina);
-
+        
         require $this->viewsDir . 'search-team.php';
     }
 
@@ -297,22 +303,33 @@ class EquipoController extends AbstractController
             require $this->viewsDir . 'errors/not-found.php';
         }
         $selectParams = [];
-        if ($id_nivel_elo) {
+        if ($id_nivel_elo ) {
             $selectParams = [
                 'id_nivel_elo' => $id_nivel_elo,
+            ];
+        }
+        if($latitud && $longitud && $radio_km){
+            $selectParams = [
+                'lat'         => $latitud,
+                'lng'         => $longitud,
+                'radio_km'    => $radio_km
             ];
         }
         
         $listLevelsElo = $this->equipoService->getAllNivelElo();
         
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
+        $todosLosEquipos = $this->equipoService->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);
+        $todosLosEquipos = $this->equipoService->setRestultadosPartido($todosLosEquipos);
         
-        // Quitamos nuestro equipo
-        $todosLosEquipos = array_filter($todosLosEquipos, function($equipo) use ($miEquipo) {
-            return (int)$equipo->id_equipo !== (int)$miEquipo->id_equipo;
-        });
         $totalEquipos = count($todosLosEquipos);
         $totalPaginas = ceil($totalEquipos / $porPagina);
+        if($totalEquipos === 0){
+            $equipos = [];
+            require $this->viewsDir . 'ranking-teams.php';
+            exit;
+        }
+        
         if ($paginaActual > $totalPaginas || $paginaActual < 1){
             header("HTTP/1.1 404 Not Found");
             require $this->viewsDir . 'errors/not-found.php';
@@ -323,4 +340,26 @@ class EquipoController extends AbstractController
 
         require $this->viewsDir . 'ranking-teams.php';
     }
+
+
+    public function detailsTeam(){
+        $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
+
+        $id_equipo = isset($_GET['id']) ? (int)$_GET['id'] : null;
+        
+        if (!$id_equipo){
+             header("HTTP/1.1 404 Not Found");
+            require $this->viewsDir . 'errors/not-found.php';
+            exit;
+        }
+        $todosLosEquipos = $this->equipoService->getAllEquiposBanner([], '', '');
+        $todosLosEquipos = $this->equipoService->setRestultadosPartido($todosLosEquipos);
+        $listLevelsElo = $this->equipoService->getAllNivelElo();
+        $equipo = $this->equipoService->getEquipoById($id_equipo);
+        $equipo = $this->equipoService->getAllEquiposbyId($equipo->getIdEquipo(), $todosLosEquipos);
+               
+        require $this->viewsDir . 'details-team.php';
+    }
+
 }
