@@ -10,6 +10,7 @@ use Paw\App\Controllers\AuthController;
 use Paw\App\Controllers\DesafioController;
 use Paw\App\Controllers\EquipoController;
 use Paw\App\Controllers\PageController;
+use Paw\App\Controllers\PartidoController;
 use Paw\App\DataMapper\ComentarioDataMapper;
 use Paw\App\DataMapper\DesafioDataMapper;
 use Paw\App\DataMapper\EquipoDataMapper;
@@ -125,7 +126,8 @@ class ContainerConfig
             $c->get(TipoEquipoDataMapper::class),
             $c->get(EquipoDataMapper::class),
             $c->get(ComentarioDataMapper::class),
-            $c->get(NivelEloDataMapper::class)
+            $c->get(NivelEloDataMapper::class),
+            $c->get(ResultadoPartidoDataMapper::class)
         ));
 
         $c->set(DesafioService::class, fn($c) => new DesafioServiceImpl(
@@ -172,6 +174,13 @@ class ContainerConfig
         $c->set(ComentarioController::class, fn($c) => new ComentarioController(
             $logger,
             $c->get(ComentarioEquipoService::class),
+            $c->get(EquipoService::class),
+            $c->get(AuthMiddelware::class)
+        ));
+
+        $c->set(PartidoController::class, fn($c) => new PartidoController(
+            $logger,
+            $c->get(PartidoService::class),
             $c->get(EquipoService::class),
             $c->get(AuthMiddelware::class)
         ));

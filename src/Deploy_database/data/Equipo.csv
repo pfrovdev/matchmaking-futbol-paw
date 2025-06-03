@@ -19,3 +19,4 @@ id_equipo,contrasena,email,lema,nombre,id_tipo_equipo,id_nivel_elo,elo_actual,fe
 18,PasiónRoja,swen.walrond@aol.com,Coraje sin Límites,Pyrithione Zinc,2,4,2237,2024-05-02 14:06:10,"ST_GeomFromText('POINT(-58.5034 -34.6091)', 4326)",+380 315 912 0026,CRL,https://example.com/teams/crl_logo.png,2
 19,TorneoElite,georgi.mcqueen@gmail.com,Pasión y Gloria,Benzalkonium Chlorid,1,2,1808,2024-05-02 14:09:28,"ST_GeomFromText('POINT(-58.3901 -34.6047)', 4326)",+351 588 693 0091,PEG,https://example.com/teams/peg_logo.png,2
 20,RayoAzul55,lorrin.perett@uol.com.br,Velocidad y Técnica,Nitrogen,2,3,3285,2024-05-02 14:18:43,"ST_GeomFromText('POINT(-58.4791 -34.5934)', 4326)",+91 727 972 0049,VAT,https://example.com/teams/vat_logo.png,2
+21,123,pepe@pepito.com,Alta pasión,San Lorenzo,1,3,3252,2024-05-02 14:18:43,"ST_GeomFromText('POINT(-59.416599 -34.654806)', 4326)",+91 727 912 0049,VAT,https://contenidos1.sanlorenzo.com.ar/img/noticias/2023/gr/03-26_1679851472.jpg,2

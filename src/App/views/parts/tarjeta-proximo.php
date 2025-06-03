@@ -3,15 +3,15 @@
 // Este parcial recibe un array $match con los datos de cada partido.
 // Ejemplo de uso antes de require:
 // 
- $match = [
-   'name'       => 'Nombre-equipo',
-   'nivel'      => 'Principiante II',
-   'deportividad' => 3,                    
-   'lema'       => 'Lema del equipo corto',
-   'record'     => '10-7-2',               
-   'url_logo'   => '/images/defaultTeamIcon.png',  
-   'profile-link' => '#',
- ];
+//  $match = [
+//    'name'       => 'Nombre-equipo',
+//    'nivel'      => 'Principiante II',
+//    'deportividad' => 3,                    
+//    'lema'       => 'Lema del equipo corto',
+//    'record'     => '10-7-2',               
+//    'url_logo'   => '/images/defaultTeamIcon.png',  
+//    'profile-link' => '#',
+//  ];
 ?>
 <div class="nm-card">
   <!-- Lado izquierdo: logo/nivel -->
@@ -48,9 +48,39 @@
     </div>
     <div class="nm-card-actions">
       <!-- Botones de acción para cada partido -->
-      <button class="nm-btn-secondary nm-small">Abrir wapp</button>
-      <a href="/coordinar-resultado" class="nm-btn-primary nm-small">Coordinar resultado</a>
-      <button class="nm-btn-danger nm-small">Cancelar</button>
+      <button 
+        class="nm-btn-secondary nm-small"
+        data-finalizado="<?= $isFinalizado ? 'true' : 'false' ?>">
+        Abrir wapp
+      </button>
+      <a href="/coordinar-resultado"
+        class="nm-btn-primary nm-small"
+        data-finalizado="<?= $isFinalizado ? 'false' : 'true' ?>">
+        Coordinar resultado
+      </a>
+       <button 
+        class="nm-btn-danger nm-small"
+        data-finalizado="<?= $isFinalizado ? 'true' : 'false' ?>">
+        Cancelar
+      </button>
     </div>
   </div>
 </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const link = document.querySelector('a[data-finalizado]');
+    const buttons = document.querySelectorAll('button[data-finalizado]');
+
+    if (link && link.dataset.finalizado === 'true') {
+      link.removeAttribute('href');
+      link.classList.add('disabled-link');
+    }
+
+    buttons.forEach(button => {
+      if (button.dataset.finalizado === 'true') {
+        button.disabled = true;
+        button.classList.add('disabled-link');
+      }
+    });
+  });
+</script>

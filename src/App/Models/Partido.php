@@ -68,6 +68,16 @@ class Partido extends AbstractModel
         return $this->fields["fecha_finalizacion"];
     }
 
+    public function getFechaCreacion(): ?string
+    {
+        return $this->fields["fecha_creacion"];
+    }
+
+    public function getFinalizado(): ?string
+    {
+        return $this->fields["finalizado"];
+    }
+
     public function getIdEstadoPartido()
     {
         return $this->fields["id_estado_partido"];

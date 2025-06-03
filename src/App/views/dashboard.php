@@ -119,36 +119,15 @@
           <!-- Card 3: Desafíos recibidos -->
           <div class="card challenges-card">
             <h3 class="title-subsection">Últimos desafíos recibidos</h3>
-            <ul class="challenge-list">
-              <?php foreach ($desafiosRecib as $dto): ?>
-                <li>
-                  <?php
-                  $equipoDesafiante = $dto->getEquipoDesafiante();
-                  $challenge = [
-                    'id_equipo'         => $equipoDesafiante->getIdEquipo(),
-                    'id_desafio'        => $dto->getIdDesafio(),
-                    'id_nivel_elo'      => $equipoDesafiante->getDescripcionElo(),
-                    'name'              => $equipoDesafiante->getNombreEquipo(),
-                    'level'             => $equipoDesafiante->getDescripcionElo(),
-                    'icons'             => 0,
-                    'lema'              => $equipoDesafiante->getLema(),
-                    'fecha_creacion'    => $dto->getFechaCreacion(),
-                    'elo'               => [
-                      'wins'   => 10,
-                      'losses' => 7,
-                      'draws'  => 0
-                    ],
-                    'record'            => '',
-                    'url_foto_perfil'   => $equipoDesafiante->getUrlFotoPerfil(),
-                    'deportividad'      => $equipoDesafiante->getDeportividad(),
-                    'profile-link'      => "/team/{$equipoDesafiante->getIdEquipo()}",
-                  ];
-
-                  require "parts/tarjeta-desafio.php";
-                  ?>
-                </li>
-              <?php endforeach; ?>
-            </ul>
+            <div class="comment-filter">
+              <label for="filtroDesafios">Ordenar por:</label>
+              <select id="filtroDesafios" name="filtroDesafios">
+                <option value="fecha_creacion-DESC" selected>Más recientes</option>
+                <option value="fecha_creacion-ASC">Más antiguos</option>
+              </select>
+            </div>
+            <ul id="challenge-list" class="challenge-list"></ul>
+            <div id="desafios-pagination" class="pagination"></div>
           </div>
         </section>
 
@@ -191,44 +170,24 @@
                 <option value="deportividad-ASC">Deportividad (menor a mayor)</option>
               </select>
             </div>
-
             <ul id="comment-list" class="comment-list"></ul>
             <div id="comment-pagination" class="pagination"></div>
-            
           </div>
         </aside>
 
-          <!-- SECCIÓN INFERIOR: Proximos partidos full-width -->
-          <section class="next-matches">
-            <h3 class="title-subsection">Próximos partidos</h3>
-            <ul class="match-list">
-              <?php
-                // array $proximosPartidos con todos los $match
-                // Cada $match debería tener: 
-                //   'name', 'nivel', 'deportividad', 'lema', 'record', 'url_logo'
-                //foreach ($proximosPartidos as $match):
-                  // $match = [
-                  //   'name' => $equipo->getNombreEquipo(),
-                  //   'nivel' => $equipo->getDescripcionElo(),
-                  //   'deportividad' => $equipo->getDeportividad(),
-                  //   'lema' => $equipo->getLema(),
-                  //   'record' => $equipo->getWins() . '-' . $equipo->getLosses() . '-' . $equipo->getDraws(),
-                  //   'url_logo' => $equipo->getUrlFotoPerfil(),
-                  //   'profile-link' =>  "/team/{$equipo->getIdEquipo()}"
-                  // ];
-              ?>
-                <li>
-                  <?php require __DIR__ . '/parts/tarjeta-proximo.php'; ?>
-                </li>
-                <li>
-                  <?php require __DIR__ . '/parts/tarjeta-proximo.php'; ?>
-                </li>
-              <?php //endforeach; ?>
-            </ul>
-            <div class="pagination">
-              
-            </div>
-          </section>
+        <!-- SECCIÓN INFERIOR: Proximos partidos full-width -->
+        <section class="next-matches">
+          <h3 class="title-subsection">Próximos partidos</h3>
+          <div class="comment-filter">
+            <label for="filtroProximosPartidos">Ordenar por:</label>
+            <select id="filtroProximosPartidos" name="filtroProximosPartidos">
+              <option value="fecha_creacion-DESC" selected>Más recientes</option>
+              <option value="fecha_creacion-ASC">Más antiguos</option>
+            </select>
+          </div>
+          <ul class="match-list" id="match-list"></ul>
+          <div class="pagination" id="partidos-pagination"></div>
+        </section>
 
       </div>
 

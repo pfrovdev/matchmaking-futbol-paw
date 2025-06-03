@@ -31,6 +31,10 @@ class PartidoDataMapper extends DataMapper
         $row = parent::findById($params);
         return $row ? $this->map($row) : null;
     }
+    public function getAll(array $params): array{
+        $rows = $this->findAll($params);
+        return $this->mapAll($rows);
+    }
 
     public function findByIdAndFinalizado(int $idPartido, bool $finalizado): ?Partido
     {

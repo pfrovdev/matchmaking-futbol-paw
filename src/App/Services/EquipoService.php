@@ -19,4 +19,7 @@ interface EquipoService {
 
     function getAllEquiposBanner(): array;
     function getAllNivelElo(): array;
+    function getAllEquiposbyId(int $id_equipo, array $todosLosEquipos);
+    function quitarMiEquipoDeEquipos(array $todosLosEquipos, Equipo $miEquipo);
+    function setRestultadosPartido(array $todosLosEquipos);
 }

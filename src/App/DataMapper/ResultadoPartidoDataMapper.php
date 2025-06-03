@@ -37,4 +37,26 @@ class ResultadoPartidoDataMapper extends DataMapper
         }
         return $resultadosPartidos;
     }
+
+    public function findByIdEquipo(int $idEquipo): array{
+        //Ganados
+        $partidoGanadosComoLocal = $this->findBy(['id_equipo_local' => $idEquipo, 'resultado' => 'gano_local']);
+        $partidoGanadosComoVisitante = $this->findBy(['id_equipo_visitante' => $idEquipo, 'resultado' => 'gano_visitante']);
+        //Perdidos
+        $partidPerdidoComoLocal = $this->findBy(['id_equipo_local' => $idEquipo, 'resultado' => 'gano_visitante']);
+        $partidoPerdidoComoVisitante = $this->findBy(['id_equipo_visitante' => $idEquipo, 'resultado' => 'gano_local']);
+        //Empatados
+        $partidosEmpatados = $this->findBy(['id_equipo_local' => $idEquipo, 'resultado' => 'empate']);
+        $partidosEmpatados = $this->findBy(['id_equipo_visitante' => $idEquipo, 'resultado' => 'empate']);
+        $result = [
+            'ganados' => count($partidoGanadosComoLocal) + count($partidoGanadosComoVisitante),
+            'perdidos'=> count($partidPerdidoComoLocal) + count($partidoPerdidoComoVisitante),
+            'empatados' => count($partidosEmpatados) + count($partidosEmpatados),
+            'id_equipo' => $idEquipo
+        ];
+        if ($result) {
+            return $result;
+        }
+        return [];
+    }
 }

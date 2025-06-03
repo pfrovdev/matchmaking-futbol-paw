@@ -1,0 +1,24 @@
+@import url("./base.css");
+@import url("./header.css");
+@import url("side-navbar.css");
+@import url("./parts/pagination.css");
+@import url("./parts/tarjeta.css");
+@import url("./parts/filtro-por-rango.css");
+@import url("./footer.css");
+
+main > header {
+  margin: 5rem 5rem 2rem;
+}
+
+.details-team-container {
+  width: 60rem;
+  margin: 5rem auto;
+}
+
+.team-elo {
+  right: 14%;
+}
+
+.team-actions {
+  display: none;
+}

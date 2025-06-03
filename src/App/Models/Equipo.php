@@ -150,7 +150,7 @@ class Equipo extends AbstractModel
         return $this->fields["contrasena"];
     }
 
-    public function getTelefono() {
+    public function getTelefono(): ?string {
         return $this->fields["telefono"];
     }
 
