@@ -1,3 +1,4 @@
 vendor/
 logs/
 .env
+Core/JWT/blacklist.json
