@@ -115,14 +115,8 @@ if ($nombre !== '') {
                 <section aria-labelledby="zona-busqueda">
                     <h2 id="zona-busqueda">Zona de búsqueda</h2>
                     <form id="mapForm" method="GET">
-                        <div class="input-group">
-                            <label for="lat">Latitud:</label>
-                            <input type="text" id="lat" name="lat" readonly value="<?= htmlspecialchars($_GET['lat'] ?? '') ?>" />
-                        </div>
-                        <div class="input-group">
-                            <label for="lng">Longitud:</label>
-                            <input type="text" id="lng" name="lng" readonly value="<?= htmlspecialchars($_GET['lng'] ?? '') ?>" />
-                        </div>
+                            <input type="hidden" id="lat" name="lat" readonly value="<?= htmlspecialchars($_GET['lat'] ?? '') ?>" />
+                            <input type="hidden" id="lng" name="lng" readonly value="<?= htmlspecialchars($_GET['lng'] ?? '') ?>" />
                         <div class="input-group">
                             <label for="radiusSlider">Radio del área (km)</label>
                         </div>

@@ -15,6 +15,7 @@
   <meta name="description" content="Formulario para coordinar resultados de un partido - F5 Futbol Match">
   <title>Crear Equipo</title>
   <link rel="stylesheet" href="css/coordinar-resultado.css">
+  <script src="/js/sidebar.js"></script>
 </head>
 
 <body>
@@ -377,7 +378,6 @@
  
   <?php require "parts/footer.php"; ?>
 
-  <script src="/js/sidebar.js"></script>
 </body>
 
 </html> 

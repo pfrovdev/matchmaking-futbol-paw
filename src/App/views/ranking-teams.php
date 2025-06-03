@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="./js/maps.js" defer></script>
+    <script src="/js/sidebar.js"></script>
 </head>
 <body>
     <?php require "parts/header.php"; ?>
@@ -46,6 +47,5 @@
             
     </main>
   <?php require "parts/footer.php"; ?>
-  <script src="/js/sidebar.js"></script>
 </body>
 </html>

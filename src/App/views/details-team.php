@@ -19,6 +19,7 @@
   <title>Detalle del Equipo <?= htmlspecialchars($equipo->getNombreEquipo()) ?></title>
   <meta name="description" content="Detalle del equipo. Consulta su deportividad, lema y rendimiento." />
   <link rel="stylesheet" href="./css/details-team.css" />
+  <script src="/js/sidebar.js"></script>
 </head>
 <body>
     <?php require "parts/header.php"; ?>

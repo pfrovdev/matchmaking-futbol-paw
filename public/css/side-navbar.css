@@ -37,3 +37,21 @@
   .side-navbar img:hover {
     transform: scale(1.1);
   }
+
+  @media (max-width: 1024px) {
+    .side-navbar {
+      display: none;
+    }
+  }
+  @media (max-width: 768px) {
+
+    .side-navbar {
+      display: none;
+    }
+  }
+  @media (max-width: 480px) {
+
+    .side-navbar {
+      display: none;
+    }
+  }
