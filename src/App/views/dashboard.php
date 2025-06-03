@@ -202,28 +202,30 @@
           <section class="next-matches">
             <h3 class="title-subsection">Próximos partidos</h3>
             <ul class="match-list">
+              
               <?php
                 // array $proximosPartidos con todos los $match
                 // Cada $match debería tener: 
                 //   'name', 'nivel', 'deportividad', 'lema', 'record', 'url_logo'
-                //foreach ($proximosPartidos as $match):
-                  // $match = [
-                  //   'name' => $equipo->getNombreEquipo(),
-                  //   'nivel' => $equipo->getDescripcionElo(),
-                  //   'deportividad' => $equipo->getDeportividad(),
-                  //   'lema' => $equipo->getLema(),
-                  //   'record' => $equipo->getWins() . '-' . $equipo->getLosses() . '-' . $equipo->getDraws(),
-                  //   'url_logo' => $equipo->getUrlFotoPerfil(),
-                  //   'profile-link' =>  "/team/{$equipo->getIdEquipo()}"
-                  // ];
+                  
+                foreach ($proximosPartidos as $match):
+                  $equipo = $match->getEquipo();
+                  $equipoResultados = $equipo->getResultadosEquipo();
+                  $isFinalizado = $match->getFinalizado();
+                  $match = [
+                    'name' => $equipo->getNombreEquipo(),
+                    'nivel' => $equipo->getDescripcionElo(),
+                    'deportividad' => $equipo->getDeportividad(),
+                    'lema' => $equipo->getLema(),
+                    'record' => $equipoResultados['ganados'] . '-' . $equipoResultados['perdidos'] . '-' . $equipoResultados['empates'],
+                    'url_logo' => $equipo->getUrlFotoPerfil(),
+                    'profile-link' =>  "/team/{$equipo->getIdEquipo()}"
+                  ];
               ?>
                 <li>
                   <?php require __DIR__ . '/parts/tarjeta-proximo.php'; ?>
                 </li>
-                <li>
-                  <?php require __DIR__ . '/parts/tarjeta-proximo.php'; ?>
-                </li>
-              <?php //endforeach; ?>
+              <?php endforeach; ?>
             </ul>
             <div class="pagination">
               

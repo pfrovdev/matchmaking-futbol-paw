@@ -4,6 +4,7 @@ namespace Paw\App\Services\Impl;
 
 use Paw\App\DataMapper\PartidoDataMapper;
 use Paw\App\DataMapper\EstadoPartidoDataMapper;
+use Paw\App\Dtos\PartidoDto;
 use Paw\App\Services\PartidoService;
 use Paw\App\Models\Partido;
 use Paw\App\Models\Desafio;
@@ -72,6 +73,28 @@ class PartidoServiceImpl implements PartidoService
     public function getResultadoPartidosByIdEquipo(int $idEquipo): array{
         $resultadoPartidosDisputados = $this->resultadoPartidoDataMapper->findByIdEquipo($idEquipo);
         return $resultadoPartidosDisputados;
+    }
+
+    public function getProximosPartidos(int $idEquipo): array{
+        $estadoPartidoPendiente = $this->estadoPartidoDataMapper->findIdByCode('pendiente');
+        //Obtenemos todos los partidos pendientes
+        $partidosPendientes = $this->partidoDataMapper->getAll(['id_estado_partido' => $estadoPartidoPendiente]);
+        $misPartidosPendientes = [];
+        foreach ($partidosPendientes as $partidoPendiente) {
+            // Obtenemos el desafio a partir del partido para obtener el equipo
+            $getDesafio = $this->desafioDataMapper->findById(['id_partido' => $partidoPendiente->getIdPartido()]);       
+            
+            if($getDesafio && ((int)$getDesafio->getIdEquipoDesafiante() === (int)$idEquipo || (int)$getDesafio->getIdEquipoDesafiado() === (int)$idEquipo)){
+                
+                if ($getDesafio->getIdEquipoDesafiante() !== $idEquipo){
+                    $equipo = $this->equipoService->getEquipoBanner($this->equipoService->getEquipoById((int)$getDesafio->getIdEquipoDesafiante()));
+                }else{
+                    $equipo = $this->equipoService->getEquipoBanner($this->equipoService->getEquipoById((int)$getDesafio->getIdEquipoDesafiado()));
+                }
+                $misPartidosPendientes[] = new PartidoDto($equipo, $partidoPendiente->getIdPartido(), $partidoPendiente->getFinalizado());
+            }
+        }
+        return $misPartidosPendientes;
     }
 
     public function getHistorialPartidosByIdEquipo(int $idEquipo): array

@@ -170,7 +170,7 @@ class EquipoController extends AbstractController
         $equipoBanner = $this->equipoService->getEquipoBanner($miEquipo);
 
         $historial = false;
-
+        $proximosPartidos = $this->partidoService->getProximosPartidos($miEquipo->getIdEquipo()) ;
         // ver esto 
         $historialPartidos = $this->partidoService->getHistorialPartidosByIdEquipo($miEquipo->getIdEquipo());
 
@@ -182,7 +182,7 @@ class EquipoController extends AbstractController
             $eloChange = $ultimoPartidoJugado->getResultadoGanador()->getEloConseguido();
             $historial = true;
         }
-
+        
         require $this->viewsDir . 'dashboard.php';
     }
 

@@ -69,6 +69,11 @@ class Desafio extends AbstractModel
         return $this->fields["id_equipo_desafiante"];
     }
 
+    public function getIdEquipoDesafiado(): ?int
+    {
+        return $this->fields["id_equipo_desafiado"];
+    }
+
     public function getFechaCreacion(): ?string{
         return $this->fields["fecha_creacion"];
     }

@@ -107,7 +107,11 @@ class EquipoServiceImpl implements EquipoService
         $descElo = $this->getDescripcionNivelEloById($equipo->getIdEquipo());
         $deportividad = $this->getDeportividadEquipo($equipo->getIdEquipo());
         $tipoEquipo = $this->tipoEquipoDataMapper->findById(['id_tipo_equipo' => $equipo->getIdTipoEquipo()]);
-        $equipoBanner = new EquipoBannerDto($equipo, $descElo, $deportividad, $tipoEquipo->getTipo());
+        
+        $resultadosEquipo = $this->setResultadoParitdo($equipo->getIdEquipo());
+        $equipoBanner = new EquipoBannerDto($equipo, $descElo, 
+                                        $deportividad, $tipoEquipo->getTipo(), 
+                                        $resultadosEquipo);
         return $equipoBanner;
     }
 
@@ -173,6 +177,26 @@ class EquipoServiceImpl implements EquipoService
     function getAllNivelElo(): array{
         $nivelElo = $this->nivelEloDataMapper->findAll();
         return $nivelElo;
+    }
+
+    public function setResultadoParitdo(int $id_equipo): array{
+        $resultados = [];
+        $resultadoPartidosDisputados = $this->resultadoPartidoDataMapper->findByIdEquipo($id_equipo);
+         if ((int)$id_equipo === (int)$resultadoPartidosDisputados['id_equipo']) {
+            $resultados = [
+                'ganados' => $resultadoPartidosDisputados['ganados'],
+                'perdidos' => $resultadoPartidosDisputados['perdidos'],
+                'empates' =>  $resultadoPartidosDisputados['empatados']
+            ];
+        } else {
+            // Setear 0 en caso de que no sea el equipo que jugó
+            $resultados =[
+                'ganados' => 0,
+                'perdidos' => 0,
+                'empates' =>  0
+            ];
+        }
+        return $resultados;
     }
 
     public function setRestultadosPartido(array $todosLosEquipos): array {
