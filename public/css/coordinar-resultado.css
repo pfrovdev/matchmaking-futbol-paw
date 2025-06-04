@@ -31,6 +31,8 @@
     border: 2px dashed var(--muted-text-color);
     border-radius: 0.5rem;
     padding: 0.5rem;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
   
 
@@ -60,14 +62,14 @@
     margin-bottom: 1rem;
   }
   
-  /* Color de fondo “CABJ” (puedes ajustar al tono exacto que quieras) */
-  .team-name.cabj {
-    background-color: #DF2727; /* ejemplo: rojo oscuro */
+
+  .team-name.local {
+    background-color: #DF2727; 
   }
   
   /* Color de fondo “CASLA” */
-  .team-name.casla {
-    background-color: #804F01; /* un marrón/dorado oscuro */
+  .team-name.visitante {
+    background-color: #804F01; 
   }
   
   /* Si el fieldset tiene .disabled, atenuamos un poco todo el contenido */
@@ -83,8 +85,7 @@
     align-items: center;
     justify-content: space-between;
   }
-  
-  /* Etiqueta (texto + icono) */
+
   .field label,
   .field .field-title {
     display: flex;
@@ -94,14 +95,12 @@
     font-weight: 500;
     color: var(--text-color);
   }
-  
-  /* Ícono junto al texto */
+
   .field .icon {
     width: 1.5rem;
     height: 1.5rem;
   }
-  
-  /* Input de tipo número */
+
   .field input[type="number"] {
     width: 3rem;
     padding: 0.3rem;
@@ -113,28 +112,23 @@
   
   /* ----------------- Grupo de tarjetas ----------------- */
   .tarjetas {
-    flex-direction: column; /* dejamos el título arriba y los dos íconos con sus inputs abajo */
+    flex-direction: column; 
     gap: 0.5rem;
   }
   
-  /* Título “Tarjetas” (ya está alineado con .field-title) */
-  /* (hereda estilos de .field .field-title) */
-  
-  /* Contenedor que agrupa los dos tipos de tarjeta (amarilla / roja) */
+
   .cards-group {
     display: flex;
     gap: 1rem;
-    margin-left: 1.5rem; /* un pequeño sangrado para que quede “bajo” la palabra Tarjetas */
+    margin-left: 1.5rem; 
   }
-  
-  /* Cada mini-campo de tarjeta */
+
   .card-field {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
-  
-  /* Ícono de tarjeta (amarilla o roja) */
+
   .icon-card {
     width: 1.25rem;
     height: 2rem;
@@ -146,7 +140,7 @@
     gap: 1.5rem 2rem;
   }
   
-  /* Si quieres que el bloque .tarjetas ocupe ambas columnas */
+
   .grid-fields .tarjetas {
     grid-column: span 2;
   }
@@ -162,11 +156,60 @@
     color: var(--primary-buttons-color)
   }
 
+
+  .rating-icon {
+    margin-right: 0.2rem;
+    font-size: 0.8rem;
+  }
+  .rating-icon:hover{
+    cursor: pointer;
+  }
+
+  .rating-icon.empty {
+    opacity: 0.4;
+    color: grey;
+  }
+
+  .textArea{
+    resize: vertical;
+    max-width: 100%;
+  }
+
+  .contenedor-calificar{
+    padding: 2rem;
+  }
+
+  .btn-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;      /* o el valor que prefieras */
+    width: 100%;
+    margin-top: 1rem;
+  }
      /* ============================================================
      |3) Versión responsiva (opcional)                             |
      ============================================================ */
-  @media (max-width: 768px) {
-    .forms-wrapper {
-      flex-direction: column;
+    @media (max-width: 1024px) {
+      .container{
+        margin: 0 7rem;
+      }
     }
-  }
+    @media (max-width: 768px) {
+      .container{
+        margin: 0 3rem;
+      }
+    }
+    @media (max-width: 600px) {
+      .forms-wrapper{
+        flex-direction: column;
+      }
+      .form-column{
+        width: 100%;
+      }
+
+      .container form{
+        flex-direction: column;
+      }
+    }

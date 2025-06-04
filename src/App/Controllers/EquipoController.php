@@ -260,6 +260,7 @@ class EquipoController extends AbstractController
 
     public function coordinarResultado(): void{
         $datos_contrario = [
+            'acronimo'         => 'CABJ',
             'goles'            => 0,
             'asistencias'      => 0,
             'tarjeta_amarilla' => 0,
@@ -267,6 +268,8 @@ class EquipoController extends AbstractController
           ];
         $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
+        $equipoBanner = $this->equipoService->getEquipoBanner($miEquipo);
+        $confirmacion = true;
         require $this->viewsDir . 'coordinar-resultado.php';
     }
 

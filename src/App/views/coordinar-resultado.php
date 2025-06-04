@@ -1,10 +1,12 @@
 <?php
   $datos_contrario = [
+    'acronimo'         => $_POST['acronimo_contrario']         ?? 'CASLA',
     'goles'            => $_POST['goles_contrario']            ?? 0,
     'asistencias'      => $_POST['asistencias_contrario']      ?? 0,
     'tarjeta_amarilla' => $_POST['tarjeta_amarilla_contrario'] ?? 0,
     'tarjeta_roja'     => $_POST['tarjeta_roja_contrario']     ?? 0,
   ];
+  echo "<script>window.resultadosCoinciden = " . ($confirmacion ? 'true' : 'false') . ";</script>";
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -16,6 +18,7 @@
   <title>Crear Equipo</title>
   <link rel="stylesheet" href="css/coordinar-resultado.css">
   <script src="/js/sidebar.js"></script>
+  <script src="/js/coordinar-resultados.js"></script>
 </head>
 
 <body>
@@ -26,24 +29,25 @@
     <section class="coordinar-resultado">
       <h1>Coordinar resultado</h1>
       <p class="subtitle">
-        Si ambos formularios coinciden, podrás distribuir las estadísticas a tu equipo! 
+        Si ambos formularios coinciden, el partido sera valido para las estadísticas de tu equipo! 
         <br>
         Solo te quedan <span class="intentos">3</span> intentos.
       </p>
       <div class="forms-wrapper">
         <div class="form-column">
         <form
+            id="coordinar"
             method="POST"
             action="procesar.php"
             class="form-team"
         >
             <!-- Le agregamos también la clase grid-fields -->
             <fieldset class="form-team">
-                    <legend class="team-name cabj">CABJ</legend>
+                    <legend class="team-name local"><?=htmlspecialchars($miEquipo->fields['acronimo'])?></legend>
 
                     <!-- Goles (se muestra el valor que vino por POST o 0) -->
                     <div class="field">
-                    <label for="goles_casla">
+                    <label for="goles_local">
                         <img
                         src="icons/goles.png"
                         alt="Icono Goles"
@@ -53,8 +57,8 @@
                     </label>
                     <input
                         type="number"
-                        id="goles_casla"
-                        name="goles_casla"
+                        id="goles_local"
+                        name="goles_local"
                         min="0"
                         value="0"
                     />
@@ -62,7 +66,7 @@
 
                     <!-- Asistencias -->
                     <div class="field">
-                    <label for="asistencias_casla">
+                    <label for="asistencias_local">
                         <img
                         src="icons/asistencias.png"
                         alt="Icono Asistencias"
@@ -72,8 +76,8 @@
                     </label>
                     <input
                         type="number"
-                        id="asistencias_casla"
-                        name="asistencias_casla"
+                        id="asistencias_local"
+                        name="asistencias_local"
                         min="0"
                         value="0"
                     />
@@ -93,7 +97,7 @@
                         />
                         <input
                             type="number"
-                            name="tarjeta_amarilla_casla"
+                            name="tarjeta_amarilla_local"
                             min="0"
                             value="0"
                         />
@@ -106,7 +110,7 @@
                         />
                         <input
                             type="number"
-                            name="tarjeta_roja_casla"
+                            name="tarjeta_roja_local"
                             min="0"
                             value="0"
                         />
@@ -115,11 +119,11 @@
                     </div>
                     </fieldset>
                     <fieldset class="form-team">
-                    <legend class="team-name casla">CASLA</legend>
+                    <legend class="team-name visitante"><?=htmlspecialchars($datos_contrario['acronimo'])?></legend>
 
                     <!-- Goles -->
                     <div class="field">
-                    <label for="goles_casla">
+                    <label for="goles_visitante">
                         <img
                         src="icons/goles.png"
                         alt="Icono Goles"
@@ -129,8 +133,8 @@
                     </label>
                     <input
                         type="number"
-                        id="goles_casla"
-                        name="goles_casla"
+                        id="goles_visitante"
+                        name="goles_visitante"
                         min="0"
                         value="0"
                     />
@@ -138,7 +142,7 @@
 
                     <!-- Asistencias -->
                     <div class="field">
-                    <label for="asistencias_casla">
+                    <label for="asistencias_visitante">
                         <img
                         src="icons/asistencias.png"
                         alt="Icono Asistencias"
@@ -148,8 +152,8 @@
                     </label>
                     <input
                         type="number"
-                        id="asistencias_casla"
-                        name="asistencias_casla"
+                        id="asistencias_visitante"
+                        name="asistencias_visitante"
                         min="0"
                         value="0"
                     />
@@ -169,7 +173,7 @@
                         />
                         <input
                             type="number"
-                            name="tarjeta_amarilla_casla"
+                            name="tarjeta_amarilla_visitante"
                             min="0"
                             value="0"
                         />
@@ -182,7 +186,7 @@
                         />
                         <input
                             type="number"
-                            name="tarjeta_roja_casla"
+                            name="tarjeta_roja_visitante"
                             min="0"
                             value="0"
                         />
@@ -192,7 +196,8 @@
 
             
             </fieldset>
-                <button type="submit">Enviar resultado</button>
+               
+
 
             </form>
                 </div>
@@ -202,17 +207,15 @@
                     =============================================== -->
                     <div class="form-column">
                 <form
-            method="POST"
-            action="procesar.php"
-            class="form-team"
-        >
+                class="form-team"
+                >
             <!-- Le agregamos también la clase grid-fields -->
             <fieldset class="form-team">
-                    <legend class="team-name cabj">CABJ</legend>
+                    <legend class="team-name local"><?=htmlspecialchars($miEquipo->fields['acronimo'])?></legend>
 
                     <!-- Goles (se muestra el valor que vino por POST o 0) -->
                     <div class="field">
-                    <label for="goles_casla">
+                    <label for="goles_local">
                         <img
                         src="icons/goles.png"
                         alt="Icono Goles"
@@ -222,8 +225,8 @@
                     </label>
                     <input
                         type="number"
-                        id="goles_casla"
-                        name="goles_casla"
+                        id="goles_local"
+                        name="goles_local"
                         min="0"
                         value="<?php echo htmlspecialchars($datos_contrario['goles']); ?>"
                         disabled
@@ -232,7 +235,7 @@
 
                     <!-- Asistencias -->
                     <div class="field">
-                    <label for="asistencias_casla">
+                    <label for="asistencias_local">
                         <img
                         src="icons/asistencias.png"
                         alt="Icono Asistencias"
@@ -242,8 +245,8 @@
                     </label>
                     <input
                         type="number"
-                        id="asistencias_casla"
-                        name="asistencias_casla"
+                        id="asistencias_local"
+                        name="asistencias_local"
                         min="0"
                         value="<?php echo htmlspecialchars($datos_contrario['asistencias']); ?>"
                         disabled
@@ -264,7 +267,7 @@
                         />
                         <input
                             type="number"
-                            name="tarjeta_amarilla_casla"
+                            name="tarjeta_amarilla_local"
                             min="0"
                             value="<?php echo htmlspecialchars($datos_contrario['tarjeta_amarilla']); ?>"
                             disabled
@@ -278,7 +281,7 @@
                         />
                         <input
                             type="number"
-                            name="tarjeta_roja_casla"
+                            name="tarjeta_roja_local"
                             min="0"
                             value="<?php echo htmlspecialchars($datos_contrario['tarjeta_roja']); ?>"
                             disabled
@@ -288,11 +291,11 @@
                     </div>
                     </fieldset>
                     <fieldset class="form-team">
-                    <legend class="team-name casla">CASLA</legend>
+                    <legend class="team-name visitante"><?=htmlspecialchars($datos_contrario['acronimo'])?></legend>
 
                     <!-- Goles (se muestra el valor que vino por POST o 0) -->
                     <div class="field">
-                    <label for="goles_casla">
+                    <label for="goles_visitante">
                         <img
                         src="icons/goles.png"
                         alt="Icono Goles"
@@ -302,8 +305,8 @@
                     </label>
                     <input
                         type="number"
-                        id="goles_casla"
-                        name="goles_casla"
+                        id="goles_visitante"
+                        name="goles_visitante"
                         min="0"
                         value="<?php echo htmlspecialchars($datos_contrario['goles']); ?>"
                         disabled
@@ -312,7 +315,7 @@
 
                     <!-- Asistencias -->
                     <div class="field">
-                    <label for="asistencias_casla">
+                    <label for="asistencias_visitante">
                         <img
                         src="icons/asistencias.png"
                         alt="Icono Asistencias"
@@ -322,8 +325,8 @@
                     </label>
                     <input
                         type="number"
-                        id="asistencias_casla"
-                        name="asistencias_casla"
+                        id="asistencias_visitante"
+                        name="asistencias_visitante"
                         min="0"
                         value="<?php echo htmlspecialchars($datos_contrario['asistencias']); ?>"
                         disabled
@@ -344,7 +347,7 @@
                         />
                         <input
                             type="number"
-                            name="tarjeta_amarilla_casla"
+                            name="tarjeta_amarilla_visitante"
                             min="0"
                             value="<?php echo htmlspecialchars($datos_contrario['tarjeta_amarilla']); ?>"
                             disabled
@@ -358,7 +361,7 @@
                         />
                         <input
                             type="number"
-                            name="tarjeta_roja_casla"
+                            name="tarjeta_roja_visitante"
                             min="0"
                             value="<?php echo htmlspecialchars($datos_contrario['tarjeta_roja']); ?>"
                             disabled
@@ -369,8 +372,19 @@
 
             
             </fieldset>
-            <button class="btn-whatsapp" type="submit">Abrir whatsapp</button>
-            </form>
+            
+            
+        </div>
+        </form>
+        <div class="btn-group">
+            <button type="submit" id="btn-enviar" form="coordinar">Enviar resultado</button>
+            <div id="contenedor-calificar" style="display: none; margin-top: 1rem;">
+                <!-- botón “Calificar deportividad” -->
+            </div>
+            <button type="button" id="btn-whatsapp" class="btn-whatsapp">Abrir whatsapp</button>
+            <div id="contenedor-estrellas" style="display: none; margin-top: 1rem;">
+            <!--  5 estrellas y la casilla de comentarios -->
+            </div>
         </div>
       </div>
     </section>
