@@ -18,6 +18,7 @@ use Paw\App\Dtos\FormularioPartidoDto;
 use Paw\App\Dtos\HistorialPartidoDto;
 use Paw\App\Dtos\ResultadoPartidoDto;
 use Paw\App\Services\EquipoService;
+use RuntimeException;
 
 class PartidoServiceImpl implements PartidoService
 {
@@ -267,6 +268,11 @@ class PartidoServiceImpl implements PartidoService
             } elseif ($tipo === 'FORMULARIO_EQUIPO_CONTRARIO') {
                 $resultado['equipo_contrario'] = $formulario;
             }
+        }
+
+        // si resultado  no tiene mi equipo o equipo contrario, no se puede crear el DTO (no deberia pasar)
+        if (!isset($resultado['mi_equipo']) || !isset($resultado['equipo_contrario'])) {
+            throw new RuntimeException("Inconsistencia en la BD, falta un formulario de tipo mi equipo o equipo contrario en el partido con id: $id_partido iteración: $ultimaIteracion");
         }
 
         // se crea el DTO
