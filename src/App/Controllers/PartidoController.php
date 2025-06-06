@@ -41,4 +41,35 @@ class PartidoController extends AbstractController
         header('Content-Type: application/json');
         echo json_encode($partidosPendientes);
     }
+
+    public function coordinarResultado(): void
+    {
+        $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $equipo = $this->equipoService->getEquipoById($userData->id_equipo);
+
+        $id_partido = isset($_GET['id_partido']) ? (int) $_GET['id_partido'] : -1;
+
+        if($this->partidoService->validarPartido($id_partido, $equipo->getIdEquipo())){
+            header("HTTP/1.1 404 Not Found");
+            require $this->viewsDir . 'errors/not-found.php';
+        }
+
+        // validar que el id partido está presente.
+
+        // validar que el partido no está finalizado.
+
+        // validar que el partido no está cancelado.
+
+        // validar que el user principal participo en el partido.
+
+        $datos_contrario = [
+            'goles'            => 0,
+            'asistencias'      => 0,
+            'tarjeta_amarilla' => 0,
+            'tarjeta_roja'     => 0,
+        ];
+        $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
+        require $this->viewsDir . 'coordinar-resultado.php';
+    }
 }
