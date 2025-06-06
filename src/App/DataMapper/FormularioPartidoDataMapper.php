@@ -19,6 +19,7 @@ class FormularioPartidoDataMapper extends DataMapper
     {
         $formularioPartido = new FormularioPartido();
         $formularioPartido->set($row);
+        $this->logger->info('Mapeando FormularioPartido'. $formularioPartido->getIdFormulario());
         return $formularioPartido;
     }
 
@@ -33,7 +34,18 @@ class FormularioPartidoDataMapper extends DataMapper
 
     public function findByIdFormularioPartido(int $id): FormularioPartido
     {
-        return $this->map(parent::findById(['id' => $id]));
+        return $this->map(parent::findById(['id_formulario' => $id]));
     }
 
+    public function findByIdPartidoOrderByFechaDesc(int $idPartido)
+    {
+        $formularios = $this->qb->select(
+            $this->table,
+            ['id_partido' => $idPartido],
+            'fecha',
+            'DESC'
+        );
+
+        return $this->mapAll($formularios);
+    }
 }

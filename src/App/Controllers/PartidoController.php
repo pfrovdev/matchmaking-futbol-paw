@@ -3,10 +3,13 @@
 namespace Paw\App\Controllers;
 
 use Monolog\Logger;
+use Paw\App\Dtos\FormularioEquipoDto;
+use Paw\App\Dtos\FormularioPartidoDto;
 use Paw\App\Services\EquipoService;
 use Paw\App\Services\PartidoService;
 use Paw\Core\AbstractController;
 use Paw\Core\Middelware\AuthMiddelware;
+use RuntimeException;
 
 class PartidoController extends AbstractController
 {
@@ -45,31 +48,40 @@ class PartidoController extends AbstractController
     public function coordinarResultado(): void
     {
         $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
-        $equipo = $this->equipoService->getEquipoById($userData->id_equipo);
+        $miEquipo = $this->equipoService->getEquipoById($userData->id_equipo);
 
         $id_partido = isset($_GET['id_partido']) ? (int) $_GET['id_partido'] : -1;
 
-        if($this->partidoService->validarPartido($id_partido, $equipo->getIdEquipo())){
+        try {
+            $this->partidoService->validarPartido($id_partido, $miEquipo->getIdEquipo());
+        } catch (RuntimeException $e) {
             header("HTTP/1.1 404 Not Found");
             require $this->viewsDir . 'errors/not-found.php';
         }
 
-        // validar que el id partido está presente.
+        $formularioPartidoContrario = $this->partidoService->getUltimosFormulariosEquipoContrario($id_partido, $miEquipo->getIdEquipo());
+        $miUltimaIteracion = $this->partidoService->getUltimaIteracion($id_partido, $miEquipo->getIdEquipo());
 
-        // validar que el partido no está finalizado.
+        if (!$formularioPartidoContrario) {
+            $formularioPartidoContrario =  new FormularioPartidoDto(
+                $this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo()),
+                $id_partido,
+                0,
+                new FormularioEquipoDto(
+                    0,
+                    0,
+                    0,
+                    0
+                ),
+                new FormularioEquipoDto(
+                    0,
+                    0,
+                    0,
+                    0
+                )
+            );
+        }
 
-        // validar que el partido no está cancelado.
-
-        // validar que el user principal participo en el partido.
-
-        $datos_contrario = [
-            'goles'            => 0,
-            'asistencias'      => 0,
-            'tarjeta_amarilla' => 0,
-            'tarjeta_roja'     => 0,
-        ];
-        $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
-        $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
         require $this->viewsDir . 'coordinar-resultado.php';
     }
 }

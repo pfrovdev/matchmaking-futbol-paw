@@ -13,6 +13,8 @@ use Paw\App\DataMapper\DesafioDataMapper;
 use Paw\App\DataMapper\FormularioPartidoDataMapper;
 use Paw\App\DataMapper\NivelEloDataMapper;
 use Paw\App\DataMapper\ResultadoPartidoDataMapper;
+use Paw\App\Dtos\FormularioEquipoDto;
+use Paw\App\Dtos\FormularioPartidoDto;
 use Paw\App\Dtos\HistorialPartidoDto;
 use Paw\App\Dtos\ResultadoPartidoDto;
 use Paw\App\Services\EquipoService;
@@ -41,6 +43,7 @@ class PartidoServiceImpl implements PartidoService
         $this->equipoService = $equipoService;
         $this->nivelEloDataMapper = $nivelEloDataMapper;
         $this->resultadoPartidoDataMapper = $resultadoPartidoDataMapper;
+        $this->formularioPartidoDataMapper = $formularioPartidoDataMapper;
     }
 
     public function crearPendienteParaDesafio(Desafio $d): int
@@ -221,10 +224,101 @@ class PartidoServiceImpl implements PartidoService
 
         $formularioPartido = $this->formularioPartidoDataMapper->findByIdFormularioPartido($idPartido);
 
-        if($formularioPartido->getTotalIteraciones() == 5) {
+        if ($formularioPartido->getTotalIteraciones() == 5) {
             throw new \RuntimeException("El formulario llegó a su máximo de iteraciones");
         }
 
         return true;
+    }
+
+    public function getUltimosFormulariosEquipoContrario(int $id_partido, int $id_equipo): ?FormularioPartidoDto
+    {
+        $formularios = $this->formularioPartidoDataMapper->findByIdPartidoOrderByFechaDesc($id_partido);
+
+        // Filtrar formularios del equipo contrario
+        $formulariosContrario = array_filter($formularios, function ($formulario) use ($id_equipo) {
+            return $formulario->getIdEquipo() !== $id_equipo;
+        });
+
+        if (empty($formulariosContrario)) {
+            return null;
+        }
+
+        // se agrupa por iteración
+        $porIteracion = [];
+        foreach ($formulariosContrario as $formulario) {
+            $iteracion = $formulario->getTotalIteraciones();
+            $porIteracion[$iteracion][] = $formulario;
+        }
+
+        // se obtiene la iteración más alta
+        $ultimaIteracion = max(array_keys($porIteracion));
+        $formulariosUltima = $porIteracion[$ultimaIteracion];
+
+        // se mapea a equipo_local y equipo_visitante
+        $resultado = [
+            'mi_equipo' => null,
+            'equipo_contrario' => null
+        ];
+        foreach ($formulariosUltima as $formulario) {
+            $tipo = $formulario->getTipoFormulario();
+            if ($tipo === 'FORMULARIO_MI_EQUIPO') {
+                $resultado['mi_equipo'] = $formulario;
+            } elseif ($tipo === 'FORMULARIO_EQUIPO_CONTRARIO') {
+                $resultado['equipo_contrario'] = $formulario;
+            }
+        }
+
+        // se crea el DTO
+        return new FormularioPartidoDto(
+            $resultado['mi_equipo']->getIdEquipo(),
+            $id_partido,
+            $ultimaIteracion,
+            new FormularioEquipoDto(
+                $resultado['mi_equipo']->getTotalGoles() ?? 0,
+                $resultado['mi_equipo']->getTotalAsistencias() ?? 0,
+                $resultado['mi_equipo']->getTotalAmarillas() ?? 0,
+                $resultado['mi_equipo']->getTotalRojas() ?? 0
+            ),
+            new FormularioEquipoDto(
+                $resultado['equipo_contrario']->getTotalGoles() ?? 0,
+                $resultado['equipo_contrario']->getTotalAsistencias() ?? 0,
+                $resultado['equipo_contrario']->getTotalAmarillas() ?? 0,
+                $resultado['equipo_contrario']->getTotalRojas() ?? 0
+            )
+        );
+    }
+
+    public function getUltimaIteracion(int $idPartido, int $idEquipo): int
+    {
+        $formularios = $this->formularioPartidoDataMapper->findByIdPartidoOrderByFechaDesc($idPartido);
+
+        if (!$formularios) {
+            return 0;
+        }
+
+        return $formularios[0]->getTotalIteraciones() ?? 0;
+    }
+
+    public function getEquipoRival(int $idPartido, int $idEquipo): int
+    {
+        $partido = $this->partidoDataMapper->findById(['id_partido' => $idPartido]);
+
+        if (!$partido) {
+            throw new \InvalidArgumentException("Partido $idPartido no encontrado");
+        }
+
+        $desafio = $this->desafioDataMapper->findByIdPartido($partido->getIdPartido());
+
+        if (!$desafio) {
+            throw new \InvalidArgumentException("Desafio del partido $idPartido no encontrado");
+        }
+
+        if ($desafio->getIdEquipoDesafiado() == $idEquipo) {
+            return $desafio->getIdEquipoDesafiante();
+        }
+
+        return $desafio->getIdEquipoDesafiado();
+
     }
 }

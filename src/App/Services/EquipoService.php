@@ -3,7 +3,9 @@
 namespace Paw\App\Services;
 
 use Paw\App\Dtos\EquipoBannerDto;
+use Paw\App\Dtos\FormularioPartidoDto;
 use Paw\App\Models\Equipo;
+use Paw\App\Models\FormularioPartido;
 
 interface EquipoService {
     function getAllTiposEquipos();
