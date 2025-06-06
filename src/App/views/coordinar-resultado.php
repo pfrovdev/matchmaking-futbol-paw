@@ -41,7 +41,7 @@
                         class="form-team">
                         <!-- Le agregamos también la clase grid-fields -->
                         <fieldset class="form-team">
-                            <legend class="team-name cabj">
+                            <legend class="team-name local">
                                 <?php
                                 echo htmlspecialchars($formularioPartidoContrario->getEquipoVisitante()->getBadge()->getAcronimo());
                                 ?>
@@ -113,7 +113,7 @@
                             </div>
                         </fieldset>
                         <fieldset class="form-team">
-                            <legend class="team-name casla">
+                            <legend class="team-name visitante">
                                 <?php
                                 echo htmlspecialchars($formularioPartidoContrario->getEquipoLocal()->getBadge()->getAcronimo());
                                 ?>
@@ -207,7 +207,7 @@
                         class="form-team">
                         <!-- Le agregamos también la clase grid-fields -->
                         <fieldset class="form-team">
-                            <legend class="team-name cabj">
+                            <legend class="team-name local">
                                 <?php
                                 echo htmlspecialchars($formularioPartidoContrario->getEquipoVisitante()->getBadge()->getAcronimo());
                                 ?>
@@ -283,7 +283,7 @@
                             </div>
                         </fieldset>
                         <fieldset class="form-team">
-                            <legend class="team-name casla">
+                            <legend class="team-name visitante">
                                 <?php
                                 echo htmlspecialchars($formularioPartidoContrario->getEquipoLocal()->getBadge()->getAcronimo());
                                 ?>
