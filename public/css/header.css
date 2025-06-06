@@ -30,7 +30,7 @@ h1 a{
 }
 
 .header-my-account{
-    width: 9rem;
+
     display: inline-block;
     position:absolute;
     top: 2rem;
@@ -143,7 +143,54 @@ h1 a{
     display: none;
 }
 
-@media (min-width: 814px) {
+
+  .header-my-account ul {
+    display: none;
+    position: absolute;
+    top: 100%;   
+    right: 0;      
+    margin: 0;
+    padding: 0.5rem 0; 
+    background-color: var(--background-contents);
+
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    list-style: none;
+    min-width: 160px;  
+    z-index: 10;       
+  }
+  
+  .header-my-account ul li {
+    margin: 0;
+  }
+  .header-my-account ul li a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  .header-my-account ul li a:hover {
+    background-color: var(--primary-color);
+    color: var(--muted-text-color);
+  }
+  
+  .header-my-account ul::before {
+    content: "";
+    position: absolute;
+    top: -8px;            
+    right: 12px;          
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #ffffff; 
+  }
+  
+ 
+  .header-my-account.show ul {
+    display: block;
+  }
+
+@media (min-width: 1024px) {
     .hamburger-checkbox{
         display: none;
     }

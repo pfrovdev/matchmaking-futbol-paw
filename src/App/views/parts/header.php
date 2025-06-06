@@ -5,7 +5,7 @@
     </label>
     
     <h1>
-        <a href="./">
+        <a href="./dashboard">
             <img src="../icons/enterprise-icon.svg" id="enterprise-icon"/>
         </a>
     </h1>
@@ -15,11 +15,12 @@
             <button type="button" aria-label="Mi equipo">
                 <img src="../icons/defaultTeamIcon.png" class="icon">
                 <?= htmlspecialchars($miEquipo->fields['nombre']) ?>
-            </button>   
+            </button>
             <ul>
-                <li><a href="./perfil.html">Mi Perfil</a></li>
-                <li><a href="./index.html">Cerrar sesión</a></li>
+                <li><a href="./dashboard">Mi Perfil</a></li>
+                <li><a href="./">Cerrar sesión</a></li>
             </ul>
         </section>
     <?php endif; ?>
+    <script src="/js/header.js"></script>
 </header>

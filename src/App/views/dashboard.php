@@ -12,6 +12,7 @@
   <title>Dashboard - <?= htmlspecialchars($miEquipo->fields['nombre']) ?></title>
   <link rel="stylesheet" href="css/dashboard.css">
   <script type="module" src="js/pages/Dashboard.js" defer></script>
+  <script src="/js/sidebar.js"></script>
 </head>
 
 <body data-profile-id="<?= htmlspecialchars($equipoVistoId, ENT_QUOTES) ?>">
@@ -195,7 +196,6 @@
 
   <?php require "parts/footer.php"; ?>
 
-  <script src="/js/sidebar.js"></script>
 </body>
 
 </html>

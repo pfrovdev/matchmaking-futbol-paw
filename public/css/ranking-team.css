@@ -34,3 +34,126 @@ main > header {
   border-radius: 0.5rem;
   padding: 1rem;
 }
+
+/* ======================================================
+   1) Pantallas medianas-grandes hasta 1024px de ancho
+   ====================================================== */
+   @media (max-width: 1024px) {
+
+    main > header {
+      margin: 3rem 3rem 1.5rem;
+    }
+  
+
+    .teams-container {
+      width: 95%;
+      padding: 1.5rem 0;
+    }
+
+    .teams-container li {
+      padding: 0.8rem;
+    }
+  
+ 
+    .team-card {
+      gap: 0.8rem;
+      padding: 0.8rem;
+    }
+  
+
+    .team-image {
+      width: 18rem;
+    }
+  
+ 
+    .team-info {
+      margin-left: 1.5rem;
+    }
+  }
+  
+  /* ===================================
+     2) Pantallas hasta 768px
+     =================================== */
+  @media (max-width: 768px) {
+  
+    .teams-container {
+
+      padding: 1rem;
+    }
+
+    .teams-container li {
+      width: 100%;       
+      margin: 0.5rem 0;  
+      padding: 0.6rem;
+    }
+  
+    .team-card {
+      flex-direction: column;
+      padding: 0.6rem;
+      gap: 0.6rem;
+    }
+  
+
+    .team-image {
+      width: 100%;
+    }
+  
+
+    .team-info {
+      margin-left: 0;
+    }
+  
+    .team-name {
+      font-size: 1.25rem;
+    }
+
+    .team-elo {
+      position: static;
+      text-align: right;
+      margin-top: 0.5rem;
+    }
+  
+    .team-actions .btn-profile {
+      width: 100%;
+      text-align: center;
+      padding: 0.5rem 0;
+    }
+  }
+  
+  /* =========================================
+     3) Pantallas móviles: hasta 480px de ancho
+     ========================================= */
+  @media (max-width: 480px) {
+
+  
+    .teams-container {
+
+      padding: 1rem;
+    }
+
+    .teams-container li {
+      width: 100%;       
+      margin: 0.5rem 0;  
+      padding: 0.6rem;
+    }
+  
+  
+    .team-card {
+      padding: 0.5rem;
+      gap: 0.5rem;
+    }
+
+    .team-image {
+      width: 100%;
+    }
+  
+    .team-actions .btn-profile {
+      width: 100%;
+      padding: 0.4rem 0;
+      font-size: 0.9rem;
+    }
+
+    .boton-filtro-zona {
+      width: 100%;
+    }
+  }

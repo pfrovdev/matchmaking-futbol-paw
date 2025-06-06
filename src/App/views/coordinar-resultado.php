@@ -1,20 +1,14 @@
-<?php
-$datos_contrario = [
-    'goles'            => $_POST['goles_contrario']            ?? 0,
-    'asistencias'      => $_POST['asistencias_contrario']      ?? 0,
-    'tarjeta_amarilla' => $_POST['tarjeta_amarilla_contrario'] ?? 0,
-    'tarjeta_roja'     => $_POST['tarjeta_roja_contrario']     ?? 0,
-];
-?>
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Formulario para coordinar resultados de un partido - F5 Futbol Match">
-    <title>Crear Equipo</title>
-    <link rel="stylesheet" href="css/coordinar-resultado.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Formulario para coordinar resultados de un partido - F5 Futbol Match">
+  <title>Crear Equipo</title>
+  <link rel="stylesheet" href="css/coordinar-resultado.css">
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/coordinar-resultados.js"></script>
 </head>
 
 <body>
@@ -190,7 +184,6 @@ $datos_contrario = [
                                 </div>
                             </div>
 
-
                         </fieldset>
                         <button type="submit">Enviar resultado</button>
 
@@ -200,6 +193,7 @@ $datos_contrario = [
                 <!-- ===============================================
                     2) SEGUNDO FORMULARIO: datos “EQUIPO CONTRARIO”
                     =============================================== -->
+
                 <div class="form-column">
                     <p>
                         <strong>

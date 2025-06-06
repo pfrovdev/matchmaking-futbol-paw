@@ -16,7 +16,8 @@
 
 .filters-container form ul {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
@@ -38,10 +39,11 @@
   border: 0.2rem solid var(--text-color);
   font-size: 0.9rem;
 }
-@media (min-width: 1080px) {
+@media (max-width: 1024px) {
   .filters-container form ul {
     display: flex;
     flex-direction: row;
-    gap: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;  
   }
 }
