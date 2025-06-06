@@ -10,10 +10,9 @@ use Paw\App\Models\Partido;
 use Paw\App\Models\Desafio;
 use DateTime;
 use Paw\App\DataMapper\DesafioDataMapper;
-use Paw\App\DataMapper\EquipoDataMapper;
+use Paw\App\DataMapper\FormularioPartidoDataMapper;
 use Paw\App\DataMapper\NivelEloDataMapper;
 use Paw\App\DataMapper\ResultadoPartidoDataMapper;
-use Paw\App\Dtos\EquipoBannerDto;
 use Paw\App\Dtos\HistorialPartidoDto;
 use Paw\App\Dtos\ResultadoPartidoDto;
 use Paw\App\Services\EquipoService;
@@ -26,13 +25,15 @@ class PartidoServiceImpl implements PartidoService
     private EquipoService $equipoService;
     private NivelEloDataMapper $nivelEloDataMapper;
     private ResultadoPartidoDataMapper $resultadoPartidoDataMapper;
+    private FormularioPartidoDataMapper $formularioPartidoDataMapper;
     public function __construct(
         PartidoDataMapper $partidoDataMapper,
         EstadoPartidoDataMapper $estadoPartidoDataMapper,
         DesafioDataMapper $desafioDataMapper,
         EquipoService $equipoService,
         NivelEloDataMapper $nivelEloDataMapper,
-        ResultadoPartidoDataMapper $resultadoPartidoDataMapper
+        ResultadoPartidoDataMapper $resultadoPartidoDataMapper,
+        FormularioPartidoDataMapper $formularioPartidoDataMapper
     ) {
         $this->partidoDataMapper = $partidoDataMapper;
         $this->estadoPartidoDataMapper = $estadoPartidoDataMapper;
@@ -202,5 +203,28 @@ class PartidoServiceImpl implements PartidoService
             $eloInicial,
             $eloFinal - $eloInicial
         );
+    }
+
+    public function validarPartido(int $idPartido, int $Idequipo): bool
+    {
+        $partido = $this->partidoDataMapper->findByIdAndFinalizado($idPartido, false);
+
+        if (!$partido) {
+            throw new \RuntimeException("Partido con id {$idPartido} no encontrado");
+        }
+
+        $desafio = $this->desafioDataMapper->findByIdPartido($idPartido);
+
+        if ($desafio->getIdEquipoDesafiado() !== $Idequipo &&  $desafio->getIdEquipoDesafiante() !== $Idequipo) {
+            throw new \RuntimeException("El equipo {$Idequipo} no participó en el partido");
+        }
+
+        $formularioPartido = $this->formularioPartidoDataMapper->findByIdFormularioPartido($idPartido);
+
+        if($formularioPartido->getTotalIteraciones() == 5) {
+            throw new \RuntimeException("El formulario llegó a su máximo de iteraciones");
+        }
+
+        return true;
     }
 }

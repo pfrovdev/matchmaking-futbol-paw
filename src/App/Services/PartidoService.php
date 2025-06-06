@@ -11,5 +11,7 @@ interface PartidoService
     function getHistorialPartidosByIdEquipo(int $idEquipo): array;
     function getResultadoPartidosByIdEquipo(int $idEquipo): array;
     function getProximosPartidos(int $idEquipo, int $page, int $perPage, string $orderBy, string $direction): array;
+
+    function validarPartido(int $idPartido, int $Idequipo): bool;
     
 }

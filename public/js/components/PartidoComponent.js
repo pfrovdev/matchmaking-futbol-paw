@@ -137,7 +137,7 @@ export default class PartidoComponent {
       const aCoordinar = document.createElement('a');
       aCoordinar.classList.add('nm-btn-primary', 'nm-small');
       aCoordinar.textContent = 'Coordinar resultado';
-      aCoordinar.href = '/coordinar-resultado';
+      aCoordinar.href = '/coordinar-resultado?id_partido=' + p.idPartido;
       aCoordinar.dataset.finalizado = p.finalizado ? 'true' : 'false';
       if (p.finalizado) {
         aCoordinar.removeAttribute('href');
