@@ -32,13 +32,6 @@ if (DEBUG) {
     error_reporting(0);
 }
 
-
-/* conexión para proxima entrega
-$connectionBuilder = new ConnectionBuilder;
-$connectionBuilder->setLogger($log);
-$connection = $connectionBuilder->make($config['database']);
-*/
-
 $request = new Request;
 
 // Instancio el contenedor para inyectar las dependencias

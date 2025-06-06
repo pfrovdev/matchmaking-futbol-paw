@@ -9,6 +9,7 @@ use Paw\App\Commons\NotificadorEmail;
 use Paw\App\Controllers\AuthController;
 use Paw\App\Controllers\DesafioController;
 use Paw\App\Controllers\EquipoController;
+use Paw\App\Controllers\ErrorController;
 use Paw\App\Controllers\PageController;
 use Paw\App\Controllers\PartidoController;
 use Paw\App\DataMapper\ComentarioDataMapper;
@@ -189,6 +190,11 @@ class ContainerConfig
             $logger,
             $c->get(TokenService::class),
             $c->get(EquipoService::class),
+            $c->get(AuthMiddelware::class)
+        ));
+
+        $c->set(ErrorController::class, fn($c) => new ErrorController(
+            $logger,
             $c->get(AuthMiddelware::class)
         ));
     }
