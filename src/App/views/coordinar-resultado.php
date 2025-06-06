@@ -31,7 +31,7 @@ $datos_contrario = [
                     <?=
                     htmlspecialchars(5 - $miUltimaIteracion);
                     ?>
-                </span> intentos. (sin contar el actual)
+                </span> intentos mas.
             </p>
             <div class="forms-wrapper">
                 <div class="form-column">
