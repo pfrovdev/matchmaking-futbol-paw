@@ -275,12 +275,14 @@ class PartidoServiceImpl implements PartidoService
             $id_partido,
             $ultimaIteracion,
             new FormularioEquipoDto(
+                $this->equipoService->getBadgeEquipo($resultado['mi_equipo']->getIdEquipo()),
                 $resultado['mi_equipo']->getTotalGoles() ?? 0,
                 $resultado['mi_equipo']->getTotalAsistencias() ?? 0,
                 $resultado['mi_equipo']->getTotalAmarillas() ?? 0,
                 $resultado['mi_equipo']->getTotalRojas() ?? 0
             ),
             new FormularioEquipoDto(
+                $this->equipoService->getBadgeEquipo($id_equipo),
                 $resultado['equipo_contrario']->getTotalGoles() ?? 0,
                 $resultado['equipo_contrario']->getTotalAsistencias() ?? 0,
                 $resultado['equipo_contrario']->getTotalAmarillas() ?? 0,

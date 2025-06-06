@@ -3,6 +3,7 @@
 namespace Paw\App\Controllers;
 
 use Monolog\Logger;
+use Paw\App\Dtos\BadgeEquipoFormularoDto;
 use Paw\App\Dtos\FormularioEquipoDto;
 use Paw\App\Dtos\FormularioPartidoDto;
 use Paw\App\Services\EquipoService;
@@ -52,6 +53,7 @@ class PartidoController extends AbstractController
 
         $id_partido = isset($_GET['id_partido']) ? (int) $_GET['id_partido'] : -1;
 
+        // ** No valida cuando el partido no le pertenece al equipo del usuario
         try {
             $this->partidoService->validarPartido($id_partido, $miEquipo->getIdEquipo());
         } catch (RuntimeException $e) {
@@ -68,12 +70,14 @@ class PartidoController extends AbstractController
                 $id_partido,
                 0,
                 new FormularioEquipoDto(
+                    $this->equipoService->getBadgeEquipo($this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo())),
                     0,
                     0,
                     0,
                     0
                 ),
                 new FormularioEquipoDto(
+                    $this->equipoService->getBadgeEquipo($miEquipo->getIdEquipo()),
                     0,
                     0,
                     0,

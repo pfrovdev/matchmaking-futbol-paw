@@ -47,7 +47,11 @@ $datos_contrario = [
                         class="form-team">
                         <!-- Le agregamos también la clase grid-fields -->
                         <fieldset class="form-team">
-                            <legend class="team-name cabj">CABJ</legend>
+                            <legend class="team-name cabj">
+                                <?php
+                                echo htmlspecialchars($formularioPartidoContrario->getEquipoVisitante()->getBadge()->getAcronimo());
+                                ?>
+                            </legend>
 
                             <!-- Goles (se muestra el valor que vino por POST o 0) -->
                             <div class="field">
@@ -115,7 +119,11 @@ $datos_contrario = [
                             </div>
                         </fieldset>
                         <fieldset class="form-team">
-                            <legend class="team-name casla">CASLA</legend>
+                            <legend class="team-name casla">
+                                <?php
+                                echo htmlspecialchars($formularioPartidoContrario->getEquipoLocal()->getBadge()->getAcronimo());
+                                ?>
+                            </legend>
 
                             <!-- Goles -->
                             <div class="field">
@@ -195,8 +203,8 @@ $datos_contrario = [
                 <div class="form-column">
                     <p>
                         <strong>
-                            <?= $formularioPartidoContrario->getIteracionActual() == 0? "El rival aún no cargó su primer formulario" : 
-                                "Formulario correspondiente a la iteración : ". $formularioPartidoContrario->getIteracionActual() ?>
+                            <?= $formularioPartidoContrario->getIteracionActual() == 0 ? "El rival aún no cargó su primer formulario" :
+                                "Formulario correspondiente a la iteración : " . $formularioPartidoContrario->getIteracionActual() ?>
                         </strong>
                     </p>
                     <form
@@ -205,7 +213,11 @@ $datos_contrario = [
                         class="form-team">
                         <!-- Le agregamos también la clase grid-fields -->
                         <fieldset class="form-team">
-                            <legend class="team-name cabj">CABJ</legend>
+                            <legend class="team-name cabj">
+                                <?php
+                                echo htmlspecialchars($formularioPartidoContrario->getEquipoVisitante()->getBadge()->getAcronimo());
+                                ?>
+                            </legend>
 
                             <!-- Goles (se muestra el valor que vino por POST o 0) -->
                             <div class="field">
@@ -277,7 +289,11 @@ $datos_contrario = [
                             </div>
                         </fieldset>
                         <fieldset class="form-team">
-                            <legend class="team-name casla">CASLA</legend>
+                            <legend class="team-name casla">
+                                <?php
+                                echo htmlspecialchars($formularioPartidoContrario->getEquipoLocal()->getBadge()->getAcronimo());
+                                ?>
+                            </legend>
 
                             <!-- Goles (se muestra el valor que vino por POST o 0) -->
                             <div class="field">

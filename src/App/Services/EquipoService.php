@@ -2,6 +2,7 @@
 
 namespace Paw\App\Services;
 
+use Paw\App\Dtos\BadgeEquipoFormularoDto;
 use Paw\App\Dtos\EquipoBannerDto;
 use Paw\App\Dtos\FormularioPartidoDto;
 use Paw\App\Models\Equipo;
@@ -24,4 +25,5 @@ interface EquipoService {
     function getAllEquiposbyId(int $id_equipo, array $todosLosEquipos);
     function quitarMiEquipoDeEquipos(array $todosLosEquipos, Equipo $miEquipo);
     function setRestultadosPartido(array $todosLosEquipos);
+    function getBadgeEquipo(int $id_equipo) : BadgeEquipoFormularoDto;
 }
