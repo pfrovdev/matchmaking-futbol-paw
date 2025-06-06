@@ -257,19 +257,6 @@ class EquipoController extends AbstractController
         require $this->viewsDir . 'search-team.php';
     }
 
-
-    public function coordinarResultado(): void{
-        $datos_contrario = [
-            'goles'            => 0,
-            'asistencias'      => 0,
-            'tarjeta_amarilla' => 0,
-            'tarjeta_roja'     => 0,
-          ];
-        $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
-        $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
-        require $this->viewsDir . 'coordinar-resultado.php';
-    }
-
     public function rankingTeams(){
         $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);

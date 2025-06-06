@@ -27,7 +27,6 @@ return [
         ['path' => '/dashboard', 'action' => 'EquipoController@dashboard', 'method' => 'GET'],
         ['path' => '/ranking-teams', 'action' => 'EquipoController@rankingTeams', 'method' => 'GET'],
         ['path' => '/details-team', 'action' => 'EquipoController@detailsTeam', 'method' => 'GET'],
-        ['path' => '/coordinar-resultado', 'action' => 'EquipoController@coordinarResultado', 'method' => 'GET'],
 
         // POST Methods
         ['path' => '/register', 'action' => 'EquipoController@register', 'method' => 'POST'],
@@ -48,6 +47,7 @@ return [
         // === PartidoController ===
         // GET Methods
         ['path' => '/partidos', 'action' => 'PartidoController@index', 'method' => 'GET'],
+        ['path' => '/coordinar-resultado', 'action' => 'PartidoController@coordinarResultado', 'method' => 'GET'],
 
         // === AuthController ===
         // POST Methods

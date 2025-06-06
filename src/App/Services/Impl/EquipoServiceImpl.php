@@ -2,22 +2,18 @@
 
 namespace Paw\App\Services\Impl;
 
-use Monolog\Logger;
 use Paw\App\DataMapper\ComentarioDataMapper;
-use Paw\App\DataMapper\DesafioDataMapper;
 use Paw\App\DataMapper\EquipoDataMapper;
-use Paw\App\DataMapper\EstadoDesafioDataMapper;
 use Paw\App\DataMapper\NivelEloDataMapper;
 use Paw\App\DataMapper\ResultadoPartidoDataMapper;
 use Paw\App\DataMapper\TipoEquipoDataMapper;
+use Paw\App\Dtos\BadgeEquipoFormularoDto;
 use Paw\App\Dtos\EquipoBannerDto;
 use Paw\App\Services\EquipoService;
-use Paw\App\Services\PartidoService;
 
 use Paw\App\Models\Equipo;
 use Paw\App\Models\TipoEquipo;
 
-use Paw\Core\Database\QueryBuilder;
 
 class EquipoServiceImpl implements EquipoService
 {
@@ -233,6 +229,20 @@ class EquipoServiceImpl implements EquipoService
             return (int)$equipo->id_equipo !== (int)$miEquipo->id_equipo;
         });
         return $todosLosEquipos;
+    }
+
+    public function getBadgeEquipo(int $id_equipo) : BadgeEquipoFormularoDto
+    {
+        $equipo = $this->equipoDataMapper->findById(['id_equipo' => $id_equipo]);
+        $descElo = $this->getDescripcionNivelEloById($equipo->getIdEquipo());
+
+        $badge = new BadgeEquipoFormularoDto(
+            $equipo->getNombre(),
+            $equipo->getAcronimo(),
+            $descElo
+        );
+
+        return $badge;
     }
 
 }
