@@ -16,12 +16,6 @@ $mapaRangos = [
 
 $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
 
-if ($nombre !== '') {
-    $equipos = array_filter($equipos, function($e) use($nombre) {
-        return mb_stripos($e['nombre'], $nombre) !== false;
-    });
-}
-
 
 ?>
 <!DOCTYPE html>
@@ -54,7 +48,7 @@ if ($nombre !== '') {
                     <input type="text" id="nombre" name="nombre" placeholder="Ejemplo FC"
                            value="<?= htmlspecialchars($nombre) ?>" />
 
-                    <input type="hidden" name="id_nivel_elo" value="<?= htmlspecialchars($rangoSelectedId) ?>">
+                    <input type="hidden" name="id_nivel_elo" value="<?= htmlspecialchars($rangoSelectedId ?? '') ?>">
                     <input type="hidden" name="orden" value="<?= htmlspecialchars($orden) ?>">
                     <button type="submit">Buscar</button>
                 </form>
@@ -87,7 +81,7 @@ if ($nombre !== '') {
                     <form class="radio-btns" method="get">
 
                         <input type="hidden" name="nombre" value="<?= htmlspecialchars($nombre) ?>">
-                        <input type="hidden" name="id_nivel_elo"  value="<?= htmlspecialchars($rangoSelectedId) ?>">
+                        <input type="hidden" name="id_nivel_elo" value="<?= htmlspecialchars($rangoSelectedId ?? '') ?>">
 
                         <label>
                             <input type="radio" name="orden" value="desc"

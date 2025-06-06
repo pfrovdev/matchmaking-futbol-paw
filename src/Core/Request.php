@@ -6,7 +6,8 @@ class Request
 {
     public function uri()
     {
-        return ltrim(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), '/');
+        $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+        return $uri === '/' ? '/' : ltrim($uri, '/');
     }
 
     public function method()

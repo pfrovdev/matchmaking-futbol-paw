@@ -47,6 +47,11 @@ reset_db: down_db
 insertar_datos_demo:
 	php src/Deploy_database/insert_demo_data.php
 
+# Insertar datos demo- para prod
+insertar_datos_demo_prod:
+	kubectl exec -it web-78ff657cb9-6k8bv -- php src/Deploy_database/insert_demo_data.php
+
+
 # Ingresar a la shell de la base de datos
 db_shell:
 	docker exec -it match_making_db mysql -u $(DB_USER) -p$(DB_PASSWORD) $(DB_NAME)
