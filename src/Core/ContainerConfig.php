@@ -9,6 +9,7 @@ use Paw\App\Commons\NotificadorEmail;
 use Paw\App\Controllers\AuthController;
 use Paw\App\Controllers\DesafioController;
 use Paw\App\Controllers\EquipoController;
+use Paw\App\Controllers\ErrorController;
 use Paw\App\Controllers\PageController;
 use Paw\App\Controllers\PartidoController;
 use Paw\App\DataMapper\ComentarioDataMapper;
@@ -16,6 +17,7 @@ use Paw\App\DataMapper\DesafioDataMapper;
 use Paw\App\DataMapper\EquipoDataMapper;
 use Paw\App\DataMapper\EstadoDesafioDataMapper;
 use Paw\App\DataMapper\EstadoPartidoDataMapper;
+use Paw\App\DataMapper\FormularioPartidoDataMapper;
 use Paw\App\DataMapper\NivelEloDataMapper;
 use Paw\App\DataMapper\PartidoDataMapper;
 use Paw\App\DataMapper\ResultadoPartidoDataMapper;
@@ -81,6 +83,10 @@ class ContainerConfig
             $c->get(QueryBuilder::class),
             $logger
         ));
+        $c->set(FormularioPartidoDataMapper::class, fn($c) => new FormularioPartidoDataMapper(
+            $c->get(QueryBuilder::class),
+            $logger
+        ));
 
         // Token Storage (JWT)
         $c->set(TokenStorageInterface::class, function ($c) {
@@ -119,7 +125,8 @@ class ContainerConfig
             $c->get(DesafioDataMapper::class),
             $c->get(EquipoService::class),
             $c->get(NivelEloDataMapper::class),
-            $c->get(ResultadoPartidoDataMapper::class)
+            $c->get(ResultadoPartidoDataMapper::class),
+            $c->get(FormularioPartidoDataMapper::class)
         ));
 
         $c->set(EquipoService::class, fn($c) => new EquipoServiceImpl(
@@ -189,6 +196,11 @@ class ContainerConfig
             $logger,
             $c->get(TokenService::class),
             $c->get(EquipoService::class),
+            $c->get(AuthMiddelware::class)
+        ));
+
+        $c->set(ErrorController::class, fn($c) => new ErrorController(
+            $logger,
             $c->get(AuthMiddelware::class)
         ));
     }

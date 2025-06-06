@@ -11,7 +11,7 @@ class ComentarioEquipoDto implements JsonSerializable
     private EquipoBannerDto $equipoComentador;
     private string $comentario;
     private string $fechaCreacion;
-    private int $deportividad;
+    private float $deportividad;
 
     public function __construct(Comentario $comentario, EquipoBannerDto $equipoComentador)
     {
@@ -41,7 +41,7 @@ class ComentarioEquipoDto implements JsonSerializable
         return $this->fechaCreacion;
     }
 
-    public function getDeportividad(): int
+    public function getDeportividad(): float
     {
         return $this->deportividad;
     }

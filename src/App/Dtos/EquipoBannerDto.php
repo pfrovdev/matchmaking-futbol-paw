@@ -14,11 +14,12 @@ class EquipoBannerDto implements JsonSerializable
     public string $lema;
     public int $elo_actual;
     public string $descripcion_elo;
-    public int $deportividad;
+    public float $deportividad;
     public string $tipoEquipo;
+    public string $numero_telefono;
     public array $resultadosEquipo; 
 
-    public function __construct(Equipo $equipo, string $descripcion_elo, int $deportividad, string $tipoEquipo, ? array $resultadosEquipo)
+    public function __construct(Equipo $equipo, string $descripcion_elo, float $deportividad, string $tipoEquipo, ? array $resultadosEquipo)
     {
         $this->id_equipo = $equipo->getIdEquipo();
         $this->nombre_equipo = $equipo->getNombre();
@@ -29,6 +30,7 @@ class EquipoBannerDto implements JsonSerializable
         $this->descripcion_elo = $descripcion_elo;
         $this->deportividad = $deportividad;
         $this->tipoEquipo = $tipoEquipo;
+        $this->numero_telefono = $equipo->getTelefono();
         $this->resultadosEquipo = $resultadosEquipo ?? []; 
     }
 
@@ -62,7 +64,7 @@ class EquipoBannerDto implements JsonSerializable
         return $this->descripcion_elo;
     }
 
-    public function getDeportividad(): int
+    public function getDeportividad(): float
     {
         return $this->deportividad;
     }
@@ -75,6 +77,11 @@ class EquipoBannerDto implements JsonSerializable
     public function getTipoEquipo(): string
     {
         return $this->tipoEquipo;
+    }
+
+    public function getNumeroTelefono(): string
+    {
+        return $this->numero_telefono;
     }
 
     public function getResultadosEquipo(): array{
@@ -93,6 +100,7 @@ class EquipoBannerDto implements JsonSerializable
             'descripcion_elo' => $this->descripcion_elo,
             'deportividad' => $this->deportividad,
             'tipoEquipo'=> $this->tipoEquipo,
+            'numero_telefono' => $this->numero_telefono,
             'resultadosEquipo' => $this->resultadosEquipo
         ];
     }

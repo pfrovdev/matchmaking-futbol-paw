@@ -60,6 +60,10 @@ class DesafioDataMapper extends DataMapper
         return $this->mapAll(array_merge($rowsDesafiado, $rowsDesafiante));
     }
 
+    public function findByIdPartido(int $idPartido){
+        return $this->map($this->findBy(["id_partido" => $idPartido])[0]);
+    }
+
     public function insertDesafio(Desafio $d): int
     {
         $data = [

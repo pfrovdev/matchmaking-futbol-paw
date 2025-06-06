@@ -31,7 +31,7 @@ class Comentario extends AbstractModel{
         $this->fields["comentario"] = $comentario;
     }
 
-    public function setDeportividad(int $deportividad){
+    public function setDeportividad(float $deportividad){
         $this->fields["deportividad"] = $deportividad;
     }
 
@@ -69,7 +69,7 @@ class Comentario extends AbstractModel{
     {
         return $this->fields["comentario"];
     }
-    public function getDeportividad(): ?int
+    public function getDeportividad(): ?float
     {
         return $this->fields["deportividad"];
     }
