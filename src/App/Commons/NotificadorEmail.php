@@ -5,30 +5,35 @@ namespace Paw\App\Commons;
 use Exception;
 use Paw\App\Models\Equipo;
 use Paw\App\Models\Desafio;
+use Paw\App\Models\FormularioPartido;
 use PHPMailer\PHPMailer\PHPMailer;
 
-class NotificadorEmail implements Notificador {
+class NotificadorEmail implements Notificador
+{
 
     protected string $viewsDir = __DIR__ . '/../views/';
     private string $aceptarDesafioTemplate = 'mail-desafio-aceptado.html';
     private string $rechazarDesafioTemplate = 'mail-desafio-rechazado.html';
     private string $crearDesafioTemplate = 'mail-desafio-creado.html';
+    private string $finalizarPartidoTemplate = 'mail-partido-finalizado.html';
 
-    public function enviarNotificacionDesafioAceptado(Equipo $equipoDesafiado, Equipo $equipoDesafiante, Desafio $desafioCreado): void {
+    public function enviarNotificacionDesafioAceptado(Equipo $equipoDesafiado, Equipo $equipoDesafiante, Desafio $desafioCreado): void
+    {
         $this->enviarEmail(
-            $equipoDesafiante->fields['email']?? throw new Exception("Email destinatario no puede ser nulo id_equipo: {$equipoDesafiante->fields['id_equipo']}"),
+            $equipoDesafiante->fields['email'] ?? throw new Exception("Email destinatario no puede ser nulo id_equipo: {$equipoDesafiante->fields['id_equipo']}"),
             "{$equipoDesafiado->fields['nombre']} aceptó tu desafío",
             $this->aceptarDesafioTemplate,
             [
-                'teamName' => $equipoDesafiado->fields['nombre'],
-                'link' => 'https://wa.me/' . $equipoDesafiante->fields['telefono'],
+                'teamName' => $equipoDesafiante->fields['nombre'],
+                'link' => 'https://wa.me/' . $equipoDesafiado->fields['telefono'],
             ]
         );
     }
 
-    public function enviarNotificacionDesafioRechazado(Equipo $equipoDesafiado, Equipo $equipoDesafiante, Desafio $desafioRechazado): void {
+    public function enviarNotificacionDesafioRechazado(Equipo $equipoDesafiado, Equipo $equipoDesafiante, Desafio $desafioRechazado): void
+    {
         $this->enviarEmail(
-            $equipoDesafiante->fields['email']?? throw new Exception("Email destinatario no puede ser nulo id_equipo: {$equipoDesafiante->fields['id_equipo']}"),
+            $equipoDesafiante->fields['email'] ?? throw new Exception("Email destinatario no puede ser nulo id_equipo: {$equipoDesafiante->fields['id_equipo']}"),
             "{$equipoDesafiado->fields['nombre']} rechazó tu desafío",
             $this->rechazarDesafioTemplate,
             [
@@ -39,9 +44,10 @@ class NotificadorEmail implements Notificador {
     }
 
 
-    public function enviarNotificacionDesafioCreado(Equipo $equipoDesafiado, Equipo $equipoDesafiante): void {
+    public function enviarNotificacionDesafioCreado(Equipo $equipoDesafiado, Equipo $equipoDesafiante): void
+    {
         $this->enviarEmail(
-            $equipoDesafiado->fields['email']?? throw new Exception("Email destinatario no puede ser nulo id_equipo: {$equipoDesafiante->fields['id_equipo']}"),
+            $equipoDesafiado->fields['email'] ?? throw new Exception("Email destinatario no puede ser nulo id_equipo: {$equipoDesafiante->fields['id_equipo']}"),
             "{$equipoDesafiante->fields['nombre']} te acaba de desafiar",
             $this->crearDesafioTemplate,
             [
@@ -52,7 +58,67 @@ class NotificadorEmail implements Notificador {
         );
     }
 
-    private function enviarEmail(string $destinatario, string $asunto, string $templateFile, array $vars): void {
+    public function enviarNotificacionPartidoFinalizado(
+        Equipo $equipoLocal,
+        Equipo $equipoVisitante,
+        FormularioPartido $formularioLocal,
+        FormularioPartido $formularioVisitante
+    ): void {
+        $vars = [
+            'equipoLocal' => $equipoLocal->getNombre(),
+            'equipoVisitante' => $equipoVisitante->getNombre(),
+            'golesLocal' => $formularioLocal->getTotalGoles(),
+            'asistenciasLocal' => $formularioLocal->getTotalAsistencias(),
+            'amarillasLocal' => $formularioLocal->getTotalAmarillas(),
+            'rojasLocal' => $formularioLocal->getTotalRojas(),
+            'golesVisitante' => $formularioVisitante->getTotalGoles(),
+            'asistenciasVisitante' => $formularioVisitante->getTotalAsistencias(),
+            'amarillasVisitante' => $formularioVisitante->getTotalAmarillas(),
+            'rojasVisitante' => $formularioVisitante->getTotalRojas(),
+            'detalleLink' => getenv('JWT_APP_URL') . '/partidos/detalle?id_partido=' . $formularioLocal->getIdPartido(),
+        ];
+        $subject = sprintf(
+            "Partido finalizado: %s %d - %d %s",
+            $equipoLocal->getAcronimo(),
+            $vars['golesLocal'],
+            $vars['golesVisitante'],
+            $equipoVisitante->getAcronimo()
+        );
+        $this->enviarEmail(
+            $equipoLocal->getEmail() ?? throw new Exception(
+                "Email del equipo local no puede ser nulo (id_equipo: {$equipoLocal->getIdEquipo()})"
+            ),
+            $subject,
+            $this->finalizarPartidoTemplate,
+            $vars
+        );
+        $this->enviarEmail(
+            $equipoVisitante->getEmail() ?? throw new Exception(
+                "Email del equipo visitante no puede ser nulo (id_equipo: {$equipoVisitante->getIdEquipo()})"
+            ),
+            $subject,
+            $this->finalizarPartidoTemplate,
+            $vars
+        );
+    }
+
+    public function enviarNotificacionNuevaIteracion(Equipo $equipoLocal, Equipo $equipoVisitante, int $iteracion, int $idPartido)
+    {
+        $this->enviarEmail(
+            $equipoVisitante->getEmail() ?? throw new Exception("Email no puede ser nulo"),
+            "{$equipoLocal->getNombre()} subió iteración #{$iteracion}",
+            'mail-nueva-iteracion.html',
+            [
+                'equipoLocal' => $equipoLocal->getNombre(),
+                'equipoVisitante' => $equipoVisitante->getNombre(),
+                'iteracion' => $iteracion,
+                'link' => getenv('JWT_APP_URL') . "/partidos/detalle?id_partido={$idPartido}"
+            ]
+        );
+    }
+
+    private function enviarEmail(string $destinatario, string $asunto, string $templateFile, array $vars): void
+    {
         $mail = new PHPMailer(true);
         try {
             $mail->isSMTP();
@@ -76,15 +142,12 @@ class NotificadorEmail implements Notificador {
         }
     }
 
-    private function renderTemplate(string $file, array $vars) : string {
+    private function renderTemplate(string $file, array $vars): string
+    {
         $html = file_get_contents($this->viewsDir . $file);
         foreach ($vars as $key => $value) {
             $html = str_replace("{{{$key}}}", htmlspecialchars($value), $html);
         }
         return $html;
     }
-
 }
-
-
-?>

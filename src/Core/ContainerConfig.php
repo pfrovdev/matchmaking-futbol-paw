@@ -126,7 +126,8 @@ class ContainerConfig
             $c->get(EquipoService::class),
             $c->get(NivelEloDataMapper::class),
             $c->get(ResultadoPartidoDataMapper::class),
-            $c->get(FormularioPartidoDataMapper::class)
+            $c->get(FormularioPartidoDataMapper::class),
+            $c->get(NotificationService::class)
         ));
 
         $c->set(EquipoService::class, fn($c) => new EquipoServiceImpl(

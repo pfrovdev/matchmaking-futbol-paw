@@ -17,7 +17,10 @@ use Paw\App\Dtos\FormularioEquipoDto;
 use Paw\App\Dtos\FormularioPartidoDto;
 use Paw\App\Dtos\HistorialPartidoDto;
 use Paw\App\Dtos\ResultadoPartidoDto;
+use Paw\App\Enums\ProcesarFormularioEstado;
+use Paw\App\Models\FormularioPartido;
 use Paw\App\Services\EquipoService;
+use Paw\App\Services\NotificationService;
 use RuntimeException;
 
 class PartidoServiceImpl implements PartidoService
@@ -29,6 +32,7 @@ class PartidoServiceImpl implements PartidoService
     private NivelEloDataMapper $nivelEloDataMapper;
     private ResultadoPartidoDataMapper $resultadoPartidoDataMapper;
     private FormularioPartidoDataMapper $formularioPartidoDataMapper;
+    private NotificationService $notificationService;
     public function __construct(
         PartidoDataMapper $partidoDataMapper,
         EstadoPartidoDataMapper $estadoPartidoDataMapper,
@@ -36,7 +40,8 @@ class PartidoServiceImpl implements PartidoService
         EquipoService $equipoService,
         NivelEloDataMapper $nivelEloDataMapper,
         ResultadoPartidoDataMapper $resultadoPartidoDataMapper,
-        FormularioPartidoDataMapper $formularioPartidoDataMapper
+        FormularioPartidoDataMapper $formularioPartidoDataMapper,
+        NotificationService $notificationService
     ) {
         $this->partidoDataMapper = $partidoDataMapper;
         $this->estadoPartidoDataMapper = $estadoPartidoDataMapper;
@@ -45,6 +50,7 @@ class PartidoServiceImpl implements PartidoService
         $this->nivelEloDataMapper = $nivelEloDataMapper;
         $this->resultadoPartidoDataMapper = $resultadoPartidoDataMapper;
         $this->formularioPartidoDataMapper = $formularioPartidoDataMapper;
+        $this->notificationService = $notificationService;
     }
 
     public function crearPendienteParaDesafio(Desafio $d): int
@@ -69,7 +75,7 @@ class PartidoServiceImpl implements PartidoService
         }
 
         $fechaFinal = (new DateTime())->format('Y-m-d H:i:s');
-        $idFinal = $this->estadoPartidoDataMapper->findIdByCode('finalizado');
+        $idFinal = $this->estadoPartidoDataMapper->findIdByCode('jugado');
 
         $p->finalizar($fechaFinal, $idFinal);
         $this->partidoDataMapper->updatePartido($p);
@@ -299,7 +305,7 @@ class PartidoServiceImpl implements PartidoService
 
     public function getUltimaIteracion(int $idPartido, int $idEquipo): int
     {
-        $formularios = $this->formularioPartidoDataMapper->findByIdPartidoOrderByFechaDesc($idPartido);
+        $formularios = $this->formularioPartidoDataMapper->findByIdPartidoAndIdEquipoOrderByFechaDesc($idPartido, $idEquipo);
 
         if (!$formularios) {
             return 0;
@@ -327,6 +333,70 @@ class PartidoServiceImpl implements PartidoService
         }
 
         return $desafio->getIdEquipoDesafiado();
+    }
 
+    public function procesarFormulario(int $idEquipo, int $idPartido, FormularioPartido $formularioLocal, FormularioPartido $formularioVisitante): ProcesarFormularioEstado 
+    {
+        // recupero los ultimos formularios del equipo contrario
+        $formulariosRival = $this->getUltimosFormulariosEquipoContrario($idPartido, $idEquipo);
+
+        // determino la iteración actual del equipo
+        $iteracionActual = $this->getUltimaIteracion($idPartido, $idEquipo) + 1;
+
+        // determino la iteración actual del rival
+        $equipoRivalId = $this->getEquipoRival($idPartido, $idEquipo);
+        $iteracionRival = $this->getUltimaIteracion($idPartido, $equipoRivalId);
+
+        // 1) Límite de iteraciones alcanzado
+        if ($iteracionActual > 5) {
+            $this->finalizarPartido($idPartido);
+            return ProcesarFormularioEstado::MAXIMAS_ITERACIONES_ALCANZADAS;
+        }
+
+        // 2) Fuera de turno
+        if ($iteracionActual > $iteracionRival + 1) {
+            return ProcesarFormularioEstado::FUERA_DE_TURNO;
+        }
+
+        // actualizo la iteración en los formularios
+        $formularioLocal->setTotalIteraciones($iteracionActual);
+        $formularioVisitante->setTotalIteraciones($iteracionActual);
+
+        // 3) Mismo turno: verificar coincidencia
+        if ($iteracionActual === $iteracionRival) {
+            if ($this->formulariosCoinciden($formulariosRival, $formularioLocal, $formularioVisitante)) {
+                $this->finalizarPartido($idPartido);
+                $this->notificationService->notifyParitdoFinalizado(
+                    $this->equipoService->getEquipoById($idEquipo),
+                    $this->equipoService->getEquipoById($equipoRivalId),
+                    $formularioLocal,
+                    $formularioVisitante
+                );
+                $this->formularioPartidoDataMapper->save($formularioLocal);
+                $this->formularioPartidoDataMapper->save($formularioVisitante);
+                return ProcesarFormularioEstado::PARTIDO_TERMINADO;
+            }
+        }
+
+        // 4) Nueva iteración válida
+        $this->notificationService->notifyNuevaIteracion(
+            $this->equipoService->getEquipoById($idEquipo),
+            $this->equipoService->getEquipoById($equipoRivalId),
+            $iteracionActual,
+            $idPartido
+        );
+        $this->formularioPartidoDataMapper->save($formularioLocal);
+        $this->formularioPartidoDataMapper->save($formularioVisitante);
+        return ProcesarFormularioEstado::NUEVA_ITERACION;
+    }
+
+    private function formulariosCoinciden(FormularioPartidoDto $formulariosRival, FormularioPartido $formularioLocal, FormularioPartido $formularioVisitante)
+    {
+        return $formulariosRival->equipo_visitante->getGoles() == $formularioLocal->getTotalGoles()
+            && $formulariosRival->equipo_local->getGoles() == $formularioVisitante->getTotalGoles()
+            && $formulariosRival->equipo_visitante->getAsistencias() == $formularioLocal->getTotalAsistencias()
+            && $formulariosRival->equipo_local->getAsistencias() == $formularioVisitante->getTotalAsistencias()
+            && $formulariosRival->equipo_visitante->getTarjetasAmarilla() == $formularioLocal->getTotalAmarillas()
+            && $formulariosRival->equipo_local->getTarjetasRoja() == $formularioVisitante->getTotalRojas();
     }
 }

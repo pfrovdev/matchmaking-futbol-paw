@@ -3,7 +3,9 @@
 namespace Paw\App\Services;
 
 use Paw\App\Dtos\FormularioPartidoDto;
+use Paw\App\Enums\ProcesarFormularioEstado;
 use Paw\App\Models\Desafio;
+use Paw\App\Models\FormularioPartido;
 
 interface PartidoService
 {
@@ -16,4 +18,5 @@ interface PartidoService
     function getUltimosFormulariosEquipoContrario(int $id_partido, int $id_equipo): ?FormularioPartidoDto;
     function getUltimaIteracion(int $id_partido, int $id_equipo): int;
     function getEquipoRival(int $idPartido, int $idEquipo): int;
+    function procesarFormulario(int $idEquipo, int $idPartido, FormularioPartido $formularioLocal, FormularioPartido $formularioVisitante): ProcesarFormularioEstado;
 }
