@@ -59,16 +59,50 @@
     .side-navbar {
       display: none;
     }
+
+    .side-navbar.open {
+      display: flex;
+      width: 280px; 
+      overflow: visible;
+
+    }
+    .side-navbar.open .label {
+      opacity: 1;
+    }
+
+
   }
   @media (max-width: 768px) {
 
     .side-navbar {
       display: none;
     }
+
+    .side-navbar.open {
+      display: flex;
+      width: 280px; 
+      overflow: visible;
+
+    }
+    .side-navbar.open .label {
+      opacity: 1;
+    }
+
+
   }
   @media (max-width: 480px) {
 
     .side-navbar {
       display: none;
+    }
+
+    .side-navbar.open {
+      display: flex;
+      width: 280px; 
+      overflow: visible;
+
+    }
+    .side-navbar.open .label {
+      opacity: 1;
     }
   }

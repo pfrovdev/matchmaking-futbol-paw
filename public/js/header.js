@@ -1,3 +1,26 @@
+document.addEventListener('DOMContentLoaded', ()=> {
+  const toggle   = document.querySelector('.hamburger-checkbox');
+  const sideNav  = document.querySelector('.side-navbar');
+  const hamLabel = document.querySelector('.hamburger-menu');
+
+  if (!toggle || !sideNav || !hamLabel) return;
+
+  // Al clickear el checkbox: abrimos/cerramos
+  toggle.addEventListener('change', ()=>{
+    sideNav.classList.toggle('open', toggle.checked);
+  });
+
+  // Evitamos que clicks internos cierren el menú
+  hamLabel.addEventListener('click', e => e.stopPropagation());
+  toggle.addEventListener('click',   e => e.stopPropagation());
+  sideNav.addEventListener('click',  e => e.stopPropagation());
+
+  // Click fuera → cierro y desmarco
+  document.addEventListener('click', ()=>{
+    toggle.checked = false;
+    sideNav.classList.remove('open');
+  });
+});
 
   document.addEventListener('DOMContentLoaded', function() {
     // 1) Referencia al contenedor y al botón
@@ -15,3 +38,4 @@
       contenedor.classList.remove('show');
     });
   });
+
