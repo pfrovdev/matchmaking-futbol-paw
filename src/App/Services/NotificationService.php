@@ -5,6 +5,7 @@ namespace Paw\App\Services;
 use Paw\App\Commons\Notificador;
 use Paw\App\Models\Equipo;
 use Paw\App\Models\Desafio;
+use Paw\App\Models\FormularioPartido;
 
 class NotificationService
 {
@@ -39,6 +40,25 @@ class NotificationService
             $desafiado,
             $desafiante,
             $desafio
+        );
+    }
+
+    public function notifyParitdoFinalizado(Equipo $equipoLocal, Equipo $equipoVisitante, FormularioPartido $formularioLocal, FormularioPartido $formularioVisitante){
+        $this->notificador->enviarNotificacionPartidoFinalizado(
+            $equipoLocal,
+            $equipoVisitante,
+            $formularioLocal,
+            $formularioVisitante
+        );
+    }
+
+    public function notifyNuevaIteracion(Equipo $equipoLocal,Equipo $equipoVisitante,int $iteracionActual, int $idPartido)
+    {
+        $this->notificador->enviarNotificacionNuevaIteracion(
+            $equipoLocal,
+            $equipoVisitante,
+            $iteracionActual,
+            $idPartido
         );
     }
 }

@@ -41,6 +41,7 @@ abstract class DataMapper
 
     public function insert(array $data): ?string
     {
+        $this->logger->info('Insertando ' . json_encode($data));
         return $this->qb->insert($this->table, $data);
     }
 

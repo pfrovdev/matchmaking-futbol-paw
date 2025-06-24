@@ -49,6 +49,9 @@ return [
         ['path' => '/partidos', 'action' => 'PartidoController@index', 'method' => 'GET'],
         ['path' => '/coordinar-resultado', 'action' => 'PartidoController@coordinarResultado', 'method' => 'GET'],
 
+        // POST Methods
+        ['path' => '/coordinar-resultado', 'action' => 'PartidoController@enviarFormulario', 'method' => 'POST'],
+
         // === AuthController ===
         // POST Methods
         ['path' => '/login', 'action' => 'AuthController@login', 'method' => 'POST'],

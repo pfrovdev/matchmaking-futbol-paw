@@ -1,14 +1,18 @@
+<?php
+$flash = $_SESSION['flash'] ?? ['mensaje' => '', 'finalizado' => false];
+unset($_SESSION['flash']);
+?>
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Formulario para coordinar resultados de un partido - F5 Futbol Match">
-  <title>Crear Equipo</title>
-  <link rel="stylesheet" href="css/coordinar-resultado.css">
-  <script src="/js/sidebar.js"></script>
-  <script src="/js/coordinar-resultados.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Formulario para coordinar resultados de un partido - F5 Futbol Match">
+    <title>Crear Equipo</title>
+    <link rel="stylesheet" href="css/coordinar-resultado.css">
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/coordinar-resultados.js"></script>
 </head>
 
 <body>
@@ -18,6 +22,11 @@
     <main class="container">
         <section class="coordinar-resultado">
             <h1>Coordinar resultado</h1>
+            <?php if ($flash['mensaje']) : ?>
+                <div class="alert <?= $flash['finalizado'] ? 'alert-success' : 'alert-info' ?>">
+                    <?= htmlspecialchars($flash['mensaje']) ?>
+                </div>
+            <?php endif; ?>
             <p class="subtitle">
                 Si ambos formularios coinciden, podrás distribuir las estadísticas a tu equipo!
                 <br>
@@ -37,7 +46,7 @@
                     </p>
                     <form
                         method="POST"
-                        action="procesar.php"
+                        action="/coordinar-resultado?id_partido=<?= htmlspecialchars($formularioPartidoContrario->getIdPartido()); ?>"
                         class="form-team">
                         <!-- Le agregamos también la clase grid-fields -->
                         <fieldset class="form-team">
@@ -59,7 +68,7 @@
                                 <input
                                     type="number"
                                     id="goles_casla"
-                                    name="goles_casla"
+                                    name="goles_local"
                                     min="0"
                                     value="0" />
                             </div>
@@ -76,7 +85,7 @@
                                 <input
                                     type="number"
                                     id="asistencias_casla"
-                                    name="asistencias_casla"
+                                    name="asistencias_local"
                                     min="0"
                                     value="0" />
                             </div>
@@ -94,7 +103,7 @@
                                             class="icon-card" />
                                         <input
                                             type="number"
-                                            name="tarjeta_amarilla_casla"
+                                            name="tarjetas_amarillas_local"
                                             min="0"
                                             value="0" />
                                     </div>
@@ -105,7 +114,7 @@
                                             class="icon-card" />
                                         <input
                                             type="number"
-                                            name="tarjeta_roja_casla"
+                                            name="tarjetas_rojas_local"
                                             min="0"
                                             value="0" />
                                     </div>
@@ -131,7 +140,7 @@
                                 <input
                                     type="number"
                                     id="goles_casla"
-                                    name="goles_casla"
+                                    name="goles_visitante"
                                     min="0"
                                     value="0" />
                             </div>
@@ -148,7 +157,7 @@
                                 <input
                                     type="number"
                                     id="asistencias_casla"
-                                    name="asistencias_casla"
+                                    name="asistencias_visitante"
                                     min="0"
                                     value="0" />
                             </div>
@@ -166,7 +175,7 @@
                                             class="icon-card" />
                                         <input
                                             type="number"
-                                            name="tarjeta_amarilla_casla"
+                                            name="tarjetas_amarillas_visitante"
                                             min="0"
                                             value="0" />
                                     </div>
@@ -177,7 +186,7 @@
                                             class="icon-card" />
                                         <input
                                             type="number"
-                                            name="tarjeta_roja_casla"
+                                            name="tarjetas_rojas_visitante"
                                             min="0"
                                             value="0" />
                                     </div>
@@ -185,7 +194,13 @@
                             </div>
 
                         </fieldset>
-                        <button type="submit">Enviar resultado</button>
+
+                        <?php if (! $flash['finalizado']): ?>
+                            <button type="submit">Enviar resultado</button>
+                        <?php endif; ?>
+                        <?php if ($flash['finalizado']): ?>
+                            <button class="btn calificar-btn" type="button">Calificar deportividad</button>
+                        <?php endif; ?>
 
                     </form>
                 </div>
@@ -357,10 +372,22 @@
                                     </div>
                                 </div>
                             </div>
-
-
                         </fieldset>
-                        <button class="btn-whatsapp" type="submit">Abrir whatsapp</button>
+                        <?php if (! $flash['finalizado']): ?>
+                            <button class="btn-whatsapp" type="submit">Abrir whatsapp</button>
+                        <?php endif; ?>
+                        <?php if ( $flash['finalizado']): ?>
+                            <div class="calificar-seccion">
+                                <div class="rating-group">
+                                    <span class="rating-icon">⚽</span>
+                                    <span class="rating-icon">⚽</span>
+                                    <span class="rating-icon">⚽</span>
+                                    <span class="rating-icon">⚽</span>
+                                    <span class="rating-icon empty">⚽</span>
+                                </div>
+                                <textarea class="textArea" maxlength="50" placeholder="Deja un comentario... (50 caracteres max.)"></textarea>
+                            </div>
+                        <?php endif; ?>
                     </form>
                 </div>
             </div>

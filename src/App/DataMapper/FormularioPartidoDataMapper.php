@@ -48,4 +48,22 @@ class FormularioPartidoDataMapper extends DataMapper
 
         return $this->mapAll($formularios);
     }
+
+    public function findByIdPartidoAndIdEquipoOrderByFechaDesc(int $idPartido, int $idEquipo)
+    {
+        $formularios = $this->qb->select(
+            $this->table,
+            ['id_partido' => $idPartido, 'id_equipo' => $idEquipo],
+            'fecha',
+            'DESC'
+        );
+        return $this->mapAll($formularios);
+    }
+
+    public function save(FormularioPartido $formularioPartido)
+    {
+        $this->insert(
+            $formularioPartido->fields
+        );
+    }
 }

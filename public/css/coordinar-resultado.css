@@ -3,213 +3,241 @@
 @import url('./footer.css');
 @import url('./side-navbar.css');
 
-.container form{
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+.container form {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .coordinar-resultado {
-    margin: 2rem 0;
-  }
-  
-  .coordinar-resultado h1 {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .coordinar-resultado .subtitle {
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  /* Contenedor con borde punteado verde, fondo blanco, y padding */
-  .forms-wrapper {
-    display: flex;
-    background-color: var(--background-contents);
-    border: 2px dashed var(--muted-text-color);
-    border-radius: 0.5rem;
-    padding: 0.5rem;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  
+  margin: 2rem 0;
+}
 
-  .form-column{
-    width: 50%;
-    padding: 0 0 0 0.7rem
-  }
-  /* ---------------------------------------------------------
+.coordinar-resultado h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.coordinar-resultado .subtitle {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Contenedor con borde punteado verde, fondo blanco, y padding */
+.forms-wrapper {
+  display: flex;
+  background-color: var(--background-contents);
+  border: 2px dashed var(--muted-text-color);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+
+.form-column {
+  width: 50%;
+  padding: 0 0 0 0.7rem
+}
+
+/* ---------------------------------------------------------
      Estilos para cada formulario (fieldset) 
      --------------------------------------------------------- */
-  .form-team {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    border-color: var(--muted-text-color);
-    border-radius: 0.5rem;
-  }
-  
-  /* ----------------- Legend / Título del equipo --------------- */
-  .team-name {
-    display: inline-block;
-    padding: 0.5rem 1rem;
+.form-team {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-color: var(--muted-text-color);
+  border-radius: 0.5rem;
+}
 
-    font-size: 1.1rem;
-    color: var(--contrast-text-color);
-    border-radius: 0.5rem;
-    margin-bottom: 1rem;
-  }
-  
+/* ----------------- Legend / Título del equipo --------------- */
+.team-name {
+  display: inline-block;
+  padding: 0.5rem 1rem;
 
-  .team-name.local {
-    background-color: #DF2727; 
-  }
-  
-  /* Color de fondo “CASLA” */
-  .team-name.visitante {
-    background-color: #804F01; 
-  }
-  
-  /* Si el fieldset tiene .disabled, atenuamos un poco todo el contenido */
-  .form-team.disabled {
-    opacity: 0.6;
-  }
-  
-  /* ---------------------------------------------------------
+  font-size: 1.1rem;
+  color: var(--contrast-text-color);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+
+.team-name.local {
+  background-color: #DF2727;
+}
+
+/* Color de fondo “CASLA” */
+.team-name.visitante {
+  background-color: #804F01;
+}
+
+/* Si el fieldset tiene .disabled, atenuamos un poco todo el contenido */
+.form-team.disabled {
+  opacity: 0.6;
+}
+
+/* ---------------------------------------------------------
      Cada “fila” (Goles, Asistencias, Tarjetas) 
      --------------------------------------------------------- */
-  .field {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+.field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-  .field label,
-  .field .field-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--text-color);
-  }
+.field label,
+.field .field-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
 
-  .field .icon {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
+.field .icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
 
-  .field input[type="number"] {
-    width: 3rem;
-    padding: 0.3rem;
-    border: 1px solid #ccc;
-    border-radius: 0.3rem;
-    text-align: center;
-    font-size: 1rem;
-  }
-  
-  /* ----------------- Grupo de tarjetas ----------------- */
-  .tarjetas {
-    flex-direction: column; 
-    gap: 0.5rem;
-  }
-  
+.field input[type="number"] {
+  width: 3rem;
+  padding: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 0.3rem;
+  text-align: center;
+  font-size: 1rem;
+}
 
-  .cards-group {
-    display: flex;
-    gap: 1rem;
-    margin-left: 1.5rem; 
-  }
-
-  .card-field {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .icon-card {
-    width: 1.25rem;
-    height: 2rem;
-  }
-  .grid-fields {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, auto);
-    gap: 1.5rem 2rem;
-  }
-  
-
-  .grid-fields .tarjetas {
-    grid-column: span 2;
-  }
-  
-  .btn-whatsapp{
-    background-color: var(--background-contents);
-    border-color: var(--muted-text-color);
-    color: var(--secondary-buttons-color);
-  }
-
-  .btn-whatsapp:hover{
-    background-color: var(--button-primary-background-color);
-    color: var(--primary-buttons-color)
-  }
+/* ----------------- Grupo de tarjetas ----------------- */
+.tarjetas {
+  flex-direction: column;
+  gap: 0.5rem;
+}
 
 
-  .rating-icon {
-    margin-right: 0.2rem;
-    font-size: 0.8rem;
-  }
-  .rating-icon:hover{
-    cursor: pointer;
-  }
+.cards-group {
+  display: flex;
+  gap: 1rem;
+  margin-left: 1.5rem;
+}
 
-  .rating-icon.empty {
-    opacity: 0.4;
-    color: grey;
-  }
+.card-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 
-  .textArea{
-    resize: vertical;
-    max-width: 100%;
-  }
+.icon-card {
+  width: 1.25rem;
+  height: 2rem;
+}
 
-  .contenedor-calificar{
-    padding: 2rem;
-  }
+.grid-fields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, auto);
+  gap: 1.5rem 2rem;
+}
 
-  .btn-group {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1.5rem;      /* o el valor que prefieras */
-    width: 100%;
-    margin-top: 1rem;
-  }
-     /* ============================================================
+
+.grid-fields .tarjetas {
+  grid-column: span 2;
+}
+
+.btn-whatsapp {
+  background-color: var(--background-contents);
+  border-color: var(--muted-text-color);
+  color: var(--secondary-buttons-color);
+}
+
+.btn-whatsapp:hover {
+  background-color: var(--button-primary-background-color);
+  color: var(--primary-buttons-color)
+}
+
+
+.rating-icon {
+  margin-right: 0.2rem;
+  font-size: 0.8rem;
+}
+
+.rating-icon:hover {
+  cursor: pointer;
+}
+
+.rating-icon.empty {
+  opacity: 0.4;
+  color: grey;
+}
+
+.textArea {
+  resize: vertical;
+  max-width: 100%;
+}
+
+.contenedor-calificar {
+  padding: 2rem;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  /* o el valor que prefieras */
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.alert {
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.alert-success {
+  background-color: #d4f7e0;
+  color: #085f32;
+  border: 1px solid var(--button-primary-background-color);
+}
+
+.alert-info {
+  background-color: #e8f1fc;
+  color: #083b8c;
+  border: 1px solid var(--primary-color);
+}
+
+/* ============================================================
      |3) Versión responsiva (opcional)                             |
      ============================================================ */
-    @media (max-width: 1024px) {
-      .container{
-        margin: 0 7rem;
-      }
-    }
-    @media (max-width: 768px) {
-      .container{
-        margin: 0 3rem;
-      }
-    }
-    @media (max-width: 600px) {
-      .forms-wrapper{
-        flex-direction: column;
-      }
-      .form-column{
-        width: 100%;
-      }
+@media (max-width: 1024px) {
+  .container {
+    margin: 0 7rem;
+  }
+}
 
-      .container form{
-        flex-direction: column;
-      }
-    }
+@media (max-width: 768px) {
+  .container {
+    margin: 0 3rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .forms-wrapper {
+    flex-direction: column;
+  }
+
+  .form-column {
+    width: 100%;
+  }
+
+  .container form {
+    flex-direction: column;
+  }
+}
