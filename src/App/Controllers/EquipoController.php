@@ -146,6 +146,7 @@ class EquipoController extends AbstractController
 
         $savedTeam = $this->equipoService->saveNewTeam($equipo);
         if ($savedTeam) {
+            $_SESSION['email'] = $equipoTemp['email'];
             header('Location: /login');
             exit;
         }

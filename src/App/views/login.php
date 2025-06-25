@@ -1,6 +1,8 @@
 <?php
     $errors = $_SESSION['errors'] ?? [];
+    $email = $_SESSION['email'] ?? '';
     unset($_SESSION['errors']);
+    unset($_SESSION['email']);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -10,11 +12,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar sesión</title>
     <link rel="stylesheet" href="./css/register-login-form.css">
+    <script src="./js/helper.js" defer></script>
 </head>
 
 <body>
+    
     <?php require "parts/header-no-account.php"; ?>
-
+    
     <main>
         <section class="container register-container">
 
@@ -36,7 +40,8 @@
             <div class="register-body">
                 <form action="/login" method="POST" class="form-container">
                     <label for="email">Correo electrónico *</label>
-                    <input type="email" id="email" name="email" placeholder="ej: ejemplo@gmail.com" required>
+                    <input type="email" id="email" name="email" placeholder="ej: email@gmail.com"
+                        value="<?php echo htmlspecialchars($email); ?>" required>
 
                     <label for="password">Contraseña *</label>
                     <div class="input-with-icon">

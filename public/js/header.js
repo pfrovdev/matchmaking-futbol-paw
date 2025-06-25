@@ -20,6 +20,29 @@ document.addEventListener('DOMContentLoaded', ()=> {
     toggle.checked = false;
     sideNav.classList.remove('open');
   });
+
+  const togglePasswordVisibility = (inputSelector, iconSelector) => {
+      const input = document.querySelector(inputSelector);
+      const icon = document.querySelector(iconSelector);
+
+      if (!input || !icon) return;
+
+      icon.addEventListener('click', () => {
+          const isPassword = input.type === 'password';
+          input.type = isPassword ? 'text' : 'password';
+
+          icon.src = isPassword ? '../icons/open-eye.png' : '../icons/close-eye.png';
+          icon.alt = isPassword ? 'ocultar contraseña' : 'mostrar contraseña';
+      });
+    };
+
+    // Login
+    togglePasswordVisibility('#password', '.icon-password');
+
+    // Registro
+    togglePasswordVisibility('#password', '.icon-password');
+    togglePasswordVisibility('#confirm_password', '.icon-confirm-password');
+
 });
 
   document.addEventListener('DOMContentLoaded', function() {
@@ -37,5 +60,6 @@ document.addEventListener('DOMContentLoaded', ()=> {
     document.addEventListener('click', function() {
       contenedor.classList.remove('show');
     });
+
   });
 

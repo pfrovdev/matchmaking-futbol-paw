@@ -7,6 +7,7 @@
     <meta name="keywords" content="Registro, Crear cuenta, F5 Futbol Match">
     <title>Crear Cuenta</title>
     <link rel="stylesheet" href="./css/register-login-form.css">
+    <script src="./js/helper.js"></script>
 </head>
 <body>
     <?php
@@ -42,10 +43,12 @@
         <!-- Formulario -->
         <form action="/register" method="post" class="form-container">              
             <label for="email">Correo electrónico *</label>
-            <input type="email" id="email" name="email" placeholder="ej: email@gmail.com" required>
-
+            <input type="email" id="email" name="email" placeholder="ej: email@gmail.com"
+                value="<?php echo htmlspecialchars($old['email'] ?? ''); ?>" required>
+            
             <label for="confirm-email">Confirma tu correo *</label>
-            <input type="email" id="confirm-email" name="confirm-email" placeholder="ej: email@gmail.com" required>
+            <input type="email" id="confirm-email" name="confirm-email" placeholder="ej: email@gmail.com"
+                value="<?php echo htmlspecialchars($old['confirm-email'] ?? ''); ?>" required>
             
             <label for="password">Contraseña *</label>
             <div class="input-with-icon">
@@ -60,7 +63,8 @@
             </div>
 
             <label for="telefono">Teléfono *</label>
-            <input type="tel" id="telefono" name="telefono" placeholder="ej: +54 1108111111" required>
+            <input type="tel" id="telefono" name="telefono" placeholder="ej: +54 1108111111"
+                value="<?php echo htmlspecialchars($old['telefono'] ?? ''); ?>" required>
 
             <p class="mandatory-note">(* Campo obligatorio)</p>
             <button type="submit">Siguiente</button>
