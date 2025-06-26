@@ -37,21 +37,6 @@
   border-radius: 0.5rem;
 }
 
-.nm-level-badge {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  background: var(--badge-bg-principiante);
-  text-align: center;
-
-  font-weight: bold;
-  border-radius: 0.4rem;
-  font-size: 0.85rem;
-  color: var(--contrast-text-color);
-}
-
 /* Zona principal de contenido (derecha) */
 .nm-card-main {
   flex: 1;
@@ -164,7 +149,11 @@
   flex: 1;
   transition: transform 0.1s;
 }
+
 .nm-btn-danger:hover {
+  background-color: var(--button-cancel-background-color);
+  color: var(--contrast-text-color);
+  border: none;
   transform: scale(1.02);
 }
 

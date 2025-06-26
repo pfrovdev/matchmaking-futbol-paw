@@ -38,20 +38,29 @@ export default class PartidoComponent {
       const side = document.createElement('div');
       side.classList.add('nm-card-side');
 
-      const teamImageWrapper = document.createElement('div');
-      teamImageWrapper.classList.add('nm-team-image');
+      const figure = document.createElement('figure');
+      figure.classList.add('nm-team-image');
 
       const img = document.createElement('img');
       img.src = p.equipo.urlFotoPerfil || '/icons/defaultTeamIcon.png';
-      img.alt = `Logo de ${p.equipo.nombreEquipo}`;
-      teamImageWrapper.appendChild(img);
+      img.alt = `Escudo del equipo ${p.equipo.nombreEquipo}`;
+      figure.appendChild(img);
 
-      const badge = document.createElement('span');
-      badge.classList.add('nm-level-badge');
-      badge.textContent = p.equipo.descripcionElo;
-      teamImageWrapper.appendChild(badge);
+      const figcaption = document.createElement('figcaption');
+      figcaption.classList.add('team-rank');
+      figcaption.textContent = p.equipo.descripcionElo;
 
-      side.appendChild(teamImageWrapper);
+      const eloData = levelsEloMap.find(
+        level => level.descripcion === p.equipo.descripcionElo
+      );
+      if (eloData) {
+        figcaption.style.background = `linear-gradient(90deg, ${eloData.color_inicio}, ${eloData.color_fin})`;
+      } else {
+        figcaption.style.background = 'gray'; // fallback
+      }
+
+      figure.appendChild(figcaption);
+      side.appendChild(figure);
       card.appendChild(side);
 
       // nm-card-main: contenido principal
