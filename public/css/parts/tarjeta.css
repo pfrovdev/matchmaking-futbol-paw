@@ -30,6 +30,7 @@
 
 .team-image img {
   width: 100%;
+  height: -webkit-fill-available;
   border-radius: 0.5rem;
   object-fit: cover;
 }
