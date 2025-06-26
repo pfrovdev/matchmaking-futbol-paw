@@ -52,7 +52,7 @@
       <a href="?<?= http_build_query(array_merge($_GET, [
                   'id_equipo_desafiar' => $equipo->getIdEquipo()
                 ])) ?>"
-        class="btn btn-accept">
+        class="btn btn-desafiar">
         Desafiar
       </a>
     </div>

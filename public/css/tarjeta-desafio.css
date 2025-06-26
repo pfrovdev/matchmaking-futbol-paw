@@ -56,11 +56,13 @@
   justify-content: space-between;
   align-items: baseline;
 }
+
 .team-name {
   margin: 0;
   font-size: 1.25rem;
   color: var(--contrast-text-color);
 }
+
 .team-record {
   font-size: 0.9rem;
   color: var(--contrast-text-color);
@@ -70,21 +72,26 @@
 .card-body {
   margin-top: 0.5rem;
 }
+
 .sport-icons {
   margin-bottom: 0.25rem;
 }
+
 .sport-icons .icon {
   margin-right: 0.2rem;
 }
+
 .team-motto {
   margin: 0.25rem 0;
   font-style: italic;
 }
+
 .elo {
   display: block;
   color: var(--contrast-text-color);
   font-size: 0.8rem;
 }
+
 .profile-link {
   display: inline-block;
   margin-top: 0.25rem;
@@ -92,6 +99,7 @@
   color: var(--muted-text-color);
   text-decoration: none;
 }
+
 .profile-link:hover {
   text-decoration: underline;
 }
@@ -103,10 +111,19 @@
   display: flex;
   gap: 1rem;
 }
-.card-actions button{
+
+.card-actions button {
   font-size: .9rem;
   padding: .5rem .2rem;
 }
+
+.btn-desafiar {
+  background: var(--button-primary-background-color);
+  color: var(--contrast-text-color);
+  border: 0.1rem solid var(--contrast-text-color);
+  padding: .5rem 4rem;
+}
+
 .btn-accept {
   background: var(--button-primary-background-color);
   color: var(--contrast-text-color);
