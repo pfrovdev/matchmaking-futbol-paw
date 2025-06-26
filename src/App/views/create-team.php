@@ -81,7 +81,7 @@
                  value="<?php echo htmlspecialchars($equipo_temp['lng'] ?? '') ?>" />
 
           <section aria-label="Mapa de ubicación del equipo">
-            <div id="map" style="height: 300px; margin-bottom: 1.5rem;"></div>
+            <div id="map" style="height: 300px; width: 100%; margin-bottom: 1.5rem;"></div>
           </section>
 
           <label for="team-motto">Lema del equipo</label>
