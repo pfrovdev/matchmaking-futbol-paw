@@ -19,4 +19,5 @@ interface PartidoService
     function getUltimaIteracion(int $id_partido, int $id_equipo): int;
     function getEquipoRival(int $idPartido, int $idEquipo): int;
     function procesarFormulario(int $idEquipo, int $idPartido, FormularioPartido $formularioLocal, FormularioPartido $formularioVisitante): ProcesarFormularioEstado;
+    function partidoAcordado(int $idEquipo, int $idPartido): bool;
 }

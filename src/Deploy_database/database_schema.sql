@@ -71,6 +71,7 @@ VALUES
     ('Pendiente', 'pendiente'),
     ('Cancelado', 'cancelado'),
     ('Jugado', 'jugado'),
+    ('Acordado', 'acordado'),
     ('No acordado', 'no_acordado');
 
 CREATE TABLE

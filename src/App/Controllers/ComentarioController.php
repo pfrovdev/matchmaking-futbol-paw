@@ -43,4 +43,15 @@ class  ComentarioController extends AbstractController
         header('Content-Type: application/json');
         echo json_encode( $resultadoPaginado);
     }
+
+    public function comentarEquipoRival()
+    {
+        $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
+        $idEquipoComentador = $miEquipo->getIdEquipo();
+        $idEquipoComentado = $_POST['idEquipoComentado'];
+        $comentario = $_POST['comentario'];
+        $deportividad = $_POST['deportividad'];
+        $this->comentarioEquipoService->comentarEquipoRival($idEquipoComentador,$idEquipoComentado,$deportividad,$comentario);
+    }
 }

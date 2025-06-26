@@ -2,6 +2,7 @@
 
 namespace Paw\App\Controllers;
 
+use Exception;
 use Monolog\Logger;
 use Paw\App\Dtos\BadgeEquipoFormularoDto;
 use Paw\App\Dtos\FormularioEquipoDto;
@@ -63,7 +64,7 @@ class PartidoController extends AbstractController
         // ** No valida cuando el partido no le pertenece al equipo del usuario
         try {
             $this->partidoService->validarPartido($id_partido, $miEquipo->getIdEquipo());
-        } catch (RuntimeException $e) {
+        } catch (Exception $e) {
             header("HTTP/1.1 404 Not Found");
             require $this->viewsDir . 'errors/not-found.php';
         }
@@ -91,6 +92,11 @@ class PartidoController extends AbstractController
                     0
                 )
             );
+        }
+
+        if($this->partidoService->partidoAcordado($miEquipo->getIdEquipo(),$id_partido)){
+            $_SESSION['flash']['mensaje'] = $this->generarMensajeEstado(ProcesarFormularioEstado::PARTIDO_TERMINADO);
+            $_SESSION['flash']['finalizado'] = true;
         }
 
         require $this->viewsDir . 'coordinar-resultado.php';

@@ -16,7 +16,10 @@ class NotificationService
         $this->notificador = $notificador;
     }
 
-    public function notifyDesafioCreated(Equipo $desafiante, Equipo $desafiado, Desafio $desafio
+    public function notifyDesafioCreated(
+        Equipo $desafiante,
+        Equipo $desafiado,
+        Desafio $desafio
     ): void {
         $this->notificador->enviarNotificacionDesafioAceptado(
             $desafiante,
@@ -25,7 +28,10 @@ class NotificationService
         );
     }
 
-    public function notifyDesafioAccepted(Equipo $aceptante, Equipo $desafiante, Desafio $desafio
+    public function notifyDesafioAccepted(
+        Equipo $aceptante,
+        Equipo $desafiante,
+        Desafio $desafio
     ): void {
         $this->notificador->enviarNotificacionDesafioAceptado(
             $aceptante,
@@ -34,7 +40,10 @@ class NotificationService
         );
     }
 
-    public function notifyDesafioRejected(Equipo $desafiado, Equipo $desafiante, Desafio $desafio
+    public function notifyDesafioRejected(
+        Equipo $desafiado,
+        Equipo $desafiante,
+        Desafio $desafio
     ): void {
         $this->notificador->enviarNotificacionDesafioRechazado(
             $desafiado,
@@ -43,7 +52,8 @@ class NotificationService
         );
     }
 
-    public function notifyParitdoFinalizado(Equipo $equipoLocal, Equipo $equipoVisitante, FormularioPartido $formularioLocal, FormularioPartido $formularioVisitante){
+    public function notifyParitdoFinalizado(Equipo $equipoLocal, Equipo $equipoVisitante, FormularioPartido $formularioLocal, FormularioPartido $formularioVisitante)
+    {
         $this->notificador->enviarNotificacionPartidoFinalizado(
             $equipoLocal,
             $equipoVisitante,
@@ -52,7 +62,15 @@ class NotificationService
         );
     }
 
-    public function notifyNuevaIteracion(Equipo $equipoLocal,Equipo $equipoVisitante,int $iteracionActual, int $idPartido)
+    public function notifyParitdoNoAcordado(Equipo $equipoLocal, Equipo $equipoVisitante)
+    {
+        $this->notificador->enviarNotificacionPartidoNoAcordado(
+            $equipoLocal,
+            $equipoVisitante
+        );
+    }
+
+    public function notifyNuevaIteracion(Equipo $equipoLocal, Equipo $equipoVisitante, int $iteracionActual, int $idPartido)
     {
         $this->notificador->enviarNotificacionNuevaIteracion(
             $equipoLocal,

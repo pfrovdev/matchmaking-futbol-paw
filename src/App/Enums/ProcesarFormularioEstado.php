@@ -8,6 +8,7 @@ enum ProcesarFormularioEstado: string
     case FUERA_DE_TURNO = 'fuera_de_turno';
     case PARTIDO_TERMINADO = 'partido_terminado';
     case NUEVA_ITERACION = 'nueva_iteracion';
+    case PARTIDO_NO_ACORDADO = 'partido_no_acordado';
 }
 
 ?>

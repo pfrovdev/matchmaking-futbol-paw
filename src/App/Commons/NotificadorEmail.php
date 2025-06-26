@@ -25,6 +25,7 @@ class NotificadorEmail implements Notificador
             $this->aceptarDesafioTemplate,
             [
                 'teamName' => $equipoDesafiante->fields['nombre'],
+                'teamRivalName' => $equipoDesafiado->fields['nombre'],
                 'link' => 'https://wa.me/' . $equipoDesafiado->fields['telefono'],
             ]
         );
@@ -113,6 +114,28 @@ class NotificadorEmail implements Notificador
                 'equipoVisitante' => $equipoVisitante->getNombre(),
                 'iteracion' => $iteracion,
                 'link' => getenv('JWT_APP_URL') . "/partidos/detalle?id_partido={$idPartido}"
+            ]
+        );
+    }
+
+    public function enviarNotificacionPartidoNoAcordado(Equipo $equipoLocal, Equipo $equipoVisitante): void
+    {
+        $this->enviarEmail(
+            $equipoLocal->getEmail() ?? throw new Exception("Email no puede ser nulo"),
+            'Partido no acordado',
+            'mail-partido-no-acordado.html',
+            [
+                'equipoLocal' => $equipoLocal->getNombre(),
+                'equipoVisitante' => $equipoVisitante->getNombre(),
+            ]
+        );
+        $this->enviarEmail(
+            $equipoVisitante->getEmail() ?? throw new Exception("Email no puede ser nulo"),
+            'Partido no acordado',
+            'mail-partido-no-acordado.html',
+            [
+                'equipoLocal' => $equipoVisitante->getNombre(),
+                'equipoVisitante' => $equipoLocal->getNombre(),
             ]
         );
     }

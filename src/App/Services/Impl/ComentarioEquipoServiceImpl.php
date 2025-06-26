@@ -2,6 +2,7 @@
 
 namespace Paw\App\Services\Impl;
 
+use DateTime;
 use Paw\App\DataMapper\ComentarioDataMapper;
 use Paw\App\Dtos\ComentarioEquipoDto;
 use Paw\App\Models\Comentario;
@@ -73,5 +74,15 @@ class ComentarioEquipoServiceImpl implements ComentarioEquipoService
             throw new \RuntimeException("Comentario sin : " . $comentario->getComentario() . " id_equipo_comentador: " . $comentario->getEquipoComentadorId());
         }
         return $this->equipoService->getEquipoById($id);
+    }
+
+    function comentarEquipoRival(int $idEquipoComentador, int $idEquipoComentado, int $deportividad, string $comentario)
+    {
+        $comentarioAguardar = new Comentario();
+        $comentarioAguardar->setComentario($comentario);
+        $comentarioAguardar->setDeportividad($deportividad);
+        $comentarioAguardar->setFechaCreacion((new DateTime())->format('Y-m-d H:i:s'));
+        $comentarioAguardar->setIdEquipoComentado($idEquipoComentado);
+        $comentarioAguardar->setIdEquipoComentador($idEquipoComentador);
     }
 }

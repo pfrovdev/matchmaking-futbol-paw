@@ -12,6 +12,8 @@ interface Notificador{
 
     function enviarNotificacionPartidoFinalizado(Equipo $equipoLocal, Equipo $equipoVisitante, FormularioPartido $formularioLocal, FormularioPartido $formularioVisitante): void;
 
+    function enviarNotificacionPartidoNoAcordado(Equipo $equipoLocal, Equipo $equipoVisitante): void;
+
     function enviarNotificacionNuevaIteracion(Equipo $equipoLocal, Equipo $equipoVisitante, int $iteracion, int $idPartido);
 }
 

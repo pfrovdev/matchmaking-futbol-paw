@@ -36,6 +36,9 @@ return [
         // GET Methods
         ['path' => '/comentarios', 'action' => 'ComentarioController@index', 'method' => 'GET'],
 
+        // POST Methods
+        ['path' => '/comentarios', 'action' => 'ComentarioController@comentarEquipoRival', 'method' => 'POST'],
+
         // === DesafioController ===
         // GET Methods
         ['path' => '/desafios', 'action' => 'DesafioController@index', 'method' => 'GET'],

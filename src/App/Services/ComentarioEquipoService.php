@@ -12,4 +12,5 @@ interface ComentarioEquipoService
     function saveNewComentario(Comentario $comentario);
     function getEquipoComentador(Comentario $comentario): ?Equipo;
     function getCantidadDeVotosByIdEquipo(int $idEquipo): int;
+    function comentarEquipoRival(int $idEquipoComentador, int $idEquipoComentado, int $deportividad, string $comentario);
 }
