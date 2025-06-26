@@ -34,7 +34,7 @@
 ----------------------------------------------------*/
 .register-body {
   display: flex;
-  gap: 2%;         /* separación en % */
+  gap: 5%;         /* separación en % */
   align-items: flex-start;
 }
 
