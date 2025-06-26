@@ -41,19 +41,6 @@
   justify-content: space-between;
 }
 
-.level-badge {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 95%;
-  background: var(--badge-bg-principiante);
-  text-align: center;
-  padding: 0.5rem 0;
-  font-weight: bold;
-  border-radius: 0.75rem;
-}
-
 /* --- Zona principal de contenido --- */
 .card-main {
   flex: 1;
@@ -112,10 +99,14 @@
 /* --- Acciones: botones pill --- */
 .card-actions {
   margin-top: 1rem;
+  margin: .5rem auto;
   display: flex;
-  gap: 0.5rem;
+  gap: 1rem;
 }
-
+.card-actions button{
+  font-size: .9rem;
+  padding: .5rem .2rem;
+}
 .btn-accept {
   background: var(--button-primary-background-color);
   color: var(--contrast-text-color);
@@ -131,6 +122,13 @@
 .btn-reject {
   background: var(--button-cancel-background-color);
   color: var(--contrast-text-color);
+  border: 0.1rem solid var(--contrast-text-color);
+}
+
+.btn-reject:hover {
+  background: var(--contrast-text-color);
+  color: var(--button-cancel-background-color);
+  border: 0.1rem solid var(--button-cancel-background-color);
 }
 
 .challenge-card--send .team-image img {

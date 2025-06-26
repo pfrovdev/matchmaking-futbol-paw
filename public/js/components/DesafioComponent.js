@@ -33,22 +33,36 @@ export default class DesafioComponent {
       // -------------------------------------------------------
       // card-side: imagen del equipo + badge de nivel
       // -------------------------------------------------------
+      
       const side = document.createElement('div');
       side.classList.add('card-side');
-      const teamImageWrapper = document.createElement('div');
-      teamImageWrapper.classList.add('team-image');
+
+      const figure = document.createElement('figure');
+      figure.classList.add('team-image');
 
       const img = document.createElement('img');
       img.src = d.equipoDesafiante.urlFotoPerfil || '/icons/defaultTeamIcon.png';
-      img.alt = d.equipoDesafiante.nombreEquipo;
-      teamImageWrapper.appendChild(img);
+      img.alt = `Escudo del equipo ${d.equipoDesafiante.nombreEquipo}`;
+      figure.appendChild(img);
 
-      const badge = document.createElement('span');
-      badge.classList.add('level-badge');
-      badge.textContent = d.equipoDesafiante.descripcionElo;
-      teamImageWrapper.appendChild(badge);
+      const figcaption = document.createElement('figcaption');
+      figcaption.classList.add('team-rank');
+      figcaption.textContent = d.equipoDesafiante.descripcionElo;
 
-      side.appendChild(teamImageWrapper);
+      const eloData = levelsEloMap.find(
+        level => level.descripcion === d.equipoDesafiante.descripcionElo
+      );
+
+      if (eloData) {
+        const gradient = `linear-gradient(90deg, ${eloData.color_inicio}, ${eloData.color_fin})`;
+        figcaption.style.background = gradient;
+      } else {
+        figcaption.style.background = 'gray';
+      }
+
+      figure.appendChild(figcaption);
+
+      side.appendChild(figure);
       card.appendChild(side);
 
       // -------------------------------------------------------

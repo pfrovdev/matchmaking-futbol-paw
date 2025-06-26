@@ -41,7 +41,9 @@
               <?php endif; ?>
             </div>
             <div class="perfil-info">
-              <h2><?= htmlspecialchars($equipoBanner->getNombreEquipo()) . " (" . htmlspecialchars($miEquipo->fields['acronimo']) . ")" ?></h2>
+              <h2>
+                <?= htmlspecialchars($equipoBanner->getNombreEquipo()) . " (" . htmlspecialchars($miEquipo->fields['acronimo']) . ")" ?>
+              </h2>
               <p class="lema"><?= htmlspecialchars($equipoBanner->getLema()) ?></p>
               <div class="sport-icons">
                 Deportividad:
@@ -60,7 +62,8 @@
               <div class="elo-bar">
                 <span class="label"><?= htmlspecialchars($equipoBanner->getDescripcionElo()) ?></span>
                 <div class="bar-bg">
-                  <div class="bar-fill" style="width:<?= min(100, ($equipoBanner->getEloActual() / 1300) * 100) ?>%"></div>
+                  <div class="bar-fill" style="width:<?= min(100, ($equipoBanner->getEloActual() / 1300) * 100) ?>%">
+                  </div>
                 </div>
                 <div class="elo-values">
                   <span>Elo: <?= htmlspecialchars($equipoBanner->getEloActual()) ?></span> / <span>1300</span>
@@ -75,36 +78,36 @@
               // Construyo el array $match
               $match = [
                 'soyGanador' => $soyGanador,
-                'eloChange'  => $eloChange,
-                'matchUrl'   => '#',
-                'date'       => (new \DateTime($ultimoPartidoJugado->getFechaFinalizacion()))->format('d-m-Y'),
-                'home'       => [
-                  'abbr'      => $equipoLocal->fields['acronimo'],
-                  'name'      => $equipoLocal->fields['nombre'],
-                  'logo'      => $equipoLocal->fields['url_foto_perfil'],
-                  'tarjetas'  => [
+                'eloChange' => $eloChange,
+                'matchUrl' => '#',
+                'date' => (new \DateTime($ultimoPartidoJugado->getFechaFinalizacion()))->format('d-m-Y'),
+                'home' => [
+                  'abbr' => $equipoLocal->fields['acronimo'],
+                  'name' => $equipoLocal->fields['nombre'],
+                  'logo' => $equipoLocal->fields['url_foto_perfil'],
+                  'tarjetas' => [
                     'yellow' => $soyGanador
                       ? $ultimoPartidoJugado->getResultadoGanador()->getTarjetasAmarillas()
                       : $ultimoPartidoJugado->getResultadoPerdedor()->getTarjetasAmarillas(),
-                    'red'    => $soyGanador
+                    'red' => $soyGanador
                       ? $ultimoPartidoJugado->getResultadoGanador()->getTarjetasRojas()
                       : $ultimoPartidoJugado->getResultadoPerdedor()->getTarjetasRojas(),
                   ],
                 ],
-                'away'       => [
-                  'abbr'      => $equipoRival->fields['acronimo'],
-                  'name'      => $equipoRival->fields['nombre'],
-                  'logo'      => $equipoRival->fields['url_foto_perfil'],
-                  'tarjetas'  => [
+                'away' => [
+                  'abbr' => $equipoRival->fields['acronimo'],
+                  'name' => $equipoRival->fields['nombre'],
+                  'logo' => $equipoRival->fields['url_foto_perfil'],
+                  'tarjetas' => [
                     'yellow' => $soyGanador
                       ? $ultimoPartidoJugado->getResultadoGanador()->getTarjetasAmarillas()
                       : $ultimoPartidoJugado->getResultadoPerdedor()->getTarjetasAmarillas(),
-                    'red'    => $soyGanador
+                    'red' => $soyGanador
                       ? $ultimoPartidoJugado->getResultadoGanador()->getTarjetasRojas()
                       : $ultimoPartidoJugado->getResultadoPerdedor()->getTarjetasRojas(),
                   ],
                 ],
-                'score'      => $soyGanador
+                'score' => $soyGanador
                   ? $ultimoPartidoJugado->getResultadoGanador()->getGoles() . '-' . $ultimoPartidoJugado->getResultadoPerdedor()->getGoles()
                   : $ultimoPartidoJugado->getResultadoPerdedor()->getGoles() . '-' . $ultimoPartidoJugado->getResultadoGanador()->getGoles(),
               ];
@@ -195,7 +198,15 @@
   </main>
 
   <?php require "parts/footer.php"; ?>
-
+  <script>
+    const levelsEloMap = <?= json_encode(array_map(function ($row) {
+      return [
+        'descripcion' => $row['descripcion'],
+        'color_inicio' => $row['color_inicio'],
+        'color_fin' => $row['color_fin'],
+      ];
+    }, $listLevelsElo)) ?>;
+  </script>
 </body>
 
 </html>
