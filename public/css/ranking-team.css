@@ -7,10 +7,6 @@
 @import url("./parts/filtro-por-ubicacion.css");
 @import url("./footer.css");
 
-main > header {
-  margin: 5rem 5rem 2rem;
-}
-
 .teams-container {
   margin: 0 auto;
   padding: 2rem 0;

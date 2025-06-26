@@ -228,6 +228,8 @@ class EquipoController extends AbstractController
             $direction = strtoupper($orden);
         }
 
+        
+
         $selectParams = [
             'nombre'      => $nombre,
             'id_equipo'    => $miEquipo->getIdEquipo(),
@@ -236,6 +238,7 @@ class EquipoController extends AbstractController
             'lng'         => $longitud,
             'radio_km'    => $radio_km
         ];
+
         $listLevelsElo = $this->equipoService->getAllNivelElo();
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
         $todosLosEquipos = $this->equipoService->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);

@@ -96,13 +96,19 @@ button:hover {
   color: var(--muted-text-color);
   border: 1px solid var(--muted-text-color);
 }
-
+ul, li {
+  list-style: none;
+}
 input {
   border-radius: 0.5rem;
 }
 
 main nav {
   display: none;
+}
+
+main > header {
+  margin: 2rem 5rem 2rem;
 }
 
 footer {
