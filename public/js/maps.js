@@ -1,48 +1,111 @@
-var map = L.map("map").setView([-34.57, -59.11], 13);
-L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  maxZoom: 19,
-  attribution: "&copy; OpenStreetMap contributors",
-}).addTo(map);
+document.addEventListener('DOMContentLoaded', function () {
+  // 1) Inicializar mapa
+  const map = L.map('map').setView([-34.57, -59.11], 13);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
+  }).addTo(map);
 
-var marker, circle;
-var slider = document.getElementById("radiusSlider");
-var output = document.getElementById("radiusValue");
-output.textContent = slider.value;
+  // 2) Geocoder
+  const geocoder = L.Control.geocoder({
+    collapsed: false,
+    placeholder: 'Buscá tu zona...',
+    defaultMarkGeocode: false
+  }).addTo(map);
 
-function updateLatLngFields(lat, lng) {
-  document.getElementById("lat").value = lat.toFixed(6);
-  document.getElementById("lng").value = lng.toFixed(6);
-}
+  const gcContainer = geocoder._container;
+  const inputs = gcContainer.querySelectorAll('input[type="search"]');
+  const gcInput = Array.from(inputs).find(i => i.offsetParent !== null);
 
-function placeMarker(e) {
-  var lat = e.latlng.lat,
-    lng = e.latlng.lng;
-  if (!marker) {
-    marker = L.marker([lat, lng], { draggable: true }).addTo(map);
-    marker.on("dragend", function (ev) {
-      var pos = ev.target.getLatLng();
-      updateLatLngFields(pos.lat, pos.lng);
-      updateCircle(pos);
+  const teamZoneHiddenInput = document.getElementById('team-zone-hidden');
+  if (teamZoneHiddenInput && gcInput) {
+    if (teamZoneHiddenInput.value) {
+      gcInput.value = teamZoneHiddenInput.value;
+    }
+
+    gcInput.addEventListener('input', () => {
+      teamZoneHiddenInput.value = gcInput.value;
     });
-  } else {
-    marker.setLatLng([lat, lng]);
   }
-  updateLatLngFields(lat, lng);
-  updateCircle(e);
-}
 
-function updateCircle(e) {
-  var m = parseFloat(slider.value) * 1000;
-  if (!circle) {
-    circle = L.circle(e.latlng, { radius: m }).addTo(map);
-  } else {
-    circle.setLatLng(e.latlng);
-    circle.setRadius(m);
+  const teamZoneValue = document.getElementById('map').dataset.teamZone;
+  if (teamZoneValue) gcInput.value = teamZoneValue;
+
+  // 3) Inputs lat/lng y slider
+  const latInput = document.getElementById('lat');
+  const lngInput = document.getElementById('lng');
+  const slider = document.getElementById('radiusSlider');
+  const output = document.getElementById('radiusValue');
+
+  if (slider && output) {
+    output.textContent = parseFloat(slider.value).toFixed(1);
   }
-}
 
-map.on("click", placeMarker);
-slider.oninput = function () {
-  output.textContent = parseFloat(this.value).toFixed(1);
-  if (circle) circle.setRadius(parseFloat(this.value) * 1000);
-};
+  // 4) Marker y círculo
+  let marker = null;
+  let circle = null;
+
+  function updateLatLng(lat, lng) {
+    if (latInput && lngInput) {
+      latInput.value = lat.toFixed(6);
+      lngInput.value = lng.toFixed(6);
+    }
+  }
+
+  function reverseGeocode(lat, lng) {
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10&addressdetails=1`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.display_name) {
+          gcInput.value = data.display_name;
+        }
+      })
+      .catch(console.error);
+  }
+
+  function updateCircle(position) {
+    const radius = parseFloat(slider?.value || 0) * 1000;
+    if (!circle) {
+      circle = L.circle(position, { radius }).addTo(map);
+    } else {
+      circle.setLatLng(position);
+      circle.setRadius(radius);
+    }
+  }
+
+  function placeMarker(lat, lng) {
+    const position = L.latLng(lat, lng);
+    if (!marker) {
+      marker = L.marker(position, { draggable: true }).addTo(map);
+      marker.on('dragend', function (e) {
+        const pos = e.target.getLatLng();
+        updateLatLng(pos.lat, pos.lng);
+        updateCircle(pos);
+        reverseGeocode(pos.lat, pos.lng);
+      });
+    } else {
+      marker.setLatLng(position);
+    }
+    updateLatLng(lat, lng);
+    updateCircle(position);
+    reverseGeocode(lat, lng);
+  }
+
+  map.on('click', function (e) {
+    placeMarker(e.latlng.lat, e.latlng.lng);
+  });
+
+  geocoder.on('markgeocode', function (e) {
+    const c = e.geocode.center;
+    map.setView(c, 15);
+    placeMarker(c.lat, c.lng);
+    gcInput.value = e.geocode.name;
+  });
+
+  if (slider) {
+    slider.oninput = function () {
+      output.textContent = parseFloat(this.value).toFixed(1);
+      if (circle) circle.setRadius(parseFloat(this.value) * 1000);
+    };
+  }
+});

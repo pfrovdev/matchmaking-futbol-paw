@@ -112,7 +112,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (nombreInput) nombreInput.value = '';
 
         const radiusSlider = document.getElementById('radiusSlider');
+        const radiusValue = document.getElementById('radiusValue');
+
         if (radiusSlider) radiusSlider.value = 1;
+        if (radiusValue) radiusValue.textContent = 1.0;
 
         document.querySelectorAll('.boton-filtro.activo').forEach(btn => {
             btn.classList.remove('activo');

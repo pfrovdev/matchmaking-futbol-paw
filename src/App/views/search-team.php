@@ -25,9 +25,14 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buscar Equipo</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <link rel="stylesheet" href="./css/search-team.css">
+    <link rel="stylesheet" href="./css/parts/map.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
     <script src="./js/maps.js" defer></script>
     <script src="./js/sidebar.js"></script>
     <script src="./js/filtros.js" defer></script>
@@ -117,7 +122,8 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
 
 
                 <figure>
-                    <div id="map"></div>
+                    <div id="map" data-team-zone="<?php echo htmlspecialchars($equipo_temp['team-zone'] ?? '') ?>">
+                    </div>
                 </figure>
 
                 <section class="limpiar-filtros">
