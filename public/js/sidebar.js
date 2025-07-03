@@ -16,6 +16,7 @@ function ajustarSidebar() {
       }
     }
     sidebar.style.bottom = bottomOffset + 'px';
+    sidebar.style.zIndex = "2000";
   }
 
   window.addEventListener('DOMContentLoaded', ajustarSidebar);

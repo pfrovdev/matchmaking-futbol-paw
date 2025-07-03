@@ -11,9 +11,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ranking de Equipos</title>
     <meta name="description" content="Ranking de los mejores equipos según su nivel ELO. Consulta su deportividad, lema y rendimiento." />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <link rel="stylesheet" href="./css/ranking-team.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
     <script src="./js/maps.js" defer></script>
     <script src="/js/sidebar.js"></script>
 </head>

@@ -18,8 +18,20 @@
   width: 100%;
 }
 
-.boton-filtro-zona {
-  padding: 1rem 5rem;
+.leaflet-control-geocoder-icon{
+  vertical-align: middle !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  background-color:white !important;
+}
+
+.leaflet-control-geocoder{
+  height: 100%;
+  border-radius: 1rem !important;
+}
+
+.leaflet-control-geocoder-form input{
+  margin-bottom: 0;
 }
 
 @media (min-width: 1350px) {

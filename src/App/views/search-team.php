@@ -27,8 +27,8 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
     <title>Buscar Equipo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-    <link rel="stylesheet" href="./css/search-team.css">
     <link rel="stylesheet" href="./css/parts/map.css">
+    <link rel="stylesheet" href="./css/search-team.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
@@ -118,8 +118,6 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                         <button class="filter-button" type="submit">Enviar</button>
                     </form>
                 </section>
-
-
 
                 <figure>
                     <div id="map" data-team-zone="<?php echo htmlspecialchars($equipo_temp['team-zone'] ?? '') ?>">
