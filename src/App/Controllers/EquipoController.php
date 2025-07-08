@@ -184,18 +184,7 @@ class EquipoController extends AbstractController
 
         $equipoBanner = $this->equipoService->getEquipoBanner($equipoVisto);
         $listLevelsElo = $this->equipoService->getAllNivelElo();
-        $historial = false;
-
-        $historialPartidos = $this->partidoService->getHistorialPartidosByIdEquipo($equipoVisto->getIdEquipo());
-
-        if (!empty($historialPartidos)) {
-            $ultimoPartidoJugado = $historialPartidos[0];
-            $soyGanador = $ultimoPartidoJugado->getResultadoGanador()->getEquipo()->getIdEquipo() === $equipoVisto->getIdEquipo();
-            $equipoLocal = $equipoVisto;
-            $equipoRival = $this->equipoService->getEquipoById($ultimoPartidoJugado->getResultadoPerdedor()->getEquipo()->getIdEquipo());
-            $eloChange = $ultimoPartidoJugado->getResultadoGanador()->getEloConseguido();
-            $historial = true;
-        }
+        
 
         require $this->viewsDir . ($isOwner ? 'dashboard.php' : 'profile.php');
     }

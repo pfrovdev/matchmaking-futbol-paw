@@ -37,12 +37,32 @@ CREATE TABLE
     );
 
 INSERT INTO
-    NivelElo (descripcion, descripcion_corta, color_inicio, color_fin)
+    NivelElo (
+        descripcion,
+        descripcion_corta,
+        color_inicio,
+        color_fin
+    )
 VALUES
-    ('Principiante', 'principiante', '#AF6E06', '#804F01'),
+    (
+        'Principiante',
+        'principiante',
+        '#AF6E06',
+        '#804F01'
+    ),
     ('Amateur', 'amateur', '#C3C3C3', '#5D5D5D'),
-    ('Semi profesional', 'semi_profesional', '#C2BB00', '#535039'),
-    ('Profesional', 'profesional', '#E67070', '#DF2727');
+    (
+        'Semi profesional',
+        'semi_profesional',
+        '#C2BB00',
+        '#535039'
+    ),
+    (
+        'Profesional',
+        'profesional',
+        '#E67070',
+        '#DF2727'
+    );
 
 CREATE TABLE
     EstadoDesafio (
@@ -173,23 +193,69 @@ CREATE TABLE
 
 CREATE TABLE
     ResultadoPartido (
-    id_resultado INT PRIMARY KEY AUTO_INCREMENT,
-    id_partido INT NOT NULL,
-    id_equipo_local INT NOT NULL,
-    id_equipo_visitante INT NOT NULL,
-    goles_equipo_local INT NOT NULL,
-    goles_equipo_visitante INT NOT NULL,
-    elo_inicial_local INT,
-    elo_final_local INT,
-    elo_inicial_visitante INT,
-    elo_final_visitante INT,
-    total_amarillas_local INT DEFAULT 0,
-    total_amarillas_visitante INT DEFAULT 0,
-    total_rojas_local INT DEFAULT 0,
-    total_rojas_visitante INT DEFAULT 0,
-    resultado ENUM('empate', 'gano_local', 'gano_visitante') NOT NULL,
-    fecha_jugado DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_partido) REFERENCES Partido(id_partido),
-    FOREIGN KEY (id_equipo_local) REFERENCES Equipo(id_equipo),
-    FOREIGN KEY (id_equipo_visitante) REFERENCES Equipo(id_equipo)
+        id_resultado INT PRIMARY KEY AUTO_INCREMENT,
+        id_partido INT NOT NULL,
+        id_equipo_local INT NOT NULL,
+        id_equipo_visitante INT NOT NULL,
+        goles_equipo_local INT NOT NULL,
+        goles_equipo_visitante INT NOT NULL,
+        elo_inicial_local INT,
+        elo_final_local INT,
+        elo_inicial_visitante INT,
+        elo_final_visitante INT,
+        total_amarillas_local INT DEFAULT 0,
+        total_amarillas_visitante INT DEFAULT 0,
+        total_rojas_local INT DEFAULT 0,
+        total_rojas_visitante INT DEFAULT 0,
+        resultado ENUM ('empate', 'gano_local', 'gano_visitante') NOT NULL,
+        fecha_jugado DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (id_partido) REFERENCES Partido (id_partido),
+        FOREIGN KEY (id_equipo_local) REFERENCES Equipo (id_equipo),
+        FOREIGN KEY (id_equipo_visitante) REFERENCES Equipo (id_equipo)
+    );
+
+CREATE
+OR REPLACE VIEW v_historial_partidos AS
+SELECT
+    p.id_partido,
+    p.fecha_finalizacion,
+    d.id_equipo_desafiante,
+    d.id_equipo_desafiado,
+    r.id_resultado,
+    r.id_equipo_local,
+    r.id_equipo_visitante,
+    r.goles_equipo_local,
+    r.goles_equipo_visitante,
+    r.elo_inicial_local,
+    r.elo_final_local,
+    r.elo_inicial_visitante,
+    r.elo_final_visitante,
+    r.total_amarillas_local,
+    r.total_rojas_local,
+    r.total_amarillas_visitante,
+    r.total_rojas_visitante,
+    r.resultado,
+    r.fecha_jugado,
+    CASE
+        WHEN r.resultado = 'empate' THEN NULL
+        WHEN r.resultado = 'gana_local' THEN r.id_equipo_local
+        WHEN r.resultado = 'gana_visitante' THEN r.id_equipo_visitante
+    END AS id_equipo_ganador,
+    CASE
+        WHEN r.resultado = 'empate' THEN NULL
+        WHEN r.resultado = 'gana_local' THEN r.id_equipo_visitante
+        WHEN r.resultado = 'gana_visitante' THEN r.id_equipo_local
+    END AS id_equipo_perdedor
+FROM
+    Partido p
+    JOIN Desafio d ON d.id_partido = p.id_partido
+    JOIN ResultadoPartido r ON r.id_partido = p.id_partido
+WHERE
+    p.id_estado_partido = (
+        SELECT
+            id_estado_partido
+        FROM
+            EstadoPartido
+        WHERE
+            descripcion_corta = 'acordado'
     );

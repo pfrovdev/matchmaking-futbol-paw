@@ -42,6 +42,12 @@ class PartidoDataMapper extends DataMapper
         return $row ? $this->map($row[0]) : null;
     }
 
+    public function findByIdAndEstadoPartido(int $idPartido, int $estado): ?Partido
+    {
+        $row = $this->findBy(['id_partido' => $idPartido, 'id_estado_partido' => $estado]);
+        return $row ? $this->map($row[0]) : null;
+    }
+
     public function findAllByEquipoAndFinalizado(int $idEquipo, int $finalizado)
     {
         return $this->mapAll($this->findBy(['id_equipo' => $idEquipo, 'finalizado' => $finalizado]));

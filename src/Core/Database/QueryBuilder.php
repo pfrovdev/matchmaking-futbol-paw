@@ -38,7 +38,7 @@ class QueryBuilder
     ) {
         $query = "SELECT * FROM {$table}";
         $values = [];
-        
+
         if (!empty($params)) {
             $conditions = [];
             foreach ($params as $field => $value) {
@@ -60,7 +60,7 @@ class QueryBuilder
                 $query .= " OFFSET {$offset}";
             }
         }
-        
+
         $statement = $this->pdo->prepare($query);
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         $statement->execute($values);
@@ -150,6 +150,43 @@ class QueryBuilder
         return $statement->fetchAll();
     }
 
+    public function selectOr(
+        string $table,
+        array  $orFields,
+        mixed  $value,
+        ?string $orderBy = null,
+        string  $direction = 'ASC',
+        ?int    $limit = null,
+        ?int    $offset = null
+    ): array {
+
+        $direction = strtoupper($direction) === 'ASC' ? 'ASC' : 'DESC';
+
+        $clauses = [];
+        $values  = [];
+        foreach ($orFields as $f) {
+            $clauses[] = "{$f} = ?";
+            $values[]  = $value;
+        }
+        $whereSql = '(' . implode(' OR ', $clauses) . ')';
+
+        $sql = "SELECT  * FROM {$table} WHERE {$whereSql}";
+        if ($orderBy) {
+            $sql .= " ORDER BY {$orderBy} {$direction}";
+        }
+        if ($limit !== null) {
+            $sql .= " LIMIT {$limit}";
+            if ($offset !== null) {
+                $sql .= " OFFSET {$offset}";
+            }
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute($values);
+        return $stmt->fetchAll();
+    }
+
     public function insert(string $table, array $values): ?string
     {
         if (empty($values)) {
@@ -170,7 +207,7 @@ class QueryBuilder
 
         $setClause = implode(', ', $sets);
         $query = "INSERT INTO `$table` SET $setClause";
-        
+
         try {
             $stmt = $this->pdo->prepare($query);
             foreach ($params as $placeholder => $val) {

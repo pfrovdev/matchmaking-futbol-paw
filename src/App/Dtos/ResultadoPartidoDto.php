@@ -10,13 +10,11 @@ class ResultadoPartidoDto
     public int $tarjetas_amarillas;
     public int $tarjetas_rojas;
     public int $goles;
-    public int $asistencias;
     public int $eloConseguido;
 
 
-    public function __construct(EquipoBannerDto $equipo, int $tarjetas_amarillas, int $tarjetas_rojas, int $goles, int $asistencias, int $eloConseguido)
+    public function __construct(EquipoBannerDto $equipo, int $tarjetas_amarillas, int $tarjetas_rojas, int $goles, int $eloConseguido)
     {
-        $this->asistencias  = $asistencias;
         $this->equipo = $equipo;
         $this->goles = $goles;
         $this->tarjetas_amarillas = $tarjetas_amarillas;
@@ -42,11 +40,6 @@ class ResultadoPartidoDto
     public function getGoles(): int
     {
         return $this->goles;
-    }
-
-    public function getAsistencias(): int
-    {
-        return $this->asistencias;
     }
 
     public function getEloConseguido(): int

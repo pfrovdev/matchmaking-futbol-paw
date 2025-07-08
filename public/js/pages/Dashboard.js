@@ -1,6 +1,7 @@
 import ComentarioController from '../controllers/ComentarioController.js';
 import DesafioController from '../controllers/DesafioController.js';
 import PartidoController from '../controllers/PartidoController.js';
+import HistorialController from '../controllers/HistorialController.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -26,11 +27,27 @@ document.addEventListener('DOMContentLoaded', () => {
     comentarioController.init();
   }
 
+  // ------------ Inicialización de Historial de Partidos ------------
+  const historyContainer = document.getElementById('history-list');
+  const filterHistorial = document.getElementById('filtroHistorial');
+  const paginationHistorial = document.getElementById('history-pagination');
+  const equipoId = document.body.dataset.profileId;
+
+  if (historyContainer && filterHistorial && paginationHistorial) {
+    const hc = new HistorialController({
+      historyContainer,
+      filterSelect: filterHistorial,
+      paginationContainer: paginationHistorial,
+      equipoId
+    });
+    hc.init();
+  }
+
   if (!isOwner) {
     // no inicializo desafíos ni partidos
     return;
   }
-  
+
   // ----------- Inicialización de Desafíos ------------
   const desafioContainer = document.getElementById('challenge-list');
   const filterDesafios = document.getElementById('filtroDesafios');

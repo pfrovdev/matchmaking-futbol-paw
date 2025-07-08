@@ -39,6 +39,49 @@ abstract class DataMapper
         return $this->qb->selectAdvanced($this->table, $conditions, $rawConditions, $orderBy, $direction);
     }
 
+    public function findByOrPaginated(
+        array $orFields,
+        mixed $value,
+        int $limit,
+        int $offset,
+        ?string $orderBy = null,
+        string $direction = 'ASC'
+    ): array {
+        $result =  $this->qb->selectOr(
+            $this->table,
+            $orFields,
+            $value,
+            $orderBy,
+            $direction,
+            $limit,
+            $offset
+        );
+        $this->logger->info('select or aca: ' . json_encode($result));
+        return $this->qb->selectOr(
+            $this->table,
+            $orFields,
+            $value,
+            $orderBy,
+            $direction,
+            $limit,
+            $offset
+        );
+    }
+
+    public function countByOr(array $orFields, mixed $value): int
+    {
+        $rows = $this->qb->selectOr(
+            $this->table,
+            $orFields,
+            $value,
+            null,
+            'ASC',
+            null,
+            null
+        );
+        return count($rows);
+    }
+
     public function insert(array $data): ?string
     {
         $this->logger->info('Insertando ' . json_encode($data));

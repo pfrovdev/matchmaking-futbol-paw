@@ -49,6 +49,52 @@ class PartidoController extends AbstractController
         echo json_encode($partidosPendientes);
     }
 
+    public function getHistorial()
+    {
+        $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
+
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $perPage = $_GET['per_page'] ?? 3;
+        $order = $_GET['order'] ?? 'fecha_finalizacion';
+        $dir = $_GET['dir']  ?? 'DESC';
+
+        $equipoId = isset($_GET['equipo_id'])
+            ? (int) $_GET['equipo_id']
+            : $miEquipo->getIdEquipo();
+
+        if ($page < 1) $page = 1;
+        if ($perPage < 1 || $perPage > 20) $perPage = 3;
+
+        $allowedOrders = ['fecha_finalizacion', 'deportividad'];
+        if (!in_array($order, $allowedOrders)) {
+            $order = 'fecha_finalizacion';
+        }
+        $allowedDirs = ['ASC', 'DESC'];
+        if (!in_array(strtoupper($dir), $allowedDirs)) {
+            $dir = 'DESC';
+        }
+
+        $this->logger->info('page ' . $page . ' perPage ' . $perPage . ' order ' . $order . ' dir ' . $dir . ' equipoId ' . $equipoId);
+
+        $partidosHistorial = $this->partidoService->getHistorialPartidosByIdEquipo(
+            $equipoId,
+            $page,
+            $perPage,
+            $order,
+            $dir
+        );
+
+        if (!empty($resultadoPaginado['data'])) {
+            $this->logger->info('resultadoPaginado ' . json_encode($partidosHistorial) . json_encode($partidosHistorial['data'][0]->getComentario()));
+        } else {
+            $this->logger->info('resultadoPaginado sin datos');
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($partidosHistorial);
+    }
+
     public function coordinarResultado(): void
     {
         $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
@@ -94,7 +140,7 @@ class PartidoController extends AbstractController
             );
         }
 
-        if($this->partidoService->partidoAcordado($miEquipo->getIdEquipo(),$id_partido)){
+        if ($this->partidoService->partidoAcordado($miEquipo->getIdEquipo(), $id_partido)) {
             $_SESSION['flash']['mensaje'] = $this->generarMensajeEstado(ProcesarFormularioEstado::PARTIDO_TERMINADO);
             $_SESSION['flash']['finalizado'] = true;
         }

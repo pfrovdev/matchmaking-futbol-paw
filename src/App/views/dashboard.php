@@ -3,8 +3,8 @@
 // Variables: $miEquipo, $comentariosPag (array de Comentario), $desafiosRecib (array de Desafio), $nivelDesc, $deportividad, $ultimoPartidoJugado $page, $per, $order, $dir
 $isOwner = ($equipoVistoId === $miEquipo->getIdEquipo());
 if (!$isOwner) {
-    require $this->viewsDir . 'profile.php';
-    return;
+  require $this->viewsDir . 'profile.php';
+  return;
 }
 ?>
 <!DOCTYPE html>
@@ -22,8 +22,7 @@ if (!$isOwner) {
 
 <body
   data-profile-id="<?= $equipoVistoId ?>"
-  data-is-owner="<?= ($equipoVistoId === $miEquipo->getIdEquipo()) ? 'true' : 'false' ?>"
-  >
+  data-is-owner="<?= ($equipoVistoId === $miEquipo->getIdEquipo()) ? 'true' : 'false' ?>">
 
   <?php require "parts/header.php"; ?>
   <?php require "parts/side-navbar.php"; ?>
@@ -80,53 +79,20 @@ if (!$isOwner) {
             </div>
           </div>
 
-          <!-- Card 2: Último partido -->
-          <div class="card last-match-card">
-            <?php if ($historial):
-              // Construyo el array $match
-              $match = [
-                'soyGanador' => $soyGanador,
-                'eloChange' => $eloChange,
-                'matchUrl' => '#',
-                'date' => (new \DateTime($ultimoPartidoJugado->getFechaFinalizacion()))->format('d-m-Y'),
-                'home' => [
-                  'abbr' => $equipoLocal->fields['acronimo'],
-                  'name' => $equipoLocal->fields['nombre'],
-                  'logo' => $equipoLocal->fields['url_foto_perfil'],
-                  'tarjetas' => [
-                    'yellow' => $soyGanador
-                      ? $ultimoPartidoJugado->getResultadoGanador()->getTarjetasAmarillas()
-                      : $ultimoPartidoJugado->getResultadoPerdedor()->getTarjetasAmarillas(),
-                    'red' => $soyGanador
-                      ? $ultimoPartidoJugado->getResultadoGanador()->getTarjetasRojas()
-                      : $ultimoPartidoJugado->getResultadoPerdedor()->getTarjetasRojas(),
-                  ],
-                ],
-                'away' => [
-                  'abbr' => $equipoRival->fields['acronimo'],
-                  'name' => $equipoRival->fields['nombre'],
-                  'logo' => $equipoRival->fields['url_foto_perfil'],
-                  'tarjetas' => [
-                    'yellow' => $soyGanador
-                      ? $ultimoPartidoJugado->getResultadoGanador()->getTarjetasAmarillas()
-                      : $ultimoPartidoJugado->getResultadoPerdedor()->getTarjetasAmarillas(),
-                    'red' => $soyGanador
-                      ? $ultimoPartidoJugado->getResultadoGanador()->getTarjetasRojas()
-                      : $ultimoPartidoJugado->getResultadoPerdedor()->getTarjetasRojas(),
-                  ],
-                ],
-                'score' => $soyGanador
-                  ? $ultimoPartidoJugado->getResultadoGanador()->getGoles() . '-' . $ultimoPartidoJugado->getResultadoPerdedor()->getGoles()
-                  : $ultimoPartidoJugado->getResultadoPerdedor()->getGoles() . '-' . $ultimoPartidoJugado->getResultadoGanador()->getGoles(),
-              ];
-
-              // Incluyo la tarjeta de historial
-              require 'parts/tarjeta-historial.php';
-
-            else: ?>
-              <p>No jugó ningún partido aún.</p>
-            <?php endif; ?>
+          <!-- Card 2: historial de partidos -->
+          <div class="card history-card">
+            <h3 class="title-subsection">Historial de partidos</h3>
+            <div class="comment-filter">
+              <label for="filtroHistorial">Ordenar por:</label>
+              <select id="filtroHistorial" name="filtroHistorial">
+                <option value="fecha_finalizacion-DESC" selected>Más recientes</option>
+                <option value="fecha_finalizacion-ASC">Más antiguos</option>
+              </select>
+            </div>
+            <div id="history-list" class="history-list"></div>
+            <div id="history-pagination" class="pagination"></div>
           </div>
+
 
           <!-- Card 3: Desafíos recibidos -->
           <div class="card challenges-card">
@@ -208,12 +174,12 @@ if (!$isOwner) {
   <?php require "parts/footer.php"; ?>
   <script>
     const levelsEloMap = <?= json_encode(array_map(function ($row) {
-      return [
-        'descripcion' => $row['descripcion'],
-        'color_inicio' => $row['color_inicio'],
-        'color_fin' => $row['color_fin'],
-      ];
-    }, $listLevelsElo)) ?>;
+                            return [
+                              'descripcion' => $row['descripcion'],
+                              'color_inicio' => $row['color_inicio'],
+                              'color_fin' => $row['color_fin'],
+                            ];
+                          }, $listLevelsElo)) ?>;
   </script>
 </body>
 

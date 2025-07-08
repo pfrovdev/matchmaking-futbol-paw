@@ -18,6 +18,7 @@ use Paw\App\DataMapper\EquipoDataMapper;
 use Paw\App\DataMapper\EstadoDesafioDataMapper;
 use Paw\App\DataMapper\EstadoPartidoDataMapper;
 use Paw\App\DataMapper\FormularioPartidoDataMapper;
+use Paw\App\DataMapper\HistorialPartidoDataMapper;
 use Paw\App\DataMapper\NivelEloDataMapper;
 use Paw\App\DataMapper\PartidoDataMapper;
 use Paw\App\DataMapper\ResultadoPartidoDataMapper;
@@ -87,7 +88,10 @@ class ContainerConfig
             $c->get(QueryBuilder::class),
             $logger
         ));
-
+        $c->set(HistorialPartidoDataMapper::class, fn($c) => new HistorialPartidoDataMapper(
+            $c->get(QueryBuilder::class),
+            $logger
+        ));
         // Token Storage (JWT)
         $c->set(TokenStorageInterface::class, function ($c) {
             $backend = strtolower(getenv('JWT_STORAGE') ?: 'file');
@@ -124,7 +128,7 @@ class ContainerConfig
             $c->get(EstadoPartidoDataMapper::class),
             $c->get(DesafioDataMapper::class),
             $c->get(EquipoService::class),
-            $c->get(NivelEloDataMapper::class),
+            $c->get(HistorialPartidoDataMapper::class),
             $c->get(ResultadoPartidoDataMapper::class),
             $c->get(FormularioPartidoDataMapper::class),
             $c->get(NotificationService::class)

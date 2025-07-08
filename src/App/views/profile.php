@@ -67,51 +67,19 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Card 2: Último partido -->
-                    <div class="card last-match-card">
-                        <?php if ($historial):
-                            $match = [
-                                'soyGanador' => $soyGanador,
-                                'eloChange' => $eloChange,
-                                'matchUrl' => '#',
-                                'date' => (new \DateTime($ultimoPartidoJugado->getFechaFinalizacion()))->format('d-m-Y'),
-                                'home' => [
-                                    'abbr' => $equipoLocal->fields['acronimo'],
-                                    'name' => $equipoLocal->fields['nombre'],
-                                    'logo' => $equipoLocal->fields['url_foto_perfil'],
-                                    'tarjetas' => [
-                                        'yellow' => $soyGanador
-                                            ? $ultimoPartidoJugado->getResultadoGanador()->getTarjetasAmarillas()
-                                            : $ultimoPartidoJugado->getResultadoPerdedor()->getTarjetasAmarillas(),
-                                        'red' => $soyGanador
-                                            ? $ultimoPartidoJugado->getResultadoGanador()->getTarjetasRojas()
-                                            : $ultimoPartidoJugado->getResultadoPerdedor()->getTarjetasRojas(),
-                                    ],
-                                ],
-                                'away' => [
-                                    'abbr' => $equipoRival->fields['acronimo'],
-                                    'name' => $equipoRival->fields['nombre'],
-                                    'logo' => $equipoRival->fields['url_foto_perfil'],
-                                    'tarjetas' => [
-                                        'yellow' => $soyGanador
-                                            ? $ultimoPartidoJugado->getResultadoGanador()->getTarjetasAmarillas()
-                                            : $ultimoPartidoJugado->getResultadoPerdedor()->getTarjetasAmarillas(),
-                                        'red' => $soyGanador
-                                            ? $ultimoPartidoJugado->getResultadoGanador()->getTarjetasRojas()
-                                            : $ultimoPartidoJugado->getResultadoPerdedor()->getTarjetasRojas(),
-                                    ],
-                                ],
-                                'score' => $soyGanador
-                                    ? $ultimoPartidoJugado->getResultadoGanador()->getGoles() . '-' . $ultimoPartidoJugado->getResultadoPerdedor()->getGoles()
-                                    : $ultimoPartidoJugado->getResultadoPerdedor()->getGoles() . '-' . $ultimoPartidoJugado->getResultadoGanador()->getGoles(),
-                            ];
-
-                            require 'parts/tarjeta-historial.php';
-
-                        else: ?>
-                            <p>No jugó ningún partido aún.</p>
-                        <?php endif; ?>
+                    
+                    <!-- Card 2: historial de partidos -->
+                    <div class="card history-card">
+                        <h3 class="title-subsection">Historial de partidos</h3>
+                        <div class="comment-filter">
+                            <label for="filtroHistorial">Ordenar por:</label>
+                            <select id="filtroHistorial" name="filtroHistorial">
+                                <option value="fecha_finalizacion-DESC" selected>Más recientes</option>
+                                <option value="fecha_finalizacion-ASC">Más antiguos</option>
+                            </select>
+                        </div>
+                        <div id="history-list" class="history-list"></div>
+                        <div id="history-pagination" class="pagination"></div>
                     </div>
 
                     <form action="/desafios" method="POST" class="form-desafiar">
