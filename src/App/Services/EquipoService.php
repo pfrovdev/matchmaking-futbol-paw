@@ -18,6 +18,7 @@ interface EquipoService {
     function getAllEquipos(array $selectParams, string $orderBy = 'id_nivel_elo', string $direction = 'DESC'): array;
     function existsByEmail(string $email): bool;
     function getByEmail(string $email): ?Equipo;
+    function getByTeamName(string $teamName): ?Equipo;
     function getEquipoBanner(Equipo $equipo): EquipoBannerDto;
 
     function getAllEquiposBanner(): array;
