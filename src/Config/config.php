@@ -42,8 +42,9 @@ return [
         // === DesafioController ===
         // GET Methods
         ['path' => '/desafios', 'action' => 'DesafioController@index', 'method' => 'GET'],
-
+        
         // POST Methods
+        ['path' => '/desafios','action' => 'DesafioController@createDesafio', 'method' => 'POST'],
         ['path' => '/accept-desafio', 'action' => 'DesafioController@aceptarDesafio', 'method' => 'POST'],
         ['path' => '/reject-desafio', 'action' => 'DesafioController@rechazarDesafio', 'method' => 'POST'],
 

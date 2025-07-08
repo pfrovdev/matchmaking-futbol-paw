@@ -1,4 +1,5 @@
 <?php
+
 namespace Paw\App\Controllers;
 
 use Monolog\Logger;
@@ -16,7 +17,7 @@ class DesafioController extends AbstractController
 
     public function __construct(Logger $logger, DesafioService $desafioService, NotificationService $notificationService, EquipoService $equipoService, AuthMiddelware $authMiddelware)
     {
-        parent::__construct($logger,$authMiddelware);
+        parent::__construct($logger, $authMiddelware);
         $this->desafioService = $desafioService;
         $this->notificationService = $notificationService;
         $this->equipoService = $equipoService;
@@ -28,9 +29,9 @@ class DesafioController extends AbstractController
     {
         $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $equipo = $this->equipoService->getEquipoById($userData->id_equipo);
-        
+
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
-        $perPage = $_GET ['per_page'] ?? 3; 
+        $perPage = $_GET['per_page'] ?? 3;
         $order = $_GET['order'] ?? 'fecha_creacion';
         $dir = $_GET['dir']   ?? 'DESC';
 
@@ -49,7 +50,7 @@ class DesafioController extends AbstractController
 
     public function aceptarDesafio(): void
     {
-        $userData = $this->auth->verificar(['ADMIN','USUARIO']);
+        $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $equipo = $this->equipoService->getEquipoById($userData->id_equipo);
 
         $desafioId = (int) ($_POST['id_desafio'] ?? 0);
@@ -70,7 +71,7 @@ class DesafioController extends AbstractController
 
     public function rechazarDesafio(): void
     {
-        $userData = $this->auth->verificar(['ADMIN','USUARIO']);
+        $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $equipo = $this->equipoService->getEquipoById($userData->id_equipo);
 
         $desafioId = (int) ($_POST['id_desafio'] ?? 0);
@@ -86,5 +87,32 @@ class DesafioController extends AbstractController
         );
 
         header('Location: /dashboard');
+    }
+
+    public function createDesafio(): void
+    {
+        $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($userData->id_equipo);
+
+        $id_equipo_desafiar = (int) ($_POST['id_equipo_desafiar'] ?? 0);
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/dashboard';
+
+        if ($id_equipo_desafiar <= 0) {
+            $this->logger->error('ID de equipo a desafiar no válido: ' . $id_equipo_desafiar);
+            header('Location: ' . $referer);
+            return;
+        }
+
+        try {
+            $desafio = $this->desafioService->createDesafio($miEquipo->getIdEquipo(), $id_equipo_desafiar);
+            $equipoDesafiado = $this->equipoService->getEquipoById($id_equipo_desafiar);
+            $this->notificationService->notifyDesafioCreated($miEquipo, $equipoDesafiado, $desafio);
+            header('Location: ' . $referer);
+            exit;
+        } catch (\Exception $e) {
+            $_SESSION['errors'] = ["Hubo un error al registrar el desafío. Por favor intentalo nuevamente."];
+            header('Location: ' . $referer);
+            exit;
+        }
     }
 }

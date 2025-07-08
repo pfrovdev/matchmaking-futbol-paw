@@ -4,6 +4,7 @@
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
     <script type="module" src="js/pages/Dashboard.js" defer></script>
     <script src="/js/sidebar.js"></script>
 </head>
+
 <body
     data-profile-id="<?= $equipoVistoId ?>"
     data-is-owner="false">
@@ -111,7 +113,13 @@
                             <p>No jugó ningún partido aún.</p>
                         <?php endif; ?>
                     </div>
-                </section> <!-- <<<<< ESTE FALTABA -->
+
+                    <form action="/desafios" method="POST" class="form-desafiar">
+                        <input type="hidden" name="id_equipo_desafiar" value="<?= htmlspecialchars($equipoBanner->getIdEquipo()) ?>">
+                        <button type="submit" class="btn btn-desafiar">Desafiar</button>
+                    </form>
+
+                </section>
 
                 <!-- Columna Derecha -->
                 <aside class="col-right">
