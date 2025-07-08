@@ -34,7 +34,7 @@ class  ComentarioController extends AbstractController
             : $miEquipo->getIdEquipo();
 
         if ($page < 1) $page = 1;
-        if ($perPage < 1 || $perPage > 20) $perPage = 3; 
+        if ($perPage < 1 || $perPage > 20) $perPage = 3;
 
         $allowedOrders = ['fecha_creacion', 'deportividad'];
         if (!in_array($order, $allowedOrders)) {
@@ -55,7 +55,13 @@ class  ComentarioController extends AbstractController
                 $order,
                 $dir
             );
-        $this->logger->info('resultadoPaginado ' . json_encode($resultadoPaginado) . json_encode($resultadoPaginado['data'][0]->getComentario()));
+            
+        if (!empty($resultadoPaginado['data'])) {
+            $this->logger->info('resultadoPaginado ' . json_encode($resultadoPaginado) . json_encode($resultadoPaginado['data'][0]->getComentario()));
+        } else {
+            $this->logger->info('resultadoPaginado sin datos');
+        }
+
         header('Content-Type: application/json');
         echo json_encode($resultadoPaginado);
     }
