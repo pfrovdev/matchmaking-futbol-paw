@@ -11,10 +11,11 @@ export default class ComentarioController {
    * @param {HTMLSelectElement} args.filterSelect - <select> para filtrar/ordenar.
    * @param {HTMLElement} args.paginationContainer - Contenedor <div> para la paginación.
    */
-  constructor({ comentarioContainer, filterSelect, paginationContainer }) {
+  constructor({ profileId, comentarioContainer, filterSelect, paginationContainer }) {
     this.comentarioContainer = comentarioContainer;
     this.filterSelect = filterSelect;
     this.paginationContainer = paginationContainer;
+    this.profileId = profileId;
 
     this.pageSize = 3; 
     this.currentPage = 1;
@@ -61,6 +62,7 @@ export default class ComentarioController {
   async loadComentarios() {
     try {
       const { data: comentariosRaw, meta } = await ComentarioService.getComentarios({
+        profileId: this.profileId,
         page: this.currentPage,
         perPage: this.pageSize,
         order: this.order,

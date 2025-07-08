@@ -1,6 +1,11 @@
 <?php
 // src/App/views/dashboard.php
 // Variables: $miEquipo, $comentariosPag (array de Comentario), $desafiosRecib (array de Desafio), $nivelDesc, $deportividad, $ultimoPartidoJugado $page, $per, $order, $dir
+$isOwner = ($equipoVistoId === $miEquipo->getIdEquipo());
+if (!$isOwner) {
+    require $this->viewsDir . 'profile.php';
+    return;
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -15,7 +20,10 @@
   <script src="/js/sidebar.js"></script>
 </head>
 
-<body data-profile-id="<?= htmlspecialchars($equipoVistoId, ENT_QUOTES) ?>">
+<body
+  data-profile-id="<?= $equipoVistoId ?>"
+  data-is-owner="<?= ($equipoVistoId === $miEquipo->getIdEquipo()) ? 'true' : 'false' ?>"
+  >
 
   <?php require "parts/header.php"; ?>
   <?php require "parts/side-navbar.php"; ?>

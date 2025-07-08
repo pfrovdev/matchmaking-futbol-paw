@@ -3,6 +3,10 @@ import DesafioController from '../controllers/DesafioController.js';
 import PartidoController from '../controllers/PartidoController.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  const isOwner = document.body.dataset.isOwner === 'true';
+  const profileId = document.body.dataset.profileId?? null;
+
   // ----------- Inicialización de Comentarios -----------
   const comentarioContainer = document.getElementById('comment-list');
   const filterComentarios = document.getElementById('filtroComentarios');
@@ -16,11 +20,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   } else {
     const comentarioController = new ComentarioController({
+      profileId,
       comentarioContainer,
       filterSelect: filterComentarios,
       paginationContainer: paginationComentarios
     });
     comentarioController.init();
+  }
+
+  if (!isOwner) {
+    // no inicializo desafíos ni partidos
+    return;
   }
 
   // ----------- Inicialización de Desafíos ------------

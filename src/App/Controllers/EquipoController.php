@@ -161,26 +161,35 @@ class EquipoController extends AbstractController
     {
         $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
-        $equipoVistoId = $miEquipo->getIdEquipo();
+
+        $equipoVistoId = isset($_GET['id']) ? (int) $_GET['id'] : $miEquipo->getIdEquipo();
+        $isOwner = ($equipoVistoId === $miEquipo->getIdEquipo());
+
+        $equipoVisto = $this->equipoService->getEquipoById($equipoVistoId);
+
+        if (!$equipoVisto) {
+            header("HTTP/1.1 404 Not Found");
+            require $this->viewsDir . 'errors/not-found.php';
+        }
+
         $cantidadDeVotos = $this->comentarioEquipoService->getCantidadDeVotosByIdEquipo($equipoVistoId);
 
-        $equipoBanner = $this->equipoService->getEquipoBanner($miEquipo);
+        $equipoBanner = $this->equipoService->getEquipoBanner($equipoVisto);
         $listLevelsElo = $this->equipoService->getAllNivelElo();
         $historial = false;
-        
-        // ver esto 
-        $historialPartidos = $this->partidoService->getHistorialPartidosByIdEquipo($miEquipo->getIdEquipo());
+
+        $historialPartidos = $this->partidoService->getHistorialPartidosByIdEquipo($equipoVisto->getIdEquipo());
 
         if (!empty($historialPartidos)) {
             $ultimoPartidoJugado = $historialPartidos[0];
-            $soyGanador = $ultimoPartidoJugado->getResultadoGanador()->getEquipo()->getIdEquipo() === $miEquipo->getIdEquipo();
-            $equipoLocal  = $miEquipo;
-            $equipoRival  = $this->equipoService->getEquipoById($ultimoPartidoJugado->getResultadoPerdedor()->getEquipo()->getIdEquipo());
+            $soyGanador = $ultimoPartidoJugado->getResultadoGanador()->getEquipo()->getIdEquipo() === $equipoVisto->getIdEquipo();
+            $equipoLocal = $equipoVisto;
+            $equipoRival = $this->equipoService->getEquipoById($ultimoPartidoJugado->getResultadoPerdedor()->getEquipo()->getIdEquipo());
             $eloChange = $ultimoPartidoJugado->getResultadoGanador()->getEloConseguido();
             $historial = true;
         }
-        
-        require $this->viewsDir . 'dashboard.php';
+
+        require $this->viewsDir . ($isOwner ? 'dashboard.php' : 'profile.php');
     }
 
     public function searchTeam()
@@ -228,7 +237,7 @@ class EquipoController extends AbstractController
             $direction = strtoupper($orden);
         }
 
-        
+
 
         $selectParams = [
             'nombre'      => $nombre,
@@ -242,37 +251,38 @@ class EquipoController extends AbstractController
         $listLevelsElo = $this->equipoService->getAllNivelElo();
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
         $todosLosEquipos = $this->equipoService->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);
-        
+
         $totalEquipos = count($todosLosEquipos);
         $totalPaginas = ceil($totalEquipos / $porPagina);
-        if($totalEquipos === 0){
+        if ($totalEquipos === 0) {
             $equipos = [];
             require $this->viewsDir . 'search-team.php';
             exit;
         }
-        if ($paginaActual > $totalPaginas || $paginaActual < 1){
+        if ($paginaActual > $totalPaginas || $paginaActual < 1) {
             header("HTTP/1.1 404 Not Found");
             require $this->viewsDir . 'errors/not-found.php';
             exit;
         }
-        
+
         $equipos = array_slice($todosLosEquipos, $offset, $porPagina);
-        
+
         require $this->viewsDir . 'search-team.php';
     }
 
-    public function rankingTeams(){
+    public function rankingTeams()
+    {
         $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
 
         $latitud    = isset($_GET['lat']) ? (float) $_GET['lat'] : null;
         $longitud   = isset($_GET['lng']) ? (float) $_GET['lng'] : null;
         $radio_km   = isset($_GET['radius_km']) ? (float) $_GET['radius_km'] : null;
-        
+
         $id_nivel_elo = isset($_GET['id_nivel_elo']) ? (int)$_GET['id_nivel_elo'] : null;
         $orden      = $_GET['orden'] ?? 'desc';
         $orden      = in_array($orden, ['asc', 'desc', 'alpha']) ? $orden : 'asc';
-        
+
         $paginaActual = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $porPagina = 3;
         $offset = ($paginaActual - 1) * $porPagina;
@@ -290,53 +300,54 @@ class EquipoController extends AbstractController
             require $this->viewsDir . 'errors/not-found.php';
         }
         $selectParams = [];
-        if ($id_nivel_elo ) {
+        if ($id_nivel_elo) {
             $selectParams = [
                 'id_nivel_elo' => $id_nivel_elo,
             ];
         }
-        if($latitud && $longitud && $radio_km){
+        if ($latitud && $longitud && $radio_km) {
             $selectParams = [
                 'lat'         => $latitud,
                 'lng'         => $longitud,
                 'radio_km'    => $radio_km
             ];
         }
-        
+
         $listLevelsElo = $this->equipoService->getAllNivelElo();
-        
+
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
         $todosLosEquipos = $this->equipoService->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);
         $todosLosEquipos = $this->equipoService->setRestultadosPartido($todosLosEquipos);
-        
+
         $totalEquipos = count($todosLosEquipos);
         $totalPaginas = ceil($totalEquipos / $porPagina);
-        if($totalEquipos === 0){
+        if ($totalEquipos === 0) {
             $equipos = [];
             require $this->viewsDir . 'ranking-teams.php';
             exit;
         }
-        
-        if ($paginaActual > $totalPaginas || $paginaActual < 1){
+
+        if ($paginaActual > $totalPaginas || $paginaActual < 1) {
             header("HTTP/1.1 404 Not Found");
             require $this->viewsDir . 'errors/not-found.php';
             exit;
         }
-        
+
         $equipos = array_slice($todosLosEquipos, $offset, $porPagina);
 
         require $this->viewsDir . 'ranking-teams.php';
     }
 
 
-    public function detailsTeam(){
+    public function detailsTeam()
+    {
         $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
 
         $id_equipo = isset($_GET['id']) ? (int)$_GET['id'] : null;
-        
-        if (!$id_equipo){
-             header("HTTP/1.1 404 Not Found");
+
+        if (!$id_equipo) {
+            header("HTTP/1.1 404 Not Found");
             require $this->viewsDir . 'errors/not-found.php';
             exit;
         }
@@ -345,8 +356,7 @@ class EquipoController extends AbstractController
         $listLevelsElo = $this->equipoService->getAllNivelElo();
         $equipo = $this->equipoService->getEquipoById($id_equipo);
         $equipo = $this->equipoService->getAllEquiposbyId($equipo->getIdEquipo(), $todosLosEquipos);
-               
+
         require $this->viewsDir . 'details-team.php';
     }
-
 }

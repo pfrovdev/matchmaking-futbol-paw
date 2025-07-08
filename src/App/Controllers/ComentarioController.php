@@ -25,23 +25,39 @@ class  ComentarioController extends AbstractController
         $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
 
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
-        $perPage = $_GET ['per_page'] ?? 3; 
+        $perPage = $_GET['per_page'] ?? 3;
         $order = $_GET['order'] ?? 'fecha_creacion';
-        $dir = $_GET['dir']   ?? 'DESC';
+        $dir = $_GET['dir']  ?? 'DESC';
 
-        $this->logger->info('page ' . $page . ' perPage ' . $perPage . ' order ' . $order . ' dir ' . $dir);
+        $equipoId = isset($_GET['equipo_id'])
+            ? (int) $_GET['equipo_id']
+            : $miEquipo->getIdEquipo();
+
+        if ($page < 1) $page = 1;
+        if ($perPage < 1 || $perPage > 20) $perPage = 3; 
+
+        $allowedOrders = ['fecha_creacion', 'deportividad'];
+        if (!in_array($order, $allowedOrders)) {
+            $order = 'fecha_creacion';
+        }
+        $allowedDirs = ['ASC', 'DESC'];
+        if (!in_array(strtoupper($dir), $allowedDirs)) {
+            $dir = 'DESC';
+        }
+
+        $this->logger->info('page ' . $page . ' perPage ' . $perPage . ' order ' . $order . ' dir ' . $dir . ' equipoId ' . $equipoId);
 
         $resultadoPaginado = $this->comentarioEquipoService
             ->getComentariosByEquipoPaginated(
-                $miEquipo->getIdEquipo(),
+                $equipoId,
                 $page,
                 $perPage,
                 $order,
                 $dir
             );
-        $this->logger->info('resultadoPaginado ' . json_encode( $resultadoPaginado) . json_encode($resultadoPaginado['data'][0]->getComentario()));
+        $this->logger->info('resultadoPaginado ' . json_encode($resultadoPaginado) . json_encode($resultadoPaginado['data'][0]->getComentario()));
         header('Content-Type: application/json');
-        echo json_encode( $resultadoPaginado);
+        echo json_encode($resultadoPaginado);
     }
 
     public function comentarEquipoRival()
@@ -52,6 +68,6 @@ class  ComentarioController extends AbstractController
         $idEquipoComentado = $_POST['idEquipoComentado'];
         $comentario = $_POST['comentario'];
         $deportividad = $_POST['deportividad'];
-        $this->comentarioEquipoService->comentarEquipoRival($idEquipoComentador,$idEquipoComentado,$deportividad,$comentario);
+        $this->comentarioEquipoService->comentarEquipoRival($idEquipoComentador, $idEquipoComentado, $deportividad, $comentario);
     }
 }
