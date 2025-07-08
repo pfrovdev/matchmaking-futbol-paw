@@ -51,9 +51,23 @@ class EquipoDataMapper extends DataMapper
         return null;
     }
 
+    public function findByTeamName(string $temName): ?Equipo
+    {
+        if($this->existsByTeamName($temName)){
+            return $this->map($this->findBy(['nombre' => $temName])[0]);
+        }
+        return null;
+    }
+
+
     public function existsByEmail(string $email): bool
     {
         return ! empty($this->findBy(['email' => $email]));
+    }
+
+    public function existsByTeamName(string $teamName): bool
+    {
+        return ! empty($this->findBy(['nombre' => $teamName]));
     }
 
     public function findAllPaginated(array $selectParams, string $orderBy = 'id_nivel_elo', string $direction = 'DESC'): array

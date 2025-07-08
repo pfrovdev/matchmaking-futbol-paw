@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: gcr.io/matchmaking-app-paw/mysql:latest # ✅ Imagen personalizada
+          image: gcr.io/matchmaking-app-paw/mysql-mm:v3
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:

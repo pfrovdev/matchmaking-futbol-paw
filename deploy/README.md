@@ -1,5 +1,10 @@
 # MATCHMAKING deploy
 
+## Conexion:
+gcloud auth login
+
+gcloud container clusters get-credentials matchmaking-cluster --region us-central1
+
 ## Para el redeploy
 
 ## Luego de realizar los cambios que necesitamos en el código:
@@ -33,3 +38,59 @@ kubectl get pods
 ## Como obtener los servicios y la ip púplica para el acceso (Buscar nginx con EXTERNAL-IP):
 
 kubectl get svc
+
+
+## Aplicar todos los deployments:
+
+kubectl apply -f deploy/kubernetes/configmap-env.yaml
+kubectl apply -f deploy/kubernetes/mysql-pvc.yaml
+kubectl apply -f deploy/kubernetes/mysql-deployment.yaml
+kubectl apply -f deploy/kubernetes/mysql-service.yaml
+kubectl apply -f deploy/kubernetes/nginx-php-deployment.yaml
+kubectl apply -f deploy/kubernetes/nginx-service.yaml
+kubectl apply -f deploy/kubernetes/redis-deployment.yaml
+kubectl apply -f deploy/kubernetes/redis-service.yaml
+
+## Ver los sercicios corriendo:
+
+kubectl get pods
+
+## Ver logs 
+
+kubectl logs deployment/mysql
+kubectl logs deployment/web -c php
+kubectl logs deployment/web -c nginx
+
+## Restart de servicios
+Para el servicio web
+kubectl rollout restart deployment web
+
+Para la base de datos
+kubectl rollout restart deployment mysql
+
+Para redis
+kubectl rollout restart deployment redis
+
+
+## Ingresar a un contenedor:
+kubectl exec -it -n <POD-NAME> -c web -- /bin/sh
+
+Una vez dentro podemos ejecutar el script para cargar la base de datos
+
+php src/Deploy_database/insert_demo_data.php
+
+
+para rdeploy mysql:
+docker build -t gcr.io/matchmaking-app-paw/mysql:v1 -f deploy/mysql/Dockerfile .
+docker push gcr.io/matchmaking-app-paw/mysql:v1
+
+
+
+## conectar al pod:
+kubectl get pods -l app=web
+kubectl exec -it NOMBRE_DEL_POD -c php -- bash
+php src/Deploy_database/insert_demo_data.php
+
+
+kubectl get pods -l app=mysql
+kubectl exec -it NOMBRE_DEL_POD -- bash

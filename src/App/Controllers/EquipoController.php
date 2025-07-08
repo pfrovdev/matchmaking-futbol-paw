@@ -115,11 +115,19 @@ class EquipoController extends AbstractController
             header('Location: /create-team');
             exit;
         }
+        if ($this->equipoService->getByTeamName($teamName)) {
+            $errors[] = "Ya existe un equipo registrado con ese nombre.";
+            $_SESSION['errors'] = $errors;
+            $_SESSION['old'] = array_merge($equipoTemp, $_POST);
+            header('Location: /create-team');
+            exit;
+        }
 
         $typeTeam = $this->equipoService->getTypeTeamById((int)$teamTypeId);
         if (!$typeTeam) {
             $errors[] = "El tipo de equipo seleccionado no es válido.";
         }
+
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = array_merge($equipoTemp, $_POST);
