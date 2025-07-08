@@ -62,7 +62,6 @@ export default class ComentarioController {
   async loadComentarios() {
     try {
       const { data: comentariosRaw, meta } = await ComentarioService.getComentarios({
-        profileId: this.profileId,
         page: this.currentPage,
         perPage: this.pageSize,
         order: this.order,

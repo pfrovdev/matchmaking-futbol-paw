@@ -120,7 +120,7 @@ export default class PartidoComponent {
 
       // <a href="profile-link" class="profile-link">ver perfil del equipo</a>
       const aProfile = document.createElement('a');
-      aProfile.href = `/equipo/${p.equipo.idEquipo}`;
+      aProfile.href = `/dashboard?id=${p.equipo.idEquipo}`;
       aProfile.classList.add('profile-link');
       aProfile.textContent = 'ver perfil del equipo';
       body.appendChild(aProfile);

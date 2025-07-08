@@ -137,7 +137,7 @@ export default class DesafioComponent {
 
       // Link al perfil del equipo
       const aProfile = document.createElement('a');
-      aProfile.href = `/equipo/${d.equipoDesafiante.idEquipo}`;
+      aProfile.href = `/dashboard?id=${d.equipoDesafiante.idEquipo}`;
       aProfile.classList.add('profile-link');
       aProfile.textContent = 'ver perfil del equipo';
       body.appendChild(aProfile);

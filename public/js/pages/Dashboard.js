@@ -5,7 +5,6 @@ import PartidoController from '../controllers/PartidoController.js';
 document.addEventListener('DOMContentLoaded', () => {
 
   const isOwner = document.body.dataset.isOwner === 'true';
-  const profileId = document.body.dataset.profileId?? null;
 
   // ----------- Inicialización de Comentarios -----------
   const comentarioContainer = document.getElementById('comment-list');
@@ -20,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   } else {
     const comentarioController = new ComentarioController({
-      profileId,
       comentarioContainer,
       filterSelect: filterComentarios,
       paginationContainer: paginationComentarios
@@ -32,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // no inicializo desafíos ni partidos
     return;
   }
-
+  
   // ----------- Inicialización de Desafíos ------------
   const desafioContainer = document.getElementById('challenge-list');
   const filterDesafios = document.getElementById('filtroDesafios');

@@ -42,7 +42,7 @@
       </p>
       <p class="team-motto"><?= htmlspecialchars($equipo->getLema()) ?></p>
       <small class="elo">ELO: <?= htmlspecialchars((string)$equipo->getEloActual()) ?></small>
-      <a href="/team/<?= urlencode((string)$equipo->getIdEquipo()) ?>"
+      <a href="/dashboard?id=<?= urlencode((string)$equipo->getIdEquipo()) ?>"
         class="profile-link">
         Ver perfil del equipo
       </a>

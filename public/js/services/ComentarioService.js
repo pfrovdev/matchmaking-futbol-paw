@@ -1,13 +1,14 @@
 import ComentarioEquipoDto from "../Dtos/ComentarioEquipoDto.js";
 
 export default class ComentarioService {
-  static async getComentarios({ perfilId = null, page = 1, perPage = 3, order = 'fecha_creacion', dir = 'DESC' } = {}) {
+  static async getComentarios({ page = 1, perPage = 3, order = 'fecha_creacion', dir = 'DESC' } = {}) {
     const params = new URLSearchParams({
       page: page.toString(),
       per_page: perPage.toString(),
       order,
       dir
     });
+    const perfilId = document.body.dataset.profileId;
     if (perfilId) {
       params.set('equipo_id', perfilId);
     }
