@@ -13,11 +13,37 @@
     <link rel="stylesheet" href="css/dashboard.css">
     <script type="module" src="js/pages/Dashboard.js" defer></script>
     <script src="/js/sidebar.js"></script>
+
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "SportsTeam",
+            "name": "<?= htmlspecialchars($equipoBanner->getNombreEquipo()) ?>",
+            "alternateName": "<?= htmlspecialchars($miEquipo->fields['acronimo']) ?>",
+            "description": "<?= htmlspecialchars($equipoBanner->getLema()) ?>",
+            "sport": "Soccer",
+            "identifier": {
+                "@type": "PropertyValue",
+                "name": "Elo Ranking",
+                "value": "<?= htmlspecialchars($equipoBanner->getEloActual()) ?>"
+            },
+            "gender": "<?= htmlspecialchars($equipoBanner->getTipoEquipo()) ?>",
+            <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
+                "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil()) ?>",
+            <?php endif; ?>
+            "location": {
+            "@type": "Place",
+                "geo": {
+                    "@type": "GeoCoordinates",
+                    "latitude": <?= $equipoBanner->getLatitud() ?>,
+                    "longitude": <?= $equipoBanner->getLongitud() ?>
+                }
+            }
+        }
+    </script>
 </head>
 
-<body
-    data-profile-id="<?= $equipoVistoId ?>"
-    data-is-owner="false">
+<body data-profile-id="<?= $equipoVistoId ?>" data-is-owner="false">
 
     <?php require "parts/header.php"; ?>
     <?php require "parts/side-navbar.php"; ?>
@@ -59,15 +85,18 @@
                             <div class="elo-bar">
                                 <span class="label"><?= htmlspecialchars($equipoBanner->getDescripcionElo()) ?></span>
                                 <div class="bar-bg">
-                                    <div class="bar-fill" style="width:<?= min(100, ($equipoBanner->getEloActual() / 1300) * 100) ?>%"></div>
+                                    <div class="bar-fill"
+                                        style="width:<?= min(100, ($equipoBanner->getEloActual() / 1300) * 100) ?>%">
+                                    </div>
                                 </div>
                                 <div class="elo-values">
-                                    <span>Elo: <?= htmlspecialchars($equipoBanner->getEloActual()) ?></span> / <span>1300</span>
+                                    <span>Elo: <?= htmlspecialchars($equipoBanner->getEloActual()) ?></span> /
+                                    <span>1300</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Card 2: historial de partidos -->
                     <div class="card history-card">
                         <h3 class="title-subsection">Historial de partidos</h3>
@@ -83,7 +112,8 @@
                     </div>
 
                     <form action="/desafios" method="POST" class="form-desafiar">
-                        <input type="hidden" name="id_equipo_desafiar" value="<?= htmlspecialchars($equipoBanner->getIdEquipo()) ?>">
+                        <input type="hidden" name="id_equipo_desafiar"
+                            value="<?= htmlspecialchars($equipoBanner->getIdEquipo()) ?>">
                         <button type="submit" class="btn btn-desafiar">Desafiar</button>
                     </form>
 
@@ -140,12 +170,12 @@
     <?php require "parts/footer.php"; ?>
     <script>
         const levelsEloMap = <?= json_encode(array_map(function ($row) {
-                                    return [
-                                        'descripcion' => $row['descripcion'],
-                                        'color_inicio' => $row['color_inicio'],
-                                        'color_fin' => $row['color_fin'],
-                                    ];
-                                }, $listLevelsElo)) ?>;
+            return [
+                'descripcion' => $row['descripcion'],
+                'color_inicio' => $row['color_inicio'],
+                'color_fin' => $row['color_fin'],
+            ];
+        }, $listLevelsElo)) ?>;
     </script>
 </body>
 

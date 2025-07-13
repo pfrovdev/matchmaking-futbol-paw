@@ -20,6 +20,43 @@
 
     <script src="./js/maps.js" defer></script>
     <script src="/js/sidebar.js"></script>
+
+    <?php if (!empty($equipos)): ?>
+        <script type="application/ld+json">
+            <?= json_encode([
+                "@context" => "https://schema.org",
+                "@type" => "ItemList",
+                "name" => "Resultados de búsqueda de equipos",
+                "numberOfItems" => count($equipos),
+                "itemListElement" => array_map(function ($equipo, $index) {
+                    return [
+                        "@type" => "ListItem",
+                        "position" => $index + 1,
+                        "item" => [
+                            "@type" => "SportsTeam",
+                            "name" => htmlspecialchars($equipo->getNombreEquipo()),
+                            "alternateName" => htmlspecialchars($equipo->getAcronimo() ?? ''),
+                            "identifier" => [
+                                "@type" => "PropertyValue",
+                                "name" => "Elo Ranking",
+                                "value" => $equipo->getEloActual()
+                            ],
+                            "description" => htmlspecialchars($equipo->getLema() ?? ''),
+                            "url" => "/team-profile.php?id=" . $equipo->getIdEquipo(), // ajustá esta URL
+                            "location" => [
+                                "@type" => "Place",
+                                "geo" => [
+                                    "@type" => "GeoCoordinates",
+                                    "latitude" => $equipo->getLatitud(),
+                                    "longitude" => $equipo->getLongitud()
+                                ]
+                            ]
+                        ]
+                    ];
+                }, $equipos, array_keys($equipos))
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?>
+        </script>
+    <?php endif; ?>
 </head>
 <body>
     <?php require "parts/header.php"; ?>

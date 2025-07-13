@@ -17,9 +17,10 @@ class EquipoBannerDto implements JsonSerializable
     public float $deportividad;
     public string $tipoEquipo;
     public string $numero_telefono;
-    public array $resultadosEquipo; 
+    public string $ubicacion;
+    public array $resultadosEquipo;
 
-    public function __construct(Equipo $equipo, string $descripcion_elo, float $deportividad, string $tipoEquipo, ? array $resultadosEquipo)
+    public function __construct(Equipo $equipo, string $descripcion_elo, float $deportividad, string $tipoEquipo, ?array $resultadosEquipo)
     {
         $this->id_equipo = $equipo->getIdEquipo();
         $this->nombre_equipo = $equipo->getNombre();
@@ -31,7 +32,8 @@ class EquipoBannerDto implements JsonSerializable
         $this->deportividad = $deportividad;
         $this->tipoEquipo = $tipoEquipo;
         $this->numero_telefono = $equipo->getTelefono();
-        $this->resultadosEquipo = $resultadosEquipo ?? []; 
+        $this->ubicacion = $equipo->getUbicacion();
+        $this->resultadosEquipo = $resultadosEquipo ?? [];
     }
 
     public function getIdEquipo(): string
@@ -79,14 +81,63 @@ class EquipoBannerDto implements JsonSerializable
         return $this->tipoEquipo;
     }
 
+    private function decodePointWKB(string $value): array
+    {
+        if (str_starts_with($value, '0x')) {
+            $value = hex2bin(substr($value, 2));
+        }
+
+        if (empty($value) || strlen($value) < 25) {
+            return ['lat' => 0.0, 'lon' => 0.0];
+        }
+
+        $endianness = unpack('C', substr($value, 4, 1))[1];
+
+        if ($endianness === 1) {
+            $data = unpack('Vsrid/Cendian/Lgeometry_type/dlon/dlat', $value);
+        } else {
+            $data = unpack('Nsrid/Cendian/Ngeometry_type/dlon/dlat', $value);
+        }
+
+        if (($data['geometry_type'] ?? null) !== 1) {
+            return ['lat' => 0.0, 'lon' => 0.0];
+        }
+        return [
+            'lat' => $data['lat'],
+            'lon' => $data['lon'],
+        ];
+    }
+
+
+    public function getUbicacion(): string
+    {
+        return $this->ubicacion;
+    }
+
+    public function getLatitud(): float
+    {
+        $coords = $this->decodePointWKB($this->ubicacion);
+        error_log("LAT: " . $coords['lat']);
+        return $coords['lat'];
+    }
+
+    public function getLongitud(): float
+    {
+        $coords = $this->decodePointWKB($this->ubicacion);
+        error_log("LON: " . $coords['lon']);
+        return $coords['lon'];
+    }
+
+
     public function getNumeroTelefono(): string
     {
         return $this->numero_telefono;
     }
 
-    public function getResultadosEquipo(): array{
+    public function getResultadosEquipo(): array
+    {
         return $this->resultadosEquipo;
-    } 
+    }
 
     public function jsonSerialize(): array
     {
@@ -99,8 +150,9 @@ class EquipoBannerDto implements JsonSerializable
             'elo_actual' => $this->elo_actual,
             'descripcion_elo' => $this->descripcion_elo,
             'deportividad' => $this->deportividad,
-            'tipoEquipo'=> $this->tipoEquipo,
+            'tipoEquipo' => $this->tipoEquipo,
             'numero_telefono' => $this->numero_telefono,
+            'ubicacion' => $this->ubicacion,
             'resultadosEquipo' => $this->resultadosEquipo
         ];
     }

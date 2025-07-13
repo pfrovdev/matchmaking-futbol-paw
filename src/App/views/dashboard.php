@@ -18,10 +18,41 @@ if (!$isOwner) {
   <link rel="stylesheet" href="css/dashboard.css">
   <script type="module" src="js/pages/Dashboard.js" defer></script>
   <script src="/js/sidebar.js"></script>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SportsTeam",
+      "name": "<?= htmlspecialchars($equipoBanner->getNombreEquipo()) ?>",
+      "sport": "Soccer",
+      "memberOf": {
+        "@type": "SportsOrganization",
+        "name": "Ligas de Fútbol Amateur"
+      },
+      "identifier": {
+        "@type": "PropertyValue",
+        "name": "Elo Ranking",
+        "value": "<?= htmlspecialchars($equipoBanner->getEloActual()) ?>"
+      },
+      "alternateName": "<?= htmlspecialchars($miEquipo->fields['acronimo']) ?>",
+      "description": "<?= htmlspecialchars($equipoBanner->getLema()) ?>",
+      <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
+            "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil()) ?>",
+      <?php endif; ?>
+      "gender": "<?= htmlspecialchars($equipoBanner->getTipoEquipo()) ?>",
+      "location": {
+      "@type": "Place",
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": <?= $equipoBanner->getLatitud() ?>,
+        "longitude": <?= $equipoBanner->getLongitud() ?>
+      }
+    }
+    }
+  </script>
 </head>
 
-<body
-  data-profile-id="<?= $equipoVistoId ?>"
+<body data-profile-id="<?= $equipoVistoId ?>"
   data-is-owner="<?= ($equipoVistoId === $miEquipo->getIdEquipo()) ? 'true' : 'false' ?>">
 
   <?php require "parts/header.php"; ?>
@@ -174,12 +205,12 @@ if (!$isOwner) {
   <?php require "parts/footer.php"; ?>
   <script>
     const levelsEloMap = <?= json_encode(array_map(function ($row) {
-                            return [
-                              'descripcion' => $row['descripcion'],
-                              'color_inicio' => $row['color_inicio'],
-                              'color_fin' => $row['color_fin'],
-                            ];
-                          }, $listLevelsElo)) ?>;
+      return [
+        'descripcion' => $row['descripcion'],
+        'color_inicio' => $row['color_inicio'],
+        'color_fin' => $row['color_fin'],
+      ];
+    }, $listLevelsElo)) ?>;
   </script>
 </body>
 
