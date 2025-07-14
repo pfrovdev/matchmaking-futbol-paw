@@ -118,6 +118,33 @@ class PartidoController extends AbstractController
         $formularioPartidoContrario = $this->partidoService->getUltimosFormulariosEquipoContrario($id_partido, $miEquipo->getIdEquipo());
         $miUltimaIteracion = $this->partidoService->getUltimaIteracion($id_partido, $miEquipo->getIdEquipo());
 
+        if ($miUltimaIteracion > 0) {
+            $miFormulario = $this->partidoService->getUltimosFormulariosEquipoContrario(
+                $id_partido,
+                $this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo()),
+            );
+        } else {
+            $miFormulario =  new FormularioPartidoDto(
+                $miEquipo->getIdEquipo(),
+                $id_partido,
+                0,
+                new FormularioEquipoDto(
+                    $this->equipoService->getBadgeEquipo($miEquipo->getIdEquipo()),
+                    0,
+                    0,
+                    0,
+                    0
+                ),
+                new FormularioEquipoDto(
+                    $this->equipoService->getBadgeEquipo($this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo())),
+                    0,
+                    0,
+                    0,
+                    0
+                )
+            );
+        }
+
         if (!$formularioPartidoContrario) {
             $formularioPartidoContrario =  new FormularioPartidoDto(
                 $this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo()),
