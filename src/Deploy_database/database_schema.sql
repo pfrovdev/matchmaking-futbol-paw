@@ -207,6 +207,8 @@ CREATE TABLE
         total_amarillas_visitante INT DEFAULT 0,
         total_rojas_local INT DEFAULT 0,
         total_rojas_visitante INT DEFAULT 0,
+        total_asistencias_local INT DEFAULT 0,
+        total_asistencias_visitante INT DEFAULT 0,
         resultado ENUM ('empate', 'gano_local', 'gano_visitante') NOT NULL,
         fecha_jugado DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (id_partido) REFERENCES Partido (id_partido),
