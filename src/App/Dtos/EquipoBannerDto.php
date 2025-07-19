@@ -26,15 +26,26 @@ class EquipoBannerDto implements JsonSerializable
         $this->nombre_equipo = $equipo->getNombre();
         $this->acronimo = $equipo->getAcronimo();
         $this->url_foto_perfil = $equipo->getUrlFotoPerfil() ?? '';
-        $this->lema = $equipo->getLema();
+        $this->lema = $this->utf8ize($equipo->getLema());
         $this->elo_actual = $equipo->getEloActual();
         $this->descripcion_elo = $descripcion_elo;
         $this->deportividad = $deportividad;
         $this->tipoEquipo = $tipoEquipo;
         $this->numero_telefono = $equipo->getTelefono();
-        $this->ubicacion = $equipo->getUbicacion();
+        $this->ubicacion = $this->utf8ize($equipo->getUbicacion()) ?? '';
         $this->resultadosEquipo = $resultadosEquipo ?? [];
     }
+
+    private function utf8ize($mixed) {
+    if (is_array($mixed)) {
+        foreach ($mixed as $key => $value) {
+            $mixed[$key] = $this->utf8ize($value);
+        }
+    } elseif (is_string($mixed)) {
+        return mb_convert_encoding($mixed, 'UTF-8', 'UTF-8');
+    }
+    return $mixed;
+}
 
     public function getIdEquipo(): string
     {
