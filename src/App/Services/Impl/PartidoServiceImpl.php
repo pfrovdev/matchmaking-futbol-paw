@@ -5,6 +5,7 @@ namespace Paw\App\Services\Impl;
 use Paw\App\DataMapper\PartidoDataMapper;
 use Paw\App\DataMapper\EstadoPartidoDataMapper;
 use Paw\App\Dtos\PartidoDto;
+use Paw\App\Models\ResultadoPartido;
 use Paw\App\Services\PartidoService;
 use Paw\App\Models\Partido;
 use Paw\App\Models\Desafio;
@@ -427,7 +428,51 @@ class PartidoServiceImpl implements PartidoService
                 );
                 $this->formularioPartidoDataMapper->save($formularioLocal);
                 $this->formularioPartidoDataMapper->save($formularioVisitante);
-                return ProcesarFormularioEstado::PARTIDO_TERMINADO;
+                // ACA HAY QUE CREAR EL RESULTADO DEL PARTIDO, ver lo de la fecha y el elo
+                $fecha_jugado = (new DateTime())->format('Y-m-d H:i:s');
+                $resultado = "gano_local";
+                if($formularioLocal->getTotalGoles() < $formularioVisitante->getTotalGoles()){
+                    $resultado = "gano_visitante";     
+                }
+                if($formularioLocal->getTotalGoles() == $formularioVisitante->getTotalGoles()){
+                    $resultado = "empate";     
+                }
+                $elo_inicial_local = 100;
+                $elo_final_local = 200;
+                $elo_inicial_visitante = 100;
+                $elo_final_visitante = 50;
+
+                $resultadoPartido = new ResultadoPartido();
+                
+                $desafioPorIdPartido = $this->desafioDataMapper->findByIdPartido($formularioLocal->getIdPartido());
+                $idEquipoVisitante = $desafioPorIdPartido->getIdEquipoDesafiado();
+                $idEquipoLocal = $desafioPorIdPartido->getIdEquipoDesafiante();
+                
+                $resultadoPartido->set([
+                    "id_partido" => $formularioLocal->getIdPartido(),
+                    "id_equipo_local" => $idEquipoLocal,
+                    "id_equipo_visitante" => $idEquipoVisitante,
+                    "goles_equipo_local" => $formularioLocal->getTotalGoles(),
+                    "goles_equipo_visitante" => $formularioVisitante->getTotalGoles(),
+                    "elo_inicial_local" => $elo_inicial_local,
+                    "elo_final_local" => $elo_final_local,
+                    "elo_inicial_visitante" => $elo_inicial_visitante,
+                    "elo_final_visitante" => $elo_final_visitante,
+                    "total_amarillas_local" => $formularioLocal->getTotalAmarillas(),
+                    "total_amarillas_visitante" =>  $formularioVisitante->getTotalAmarillas(),
+                    "total_rojas_local" => $formularioLocal->getTotalRojas(),
+                    "total_rojas_visitante" =>  $formularioVisitante->getTotalRojas(),
+                    "total_asistencias_local" => $formularioLocal->getTotalAsistencias(),
+                    "total_asistencias_visitante" => $formularioVisitante->getTotalAsistencias(),
+                    "fecha_jugado" => $fecha_jugado,
+                    "resultado" => $resultado
+                ]);
+
+                $idResultadoPartido = $this->resultadoPartidoDataMapper->save($resultadoPartido);
+                if ($idResultadoPartido){
+                    return ProcesarFormularioEstado::PARTIDO_TERMINADO;
+                }
+                
             }
         }
 
@@ -440,6 +485,7 @@ class PartidoServiceImpl implements PartidoService
         );
         $this->formularioPartidoDataMapper->save($formularioLocal);
         $this->formularioPartidoDataMapper->save($formularioVisitante);
+        
         return ProcesarFormularioEstado::NUEVA_ITERACION;
     }
 
