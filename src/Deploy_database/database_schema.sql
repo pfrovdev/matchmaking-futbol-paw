@@ -125,6 +125,7 @@ CREATE TABLE
         tarjetas_rojas INT DEFAULT 0,
         tarjetas_amarillas INT DEFAULT 0,
         jugados INT DEFAULT 0,
+        ganados INT DEFAULT 0,
         empatados INT DEFAULT 0,
         perdidos INT DEFAULT 0,
         FOREIGN KEY (id_equipo) REFERENCES Equipo (id_equipo)
