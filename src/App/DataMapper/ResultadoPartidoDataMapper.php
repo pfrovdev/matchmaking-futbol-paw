@@ -61,6 +61,63 @@ class ResultadoPartidoDataMapper extends DataMapper
         }
         return [];
     }
+
+    public function getResultadosPartidosEstadisticas(int $id_equipo)
+    {
+        $partidosComoLocal = $this->findBy(['id_equipo_local' => $id_equipo]);
+        $partidosComoVisitante = $this->findBy(['id_equipo_visitante' => $id_equipo]);
+
+        $todosLosPartidos = array_merge($partidosComoLocal, $partidosComoVisitante);
+
+        // Ordenarlos por fecha descendente
+        usort($todosLosPartidos, function ($a, $b) {
+            return strtotime($b['fecha_jugado']) <=> strtotime($a['fecha_jugado']);
+        });
+
+        $eloMasAlto = 0;
+        $golesEnContra = 0;
+        $ultimos5 = [];
+
+        foreach ($todosLosPartidos as $partido) {
+            // ELO
+            if ((int) $partido['id_equipo_local'] === $id_equipo) {
+                $elo = $partido['elo_final_local'] ?? 0;
+            } else {
+                $elo = $partido['elo_final_visitante'] ?? 0;
+            }
+            $eloMasAlto = max($eloMasAlto, $elo);
+
+            // Goles en contra
+            if ((int) $partido['id_equipo_local'] === $id_equipo) {
+                $golesEnContra += $partido['goles_equipo_visitante'];
+            } else {
+                $golesEnContra += $partido['goles_equipo_local'];
+            }
+
+            // Últimos 5 partidos
+            if (count($ultimos5) < 5) {
+                $resultado = $partido['resultado'];
+                if (
+                    ((int) $partido['id_equipo_local'] === $id_equipo && $resultado === 'gano_local') ||
+                    ((int) $partido['id_equipo_visitante'] === $id_equipo && $resultado === 'gano_visitante')
+                ) {
+                    $ultimos5[] = '✅';
+                } elseif ($resultado === 'empate') {
+                    $ultimos5[] = '⚪';
+                } else {
+                    $ultimos5[] = '❌';
+                }
+            }
+        }
+
+        return [
+            'goles_en_contra' => $golesEnContra,
+            'elo_mas_alto' => $eloMasAlto,
+            'ultimos_5_partidos' => $ultimos5,
+        ];
+    }
+
+
     public function save(ResultadoPartido $resultadoPartido): int
     {
         $data = [
@@ -82,7 +139,7 @@ class ResultadoPartidoDataMapper extends DataMapper
             "fecha_jugado" => $resultadoPartido->getFechaJugado(),
             "resultado" => $resultadoPartido->getResultado()
         ];
-        
+
         return (int) $this->insert($data);
     }
 

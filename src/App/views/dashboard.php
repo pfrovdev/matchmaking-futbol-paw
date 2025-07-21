@@ -6,7 +6,38 @@ if (!$isOwner) {
   require $this->viewsDir . 'profile.php';
   return;
 }
+$jugados = 0;
+$goles = 0;
+$asistencias = 0;
+$amarillas = 0;
+$rojas = 0;
+$ganados = 0;
+$empatados = 0;
+$perdidos = 0;
+$promedioGoles = 0;
+$promedioAsistencias = 0;
+$promedioAmarillas = 0;
+
+if ($estadisticas) {
+  $jugados = $estadisticas->getJugados();
+  $goles = $estadisticas->getGoles();
+  $golesEnContra = $resultadosPartidosEstadisticas['goles_en_contra'] ?? 0;
+  $asistencias = $estadisticas->getAsistencias();
+  $amarillas = $estadisticas->getTarjetasAmarillas();
+  $rojas = $estadisticas->getTarjetasRojas();
+  $ganados = $estadisticas->getGanados();
+  $empatados = $estadisticas->getEmpatados();
+  $perdidos = $estadisticas->getPerdidos();
+  $promedioGolesEnContra = $jugados > 0 ? round($golesEnContra / $jugados, 2) : 0;
+  $diferenciaGol = $goles - $golesEnContra;
+  $eloMasAlto = $resultadosPartidosEstadisticas['elo_mas_alto'] ?? 0;
+
+  $promedioGoles = $jugados > 0 ? round($goles / $jugados, 2) : 0;
+  $promedioAsistencias = $jugados > 0 ? round($asistencias / $jugados, 2) : 0;
+  $promedioAmarillas = $jugados > 0 ? round($amarillas / $jugados, 2) : 0;
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -37,7 +68,7 @@ if (!$isOwner) {
       "alternateName": "<?= htmlspecialchars($miEquipo->fields['acronimo']) ?>",
       "description": "<?= htmlspecialchars($equipoBanner->getLema()) ?>",
       <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
-            "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil()) ?>",
+                        "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil()) ?>",
       <?php endif; ?>
       "gender": "<?= htmlspecialchars($equipoBanner->getTipoEquipo()) ?>",
       "location": {
@@ -143,29 +174,41 @@ if (!$isOwner) {
         <!-- Columna Derecha -->
         <aside class="col-right">
           <!-- Card 4: Estadísticas -->
-          <div class="card stats-card">
-            <h3 class="title-subsection">Estadísticas</h3>
-            <dl>
-              <dt>G/P:</dt>
-              <dd>1.2</dd>
-              <dt>A/P:</dt>
-              <dd>1.2</dd>
-              <dt>%G/A:</dt>
-              <dd>50%</dd>
-            </dl>
-            <h4>Coleadores</h4>
-            <ol>
-              <li>Nombre Jugador - 50</li>
-              <li>Nombre Jugador - 40</li>
-              <li>Nombre Jugador - 30</li>
-            </ol>
-            <h4>Asistidores</h4>
-            <ol>
-              <li>Nombre Jugador - 20</li>
-              <li>Nombre Jugador - 15</li>
-              <li>Nombre Jugador - 10</li>
-            </ol>
-          </div>
+          <?php if ($estadisticas): ?>
+            <section class="card stats-card">
+              <h3 class="title-subsection">Estadísticas</h3>
+              <ul>
+                <li><strong>Partidos jugados:</strong> <?= htmlspecialchars($jugados) ?></li>
+                <li><strong>Victorias:</strong> <?= htmlspecialchars($ganados) ?></li>
+                <li><strong>Empates:</strong> <?= htmlspecialchars($empatados) ?></li>
+                <li><strong>Derrotas:</strong> <?= htmlspecialchars($perdidos) ?></li>
+                <li><strong>Goles a favor:</strong> <?= htmlspecialchars($goles) ?> (<?= $promedioGoles ?> por partido)
+                </li>
+                <li><strong>Goles en contra:</strong> <?= htmlspecialchars($golesEnContra) ?>
+                  (<?= $promedioGolesEnContra ?> por partido)</li>
+                <li><strong>Diferencia de gol:</strong> <?= $diferenciaGol >= 0 ? '+' : '' ?><?= $diferenciaGol ?></li>
+                <li><strong>ELO actual:</strong> <?= htmlspecialchars($equipoBanner->getEloActual()) ?></li>
+                <li><strong>ELO más alto:</strong> <?= htmlspecialchars($eloMasAlto) ?></li>
+                <li><strong>Tarjetas amarillas totales:</strong> <?= htmlspecialchars($amarillas) ?></li>
+                <li><strong>Tarjetas amarillas por partido:</strong> <?= $promedioAmarillas ?></li>
+                <li><strong>Tarjetas rojas totales:</strong> <?= htmlspecialchars($rojas) ?></li>
+                <li><strong>Asistencias:</strong> <?= htmlspecialchars($asistencias) ?></li>
+                <li><strong>Asistencias por partido:</strong> <?= $promedioAsistencias ?></li>
+                <?php if (!empty($resultadosPartidosEstadisticas['ultimos_5_partidos'])): ?>
+                  <li><strong>Últimos 5 partidos:</strong>
+                    <?= implode(' ', $resultadosPartidosEstadisticas['ultimos_5_partidos']) ?>
+                  </li>
+                <?php else: ?>
+                  <li><strong>Últimos 5 partidos:</strong> No hay partidos aún.</li>
+                <?php endif; ?>
+              </ul>
+            </section>
+          <?php else: ?>
+            <section class="card stats-card">
+              <h3 class="title-subsection">Estadísticas</h3>
+              <p>Este equipo aún no tiene estadísticas registradas.</p>
+            </section>
+          <?php endif; ?>
 
           <!-- Card 5: Comentarios -->
           <div class="card comments-card">

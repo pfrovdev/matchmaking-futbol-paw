@@ -564,7 +564,7 @@ class PartidoServiceImpl implements PartidoService
                     $this->estadisticasDataMapper->updateEstadisticas($estaditicasEquipoVisitante);
                 }
                 
-                // $idResultadoPartido = $this->resultadoPartidoDataMapper->save($resultadoPartido);
+                $idResultadoPartido = $this->resultadoPartidoDataMapper->save($resultadoPartido);
                 $idResultadoPartido = true;
                 if ($idResultadoPartido) {
                     return ProcesarFormularioEstado::PARTIDO_TERMINADO;

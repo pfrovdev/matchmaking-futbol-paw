@@ -3,6 +3,8 @@
 namespace Paw\App\Controllers;
 
 use Monolog\Logger;
+use Paw\App\DataMapper\EstaditicasDataMapper;
+use Paw\App\DataMapper\ResultadoPartidoDataMapper;
 use Paw\App\Dtos\EquipoBannerDto;
 use Paw\App\Models\Equipo;
 use Paw\App\Services\ComentarioEquipoService;
@@ -21,8 +23,13 @@ class EquipoController extends AbstractController
     private DesafioService $desafioService;
     private NotificationService $notificationService;
     private ComentarioEquipoService $comentarioEquipoService;
+    private EstaditicasDataMapper  $estadisticasDataMapper;
+    private ResultadoPartidoDataMapper  $resultadoPartidoDataMapper;
 
-    public function __construct(Logger $logger, EquipoService $equipoService, PartidoService $partidoService, DesafioService $desafioService, NotificationService $notificationService, ComentarioEquipoService $comentarioEquipoService, AuthMiddelware $auth)
+    public function __construct(Logger $logger, EquipoService $equipoService, PartidoService $partidoService, 
+                                DesafioService $desafioService, NotificationService $notificationService, 
+                                ComentarioEquipoService $comentarioEquipoService, AuthMiddelware $auth,
+                                EstaditicasDataMapper  $estadisticasDataMapper, ResultadoPartidoDataMapper  $resultadoPartidoDataMapper)
     {
         parent::__construct($logger, $auth);
         $this->equipoService = $equipoService;
@@ -30,6 +37,8 @@ class EquipoController extends AbstractController
         $this->desafioService = $desafioService;
         $this->notificationService = $notificationService;
         $this->comentarioEquipoService = $comentarioEquipoService;
+        $this->estadisticasDataMapper = $estadisticasDataMapper;
+        $this->resultadoPartidoDataMapper = $resultadoPartidoDataMapper;
     }
 
     public function createAccount()
@@ -181,7 +190,11 @@ class EquipoController extends AbstractController
         }
 
         $cantidadDeVotos = $this->comentarioEquipoService->getCantidadDeVotosByIdEquipo($equipoVistoId);
-
+        $estadisticas = $this->estadisticasDataMapper->findIdByIdEquipo($equipoVisto->getIdEquipo());
+        if ($estadisticas) {  
+            $resultadosPartidosEstadisticas = $this->resultadoPartidoDataMapper->getResultadosPartidosEstadisticas($equipoVisto->getIdEquipo());
+        }
+        
         $equipoBanner = $this->equipoService->getEquipoBanner($equipoVisto);
         $listLevelsElo = $this->equipoService->getAllNivelElo();
         

@@ -178,7 +178,9 @@ class ContainerConfig
             $c->get(DesafioService::class),
             $c->get(NotificationService::class),
             $c->get(ComentarioEquipoService::class),
-            $c->get(AuthMiddelware::class)
+            $c->get(AuthMiddelware::class),
+              $c->get(EstaditicasDataMapper::class),
+              $c->get(ResultadoPartidoDataMapper::class),
         ));
 
         $c->set(DesafioController::class, fn($c) => new DesafioController(
