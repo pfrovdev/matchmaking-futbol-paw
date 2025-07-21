@@ -23,12 +23,13 @@ class EquipoServiceImpl implements EquipoService
     private NivelEloDataMapper $nivelEloDataMapper;
     private ResultadoPartidoDataMapper $resultadoPartidoDataMapper;
 
-    public function __construct(TipoEquipoDataMapper $tipoEquipoDataMapper, 
-                                EquipoDataMapper $equipoDataMapper, 
-                                ComentarioDataMapper $comentarioDataMapper, 
-                                NivelEloDataMapper   $nivelEloDataMapper,
-                                ResultadoPartidoDataMapper $resultadoPartidoDataMapper)
-    {
+    public function __construct(
+        TipoEquipoDataMapper $tipoEquipoDataMapper,
+        EquipoDataMapper $equipoDataMapper,
+        ComentarioDataMapper $comentarioDataMapper,
+        NivelEloDataMapper $nivelEloDataMapper,
+        ResultadoPartidoDataMapper $resultadoPartidoDataMapper
+    ) {
         $this->tipoEquipoDataMapper = $tipoEquipoDataMapper;
         $this->equipoDataMapper = $equipoDataMapper;
         $this->comentarioDataMapper = $comentarioDataMapper;
@@ -46,9 +47,9 @@ class EquipoServiceImpl implements EquipoService
         foreach ($typeTeamAll as $data) {
             $typeTeam = new TipoEquipo();
             $typeTeam->set([
-                'id_tipo_equipo'     => $data['id_tipo_equipo'] ?? null,
-                'tipo'               => $data['tipo'] ?? null,
-                'descripcion_corta'  => $data['descripcion_corta'] ?? null,
+                'id_tipo_equipo' => $data['id_tipo_equipo'] ?? null,
+                'tipo' => $data['tipo'] ?? null,
+                'descripcion_corta' => $data['descripcion_corta'] ?? null,
             ]);
 
             $typeTeams[] = $typeTeam;
@@ -72,9 +73,9 @@ class EquipoServiceImpl implements EquipoService
         $typeTeamById = $this->tipoEquipoDataMapper->findTypeTeamById($typeTeamId);
         $typeTeam = new TipoEquipo();
         $typeTeam->set([
-            'id_tipo_equipo'      => $typeTeamById->id_tipo_equipo,
-            'tipo'                => $typeTeamById->tipo,
-            'descripcion_corta'   => $typeTeamById->descripcion_corta,
+            'id_tipo_equipo' => $typeTeamById->id_tipo_equipo,
+            'tipo' => $typeTeamById->tipo,
+            'descripcion_corta' => $typeTeamById->descripcion_corta,
         ]);
         return $typeTeam;
     }
@@ -90,7 +91,7 @@ class EquipoServiceImpl implements EquipoService
         ?array $selectParams = [],
         ?string $orderBy = null,
         ?string $direction = null
-    ): array    {
+    ): array {
         $equipos = $this->equipoDataMapper->findAllPaginated($selectParams, $orderBy, $direction);
 
         $equiposBanner = [];
@@ -108,11 +109,15 @@ class EquipoServiceImpl implements EquipoService
         $descElo = $this->getDescripcionNivelEloById($equipo->getIdEquipo());
         $deportividad = $this->getDeportividadEquipo($equipo->getIdEquipo());
         $tipoEquipo = $this->tipoEquipoDataMapper->findById(['id_tipo_equipo' => $equipo->getIdTipoEquipo()]);
-        
+
         $resultadosEquipo = $this->setResultadoParitdo($equipo->getIdEquipo());
-        $equipoBanner = new EquipoBannerDto($equipo, $descElo, 
-                                        $deportividad, $tipoEquipo->getTipo(), 
-                                        $resultadosEquipo);
+        $equipoBanner = new EquipoBannerDto(
+            $equipo,
+            $descElo,
+            $deportividad,
+            $tipoEquipo->getTipo(),
+            $resultadosEquipo
+        );
         return $equipoBanner;
     }
 
@@ -126,18 +131,18 @@ class EquipoServiceImpl implements EquipoService
         $team = new Equipo();
 
         $team->set([
-            "email"           => $equipo->getEmail(),
-            "contrasena"      => $equipo->getContrasena(),
-            "telefono"        => $equipo->getTelefono(),
-            "nombre"          => $equipo->getNombre(),
-            "acronimo"        => $equipo->getAcronimo(),
-            "id_tipo_equipo"  => $equipo->getIdTipoEquipo(),
-            "ubicacion"       => $equipo->getUbicacion(),
-            "lema"            => $equipo->getLema(),
-            "id_nivel_elo"    => $equipo->getIdNivelElo(),
-            "id_rol"          => $equipo->getIdRol(),
-            "elo_actual"      => $equipo->getEloActual(),
-            "fecha_creacion"  => $equipo->getFechaCreacion(),
+            "email" => $equipo->getEmail(),
+            "contrasena" => $equipo->getContrasena(),
+            "telefono" => $equipo->getTelefono(),
+            "nombre" => $equipo->getNombre(),
+            "acronimo" => $equipo->getAcronimo(),
+            "id_tipo_equipo" => $equipo->getIdTipoEquipo(),
+            "ubicacion" => $equipo->getUbicacion(),
+            "lema" => $equipo->getLema(),
+            "id_nivel_elo" => $equipo->getIdNivelElo(),
+            "id_rol" => $equipo->getIdRol(),
+            "elo_actual" => $equipo->getEloActual(),
+            "fecha_creacion" => $equipo->getFechaCreacion(),
             "url_foto_perfil" => $equipo->getUrlFotoPerfil(),
         ]);
         $newId = $this->equipoDataMapper->insertNewTeam($team);
@@ -153,7 +158,7 @@ class EquipoServiceImpl implements EquipoService
         $deportividad = array_reduce($comentarios, function ($acc, $comentario) {
             return $acc + $comentario->getDeportividad();
         }, 0);
-        return count($comentarios) == 0? 0 : $deportividad / count($comentarios);
+        return count($comentarios) == 0 ? 0 : $deportividad / count($comentarios);
     }
 
     function getEquipoById(int $idEquipo): Equipo
@@ -175,37 +180,40 @@ class EquipoServiceImpl implements EquipoService
         return $nivelElo->getDescripcion();
     }
 
-    function getAllNivelElo(): array{
+    function getAllNivelElo(): array
+    {
         $nivelElo = $this->nivelEloDataMapper->findAll();
         return $nivelElo;
     }
 
-    public function setResultadoParitdo(int $id_equipo): array{
+    public function setResultadoParitdo(int $id_equipo): array
+    {
         $resultados = [];
         $resultadoPartidosDisputados = $this->resultadoPartidoDataMapper->findByIdEquipo($id_equipo);
-         if ((int)$id_equipo === (int)$resultadoPartidosDisputados['id_equipo']) {
+        if ((int) $id_equipo === (int) $resultadoPartidosDisputados['id_equipo']) {
             $resultados = [
                 'ganados' => $resultadoPartidosDisputados['ganados'],
                 'perdidos' => $resultadoPartidosDisputados['perdidos'],
-                'empates' =>  $resultadoPartidosDisputados['empatados']
+                'empates' => $resultadoPartidosDisputados['empatados']
             ];
         } else {
             // Setear 0 en caso de que no sea el equipo que jugó
-            $resultados =[
+            $resultados = [
                 'ganados' => 0,
                 'perdidos' => 0,
-                'empates' =>  0
+                'empates' => 0
             ];
         }
         return $resultados;
     }
 
-    public function setRestultadosPartido(array $todosLosEquipos): array {
+    public function setRestultadosPartido(array $todosLosEquipos): array
+    {
         // Recorremos y agregamos los datos de partidos ganados, perdidos y empatados
         foreach ($todosLosEquipos as &$equipo) {
             $resultadoPartidosDisputados = $this->resultadoPartidoDataMapper->findByIdEquipo($equipo->id_equipo);
-            
-            if ((int)$equipo->id_equipo === (int)$resultadoPartidosDisputados['id_equipo']) {
+
+            if ((int) $equipo->id_equipo === (int) $resultadoPartidosDisputados['id_equipo']) {
                 $equipo->ganados = $resultadoPartidosDisputados['ganados'];
                 $equipo->perdidos = $resultadoPartidosDisputados['perdidos'];
                 $equipo->empatados = $resultadoPartidosDisputados['empatados'];
@@ -219,24 +227,26 @@ class EquipoServiceImpl implements EquipoService
         return $todosLosEquipos;
     }
 
-    public function getAllEquiposbyId(int $id_equipo, array $todosLosEquipos) {
+    public function getAllEquiposbyId(int $id_equipo, array $todosLosEquipos)
+    {
         foreach ($todosLosEquipos as &$equipo) {
-            if ((int)$equipo->id_equipo === (int)$id_equipo) {
+            if ((int) $equipo->id_equipo === (int) $id_equipo) {
                 return $equipo;
             }
         }
         return null;
     }
 
-    public function quitarMiEquipoDeEquipos(array $todosLosEquipos, Equipo $miEquipo){
+    public function quitarMiEquipoDeEquipos(array $todosLosEquipos, Equipo $miEquipo)
+    {
         // Quitamos nuestro equipo
-        $todosLosEquipos = array_filter($todosLosEquipos, function($equipo) use ($miEquipo) {
-            return (int)$equipo->id_equipo !== (int)$miEquipo->id_equipo;
+        $todosLosEquipos = array_filter($todosLosEquipos, function ($equipo) use ($miEquipo) {
+            return (int) $equipo->id_equipo !== (int) $miEquipo->id_equipo;
         });
         return $todosLosEquipos;
     }
 
-    public function getBadgeEquipo(int $id_equipo) : BadgeEquipoFormularoDto
+    public function getBadgeEquipo(int $id_equipo): BadgeEquipoFormularoDto
     {
         $equipo = $this->equipoDataMapper->findById(['id_equipo' => $id_equipo]);
         $descElo = $this->getDescripcionNivelEloById($equipo->getIdEquipo());
@@ -248,6 +258,14 @@ class EquipoServiceImpl implements EquipoService
         );
 
         return $badge;
+    }
+
+    public function ActualizarEloActualEquipo(Equipo $equipo): bool
+    {
+        $data = [
+            'elo_actual' => $equipo->getEloActual(),
+        ];
+        return (bool) $this->equipoDataMapper->update($data, ['id_equipo' => $equipo->getIdEquipo()]);
     }
 
 }
