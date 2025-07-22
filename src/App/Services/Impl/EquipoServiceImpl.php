@@ -268,4 +268,16 @@ class EquipoServiceImpl implements EquipoService
         return (bool) $this->equipoDataMapper->update($data, ['id_equipo' => $equipo->getIdEquipo()]);
     }
 
+    public function updateTeam(Equipo $equipo): bool
+    {
+        $data = [
+            'acronimo'         => $equipo->getAcronimo(),
+            'lema'             => $equipo->getLema(),
+            'url_foto_perfil'  => $equipo->getUrlFotoPerfil(),
+        ];
+        $where = ['id_equipo' => $equipo->getIdEquipo()];
+    
+        return (bool) $this->equipoDataMapper->update($data, $where);
+    }
+
 }

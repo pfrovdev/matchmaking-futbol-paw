@@ -104,15 +104,19 @@ if ($estadisticas) {
               <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
                 <img src="<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil()) ?>" alt="Foto de perfil">
               <?php else: ?>
-                <div class="placeholder-foto">Arrastra-soltar la foto de tu equipo aquí<br>
-                  <button class="btn-link">Cargar un documento</button>
+                <div class="placeholder-foto">Coloca la foto de tu equipo aquí<br>
+                  <button class="btn-link">Cargando un enlace</button>
                 </div>
               <?php endif; ?>
             </div>
             <div class="perfil-info">
-              <h2>
-                <?= htmlspecialchars($equipoBanner->getNombreEquipo()) . " (" . htmlspecialchars($miEquipo->fields['acronimo']) . ")" ?>
-              </h2>
+            <h2 class="team-header">
+              <?= htmlspecialchars($equipoBanner->getNombreEquipo()) ?>
+              <span class="acronym">(<?= htmlspecialchars($miEquipo->fields['acronimo']) ?>)</span>
+              <button type="button" class="btn-link open-edit-modal" title="Editar perfil">
+                ✎
+              </button>
+            </h2>
               <p class="lema"><?= htmlspecialchars($equipoBanner->getLema()) ?></p>
               <div class="sport-icons">
                 Deportividad:
@@ -242,7 +246,42 @@ if ($estadisticas) {
         </section>
 
       </div>
-
+    <div id="edit-team-modal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <button id="close-modal" class="modal-close">&times;</button>
+        <h2>Editar perfil de equipo</h2>
+        <form action="/update-team" method="POST" class="edit-team-form">
+          <label>
+            Acrónimo (máx. 3 chars)
+            <input type="text" name="team-acronym"
+                  value="<?= htmlspecialchars($miEquipo->getAcronimo()) ?>">
+          </label>
+          <label>
+            Lema 
+            <input type="text" name="team-motto"
+                  value="<?= htmlspecialchars($miEquipo->getLema()) ?>">
+          </label>
+          <label>
+            URL foto perfil
+            <input
+              type="url"
+              name="team-url"
+              id="team-url"
+              value="<?= htmlspecialchars($miEquipo->getUrlFotoPerfil()) ?>"
+              maxlength="255"
+              pattern="https?://.+"
+              title="Debe empezar con http:// o https:// y tener como máximo 255 caracteres.">
+          </label>
+          <small
+            id="url-error"
+            class="error-message"
+            style="display:none; color:#d32f2f; font-size:0.8rem;">
+            La URL debe empezar con http:// o https:// y no superar 255 caracteres.
+          </small>
+          <button type="submit" class="btn-primary">Guardar</button>
+        </form>
+      </div>
+    </div>
   </main>
 
   <?php require "parts/footer.php"; ?>
