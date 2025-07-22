@@ -87,5 +87,51 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     controller.init();
   }
+ // ----------- Lógica del Modal de edición ------------
+ const modalTriggers = document.querySelectorAll('.open-edit-modal, .perfil-foto .btn-link');
+ const modal = document.getElementById('edit-team-modal');
+ const closeBtn = document.getElementById('close-modal');
+ const form = modal?.querySelector('form');
+ const urlInput = form?.querySelector('#team-url');
+ const urlError = document.getElementById('url-error');
 
+ modalTriggers.forEach(btn => {
+   btn.addEventListener('click', () => {
+     modal.classList.remove('hidden');
+     document.body.style.overflow = 'hidden'; // evitar scroll atrás
+   });
+ });
+
+ closeBtn?.addEventListener('click', () => {
+   modal.classList.add('hidden');
+   document.body.style.overflow = '';
+   urlError.style.display = 'none';
+ });
+
+ modal?.addEventListener('click', e => {
+   if (e.target === modal) {
+     modal.classList.add('hidden');
+     document.body.style.overflow = '';
+     urlError.style.display = 'none';
+   }
+ });
+
+ if (form && urlInput && urlError) {
+  form.addEventListener('submit', e => {
+    const url = urlInput.value.trim();
+    if (url !== '') {
+      const validPattern = /^https?:\/\/.+/;
+      if (url.length > 255 || !validPattern.test(url)) {
+        e.preventDefault();
+        urlError.textContent = url.length > 255
+          ? 'La URL no puede superar 255 caracteres.'
+          : 'La URL debe empezar con http:// o https://';
+        urlError.style.display = 'block';
+        urlInput.focus();
+        return;
+      }
+    }
+    urlError.style.display = 'none';
+  });
+ }
 });
