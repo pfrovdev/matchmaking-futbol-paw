@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
  const closeBtn = document.getElementById('close-modal');
  const form = modal?.querySelector('form');
  const urlInput = form?.querySelector('#team-url');
- const urlError = document.getElementById('url-error');
+ const urlError = form.querySelector('#url-error');
 
  modalTriggers.forEach(btn => {
    btn.addEventListener('click', () => {
