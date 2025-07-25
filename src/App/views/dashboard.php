@@ -117,13 +117,13 @@ if ($estadisticas) {
             </div>
             <div class="perfil-info">
             <h2 class="team-header">
-              <?= htmlspecialchars($equipoBanner->getNombreEquipo()) ?>
-              <span class="acronym">(<?= htmlspecialchars($miEquipo->fields['acronimo']) ?>)</span>
+              <?= htmlspecialchars($equipoBanner->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>
+              <span class="acronym">(<?= htmlspecialchars($miEquipo->fields['acronimo'], ENT_QUOTES, 'UTF-8') ?>)</span>
               <button type="button" class="btn-link open-edit-modal" title="Editar perfil">
                 ✎
               </button>
             </h2>
-              <p class="lema"><?= htmlspecialchars($equipoBanner->getLema()) ?></p>
+              <p class="lema"><?= htmlspecialchars($equipoBanner->getLema(), ENT_QUOTES, 'UTF-8') ?></p>
               <div class="sport-icons">
                 Deportividad:
                 <!-- Faltaria hacer algo tipo, hasta la cantidad que me mandan

@@ -276,7 +276,7 @@
 
 .btn-link {
   background: none;
-  border: none;
+  border: 1px solid var(--button-primary-background-color);
   color: var(--primary-color);
   cursor: pointer;
   padding: 0;

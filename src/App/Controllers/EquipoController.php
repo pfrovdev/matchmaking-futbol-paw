@@ -361,23 +361,26 @@ class EquipoController extends AbstractController
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner([], '', '');
         $todosLosEquipos = $this->equipoService->setRestultadosPartido($todosLosEquipos);
         $listLevelsElo = $this->equipoService->getAllNivelElo();
-
+        $estadisticas = $this->estadisticasDataMapper->findIdByIdEquipo($equipo->getIdEquipo());
+        $resultadosPartidosEstadisticas = $estadisticas
+            ? $this->resultadoPartidoDataMapper->getResultadosPartidosEstadisticas($equipo->getIdEquipo())
+            : null;
         $equipo = $this->equipoService->getAllEquiposbyId($equipo->getIdEquipo(), $todosLosEquipos);
         require $this->viewsDir . 'details-team.php';
     }
 
     public function updateTeam()
     {
-        $this->logger->info('updateTeam $_POST: '. print_r($_POST, true));
-        $equipoJwtData = $this->auth->verificar(['ADMIN','USUARIO']);
-        $miEquipo      = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
-    
+        $this->logger->info('updateTeam $_POST: ' . print_r($_POST, true));
+        $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
+
         $acronimoInput = trim($_POST['team-acronym'] ?? '');
-        $lemaInput     = trim($_POST['team-motto']   ?? '');
-        $urlInput      = trim($_POST['team-url']     ?? '');
-    
+        $lemaInput = trim($_POST['team-motto'] ?? '');
+        $urlInput = trim($_POST['team-url'] ?? '');
+
         $errors = [];
-    
+
         if ($acronimoInput !== '') {
             if (strlen($acronimoInput) > 3) {
                 $errors[] = "El acrónimo no puede superar 3 caracteres.";
@@ -392,34 +395,34 @@ class EquipoController extends AbstractController
                 $_SESSION['errors'][] = "La URL es demasiado larga (máx. 255 caracteres).";
                 header("Location: /dashboard?id={$miEquipo->getIdEquipo()}");
                 exit;
-              }
+            }
         }
-    
+
         if ($errors) {
             $_SESSION['errors'] = $errors;
             header("Location: /dashboard?id={$miEquipo->getIdEquipo()}");
             exit;
         }
-    
+
         $acronimo = $acronimoInput !== '' ? $acronimoInput : $miEquipo->getAcronimo();
-        $lema     = $lemaInput     !== '' ? $lemaInput     : $miEquipo->getLema();
-        $url      = $urlInput      !== '' ? $urlInput      : null;
-    
- 
+        $lema = $lemaInput !== '' ? $lemaInput : $miEquipo->getLema();
+        $url = $urlInput !== '' ? $urlInput : null;
+
+
         $equipo = new Equipo();
         $equipo->setIdEquipo($miEquipo->getIdEquipo());
         $equipo->setAcronimo($acronimo);
         $equipo->setLema($lema);
         $equipo->setUrlFotoPerfil($url);
-    
+
 
         if ($this->equipoService->updateTeam($equipo)) {
             header("Location: /dashboard?id={$miEquipo->getIdEquipo()}");
             exit;
         }
-    
+
         $_SESSION['errors'] = ["No se pudo actualizar el equipo, intentá de nuevo más tarde."];
         header("Location: /dashboard?id={$miEquipo->getIdEquipo()}");
         exit;
-    }    
+    }
 }
