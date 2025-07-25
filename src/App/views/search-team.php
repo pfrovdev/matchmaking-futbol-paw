@@ -50,15 +50,15 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                         "position" => $index + 1,
                         "item" => [
                             "@type" => "SportsTeam",
-                            "name" => htmlspecialchars($equipo->getNombreEquipo()),
-                            "alternateName" => htmlspecialchars($equipo->getAcronimo() ?? ''),
+                            "name" => htmlspecialchars($equipo->getNombreEquipo(),  ENT_QUOTES, 'UTF-8'),
+                            "alternateName" => htmlspecialchars($equipo->getAcronimo() ?? '',  ENT_QUOTES, 'UTF-8'),
                             "identifier" => [
                                 "@type" => "PropertyValue",
                                 "name" => "Elo Ranking",
                                 "value" => $equipo->getEloActual()
                             ],
-                            "description" => htmlspecialchars($equipo->getLema() ?? ''),
-                            "url" => "/team-profile.php?id=" . $equipo->getIdEquipo(), // ajustá esta URL
+                            "description" => htmlspecialchars($equipo->getLema() ?? '',  ENT_QUOTES, 'UTF-8'),
+                            "url" => "/team-profile.php?id=" . $equipo->getIdEquipo(),
                             "location" => [
                                 "@type" => "Place",
                                 "geo" => [
@@ -94,10 +94,10 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                 <h2 id="buscar-nombre">Buscar por nombre</h2>
                 <form method="get" action="/search-team">
                     <input type="text" id="nombre" name="nombre" placeholder="Ejemplo FC"
-                        value="<?= htmlspecialchars($nombre) ?>" />
+                        value="<?= htmlspecialchars($nombre,  ENT_QUOTES, 'UTF-8') ?>" />
 
-                    <input type="hidden" name="id_nivel_elo" value="<?= htmlspecialchars($rangoSelectedId ?? '') ?>">
-                    <input type="hidden" name="orden" value="<?= htmlspecialchars($orden) ?>">
+                    <input type="hidden" name="id_nivel_elo" value="<?= htmlspecialchars($rangoSelectedId ?? '',  ENT_QUOTES, 'UTF-8') ?>">
+                    <input type="hidden" name="orden" value="<?= htmlspecialchars($orden,  ENT_QUOTES, 'UTF-8') ?>">
                     <button class="filter-button" type="submit">Buscar</button>
                 </form>
 
@@ -113,11 +113,11 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                         <h2 id="ordenar">Ordenar por</h2>
                         <form id="ordenForm" class="radio-btns" method="get">
                             <input type="hidden" name="id_nivel_elo"
-                                value="<?= htmlspecialchars($rangoSelectedId ?? '') ?>">
-                            <input type="hidden" name="lat" value="<?= htmlspecialchars($_GET['lat'] ?? '') ?>">
-                            <input type="hidden" name="lng" value="<?= htmlspecialchars($_GET['lng'] ?? '') ?>">
+                                value="<?= htmlspecialchars($rangoSelectedId ?? '',  ENT_QUOTES, 'UTF-8') ?>">
+                            <input type="hidden" name="lat" value="<?= htmlspecialchars($_GET['lat'] ?? '',  ENT_QUOTES, 'UTF-8') ?>">
+                            <input type="hidden" name="lng" value="<?= htmlspecialchars($_GET['lng'] ?? '',  ENT_QUOTES, 'UTF-8') ?>">
                             <input type="hidden" name="radius_km"
-                                value="<?= htmlspecialchars($_GET['radius_km'] ?? '') ?>">
+                                value="<?= htmlspecialchars($_GET['radius_km'] ?? '',  ENT_QUOTES, 'UTF-8') ?>">
 
                             <label>
                                 <input type="radio" name="orden" value="desc" <?= $orden === 'desc' ? 'checked' : '' ?>>
@@ -141,16 +141,16 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                     <h2 id="zona-busqueda">Zona de búsqueda</h2>
                     <form id="mapForm" method="GET">
                         <input type="hidden" id="lat" name="lat" readonly
-                            value="<?= htmlspecialchars($_GET['lat'] ?? '') ?>" />
+                            value="<?= htmlspecialchars($_GET['lat'] ?? '',  ENT_QUOTES, 'UTF-8') ?>" />
                         <input type="hidden" id="lng" name="lng" readonly
-                            value="<?= htmlspecialchars($_GET['lng'] ?? '') ?>" />
+                            value="<?= htmlspecialchars($_GET['lng'] ?? '',  ENT_QUOTES, 'UTF-8') ?>" />
 
                         <label for="radiusSlider">Radio del área (km)</label>
                         <div class="input-group">
                             <input type="range" id="radiusSlider" name="radius_km" min="0.1" max="10" step="0.1"
-                                value="<?= htmlspecialchars($_GET['radius_km'] ?? 1) ?>">
+                                value="<?= htmlspecialchars($_GET['radius_km'] ?? 1,  ENT_QUOTES, 'UTF-8') ?>">
                             <span id="radiusValue">
-                                <?= htmlspecialchars($_GET['radius_km'] ?? 1.0) ?>
+                                <?= htmlspecialchars($_GET['radius_km'] ?? 1.0,  ENT_QUOTES, 'UTF-8') ?>
                             </span>
                         </div>
                         <button class="filter-button" type="submit">Enviar</button>
@@ -158,7 +158,7 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                 </section>
 
                 <figure>
-                    <div id="map" data-team-zone="<?php echo htmlspecialchars($equipo_temp['team-zone'] ?? '') ?>">
+                    <div id="map" data-team-zone="<?php echo htmlspecialchars($equipo_temp['team-zone'] ?? '',  ENT_QUOTES, 'UTF-8') ?>">
                     </div>
                 </figure>
 

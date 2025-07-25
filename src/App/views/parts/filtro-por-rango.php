@@ -16,7 +16,7 @@
                         name="id_nivel_elo"
                         value="<?= $id ?>"
                         class="boton-filtro <?= $activo ?>"
-                        style="background: <?= htmlspecialchars($gradient) ?>;">
+                        style="background: <?= htmlspecialchars($gradient,  ENT_QUOTES, 'UTF-8') ?>;">
                         <?= $label ?>
                     </button>
                 </li>

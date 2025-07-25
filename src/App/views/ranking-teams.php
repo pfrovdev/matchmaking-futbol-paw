@@ -34,15 +34,15 @@
                         "position" => $index + 1,
                         "item" => [
                             "@type" => "SportsTeam",
-                            "name" => htmlspecialchars($equipo->getNombreEquipo()),
-                            "alternateName" => htmlspecialchars($equipo->getAcronimo() ?? ''),
+                            "name" => htmlspecialchars($equipo->getNombreEquipo(),  ENT_QUOTES, 'UTF-8'),
+                            "alternateName" => htmlspecialchars($equipo->getAcronimo() ?? '',  ENT_QUOTES, 'UTF-8'),
                             "identifier" => [
                                 "@type" => "PropertyValue",
                                 "name" => "Elo Ranking",
                                 "value" => $equipo->getEloActual()
                             ],
-                            "description" => htmlspecialchars($equipo->getLema() ?? ''),
-                            "url" => "/team-profile.php?id=" . $equipo->getIdEquipo(), // ajustá esta URL
+                            "description" => htmlspecialchars($equipo->getLema() ?? '',  ENT_QUOTES, 'UTF-8'),
+                            "url" => "/team-profile.php?id=" . $equipo->getIdEquipo(),
                             "location" => [
                                 "@type" => "Place",
                                 "geo" => [

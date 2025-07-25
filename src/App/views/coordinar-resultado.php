@@ -24,7 +24,7 @@ unset($_SESSION['flash']);
             <h1>Coordinar resultado</h1>
             <?php if ($flash['mensaje']) : ?>
                 <div class="alert <?= $flash['finalizado'] ? 'alert-success' : 'alert-info' ?>">
-                    <?= htmlspecialchars($flash['mensaje']) ?>
+                    <?= htmlspecialchars($flash['mensaje'],  ENT_QUOTES, 'UTF-8') ?>
                 </div>
             <?php endif; ?>
             <p class="subtitle">
@@ -32,7 +32,7 @@ unset($_SESSION['flash']);
                 <br>
                 Solo te quedan <span class="intentos">
                     <?=
-                    htmlspecialchars(5 - $miUltimaIteracion);
+                    htmlspecialchars(5 - $miUltimaIteracion,  ENT_QUOTES, 'UTF-8');
                     ?>
                 </span> intentos mas.
             </p>
@@ -41,18 +41,18 @@ unset($_SESSION['flash']);
                     <p>
                         <strong>
                             Formulario correspondiente a la iteración :
-                            <?= htmlspecialchars($miUltimaIteracion + 1); ?>
+                            <?= htmlspecialchars($miUltimaIteracion + 1,  ENT_QUOTES, 'UTF-8'); ?>
                         </strong>
                     </p>
                     <form
                         method="POST"
-                        action="/coordinar-resultado?id_partido=<?= htmlspecialchars($formularioPartidoContrario->getIdPartido()); ?>"
+                        action="/coordinar-resultado?id_partido=<?= htmlspecialchars($formularioPartidoContrario->getIdPartido(),  ENT_QUOTES, 'UTF-8'); ?>"
                         class="form-team">
                         <!-- Le agregamos también la clase grid-fields -->
                         <fieldset class="form-team">
                             <legend class="team-name local">
                                 <?php
-                                echo htmlspecialchars($formularioPartidoContrario->getEquipoVisitante()->getBadge()->getAcronimo());
+                                echo htmlspecialchars($formularioPartidoContrario->getEquipoVisitante()->getBadge()->getAcronimo(),  ENT_QUOTES, 'UTF-8');
                                 ?>
                             </legend>
 
@@ -124,7 +124,7 @@ unset($_SESSION['flash']);
                         <fieldset class="form-team">
                             <legend class="team-name visitante">
                                 <?php
-                                echo htmlspecialchars($formularioPartidoContrario->getEquipoLocal()->getBadge()->getAcronimo());
+                                echo htmlspecialchars($formularioPartidoContrario->getEquipoLocal()->getBadge()->getAcronimo(),  ENT_QUOTES, 'UTF-8');
                                 ?>
                             </legend>
 
@@ -224,7 +224,7 @@ unset($_SESSION['flash']);
                         <fieldset class="form-team">
                             <legend class="team-name local">
                                 <?php
-                                echo htmlspecialchars($formularioPartidoContrario->getEquipoVisitante()->getBadge()->getAcronimo());
+                                echo htmlspecialchars($formularioPartidoContrario->getEquipoVisitante()->getBadge()->getAcronimo(),  ENT_QUOTES, 'UTF-8');
                                 ?>
                             </legend>
 
@@ -242,7 +242,7 @@ unset($_SESSION['flash']);
                                     id="goles_casla"
                                     name="goles_casla"
                                     min="0"
-                                    value="<?php echo htmlspecialchars($formularioPartidoContrario->getEquipoVisitante()->getGoles()); ?>"
+                                    value="<?php echo htmlspecialchars($formularioPartidoContrario->getEquipoVisitante()->getGoles(),  ENT_QUOTES, 'UTF-8'); ?>"
                                     disabled />
                             </div>
 
@@ -260,7 +260,7 @@ unset($_SESSION['flash']);
                                     id="asistencias_casla"
                                     name="asistencias_casla"
                                     min="0"
-                                    value="<?php echo htmlspecialchars($formularioPartidoContrario->getEquipoVisitante()->getAsistencias()); ?>"
+                                    value="<?php echo htmlspecialchars($formularioPartidoContrario->getEquipoVisitante()->getAsistencias(),  ENT_QUOTES, 'UTF-8'); ?>"
                                     disabled />
                             </div>
 
@@ -279,7 +279,7 @@ unset($_SESSION['flash']);
                                             type="number"
                                             name="tarjeta_amarilla_casla"
                                             min="0"
-                                            value="<?php echo htmlspecialchars($formularioPartidoContrario->getEquipoVisitante()->getTarjetasAmarilla()); ?>"
+                                            value="<?php echo htmlspecialchars($formularioPartidoContrario->getEquipoVisitante()->getTarjetasAmarilla(),  ENT_QUOTES, 'UTF-8'); ?>"
                                             disabled />
                                     </div>
                                     <div class="card-field">
@@ -291,7 +291,7 @@ unset($_SESSION['flash']);
                                             type="number"
                                             name="tarjeta_roja_casla"
                                             min="0"
-                                            value="<?php echo htmlspecialchars($formularioPartidoContrario->getEquipoVisitante()->getTarjetasRoja()); ?>"
+                                            value="<?php echo htmlspecialchars($formularioPartidoContrario->getEquipoVisitante()->getTarjetasRoja(),  ENT_QUOTES, 'UTF-8'); ?>"
                                             disabled />
                                     </div>
                                 </div>
@@ -300,7 +300,7 @@ unset($_SESSION['flash']);
                         <fieldset class="form-team">
                             <legend class="team-name visitante">
                                 <?php
-                                echo htmlspecialchars($formularioPartidoContrario->getEquipoLocal()->getBadge()->getAcronimo());
+                                echo htmlspecialchars($formularioPartidoContrario->getEquipoLocal()->getBadge()->getAcronimo(),  ENT_QUOTES, 'UTF-8');
                                 ?>
                             </legend>
 
@@ -318,7 +318,7 @@ unset($_SESSION['flash']);
                                     id="goles_casla"
                                     name="goles_casla"
                                     min="0"
-                                    value="<?php echo htmlspecialchars($formularioPartidoContrario->getEquipoLocal()->getGoles()); ?>"
+                                    value="<?php echo htmlspecialchars($formularioPartidoContrario->getEquipoLocal()->getGoles(),  ENT_QUOTES, 'UTF-8'); ?>"
                                     disabled />
                             </div>
 
@@ -336,7 +336,7 @@ unset($_SESSION['flash']);
                                     id="asistencias_casla"
                                     name="asistencias_casla"
                                     min="0"
-                                    value="<?php echo htmlspecialchars($formularioPartidoContrario->getEquipoLocal()->getAsistencias()); ?>"
+                                    value="<?php echo htmlspecialchars($formularioPartidoContrario->getEquipoLocal()->getAsistencias(),  ENT_QUOTES, 'UTF-8'); ?>"
                                     disabled />
                             </div>
 
@@ -355,7 +355,7 @@ unset($_SESSION['flash']);
                                             type="number"
                                             name="tarjeta_amarilla_casla"
                                             min="0"
-                                            value="<?php echo htmlspecialchars($formularioPartidoContrario->getEquipoLocal()->getTarjetasAmarilla()); ?>"
+                                            value="<?php echo htmlspecialchars($formularioPartidoContrario->getEquipoLocal()->getTarjetasAmarilla(),  ENT_QUOTES, 'UTF-8'); ?>"
                                             disabled />
                                     </div>
                                     <div class="card-field">
@@ -367,7 +367,7 @@ unset($_SESSION['flash']);
                                             type="number"
                                             name="tarjeta_roja_casla"
                                             min="0"
-                                            value="<?php echo htmlspecialchars($formularioPartidoContrario->getEquipoLocal()->getTarjetasRoja()); ?>"
+                                            value="<?php echo htmlspecialchars($formularioPartidoContrario->getEquipoLocal()->getTarjetasRoja(),  ENT_QUOTES, 'UTF-8'); ?>"
                                             disabled />
                                     </div>
                                 </div>

@@ -34,7 +34,7 @@
       <?php if (!empty($errors)): ?>
         <section class="error-messages">
           <?php foreach ($errors as $error): ?>
-            <p class="error-text"><?php echo htmlspecialchars($error); ?></p>
+            <p class="error-text"><?php echo htmlspecialchars($error,  ENT_QUOTES, 'UTF-8'); ?></p>
           <?php endforeach; ?>
         </section>
       <?php endif; ?>
@@ -48,7 +48,7 @@
             name="team-name"
             placeholder="Sacachispas F.C"
             required
-            value="<?php echo htmlspecialchars($equipo_temp['team-name'] ?? '') ?>" />
+            value="<?php echo htmlspecialchars($equipo_temp['team-name'] ?? '',  ENT_QUOTES, 'UTF-8') ?>" />
 
           <label for="team-acronym">Acrónimo del equipo *</label>
           <input
@@ -67,9 +67,9 @@
                 <input
                   type="radio"
                   name="tipo_equipo"
-                  value="<?= htmlspecialchars($tipo->id_tipo_equipo) ?>"
+                  value="<?= htmlspecialchars($tipo->id_tipo_equipo,  ENT_QUOTES, 'UTF-8') ?>"
                   <?= $first ? 'checked' : '' ?>>
-                <?= htmlspecialchars($tipo->tipo); ?>
+                <?= htmlspecialchars($tipo->tipo,  ENT_QUOTES, 'UTF-8'); ?>
               </label>
             <?php $first = false; endforeach; ?>
           </fieldset>
@@ -78,14 +78,14 @@
           <!-- El input de zona lo genera Leaflet Geocoder y le pondremos id/name en JS -->
 
           <input type="hidden" id="lat" name="lat"
-                 value="<?php echo htmlspecialchars($equipo_temp['lat'] ?? '') ?>" />
+                 value="<?php echo htmlspecialchars($equipo_temp['lat'] ?? '',  ENT_QUOTES, 'UTF-8') ?>" />
           <input type="hidden" id="lng" name="lng"
-                 value="<?php echo htmlspecialchars($equipo_temp['lng'] ?? '') ?>" />
+                 value="<?php echo htmlspecialchars($equipo_temp['lng'] ?? '',  ENT_QUOTES, 'UTF-8') ?>" />
 
           <section aria-label="Mapa de ubicación del equipo">
             <div 
                 id="map" 
-                data-team-zone="<?php echo htmlspecialchars($equipo_temp['team-zone'] ?? '') ?>">
+                data-team-zone="<?php echo htmlspecialchars($equipo_temp['team-zone'] ?? '',  ENT_QUOTES, 'UTF-8') ?>">
             </div>
           </section>
 
@@ -95,7 +95,7 @@
             id="team-motto"
             name="team-motto"
             placeholder="Lema del equipo"
-            value="<?php echo htmlspecialchars($equipo_temp['team-motto'] ?? '') ?>" />
+            value="<?php echo htmlspecialchars($equipo_temp['team-motto'] ?? '',  ENT_QUOTES, 'UTF-8') ?>" />
 
           <p class="mandatory-note">
             (* Campo obligatorio) ** Tu teléfono será utilizado para la coordinación entre equipos

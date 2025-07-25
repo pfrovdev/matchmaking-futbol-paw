@@ -16,17 +16,17 @@
     <div class="team-image">
       <img
         src="<?= !empty($challenge['url_foto_perfil'])
-                ? htmlspecialchars($challenge['url_foto_perfil'])
+                ? htmlspecialchars($challenge['url_foto_perfil'], ENT_QUOTES, 'UTF-8')
                 : '/icons/defaultTeamIcon.png' ?>"
         alt="">
-      <span class="level-badge"><?php echo htmlspecialchars($challenge['id_nivel_elo']) ?></span>
+      <span class="level-badge"><?php echo htmlspecialchars($challenge['id_nivel_elo'], ENT_QUOTES, 'UTF-8') ?></span>
     </div>
   </div>
 
   <div class="card-main">
     <div class="card-header">
-      <h3 class="team-name"><?php echo htmlspecialchars($challenge['name']) ?></h3>
-      <div class="team-record"><?php echo htmlspecialchars($challenge['record']) ?></div>
+      <h3 class="team-name"><?php echo htmlspecialchars($challenge['name'], ENT_QUOTES, 'UTF-8') ?></h3>
+      <div class="team-record"><?php echo htmlspecialchars($challenge['record'], ENT_QUOTES, 'UTF-8') ?></div>
     </div>
 
     <div class="card-body">
@@ -42,7 +42,7 @@
           <?php endif; ?>
         <?php endfor; ?>
       </div>
-      <p class="team-motto"><?php echo htmlspecialchars($challenge['lema']) ?></p>
+      <p class="team-motto"><?php echo htmlspecialchars($challenge['lema'], ENT_QUOTES, 'UTF-8') ?></p>
       <small class="elo">
         Elo W/L/D: +
         <?php echo $challenge['elo']['wins'] ?>,

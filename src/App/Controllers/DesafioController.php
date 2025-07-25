@@ -23,6 +23,21 @@ class DesafioController extends AbstractController
         $this->equipoService = $equipoService;
     }
 
+    private function verificarMetodoPOST(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            exit('Método no permitido');
+        }
+    }
+
+    private function redirigirConError(string $ruta, string $mensaje): void
+    {
+        $_SESSION['errors'] = [$mensaje];
+        header("Location: $ruta");
+        exit;
+    }
+
 
     // obtiene los desafios pendientes del equipo que esta logueado (se muestra en el dashboard - renderizado en js)
     public function index(): void
@@ -30,89 +45,119 @@ class DesafioController extends AbstractController
         $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $equipo = $this->equipoService->getEquipoById($userData->id_equipo);
 
-        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
-        $perPage = $_GET['per_page'] ?? 3;
+        $page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
+        $perPage = filter_input(INPUT_GET, 'per_page', FILTER_VALIDATE_INT) ?: 3;
         $order = $_GET['order'] ?? 'fecha_creacion';
-        $dir = $_GET['dir']   ?? 'DESC';
+        $dir = strtoupper($_GET['dir'] ?? 'DESC');
 
-        $desafios = $this->desafioService->getDesafiosByEquipoAndEstadoDesafio(
-            $equipo->getIdEquipo(),
-            'pendiente',
-            $page,
-            $perPage,
-            $order,
-            $dir
-        );
+        // Validación de orden y dirección
+        $allowedOrders = ['fecha_creacion', 'otro_campo']; // Agrega otros si existen
+        if (!in_array($order, $allowedOrders))
+            $order = 'fecha_creacion';
 
-        header('Content-Type: application/json');
-        echo json_encode($desafios);
+        $allowedDirs = ['ASC', 'DESC'];
+        if (!in_array($dir, $allowedDirs))
+            $dir = 'DESC';
+
+        try {
+            $desafios = $this->desafioService->getDesafiosByEquipoAndEstadoDesafio(
+                $equipo->getIdEquipo(),
+                'pendiente',
+                $page,
+                $perPage,
+                $order,
+                $dir
+            );
+
+            header('Content-Type: application/json');
+            echo json_encode($desafios);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Error al obtener los desafíos.']);
+        }
     }
 
     public function aceptarDesafio(): void
     {
+        $this->verificarMetodoPOST();
+
         $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $equipo = $this->equipoService->getEquipoById($userData->id_equipo);
 
-        $desafioId = (int) ($_POST['id_desafio'] ?? 0);
-        $desafio = $this->desafioService->acceptDesafio($desafioId);
+        $desafioId = filter_input(INPUT_POST, 'id_desafio', FILTER_VALIDATE_INT);
+        if (!$desafioId) {
+            $this->redirigirConError('/dashboard', 'ID de desafío inválido.');
+            return;
+        }
 
-        // notificar
-        $desafiante = $this->equipoService->getEquipoById(
-            $desafio->getIdEquipoDesafiante()
-        );
-        $this->notificationService->notifyDesafioAccepted(
-            $equipo,
-            $desafiante,
-            $desafio
-        );
+        try {
+            $desafio = $this->desafioService->acceptDesafio($desafioId);
 
-        header('Location: /dashboard');
+            // Verificación de propiedad del desafío
+            if ($desafio->getIdEquipoDesafiado() !== $equipo->getIdEquipo()) {
+                throw new Exception('Acceso no autorizado al desafío.');
+            }
+
+            $desafiante = $this->equipoService->getEquipoById($desafio->getIdEquipoDesafiante());
+            $this->notificationService->notifyDesafioAccepted($equipo, $desafiante, $desafio);
+            header('Location: /dashboard');
+        } catch (Exception $e) {
+            $this->redirigirConError('/dashboard', 'Error al aceptar el desafío.');
+        }
     }
 
     public function rechazarDesafio(): void
     {
+        $this->verificarMetodoPOST();
+
         $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $equipo = $this->equipoService->getEquipoById($userData->id_equipo);
 
-        $desafioId = (int) ($_POST['id_desafio'] ?? 0);
-        $desafio = $this->desafioService->rejectDesafio($desafioId);
+        $desafioId = filter_input(INPUT_POST, 'id_desafio', FILTER_VALIDATE_INT);
+        if (!$desafioId) {
+            $this->redirigirConError('/dashboard', 'ID de desafío inválido.');
+            return;
+        }
 
-        $desafiante = $this->equipoService->getEquipoById(
-            $desafio->getIdEquipoDesafiante()
-        );
-        $this->notificationService->notifyDesafioRejected(
-            $equipo,
-            $desafiante,
-            $desafio
-        );
+        try {
+            $desafio = $this->desafioService->rejectDesafio($desafioId);
 
-        header('Location: /dashboard');
+            if ($desafio->getIdEquipoDesafiado() !== $equipo->getIdEquipo()) {
+                throw new Exception('Acceso no autorizado.');
+            }
+
+            $desafiante = $this->equipoService->getEquipoById($desafio->getIdEquipoDesafiante());
+            $this->notificationService->notifyDesafioRejected($equipo, $desafiante, $desafio);
+
+            header('Location: /dashboard');
+        } catch (Exception $e) {
+            $this->redirigirConError('/dashboard', 'Error al rechazar el desafío.');
+        }
     }
 
     public function createDesafio(): void
     {
+        $this->verificarMetodoPOST();
+
         $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $miEquipo = $this->equipoService->getEquipoById($userData->id_equipo);
-
-        $id_equipo_desafiar = (int) ($_POST['id_equipo_desafiar'] ?? 0);
         $referer = $_SERVER['HTTP_REFERER'] ?? '/dashboard';
 
-        if ($id_equipo_desafiar <= 0) {
-            $this->logger->error('ID de equipo a desafiar no válido: ' . $id_equipo_desafiar);
-            header('Location: ' . $referer);
+        $id_equipo_desafiar = filter_input(INPUT_POST, 'id_equipo_desafiar', FILTER_VALIDATE_INT);
+        if (!$id_equipo_desafiar || $id_equipo_desafiar === $miEquipo->getIdEquipo()) {
+            $this->redirigirConError($referer, 'ID de equipo a desafiar inválido.');
             return;
         }
 
         try {
             $desafio = $this->desafioService->createDesafio($miEquipo->getIdEquipo(), $id_equipo_desafiar);
             $equipoDesafiado = $this->equipoService->getEquipoById($id_equipo_desafiar);
+
             $this->notificationService->notifyDesafioCreated($miEquipo, $equipoDesafiado, $desafio);
             header('Location: ' . $referer);
             exit;
-        } catch (\Exception $e) {
-            $_SESSION['errors'] = ["Hubo un error al registrar el desafío. Por favor intentalo nuevamente."];
-            header('Location: ' . $referer);
-            exit;
+        } catch (Exception $e) {
+            $this->redirigirConError($referer, 'Error al crear el desafío.');
         }
     }
 }

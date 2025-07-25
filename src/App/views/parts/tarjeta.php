@@ -16,14 +16,14 @@
       <li class="ranking-item">
         <article class="team-card">
           <figure class="team-image">
-            <img src="<?= htmlspecialchars($equipo->getUrlFotoPerfil() ?? '/icons/defaultTeamIcon.png') ?>"
-                  alt="Escudo del equipo <?= htmlspecialchars($equipo->getNombreEquipo()) ?>" />
-            <figcaption class="team-rank" style="background: <?= htmlspecialchars($gradient) ?>;">
-                <?= htmlspecialchars($equipo->getDescripcionElo()) ?>
+            <img src="<?= htmlspecialchars($equipo->getUrlFotoPerfil() ?? '/icons/defaultTeamIcon.png', ENT_QUOTES, 'UTF-8') ?>"
+                  alt="Escudo del equipo <?= htmlspecialchars($equipo->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>" />
+            <figcaption class="team-rank" style="background: <?= htmlspecialchars($gradient, ENT_QUOTES, 'UTF-8') ?>;">
+                <?= htmlspecialchars($equipo->getDescripcionElo(), ENT_QUOTES, 'UTF-8') ?>
             </figcaption>
           </figure>
           <div class="team-info">
-            <h2 class="team-name"><?= htmlspecialchars($equipo->getNombreEquipo()) ?></h2>
+            <h2 class="team-name"><?= htmlspecialchars($equipo->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?></h2>
             <p class="team-sportsmanship">Deportividad: 
                 <?php for ($i = 1; $i <= 5; $i++): ?>
                     <?php if ($i <= $equipo->getDeportividad()): ?>
@@ -33,15 +33,15 @@
                     <?php endif; ?>
                 <?php endfor; ?>
             </p>
-            <p class="team-lema"><?= htmlspecialchars($equipo->getLema()) ?></p>
+            <p class="team-lema"><?= htmlspecialchars($equipo->getLema(), ENT_QUOTES, 'UTF-8') ?></p>
             <p class="team-record">
-              W/L/D: <span class="wins"><?= htmlspecialchars($equipo->ganados) ?></span>, 
-              <span class="losses"><?= htmlspecialchars($equipo->perdidos) ?></span>, 
-              <span class="draws"><?= htmlspecialchars($equipo->empatados) ?></span>
+              W/L/D: <span class="wins"><?= htmlspecialchars($equipo->ganados, ENT_QUOTES, 'UTF-8') ?></span>, 
+              <span class="losses"><?= htmlspecialchars($equipo->perdidos, ENT_QUOTES, 'UTF-8') ?></span>, 
+              <span class="draws"><?= htmlspecialchars($equipo->empatados, ENT_QUOTES, 'UTF-8') ?></span>
             </p>
           </div>
           <div class="team-elo">
-            <strong>ELO:</strong><span class="elo-score"><?= htmlspecialchars((string)$equipo->getEloActual()) ?></span>
+            <strong>ELO:</strong><span class="elo-score"><?= htmlspecialchars((string)$equipo->getEloActual(), ENT_QUOTES, 'UTF-8') ?></span>
           </div>
           <div class="team-actions">
             <a href="/details-team?id=<?= urlencode((string)$equipo->getIdEquipo()) ?>" class="btn-profile">
