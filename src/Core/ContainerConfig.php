@@ -187,6 +187,7 @@ class ContainerConfig
             $logger,
             $c->get(ComentarioEquipoService::class),
             $c->get(EquipoService::class),
+            $c->get(PartidoService::class),
             $c->get(AuthMiddelware::class)
         ));
 

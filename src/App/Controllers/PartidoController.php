@@ -167,7 +167,7 @@ class PartidoController extends AbstractController
             );
         }
 
-        if ($this->partidoService->partidoAcordado($miEquipo->getIdEquipo(), $id_partido)) {
+        if ($this->partidoService->partidoAcordado($miEquipo->getIdEquipo(), $this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo()), $id_partido)) {
             $_SESSION['flash']['mensaje'] = $this->generarMensajeEstado(ProcesarFormularioEstado::PARTIDO_TERMINADO);
             $_SESSION['flash']['finalizado'] = true;
         }
@@ -228,6 +228,37 @@ class PartidoController extends AbstractController
         $_SESSION['flash']['mensaje'] = $mensajeEstado;
         $_SESSION['flash']['finalizado'] = $finalizado;
         header("Location: /coordinar-resultado?id_partido={$id_partido}");
+        exit;
+    }
+
+    public function terminarPartido()
+    {
+        $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($userData->id_equipo);
+        $idComentador = $miEquipo->getIdEquipo();
+
+        $input = filter_input_array(INPUT_POST, [
+            'id_partido' => FILTER_VALIDATE_INT,
+            'id_equipo_rival' => FILTER_VALIDATE_INT,
+        ]);
+
+        if (empty($input['id_partido'])) {
+            throw new \InvalidArgumentException('ID de partido inválido');
+        }
+        if (empty($input['id_equipo_rival'])) {
+            throw new \InvalidArgumentException('ID de equipo rival inválido');
+        }
+
+        $idPartido = $input['id_partido'];
+        $idEquipoRival = $input['id_equipo_rival'];
+
+        if (! $this->partidoService->partidoAcordado($idComentador, $idEquipoRival, $idPartido)) {
+            throw new \DomainException('No se puede terminar un partido no acordado');
+        }
+
+        $this->partidoService->terminarPartido($idPartido, $idComentador, $idEquipoRival);
+
+        header("Location: /coordinar-resultado?id_partido={$idPartido}&flash=partido_terminado");
         exit;
     }
 

@@ -243,7 +243,7 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                 <div id="calificacionModal" class="modal">
                     <div class="modal-content">
                         <span class="close-button">&times;</span>
-                        <form class="calificar-seccion" id="formCalificacion" action="/comentario" method="POST">
+                        <form class="calificar-seccion" id="formCalificacion" action="/comentarios" method="POST">
                             <h3>Califica la deportividad del equipo rival</h3>
                             <div class="rating-group" id="ratingGroup">
                                 <span class="rating-icon" data-value="1">⚽</span>

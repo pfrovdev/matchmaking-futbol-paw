@@ -93,6 +93,27 @@ class PartidoServiceImpl implements PartidoService
         $this->partidoDataMapper->updatePartido($p);
     }
 
+    public function terminarPartido(int $partidoId, int $idEquipo, int $idEquipoRival): void
+    {
+        if (! $this->partidoAcordado($idEquipo, $idEquipoRival, $partidoId)) {
+            throw new \RuntimeException('El partido no está acordado');
+        }
+
+        $partido = $this->partidoDataMapper->findById(['id_partido' => $partidoId]);
+        if (! $partido) {
+            throw new \InvalidArgumentException("Partido {$partidoId} no existe");
+        }
+
+        $fechaFinal = (new \DateTime())->format('Y-m-d H:i:s');
+        $idEstadoJugado = $this->estadoPartidoDataMapper->findIdByCode('jugado');
+
+        if ($partido->getIdEstadoPartido() === $idEstadoJugado) {
+            throw new \RuntimeException('El partido ya fue finalizado');
+        }
+
+        $partido->finalizar($fechaFinal, $idEstadoJugado);
+        $this->partidoDataMapper->updatePartido($partido);
+    }
 
     public function getResultadoPartidosByIdEquipo(int $idEquipo): array
     {
@@ -443,9 +464,9 @@ class PartidoServiceImpl implements PartidoService
         return ProcesarFormularioEstado::NUEVA_ITERACION;
     }
 
-    public function partidoAcordado(int $idEquipo, int $idPartido): bool
+    public function partidoAcordado(int $idEquipo, int $idEquipoRival, int $idPartido): bool
     {
-        if ($this->validarPartido($idPartido, $idEquipo)) {
+        if ($this->validarPartido($idPartido, $idEquipo) && $this->validarPartido($idPartido, $idEquipoRival)) {
             $partido = $this->partidoDataMapper->findById(['id_partido' => $idPartido]);
             return $partido->getIdEstadoPartido() == $this->estadoPartidoDataMapper->findIdByCode('acordado');
         }

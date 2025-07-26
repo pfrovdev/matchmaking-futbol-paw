@@ -3,8 +3,10 @@
 namespace Paw\App\Controllers;
 
 use Monolog\Logger;
+use Paw\App\Models\Partido;
 use Paw\App\Services\ComentarioEquipoService;
 use Paw\App\Services\EquipoService;
+use Paw\App\Services\PartidoService;
 use Paw\Core\AbstractController;
 use Paw\Core\Middelware\AuthMiddelware;
 
@@ -12,11 +14,13 @@ class  ComentarioController extends AbstractController
 {
     private ComentarioEquipoService $comentarioEquipoService;
     private EquipoService $equipoService;
-    public function __construct(Logger $logger, ComentarioEquipoService $comentarioEquipoService, EquipoService $equipoService, AuthMiddelware $authMiddelware)
+    private PartidoService $partidoService;
+    public function __construct(Logger $logger, ComentarioEquipoService $comentarioEquipoService, EquipoService $equipoService, PartidoService $partidoService, AuthMiddelware $authMiddelware)
     {
         parent::__construct($logger, $authMiddelware);
         $this->comentarioEquipoService = $comentarioEquipoService;
         $this->equipoService = $equipoService;
+        $this->partidoService = $partidoService;
     }
 
     public function index()
@@ -55,7 +59,7 @@ class  ComentarioController extends AbstractController
                 $order,
                 $dir
             );
-            
+
         if (!empty($resultadoPaginado['data'])) {
             $this->logger->info('resultadoPaginado ' . json_encode($resultadoPaginado) . json_encode($resultadoPaginado['data'][0]->getComentario()));
         } else {
@@ -71,9 +75,38 @@ class  ComentarioController extends AbstractController
         $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
         $idEquipoComentador = $miEquipo->getIdEquipo();
-        $idEquipoComentado = $_POST['idEquipoComentado'];
-        $comentario = $_POST['comentario'];
-        $deportividad = $_POST['deportividad'];
-        $this->comentarioEquipoService->comentarEquipoRival($idEquipoComentador, $idEquipoComentado, $deportividad, $comentario);
+
+        $input = filter_input_array(INPUT_POST, [
+            'idEquipoComentado' => FILTER_VALIDATE_INT,
+            'id_partido' => FILTER_VALIDATE_INT,
+            'deportividad' => FILTER_VALIDATE_INT,
+            'comentario' => [
+                'filter' => FILTER_SANITIZE_STRING,
+                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+            ]
+        ]);
+
+        if (empty($input['idEquipoComentado']) || empty($input['id_partido']) || empty($input['deportividad']) || trim($input['comentario']) === '') 
+        {
+            throw new \InvalidArgumentException('Faltan datos o formato inválido');
+        }
+
+        if (! $this->partidoService->partidoAcordado(
+            $idEquipoComentador,
+            $input['idEquipoComentado'],
+            $input['id_partido']
+        )) {
+            throw new \DomainException('No se puede comentar un partido no acordado');
+        }
+
+        $this->comentarioEquipoService->comentarEquipoRival(
+            $idEquipoComentador,
+            $input['idEquipoComentado'],
+            $input['deportividad'],
+            trim($input['comentario'])
+        );
+
+        header("Location: /coordinar-resultado?id_partido={$input['id_partido']}&flash=comentario_ok");
+        exit;
     }
 }
