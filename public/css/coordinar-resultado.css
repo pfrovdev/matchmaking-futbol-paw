@@ -334,6 +334,7 @@
   padding-top: 1rem;
   border-top: 1px dashed var(--muted-text-color);
   text-align: center;
+  align-items: center;
 }
 
 .calificar-seccion h3 {
@@ -355,6 +356,10 @@
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
+.rating-icon.empty {
+  opacity: 0.3;
+}
+
 .rating-icon:hover {
   transform: scale(1.2);
 }
@@ -369,7 +374,6 @@
   box-sizing: border-box;
 }
 
-/* Tutorial overlay */
 /* Tutorial overlay */
 .tutorial-overlay {
   position: fixed;
@@ -515,6 +519,93 @@
   color: var(--muted-text-color);
   border-color: var(--muted-text-color);
   transform: scale(1.05);
+}
+
+/* Contenedor de los botones finales */
+.final-buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.final-buttons-container .btn {
+    flex: 0 1 auto;
+    padding: 0.8rem 1.5rem;
+    min-width: 180px;
+    font-size: 1rem;
+}
+
+/* Estilos del Modal (ventana flotante) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: var(--background-contents);
+    margin: auto;
+    padding: 2rem;
+    border-radius: 0.8rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    text-align: center;
+}
+
+.modal-content h3 {
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+}
+
+.modal-content .rating-group {
+    margin-bottom: 1.5rem;
+}
+
+.modal-content .textArea {
+    width: calc(100% - 2rem);
+    max-width: unset;
+    margin-bottom: 1.5rem;
+}
+
+.modal-content .btn {
+    width: auto;
+    padding: 0.75rem 2rem;
+    margin: 0 auto;
+}
+
+/* Botón de cerrar del modal */
+.close-button {
+    color: var(--muted-text-color);
+    font-size: 2rem;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--button-cancel-background-color);
+}
+
+/* Estilos para las estrellas de calificación en el modal */
+.modal-content .rating-group .rating-icon {
+    font-size: 2rem; 
+    cursor: pointer;
 }
 
 /* Media Queries para responsividad */

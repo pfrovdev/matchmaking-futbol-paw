@@ -37,7 +37,7 @@ if ($formularioPartidoContrario->getIteracionActual() === 0) {
         'goles_visitante' => ['mine' => $miFormulario->getEquipoVisitante()->getGoles(), 'rival' => $formularioPartidoContrario->getEquipoLocal()->getGoles()],
         'asistencias_visitante' => ['mine' => $miFormulario->getEquipoVisitante()->getAsistencias(), 'rival' => $formularioPartidoContrario->getEquipoLocal()->getAsistencias()],
         'tarjetas_amarillas_visitante' => ['mine' => $miFormulario->getEquipoVisitante()->getTarjetasAmarilla(), 'rival' => $formularioPartidoContrario->getEquipoLocal()->getTarjetasAmarilla()],
-        'tarjetas_rojas_visitante' => ['mine' =>$miFormulario->getEquipoVisitante()->getTarjetasRoja(), 'rival' => $formularioPartidoContrario->getEquipoLocal()->getTarjetasRoja()],
+        'tarjetas_rojas_visitante' => ['mine' => $miFormulario->getEquipoVisitante()->getTarjetasRoja(), 'rival' => $formularioPartidoContrario->getEquipoLocal()->getTarjetasRoja()],
     ];
 
     foreach ($fieldsToCompare as $field_name => $values) {
@@ -173,9 +173,7 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                                 Enviar resultado
                             </button>
                         <?php endif; ?>
-                        <?php if ($partidoFinalizado): ?>
-                            <button class="btn calificar-btn" type="button">Calificar deportividad</button>
-                        <?php endif; ?>
+
                     </form>
                 </div>
 
@@ -233,23 +231,35 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                                 Abrir WhatsApp
                             </button>
                         <?php endif; ?>
-                        <?php if ($partidoFinalizado): ?>
-                            <div class="calificar-seccion">
-                                <h3>Califica la deportividad del equipo rival</h3>
-                                <div class="rating-group">
-                                    <span class="rating-icon" data-value="1">⚽</span>
-                                    <span class="rating-icon" data-value="2">⚽</span>
-                                    <span class="rating-icon" data-value="3">⚽</span>
-                                    <span class="rating-icon" data-value="4">⚽</span>
-                                    <span class="rating-icon" data-value="5">⚽</span>
-                                </div>
-                                <textarea class="textArea" maxlength="50" placeholder="Deja un comentario... (50 caracteres max.)"></textarea>
-                                <button type="button" class="btn">Enviar Calificación</button>
-                            </div>
-                        <?php endif; ?>
                     </form>
                 </div>
             </div>
+            <?php if ($partidoFinalizado): ?>
+                <div class="final-buttons-container">
+                    <button class="btn" type="button" id="btnTerminarPartido">Terminar partido</button>
+                    <button class="btn" type="button" id="btnCalificarDeportividad">Calificar deportividad</button>
+                </div>
+
+                <div id="calificacionModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-button">&times;</span>
+                        <form class="calificar-seccion" id="formCalificacion" action="/comentario" method="POST">
+                            <h3>Califica la deportividad del equipo rival</h3>
+                            <div class="rating-group" id="ratingGroup">
+                                <span class="rating-icon" data-value="1">⚽</span>
+                                <span class="rating-icon" data-value="2">⚽</span>
+                                <span class="rating-icon" data-value="3">⚽</span>
+                                <span class="rating-icon" data-value="4">⚽</span>
+                                <span class="rating-icon" data-value="5">⚽</span>
+                            </div>
+
+                            <input type="hidden" name="deportividad" id="deportividadInput" value="">
+                            <input type="hidden" name="id_partido" value="123"> <textarea class="textArea" maxlength="100" name="comentario" placeholder="Deja un comentario... (100 caracteres max.)"></textarea>
+                            <button type="submit" class="btn">Enviar Calificación</button>
+                        </form>
+                    </div>
+                </div>
+            <?php endif; ?>
         </section>
     </main>
 
