@@ -46,7 +46,7 @@ foreach ($listLevelsElo as $row) {
             Ver perfil del equipo
           </a>
         </div>
-        <?php if ($estadisticas): ?>
+        <?php if (!empty($estadisticas)): ?>
           <section class="card stats-card">
             <h3 class="title-subsection"><strong>Estadísticas</strong></h3>
             <ul>
