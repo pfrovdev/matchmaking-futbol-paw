@@ -120,7 +120,8 @@ class ContainerConfig
         // Services
         $c->set(ComentarioEquipoService::class, fn($c) => new ComentarioEquipoServiceImpl(
             $c->get(ComentarioDataMapper::class),
-            $c->get(EquipoService::class)
+            $c->get(EquipoService::class),
+            $c->get(NotificationService::class)
         ));
 
         $c->set(PartidoService::class, fn($c) => new PartidoServiceImpl(

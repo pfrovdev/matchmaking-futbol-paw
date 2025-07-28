@@ -12,7 +12,6 @@ use DateTime;
 use Paw\App\DataMapper\DesafioDataMapper;
 use Paw\App\DataMapper\FormularioPartidoDataMapper;
 use Paw\App\DataMapper\HistorialPartidoDataMapper;
-use Paw\App\DataMapper\NivelEloDataMapper;
 use Paw\App\DataMapper\ResultadoPartidoDataMapper;
 use Paw\App\Dtos\FormularioEquipoDto;
 use Paw\App\Dtos\FormularioPartidoDto;
@@ -126,8 +125,10 @@ class PartidoServiceImpl implements PartidoService
         $estadoPartidoPendiente = $this->estadoPartidoDataMapper->findIdByCode('pendiente');
         //Obtenemos todos los partidos pendientes
         $partidosPendientes = $this->partidoDataMapper->getAll(['id_estado_partido' => $estadoPartidoPendiente]);
+        $partidosAcordados = $this->partidoDataMapper->getAll(['id_estado_partido' => $this->estadoPartidoDataMapper->findIdByCode('acordado')]);
+        $totalPartidosPendientes = array_merge($partidosPendientes, $partidosAcordados);
         $misPartidosPendientes = [];
-        foreach ($partidosPendientes as $partidoPendiente) {
+        foreach ($totalPartidosPendientes as $partidoPendiente) {
             // Obtenemos el desafio a partir del partido para obtener el equipo
             $getDesafio = $this->desafioDataMapper->findById(['id_partido' => $partidoPendiente->getIdPartido()]);
 

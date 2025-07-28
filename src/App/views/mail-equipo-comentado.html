@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nuevo Comentario</title>
+</head>
+
+<body style="margin:0; padding:0; background-color:#f2f2f2; font-family:Arial, sans-serif;">
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#f2f2f2">
+        <tr>
+            <td align="center">
+                <table width="600" border="0" cellpadding="0" cellspacing="0"
+                    style="max-width:100%; background-color:#ffffff; border:1px solid #dddddd; border-radius:8px; overflow:hidden;">
+                    <tr>
+                        <td bgcolor="#083B8C" style="padding:20px; text-align:center;">
+                            <h1 style="margin:0; font-size:24px; color:#ffffff;">Fútbol Match</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:20px; color:#333333; line-height:1.5;">
+                            <h2 style="margin:0 0 16px; font-size:20px; color:#083B8C;">
+                                ¡Has recibido un nuevo comentario!
+                            </h2>
+                            <p style="margin:0 0 20px;">
+                                El equipo <strong>{{commentingTeamName}}</strong> ha dejado un comentario sobre tu equipo <strong>{{teamName}}</strong>:
+                            </p>
+
+                            <!-- Calificación de deportividad -->
+                            <p style="margin:0 0 10px; font-weight:bold;">Calificación de deportividad:</p>
+                            <p style="margin:0 0 20px; font-size:18px;">
+                                {{deportividad}}
+                            </p>
+
+                            <!-- Comentario -->
+                            <p style="margin:0 0 10px; font-weight:bold;">Comentario:</p>
+                            <p style="margin:0 0 20px;">
+                                {{comentario}}
+                            </p>
+
+                            <!-- Botón -->
+                            <div style="text-align:center; margin-top:30px;">
+                                <a href="{{link}}"
+                                    style="display:inline-block; padding:12px 24px; background-color:#5CD37E; color:#ffffff; text-decoration:none; font-size:16px; border-radius:4px;">
+                                    Ver comentarios en el Dashboard
+                                </a>
+                            </div>
+
+                            <p style="margin:20px 0 0; text-align:center; color:#777777; font-size:12px;">
+                                Este es un mensaje automático. Si tienes dudas, responde este correo.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

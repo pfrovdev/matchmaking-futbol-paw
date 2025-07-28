@@ -9,16 +9,19 @@ use Paw\App\Models\Comentario;
 use Paw\App\Models\Equipo;
 use Paw\App\Services\ComentarioEquipoService;
 use Paw\App\Services\EquipoService;
+use Paw\App\Services\NotificationService;
 
 class ComentarioEquipoServiceImpl implements ComentarioEquipoService
 {
     private ComentarioDataMapper $comentarioDataMapper;
     private EquipoService $equipoService;
+    private NotificationService $notificationService;
 
-    public function __construct(ComentarioDataMapper $comentarioDataMapper, EquipoService $equipoService)
+    public function __construct(ComentarioDataMapper $comentarioDataMapper, EquipoService $equipoService, NotificationService $notificationService)
     {
         $this->comentarioDataMapper = $comentarioDataMapper;
         $this->equipoService = $equipoService;
+        $this->notificationService = $notificationService;
     }
 
     public function getComentariosByEquipoPaginated(int $idEquipo, int $page, int $perPage, string $orderBy, string $direction): array
@@ -103,7 +106,11 @@ class ComentarioEquipoServiceImpl implements ComentarioEquipoService
         $c->setDeportividad($deportividad);
         $c->setComentario($comentario);
         $c->setFechaCreacion((new \DateTime())->format('Y-m-d H:i:s'));
-
         $this->comentarioDataMapper->insertarComentario($c);
+        $this->notificationService->notifyEquipoComentado(
+            $this->equipoService->getEquipoById($idEquipoComentado),
+            $this->equipoService->getEquipoById($idEquipoComentador),
+            $c
+        );
     }
 }

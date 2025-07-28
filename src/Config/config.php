@@ -56,6 +56,7 @@ return [
 
         // POST Methods
         ['path' => '/coordinar-resultado', 'action' => 'PartidoController@enviarFormulario', 'method' => 'POST'],
+        ['path' => '/terminar-partido', 'action' => 'PartidoController@terminarPartido', 'method' => 'POST'],
 
         // === AuthController ===
         // POST Methods

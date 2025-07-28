@@ -76,18 +76,15 @@ class  ComentarioController extends AbstractController
         $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
         $idEquipoComentador = $miEquipo->getIdEquipo();
 
-        $input = filter_input_array(INPUT_POST, [
-            'idEquipoComentado' => FILTER_VALIDATE_INT,
-            'id_partido' => FILTER_VALIDATE_INT,
-            'deportividad' => FILTER_VALIDATE_INT,
-            'comentario' => [
-                'filter' => FILTER_SANITIZE_STRING,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ]
-        ]);
+        $input = [
+            'idEquipoComentado' => filter_var($_POST['idEquipoComentado'] ?? null, FILTER_VALIDATE_INT),
+            'id_partido' => filter_var($_POST['id_partido'] ?? null, FILTER_VALIDATE_INT),
+            'deportividad' => filter_var($_POST['deportividad'] ?? null, FILTER_VALIDATE_INT),
+            'comentario' => trim($_POST['comentario'] ?? ''),
+        ];
 
-        if (empty($input['idEquipoComentado']) || empty($input['id_partido']) || empty($input['deportividad']) || trim($input['comentario']) === '') 
-        {
+
+        if (empty($input['idEquipoComentado']) || empty($input['id_partido']) || empty($input['deportividad']) || trim($input['comentario']) === '') {
             throw new \InvalidArgumentException('Faltan datos o formato inválido');
         }
 
@@ -106,7 +103,21 @@ class  ComentarioController extends AbstractController
             trim($input['comentario'])
         );
 
-        header("Location: /coordinar-resultado?id_partido={$input['id_partido']}&flash=comentario_ok");
+        //dirección POST para terminar el partido
+        $this->redirectPost('/terminarPartido', [
+            'id_partido' => $input['id_partido'],
+            'id_equipo_rival' => $input['idEquipoComentado'],
+        ]);
+        exit;
+    }
+
+    function redirectPost($url, $data)
+    {
+        echo '<form id="redirectForm" method="POST" action="' . htmlspecialchars($url) . '">';
+        foreach ($data as $name => $value) {
+            echo '<input type="hidden" name="' . htmlspecialchars($name) . '" value="' . htmlspecialchars($value) . '">';
+        }
+        echo '</form><script>document.getElementById("redirectForm").submit();</script>';
         exit;
     }
 }

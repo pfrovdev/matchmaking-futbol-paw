@@ -235,7 +235,7 @@ class PartidoController extends AbstractController
     {
         $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $miEquipo = $this->equipoService->getEquipoById($userData->id_equipo);
-        $idComentador = $miEquipo->getIdEquipo();
+        $idMiEquipo = $miEquipo->getIdEquipo();
 
         $input = filter_input_array(INPUT_POST, [
             'id_partido' => FILTER_VALIDATE_INT,
@@ -252,13 +252,13 @@ class PartidoController extends AbstractController
         $idPartido = $input['id_partido'];
         $idEquipoRival = $input['id_equipo_rival'];
 
-        if (! $this->partidoService->partidoAcordado($idComentador, $idEquipoRival, $idPartido)) {
+        if (! $this->partidoService->partidoAcordado($idMiEquipo, $idEquipoRival, $idPartido)) {
             throw new \DomainException('No se puede terminar un partido no acordado');
         }
 
-        $this->partidoService->terminarPartido($idPartido, $idComentador, $idEquipoRival);
+        $this->partidoService->terminarPartido($idPartido, $idMiEquipo, $idEquipoRival);
 
-        header("Location: /coordinar-resultado?id_partido={$idPartido}&flash=partido_terminado");
+        header("Location: /dashboard");
         exit;
     }
 
