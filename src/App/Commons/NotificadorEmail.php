@@ -3,6 +3,7 @@
 namespace Paw\App\Commons;
 
 use Exception;
+use Paw\App\Models\Comentario;
 use Paw\App\Models\Equipo;
 use Paw\App\Models\Desafio;
 use Paw\App\Models\FormularioPartido;
@@ -136,6 +137,29 @@ class NotificadorEmail implements Notificador
             [
                 'equipoLocal' => $equipoVisitante->getNombre(),
                 'equipoVisitante' => $equipoLocal->getNombre(),
+            ]
+        );
+    }
+
+    public function enviarNotificacionComentarioEquipo(Equipo $equipo, Equipo $equipoComentador, Comentario $comentario): void
+    {
+        $deportividad = (int) $comentario->getDeportividad();
+
+        $deportividadHTML = '<span style="color:green;">' . str_repeat('⚽', $deportividad) . '</span>';
+        $deportividadHTML .= '<span style="color:lightgray;">' . str_repeat('⚽', 5 - $deportividad) . '</span>';
+
+        $comentarioSanitizado = nl2br(htmlspecialchars($comentario->getComentario(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
+
+        $this->enviarEmail(
+            $equipo->fields['email'] ?? throw new Exception("Email destinatario no puede ser nulo id_equipo: {$equipo->fields['id_equipo']}"),
+            "Nuevo comentario de {$equipoComentador->fields['nombre']}",
+            'mail-equipo-comentado.html',
+            [
+                'teamName' => $equipo->fields['nombre'],
+                'commentingTeamName' => $equipoComentador->fields['nombre'],
+                'deportividad' => $deportividadHTML,
+                'comentario' => $comentarioSanitizado,
+                'link' => getenv('JWT_APP_URL') . '/dashboard',
             ]
         );
     }

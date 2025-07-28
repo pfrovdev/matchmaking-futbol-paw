@@ -3,6 +3,7 @@
 namespace Paw\App\Services;
 
 use Paw\App\Commons\Notificador;
+use Paw\App\Models\Comentario;
 use Paw\App\Models\Equipo;
 use Paw\App\Models\Desafio;
 use Paw\App\Models\FormularioPartido;
@@ -77,6 +78,15 @@ class NotificationService
             $equipoVisitante,
             $iteracionActual,
             $idPartido
+        );
+    }
+
+    public function notifyEquipoComentado(Equipo $equipoComentado, Equipo $equipoComentador, Comentario $comentario): void
+    {
+        $this->notificador->enviarNotificacionComentarioEquipo(
+            $equipoComentado,
+            $equipoComentador,
+            $comentario
         );
     }
 }

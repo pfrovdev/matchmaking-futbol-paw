@@ -3,8 +3,10 @@
 namespace Paw\App\Controllers;
 
 use Monolog\Logger;
+use Paw\App\Models\Partido;
 use Paw\App\Services\ComentarioEquipoService;
 use Paw\App\Services\EquipoService;
+use Paw\App\Services\PartidoService;
 use Paw\Core\AbstractController;
 use Paw\Core\Middelware\AuthMiddelware;
 
@@ -12,11 +14,13 @@ class ComentarioController extends AbstractController
 {
     private ComentarioEquipoService $comentarioEquipoService;
     private EquipoService $equipoService;
-    public function __construct(Logger $logger, ComentarioEquipoService $comentarioEquipoService, EquipoService $equipoService, AuthMiddelware $authMiddelware)
+    private PartidoService $partidoService;
+    public function __construct(Logger $logger, ComentarioEquipoService $comentarioEquipoService, EquipoService $equipoService, PartidoService $partidoService, AuthMiddelware $authMiddelware)
     {
         parent::__construct($logger, $authMiddelware);
         $this->comentarioEquipoService = $comentarioEquipoService;
         $this->equipoService = $equipoService;
+        $this->partidoService = $partidoService;
     }
 
     public function index(): void
@@ -53,16 +57,26 @@ class ComentarioController extends AbstractController
         $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
         $idEquipoComentador = $miEquipo->getIdEquipo();
 
-        $input = filter_input_array(INPUT_POST, [
-            'idEquipoComentado' => FILTER_VALIDATE_INT,
-            'comentario' => FILTER_SANITIZE_STRING,
-            'deportividad' => FILTER_VALIDATE_INT
-        ]);
+        $input = [
+            'idEquipoComentado' => filter_var($_POST['idEquipoComentado'] ?? null, FILTER_VALIDATE_INT),
+            'id_partido' => filter_var($_POST['id_partido'] ?? null, FILTER_VALIDATE_INT),
+            'deportividad' => filter_var($_POST['deportividad'] ?? null, FILTER_VALIDATE_INT),
+            'comentario' => trim($_POST['comentario'] ?? ''),
+        ];
 
-        if (!$input['idEquipoComentado'] || $input['deportividad'] < 0 || $input['deportividad'] > 5) {
+
+        if (empty($input['idEquipoComentado']) || empty($input['id_partido']) || empty($input['deportividad']) || trim($input['comentario']) === '' || $input['deportividad'] < 0 || $input['deportividad'] > 5) {
             http_response_code(400);
             echo json_encode(['error' => 'Datos inválidos.']);
             return;
+        }
+
+        if (! $this->partidoService->partidoAcordado(
+            $idEquipoComentador,
+            $input['idEquipoComentado'],
+            $input['id_partido']
+        )) {
+            throw new \DomainException('No se puede comentar un partido no acordado');
         }
 
         $this->comentarioEquipoService->comentarEquipoRival(
@@ -72,8 +86,21 @@ class ComentarioController extends AbstractController
             trim($input['comentario'])
         );
 
-        http_response_code(200);
-        echo json_encode(['mensaje' => 'Comentario registrado.']);
+        //dirección POST para terminar el partido
+        $this->redirectPost('/terminarPartido', [
+            'id_partido' => $input['id_partido'],
+            'id_equipo_rival' => $input['idEquipoComentado'],
+        ]);
+        exit;
     }
 
+    function redirectPost($url, $data)
+    {
+        echo '<form id="redirectForm" method="POST" action="' . htmlspecialchars($url) . '">';
+        foreach ($data as $name => $value) {
+            echo '<input type="hidden" name="' . htmlspecialchars($name) . '" value="' . htmlspecialchars($value) . '">';
+        }
+        echo '</form><script>document.getElementById("redirectForm").submit();</script>';
+        exit;
+    }
 }

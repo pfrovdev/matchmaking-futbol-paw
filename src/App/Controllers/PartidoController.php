@@ -105,6 +105,33 @@ class PartidoController extends AbstractController
         $formularioPartidoContrario = $this->partidoService->getUltimosFormulariosEquipoContrario($id_partido, $miEquipo->getIdEquipo());
         $miUltimaIteracion = $this->partidoService->getUltimaIteracion($id_partido, $miEquipo->getIdEquipo());
 
+        if ($miUltimaIteracion > 0) {
+            $miFormulario = $this->partidoService->getUltimosFormulariosEquipoContrario(
+                $id_partido,
+                $this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo()),
+            );
+        } else {
+            $miFormulario =  new FormularioPartidoDto(
+                $miEquipo->getIdEquipo(),
+                $id_partido,
+                0,
+                new FormularioEquipoDto(
+                    $this->equipoService->getBadgeEquipo($miEquipo->getIdEquipo()),
+                    0,
+                    0,
+                    0,
+                    0
+                ),
+                new FormularioEquipoDto(
+                    $this->equipoService->getBadgeEquipo($this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo())),
+                    0,
+                    0,
+                    0,
+                    0
+                )
+            );
+        }
+
         if (!$formularioPartidoContrario) {
             $idEquipoRival = $this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo());
             $formularioPartidoContrario = new FormularioPartidoDto(
@@ -116,7 +143,7 @@ class PartidoController extends AbstractController
             );
         }
 
-        if ($this->partidoService->partidoAcordado($miEquipo->getIdEquipo(), $id_partido)) {
+        if ($this->partidoService->partidoAcordado($miEquipo->getIdEquipo(), $this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo()), $id_partido)) {
             $_SESSION['flash']['mensaje'] = $this->generarMensajeEstado(ProcesarFormularioEstado::PARTIDO_TERMINADO);
             $_SESSION['flash']['finalizado'] = true;
         }
@@ -195,6 +222,36 @@ class PartidoController extends AbstractController
         exit;
     }
 
+    public function terminarPartido()
+    {
+        $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($userData->id_equipo);
+        $idMiEquipo = $miEquipo->getIdEquipo();
+
+        $input = filter_input_array(INPUT_POST, [
+            'id_partido' => FILTER_VALIDATE_INT,
+            'id_equipo_rival' => FILTER_VALIDATE_INT,
+        ]);
+
+        if (empty($input['id_partido'])) {
+            throw new \InvalidArgumentException('ID de partido inválido');
+        }
+        if (empty($input['id_equipo_rival'])) {
+            throw new \InvalidArgumentException('ID de equipo rival inválido');
+        }
+
+        $idPartido = $input['id_partido'];
+        $idEquipoRival = $input['id_equipo_rival'];
+
+        if (! $this->partidoService->partidoAcordado($idMiEquipo, $idEquipoRival, $idPartido)) {
+            throw new \DomainException('No se puede terminar un partido no acordado');
+        }
+
+        $this->partidoService->terminarPartido($idPartido, $idMiEquipo, $idEquipoRival);
+
+        header("Location: /dashboard");
+        exit;
+    }
 
     private function generarMensajeEstado($estado): string
     {

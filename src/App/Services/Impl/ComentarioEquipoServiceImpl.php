@@ -9,16 +9,19 @@ use Paw\App\Models\Comentario;
 use Paw\App\Models\Equipo;
 use Paw\App\Services\ComentarioEquipoService;
 use Paw\App\Services\EquipoService;
+use Paw\App\Services\NotificationService;
 
 class ComentarioEquipoServiceImpl implements ComentarioEquipoService
 {
     private ComentarioDataMapper $comentarioDataMapper;
     private EquipoService $equipoService;
+    private NotificationService $notificationService;
 
-    public function __construct(ComentarioDataMapper $comentarioDataMapper, EquipoService $equipoService)
+    public function __construct(ComentarioDataMapper $comentarioDataMapper, EquipoService $equipoService, NotificationService $notificationService)
     {
         $this->comentarioDataMapper = $comentarioDataMapper;
         $this->equipoService = $equipoService;
+        $this->notificationService = $notificationService;
     }
 
     public function getComentariosByEquipoPaginated(int $idEquipo, int $page, int $perPage, string $orderBy, string $direction): array
@@ -76,13 +79,38 @@ class ComentarioEquipoServiceImpl implements ComentarioEquipoService
         return $this->equipoService->getEquipoById($id);
     }
 
-    function comentarEquipoRival(int $idEquipoComentador, int $idEquipoComentado, int $deportividad, string $comentario)
+    public function comentarEquipoRival(int $idEquipoComentador, int $idEquipoComentado, int $deportividad, string $comentario): void
     {
-        $comentarioAguardar = new Comentario();
-        $comentarioAguardar->setComentario($comentario);
-        $comentarioAguardar->setDeportividad($deportividad);
-        $comentarioAguardar->setFechaCreacion((new DateTime())->format('Y-m-d H:i:s'));
-        $comentarioAguardar->setIdEquipoComentado($idEquipoComentado);
-        $comentarioAguardar->setIdEquipoComentador($idEquipoComentador);
+        if ($idEquipoComentador === $idEquipoComentado) {
+            throw new \RuntimeException('No se puede comentar el equipo propio');
+        }
+
+        if ($deportividad < 1 || $deportividad > 5) {
+            throw new \RuntimeException('La deportividad debe estar entre 1 y 5');
+        }
+
+        if (trim($comentario) === '') {
+            throw new \RuntimeException('El comentario no puede estar vacío');
+        }
+
+        if (! $this->equipoService->getEquipoById($idEquipoComentador)) {
+            throw new \RuntimeException('Equipo comentador no encontrado');
+        }
+        if (! $this->equipoService->getEquipoById($idEquipoComentado)) {
+            throw new \RuntimeException('Equipo comentado no encontrado');
+        }
+
+        $c = new Comentario();
+        $c->setIdEquipoComentador($idEquipoComentador);
+        $c->setIdEquipoComentado($idEquipoComentado);
+        $c->setDeportividad($deportividad);
+        $c->setComentario($comentario);
+        $c->setFechaCreacion((new \DateTime())->format('Y-m-d H:i:s'));
+        $this->comentarioDataMapper->insertarComentario($c);
+        $this->notificationService->notifyEquipoComentado(
+            $this->equipoService->getEquipoById($idEquipoComentado),
+            $this->equipoService->getEquipoById($idEquipoComentador),
+            $c
+        );
     }
 }

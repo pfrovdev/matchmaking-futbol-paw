@@ -16,7 +16,6 @@ use DateTime;
 use Paw\App\DataMapper\DesafioDataMapper;
 use Paw\App\DataMapper\FormularioPartidoDataMapper;
 use Paw\App\DataMapper\HistorialPartidoDataMapper;
-use Paw\App\DataMapper\NivelEloDataMapper;
 use Paw\App\DataMapper\ResultadoPartidoDataMapper;
 use Paw\App\Dtos\FormularioEquipoDto;
 use Paw\App\Dtos\FormularioPartidoDto;
@@ -100,6 +99,27 @@ class PartidoServiceImpl implements PartidoService
         $this->partidoDataMapper->updatePartido($p);
     }
 
+    public function terminarPartido(int $partidoId, int $idEquipo, int $idEquipoRival): void
+    {
+        if (! $this->partidoAcordado($idEquipo, $idEquipoRival, $partidoId)) {
+            throw new \RuntimeException('El partido no está acordado');
+        }
+
+        $partido = $this->partidoDataMapper->findById(['id_partido' => $partidoId]);
+        if (! $partido) {
+            throw new \InvalidArgumentException("Partido {$partidoId} no existe");
+        }
+
+        $fechaFinal = (new \DateTime())->format('Y-m-d H:i:s');
+        $idEstadoJugado = $this->estadoPartidoDataMapper->findIdByCode('jugado');
+
+        if ($partido->getIdEstadoPartido() === $idEstadoJugado) {
+            throw new \RuntimeException('El partido ya fue finalizado');
+        }
+
+        $partido->finalizar($fechaFinal, $idEstadoJugado);
+        $this->partidoDataMapper->updatePartido($partido);
+    }
 
     public function getResultadoPartidosByIdEquipo(int $idEquipo): array
     {
@@ -112,8 +132,10 @@ class PartidoServiceImpl implements PartidoService
         $estadoPartidoPendiente = $this->estadoPartidoDataMapper->findIdByCode('pendiente');
         //Obtenemos todos los partidos pendientes
         $partidosPendientes = $this->partidoDataMapper->getAll(['id_estado_partido' => $estadoPartidoPendiente]);
+        $partidosAcordados = $this->partidoDataMapper->getAll(['id_estado_partido' => $this->estadoPartidoDataMapper->findIdByCode('acordado')]);
+        $totalPartidosPendientes = array_merge($partidosPendientes, $partidosAcordados);
         $misPartidosPendientes = [];
-        foreach ($partidosPendientes as $partidoPendiente) {
+        foreach ($totalPartidosPendientes as $partidoPendiente) {
             // Obtenemos el desafio a partir del partido para obtener el equipo
             $getDesafio = $this->desafioDataMapper->findById(['id_partido' => $partidoPendiente->getIdPartido()]);
 
@@ -586,9 +608,9 @@ class PartidoServiceImpl implements PartidoService
         return ProcesarFormularioEstado::NUEVA_ITERACION;
     }
 
-    public function partidoAcordado(int $idEquipo, int $idPartido): bool
+    public function partidoAcordado(int $idEquipo, int $idEquipoRival, int $idPartido): bool
     {
-        if ($this->validarPartido($idPartido, $idEquipo)) {
+        if ($this->validarPartido($idPartido, $idEquipo) && $this->validarPartido($idPartido, $idEquipoRival)) {
             $partido = $this->partidoDataMapper->findById(['id_partido' => $idPartido]);
             return $partido->getIdEstadoPartido() == $this->estadoPartidoDataMapper->findIdByCode('acordado');
         }
