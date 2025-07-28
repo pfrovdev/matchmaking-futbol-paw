@@ -12,9 +12,10 @@ use Paw\Core\Middelware\AuthMiddelware;
 class AuthController extends AbstractController
 {
     private TokenService $tokenService;
-    private EquipoService  $equipoService;
+    private EquipoService $equipoService;
 
-    public function __construct( Logger $logger, TokenService $tokenService, EquipoService $equipoService, AuthMiddelware $auth) {
+    public function __construct(Logger $logger, TokenService $tokenService, EquipoService $equipoService, AuthMiddelware $auth)
+    {
         parent::__construct($logger, $auth);
         $this->tokenService = $tokenService;
         $this->equipoService = $equipoService;
@@ -22,24 +23,29 @@ class AuthController extends AbstractController
 
     public function login(): void
     {
-        $email    = trim($_POST['email'] ?? '');
+        $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
         $user = $this->equipoService->getByEmail($email);
 
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL) || empty($password)) {
+            $_SESSION['errors'] = ['Datos inválidos'];
+            header('Location: /login');
+            exit;
+        }
         if ($user && password_verify($password, $user->getContrasena())) {
             $data = [
                 'id_equipo' => $user->getIdEquipo(),
-                'email'     => $user->getEmail(),
-                'role'      => $user->getIdRol() == 2 ? 'USUARIO' : 'ADMIN',
+                'email' => $user->getEmail(),
+                'role' => $user->getIdRol() == 2 ? 'USUARIO' : 'ADMIN',
             ];
 
-            $accessTtl  = (int) getenv('JWT_ACCESS_TTL');
+            $accessTtl = (int) getenv('JWT_ACCESS_TTL');
             $refreshTtl = (int) getenv('JWT_REFRESH_TTL');
-            $accessJwt  = $this->tokenService->createToken($data, $accessTtl);
+            $accessJwt = $this->tokenService->createToken($data, $accessTtl);
             $refreshJwt = $this->tokenService->createToken($data, $refreshTtl);
 
-            setcookie('access_token',  $accessJwt,  ['expires'=>time()+$accessTtl,'path'=>'/','secure'=>false,'httponly'=>true,'samesite'=>'Strict']);
-            setcookie('refresh_token', $refreshJwt, ['expires'=>time()+$refreshTtl,'path'=>'/','secure'=>false,'httponly'=>true,'samesite'=>'Strict']);
+            setcookie('access_token', $accessJwt, ['expires' => time() + $accessTtl, 'path' => '/', 'secure' => false, 'httponly' => true, 'samesite' => 'Strict']);
+            setcookie('refresh_token', $refreshJwt, ['expires' => time() + $refreshTtl, 'path' => '/', 'secure' => false, 'httponly' => true, 'samesite' => 'Strict']);
 
             header('Location: /dashboard');
             exit;
@@ -52,12 +58,13 @@ class AuthController extends AbstractController
 
     public function logout(): void
     {
-        foreach (['access_token','refresh_token'] as $cookie) {
+        foreach (['access_token', 'refresh_token'] as $cookie) {
             if (isset($_COOKIE[$cookie])) {
                 $pl = $this->tokenService->decodeToken($_COOKIE[$cookie]);
-                if ($pl) $this->tokenService->revokeToken($pl->jti, $pl->exp);
+                if ($pl)
+                    $this->tokenService->revokeToken($pl->jti, $pl->exp);
             }
-            setcookie($cookie, '', ['expires'=>time()-3600,'path'=>'/']);
+            setcookie($cookie, '', ['expires' => time() - 3600, 'path' => '/']);
         }
         session_destroy();
         header('Location: /login');

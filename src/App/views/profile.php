@@ -1,6 +1,36 @@
 <?php
 // src/App/views/profile.php
 // Variables: $miEquipo, $comentariosPag, $desafiosRecib, $nivelDesc, $deportividad, $ultimoPartidoJugado, $page, $per, $order, $dir
+$jugados = 0;
+$goles = 0;
+$asistencias = 0;
+$amarillas = 0;
+$rojas = 0;
+$ganados = 0;
+$empatados = 0;
+$perdidos = 0;
+$promedioGoles = 0;
+$promedioAsistencias = 0;
+$promedioAmarillas = 0;
+
+if ($estadisticas) {
+    $jugados = $estadisticas->getJugados();
+    $goles = $estadisticas->getGoles();
+    $golesEnContra = $resultadosPartidosEstadisticas['goles_en_contra'] ?? 0;
+    $asistencias = $estadisticas->getAsistencias();
+    $amarillas = $estadisticas->getTarjetasAmarillas();
+    $rojas = $estadisticas->getTarjetasRojas();
+    $ganados = $estadisticas->getGanados();
+    $empatados = $estadisticas->getEmpatados();
+    $perdidos = $estadisticas->getPerdidos();
+    $promedioGolesEnContra = $jugados > 0 ? round($golesEnContra / $jugados, 2) : 0;
+    $diferenciaGol = $goles - $golesEnContra;
+    $eloMasAlto = $resultadosPartidosEstadisticas['elo_mas_alto'] ?? 0;
+
+    $promedioGoles = $jugados > 0 ? round($goles / $jugados, 2) : 0;
+    $promedioAsistencias = $jugados > 0 ? round($asistencias / $jugados, 2) : 0;
+    $promedioAmarillas = $jugados > 0 ? round($amarillas / $jugados, 2) : 0;
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -9,15 +39,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Perfil público del equipo de futbol">
-    <title>Perfil - <?= htmlspecialchars($miEquipo->fields['nombre']) ?></title>
+    <title>Perfil - <?= htmlspecialchars($miEquipo->fields['nombre'],  ENT_QUOTES, 'UTF-8') ?></title>
     <link rel="stylesheet" href="css/dashboard.css">
     <script type="module" src="js/pages/Dashboard.js" defer></script>
     <script src="/js/sidebar.js"></script>
+
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "SportsTeam",
+            "name": "<?= htmlspecialchars($equipoBanner->getNombreEquipo(),  ENT_QUOTES, 'UTF-8') ?>",
+            "alternateName": "<?= htmlspecialchars($miEquipo->fields['acronimo'],  ENT_QUOTES, 'UTF-8') ?>",
+            "description": "<?= htmlspecialchars($equipoBanner->getLema(),  ENT_QUOTES, 'UTF-8') ?>",
+            "sport": "Soccer",
+            "identifier": {
+                "@type": "PropertyValue",
+                "name": "Elo Ranking",
+                "value": "<?= htmlspecialchars($equipoBanner->getEloActual(),  ENT_QUOTES, 'UTF-8') ?>"
+            },
+            "gender": "<?= htmlspecialchars($equipoBanner->getTipoEquipo(),  ENT_QUOTES, 'UTF-8') ?>",
+            <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
+                    "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(),  ENT_QUOTES, 'UTF-8') ?>",
+            <?php endif; ?>
+            "location": {
+            "@type": "Place",
+                "geo": {
+                    "@type": "GeoCoordinates",
+                    "latitude": <?= $equipoBanner->getLatitud() ?>,
+                    "longitude": <?= $equipoBanner->getLongitud() ?>
+                }
+            }
+        }
+    </script>
 </head>
 
-<body
-    data-profile-id="<?= $equipoVistoId ?>"
-    data-is-owner="false">
+<body data-profile-id="<?= $equipoVistoId ?>" data-is-owner="false">
 
     <?php require "parts/header.php"; ?>
     <?php require "parts/side-navbar.php"; ?>
@@ -34,16 +90,16 @@
                     <div class="card perfil-card">
                         <div class="perfil-foto">
                             <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
-                                <img src="<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil()) ?>" alt="Foto de perfil">
+                                <img src="<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(),  ENT_QUOTES, 'UTF-8') ?>" alt="Foto de perfil">
                             <?php else: ?>
                                 <div class="placeholder-foto">Sin foto de equipo</div>
                             <?php endif; ?>
                         </div>
                         <div class="perfil-info">
                             <h2>
-                                <?= htmlspecialchars($equipoBanner->getNombreEquipo()) . " (" . htmlspecialchars($miEquipo->fields['acronimo']) . ")" ?>
+                                <?= htmlspecialchars($equipoBanner->getNombreEquipo(),  ENT_QUOTES, 'UTF-8') . " (" . htmlspecialchars($miEquipo->fields['acronimo'],  ENT_QUOTES, 'UTF-8') . ")" ?>
                             </h2>
-                            <p class="lema"><?= htmlspecialchars($equipoBanner->getLema()) ?></p>
+                            <p class="lema"><?= htmlspecialchars($equipoBanner->getLema(),  ENT_QUOTES, 'UTF-8') ?></p>
                             <div class="sport-icons">
                                 Deportividad:
                                 <?php for ($i = 1; $i <= 5; $i++): ?>
@@ -55,19 +111,22 @@
                                 <?php endfor; ?>
                                 <?= "(" . $cantidadDeVotos . ")" ?>
                             </div>
-                            <p>Género: <?= htmlspecialchars($equipoBanner->getTipoEquipo()) ?></p>
+                            <p>Género: <?= htmlspecialchars($equipoBanner->getTipoEquipo(),  ENT_QUOTES, 'UTF-8') ?></p>
                             <div class="elo-bar">
-                                <span class="label"><?= htmlspecialchars($equipoBanner->getDescripcionElo()) ?></span>
+                                <span class="label"><?= htmlspecialchars($equipoBanner->getDescripcionElo(),  ENT_QUOTES, 'UTF-8') ?></span>
                                 <div class="bar-bg">
-                                    <div class="bar-fill" style="width:<?= min(100, ($equipoBanner->getEloActual() / 1300) * 100) ?>%"></div>
+                                    <div class="bar-fill"
+                                        style="width:<?= min(100, ($equipoBanner->getEloActual() / 1300) * 100) ?>%">
+                                    </div>
                                 </div>
                                 <div class="elo-values">
-                                    <span>Elo: <?= htmlspecialchars($equipoBanner->getEloActual()) ?></span> / <span>1300</span>
+                                    <span>Elo: <?= htmlspecialchars($equipoBanner->getEloActual(),  ENT_QUOTES, 'UTF-8') ?></span> /
+                                    <span>1300</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Card 2: historial de partidos -->
                     <div class="card history-card">
                         <h3 class="title-subsection">Historial de partidos</h3>
@@ -83,7 +142,8 @@
                     </div>
 
                     <form action="/desafios" method="POST" class="form-desafiar">
-                        <input type="hidden" name="id_equipo_desafiar" value="<?= htmlspecialchars($equipoBanner->getIdEquipo()) ?>">
+                        <input type="hidden" name="id_equipo_desafiar"
+                            value="<?= htmlspecialchars($equipoBanner->getIdEquipo(),  ENT_QUOTES, 'UTF-8') ?>">
                         <button type="submit" class="btn btn-desafiar">Desafiar</button>
                     </form>
 
@@ -92,29 +152,43 @@
                 <!-- Columna Derecha -->
                 <aside class="col-right">
                     <!-- Card 4: Estadísticas -->
-                    <div class="card stats-card">
-                        <h3 class="title-subsection">Estadísticas</h3>
-                        <dl>
-                            <dt>G/P:</dt>
-                            <dd>1.2</dd>
-                            <dt>A/P:</dt>
-                            <dd>1.2</dd>
-                            <dt>%G/A:</dt>
-                            <dd>50%</dd>
-                        </dl>
-                        <h4>Coleadores</h4>
-                        <ol>
-                            <li>Nombre Jugador - 50</li>
-                            <li>Nombre Jugador - 40</li>
-                            <li>Nombre Jugador - 30</li>
-                        </ol>
-                        <h4>Asistidores</h4>
-                        <ol>
-                            <li>Nombre Jugador - 20</li>
-                            <li>Nombre Jugador - 15</li>
-                            <li>Nombre Jugador - 10</li>
-                        </ol>
-                    </div>
+                    <?php if ($estadisticas): ?>
+                        <section class="card stats-card">
+                            <h3 class="title-subsection">Estadísticas</h3>
+                            <ul>
+                                <li><strong>Partidos jugados:</strong> <?= htmlspecialchars($jugados,  ENT_QUOTES, 'UTF-8') ?></li>
+                                <li><strong>Victorias:</strong> <?= htmlspecialchars($ganados,  ENT_QUOTES, 'UTF-8') ?></li>
+                                <li><strong>Empates:</strong> <?= htmlspecialchars($empatados,  ENT_QUOTES, 'UTF-8') ?></li>
+                                <li><strong>Derrotas:</strong> <?= htmlspecialchars($perdidos,  ENT_QUOTES, 'UTF-8') ?></li>
+                                <li><strong>Goles a favor:</strong> <?= htmlspecialchars($goles,  ENT_QUOTES, 'UTF-8') ?> (<?= $promedioGoles ?>
+                                    por partido)
+                                </li>
+                                <li><strong>Goles en contra:</strong> <?= htmlspecialchars($golesEnContra,  ENT_QUOTES, 'UTF-8') ?>
+                                    (<?= $promedioGolesEnContra ?> por partido)</li>
+                                <li><strong>Diferencia de gol:</strong>
+                                    <?= $diferenciaGol >= 0 ? '+' : '' ?>    <?= $diferenciaGol ?></li>
+                                <li><strong>ELO actual:</strong> <?= htmlspecialchars($equipoBanner->getEloActual(),  ENT_QUOTES, 'UTF-8') ?></li>
+                                <li><strong>ELO más alto:</strong> <?= htmlspecialchars($eloMasAlto,  ENT_QUOTES, 'UTF-8') ?></li>
+                                <li><strong>Tarjetas amarillas totales:</strong> <?= htmlspecialchars($amarillas,  ENT_QUOTES, 'UTF-8') ?></li>
+                                <li><strong>Tarjetas amarillas por partido:</strong> <?= $promedioAmarillas ?></li>
+                                <li><strong>Tarjetas rojas totales:</strong> <?= htmlspecialchars($rojas,  ENT_QUOTES, 'UTF-8') ?></li>
+                                <li><strong>Asistencias:</strong> <?= htmlspecialchars($asistencias,  ENT_QUOTES, 'UTF-8') ?></li>
+                                <li><strong>Asistencias por partido:</strong> <?= $promedioAsistencias ?></li>
+                                <?php if (!empty($resultadosPartidosEstadisticas['ultimos_5_partidos'])): ?>
+                                    <li><strong>Últimos 5 partidos:</strong>
+                                        <?= implode(' ', $resultadosPartidosEstadisticas['ultimos_5_partidos']) ?>
+                                    </li>
+                                <?php else: ?>
+                                    <li><strong>Últimos 5 partidos:</strong> No hay partidos aún.</li>
+                                <?php endif; ?>
+                            </ul>
+                        </section>
+                    <?php else: ?>
+                        <section class="card stats-card">
+                            <h3 class="title-subsection">Estadísticas</h3>
+                            <p>Este equipo aún no tiene estadísticas registradas.</p>
+                        </section>
+                    <?php endif; ?>
 
                     <!-- Card 5: Comentarios -->
                     <div class="card comments-card">
@@ -140,12 +214,12 @@
     <?php require "parts/footer.php"; ?>
     <script>
         const levelsEloMap = <?= json_encode(array_map(function ($row) {
-                                    return [
-                                        'descripcion' => $row['descripcion'],
-                                        'color_inicio' => $row['color_inicio'],
-                                        'color_fin' => $row['color_fin'],
-                                    ];
-                                }, $listLevelsElo)) ?>;
+            return [
+                'descripcion' => $row['descripcion'],
+                'color_inicio' => $row['color_inicio'],
+                'color_fin' => $row['color_fin'],
+            ];
+        }, $listLevelsElo)) ?>;
     </script>
 </body>
 

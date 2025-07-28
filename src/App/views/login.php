@@ -31,7 +31,7 @@
             <?php if (!empty($errors)): ?>
                 <section class="error-messages">
                     <?php foreach ($errors as $error): ?>
-                        <p class="error-text"><?php echo htmlspecialchars($error); ?></p>
+                        <p class="error-text"><?php echo htmlspecialchars($error,  ENT_QUOTES, 'UTF-8'); ?></p>
                     <?php endforeach; ?>
                 </section>
             <?php endif; ?>
@@ -41,7 +41,7 @@
                 <form action="/login" method="POST" class="form-container">
                     <label for="email">Correo electrónico *</label>
                     <input type="email" id="email" name="email" placeholder="ej: email@gmail.com"
-                        value="<?php echo htmlspecialchars($email); ?>" required>
+                        value="<?php echo htmlspecialchars($email,  ENT_QUOTES, 'UTF-8'); ?>" required>
 
                     <label for="password">Contraseña *</label>
                     <div class="input-with-icon">

@@ -1,5 +1,5 @@
 export default class EquipoBannerDto {
-  constructor({id_equipo, nombre_equipo, acronimo, url_foto_perfil, lema, elo_actual, descripcion_elo, deportividad, tipoEquipo, resultadosEquipo}) {
+  constructor({id_equipo, nombre_equipo, acronimo, url_foto_perfil, lema, elo_actual, descripcion_elo, deportividad, tipoEquipo, ubicacion, resultadosEquipo}) {
     this.idEquipo = id_equipo;
     this.nombreEquipo = nombre_equipo;
     this.acronimo = acronimo;
@@ -9,6 +9,7 @@ export default class EquipoBannerDto {
     this.descripcionElo = descripcion_elo;
     this.deportividad = deportividad;
     this.tipoEquipo = tipoEquipo;
+    this.ubicacion = ubicacion;
     this.resultadosEquipo = resultadosEquipo;
   }
 

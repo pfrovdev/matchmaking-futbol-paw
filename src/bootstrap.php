@@ -10,6 +10,7 @@ use Paw\Core\Request;
 // use Paw\Core\Database\ConnectionBuilder;
 use Paw\Core\Database\Database;
 
+
 // Cargamos configuración
 $config = require __DIR__ . '/../src/Config/config.php';
 define('DEBUG', $config['debug']);
@@ -20,7 +21,8 @@ $log->pushHandler(new StreamHandler($config['log']['path'], $config['log']['leve
 
 // Inicializamos la base de datos
 Database::initialize($config['database'], $log );
-
+use Paw\Core\Database\QueryBuilder;
+QueryBuilder::getInstance()->setLogger($log);
 // Whoops (sólo en modo desarrollo)
 if (DEBUG) {
     $whoops = new \Whoops\Run;
@@ -31,6 +33,7 @@ if (DEBUG) {
     ini_set('display_startup_errors', '0');
     error_reporting(0);
 }
+
 
 $request = new Request;
 

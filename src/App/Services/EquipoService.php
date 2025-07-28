@@ -27,4 +27,6 @@ interface EquipoService {
     function quitarMiEquipoDeEquipos(array $todosLosEquipos, Equipo $miEquipo);
     function setRestultadosPartido(array $todosLosEquipos);
     function getBadgeEquipo(int $id_equipo) : BadgeEquipoFormularoDto;
+    function ActualizarEloActualEquipo(Equipo $equipo);
+    function updateTeam(Equipo $equipo): bool;
 }

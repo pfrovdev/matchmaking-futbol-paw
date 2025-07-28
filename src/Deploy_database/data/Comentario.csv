@@ -1,64 +1,64 @@
 id_comentario,id_equipo_comentado,id_equipo_comentador,comentario,deportividad,fecha_creacion
-1,8,19,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 12:30:24
-2,16,8,Hubo varias faltas y protestas exageradas.,1,2024-05-02 12:40:16
-3,13,11,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 12:47:09
-4,4,16,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 12:53:54
-5,18,4,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 13:01:42
-6,14,18,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 13:06:07
-7,20,1,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 13:13:38
-8,7,13,Hubo varias faltas y protestas exageradas.,1,2024-05-02 13:18:03
-9,19,20,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 13:20:05
-10,6,2,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 13:27:17
-11,15,5,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 13:33:13
-12,1,10,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 13:35:08
-13,2,14,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 13:43:22
+1,11,15,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 12:30:24
+2,16,10,Hubo varias faltas y protestas exageradas.,1,2024-05-02 12:40:16
+3,1,18,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 12:47:09
+4,20,6,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 12:53:54
+5,12,18,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 13:01:42
+6,7,11,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 13:06:07
+7,6,1,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 13:13:38
+8,20,15,Hubo varias faltas y protestas exageradas.,1,2024-05-02 13:18:03
+9,4,15,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 13:20:05
+10,17,16,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 13:27:17
+11,20,18,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 13:33:13
+12,7,21,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 13:35:08
+13,3,9,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 13:43:22
 14,5,7,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 13:49:48
-15,3,17,Hubo varias faltas y protestas exageradas.,1,2024-05-02 13:58:24
-16,9,6,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 14:04:06
-17,11,3,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 14:07:16
-18,10,15,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 14:09:34
-19,12,12,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 14:13:51
-20,17,9,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 14:18:06
-21,19,11,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 14:21:55
-22,13,20,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 14:27:58
-23,18,10,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 14:31:26
-24,11,9,Hubo varias faltas y protestas exageradas.,1,2024-05-02 14:37:26
-25,2,8,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 14:45:57
-26,9,4,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 14:53:32
-27,20,15,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 15:00:57
-28,7,18,Hubo varias faltas y protestas exageradas.,1,2024-05-02 15:04:31
-29,10,14,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 15:08:44
-30,15,5,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 15:16:22
-31,12,1,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 15:24:37
-32,5,7,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 15:30:56
-33,1,13,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 15:40:34
-34,8,3,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 15:49:33
-35,16,12,Hubo varias faltas y protestas exageradas.,1,2024-05-02 15:52:11
-36,3,17,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 15:58:43
-37,14,6,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 16:03:52
-38,6,2,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 16:08:26
-39,17,19,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 16:12:49
-40,4,16,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 16:14:03
-41,10,17,Hubo varias faltas y protestas exageradas.,1,2024-05-02 16:19:00
-42,18,8,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 16:27:43
-43,19,16,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 16:36:22
-44,14,13,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 16:43:16
-45,11,4,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 16:51:13
-46,6,18,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 16:55:53
-47,7,14,Hubo varias faltas y protestas exageradas.,1,2024-05-02 17:00:17
-48,3,20,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 17:07:52
-49,15,7,Hubo varias faltas y protestas exageradas.,1,2024-05-02 17:14:35
-50,9,19,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 17:20:48
-51,20,6,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 17:24:32
+15,17,1,Hubo varias faltas y protestas exageradas.,1,2024-05-02 13:58:24
+16,6,20,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 14:04:06
+17,2,13,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 14:07:16
+18,19,4,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 14:09:34
+19,16,10,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 14:13:51
+20,11,15,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 14:18:06
+21,20,18,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 14:21:55
+22,9,16,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 14:27:58
+23,4,7,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 14:31:26
+24,15,12,Hubo varias faltas y protestas exageradas.,1,2024-05-02 14:37:26
+25,18,6,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 14:45:57
+26,14,8,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 14:53:32
+27,5,2,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 15:00:57
+28,19,4,Hubo varias faltas y protestas exageradas.,1,2024-05-02 15:04:31
+29,2,19,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 15:08:44
+30,5,8,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 15:16:22
+31,4,11,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 15:24:37
+32,1,18,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 15:30:56
+33,7,1,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 15:40:34
+34,20,6,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 15:49:33
+35,13,10,Hubo varias faltas y protestas exageradas.,1,2024-05-02 15:52:11
+36,12,18,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 15:58:43
+37,3,9,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 16:03:52
+38,3,7,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 16:08:26
+39,17,3,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 16:12:49
+40,7,11,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 16:14:03
+41,8,3,Hubo varias faltas y protestas exageradas.,1,2024-05-02 16:19:00
+42,10,16,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 16:27:43
+43,16,5,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 16:36:22
+44,6,1,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 16:43:16
+45,3,2,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 16:51:13
+46,21,9,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 16:55:53
+47,9,8,Hubo varias faltas y protestas exageradas.,1,2024-05-02 17:00:17
+48,17,18,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 17:07:52
+49,16,20,Hubo varias faltas y protestas exageradas.,1,2024-05-02 17:14:35
+50,20,15,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 17:20:48
+51,1,4,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 17:24:32
 52,4,15,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 17:31:22
-53,12,1,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 17:40:18
-54,8,2,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 17:43:42
-55,1,5,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 17:47:39
-56,2,3,Hubo varias faltas y protestas exageradas.,1,2024-05-02 17:55:57
-57,17,9,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 18:04:26
-58,13,11,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 18:06:31
-59,5,10,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 18:12:13
-60,16,12,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 18:17:43
+53,9,5,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 17:40:18
+54,13,16,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 17:43:42
+55,20,16,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 17:47:39
+56,17,16,Hubo varias faltas y protestas exageradas.,1,2024-05-02 17:55:57
+57,8,6,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 18:04:26
+58,21,2,Su juego fue muy agresivo y poco respetuoso.,0,2024-05-02 18:06:31
+59,2,12,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 18:12:13
+60,12,11,Ejemplo claro de deportividad y fair play durante todo el partido.,5,2024-05-02 18:17:43
 61,1,12,Gran muestra de juego limpio y compañerismo en la cancha.,4,2024-05-02 18:26:33
 62,11,19,Mantuvieron un buen espíritu competitivo y respeto hacia el rival.,3,2024-05-02 18:35:46
 63,16,1,En general fue un partido equilibrado pero con algunos roces.,2,2024-05-02 18:37:53

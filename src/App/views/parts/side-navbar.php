@@ -22,9 +22,9 @@ $menuItems = [
 ?>
 <nav class="side-navbar">
   <?php foreach ($menuItems as $item): ?>
-    <a href="<?= htmlspecialchars($item['href']) ?>">
-      <img src="<?= htmlspecialchars($item['icon']) ?>" alt="<?= htmlspecialchars($item['alt']) ?>">
-      <span class="label"><?= htmlspecialchars($item['label']) ?></span>
+    <a href="<?= htmlspecialchars($item['href'], ENT_QUOTES, 'UTF-8') ?>">
+      <img src="<?= htmlspecialchars($item['icon'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($item['alt'], ENT_QUOTES, 'UTF-8') ?>">
+      <span class="label"><?= htmlspecialchars($item['label'], ENT_QUOTES, 'UTF-8') ?></span>
     </a>
   <?php endforeach; ?>
 </nav>

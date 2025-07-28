@@ -8,6 +8,7 @@ use Paw\Core\Database\Database;
 class ResultadoPartido extends AbstractModel
 {
     public $table = "ResultadoPartido";
+
     public $fields = [
         "id_resultado" => null,
         "id_partido" => null,
@@ -23,6 +24,8 @@ class ResultadoPartido extends AbstractModel
         "total_amarillas_visitante" => null,
         "total_rojas_local" => null,
         "total_rojas_visitante" => null,
+        "total_asistencias_local" => null,
+        "total_asistencias_visitante" => null,
         "resultado" => null,
         "fecha_jugado" => null,
     ];
@@ -89,7 +92,13 @@ class ResultadoPartido extends AbstractModel
     public function setFechaJugado(string $fecha){
         $this->fields["fecha_jugado"] = $fecha;
     }
-
+    public function setTotalAsistenciasLocal(string $totalAsistenciasLocal){
+        $this->fields["total_asistencias_local"] = $totalAsistenciasLocal;
+    }
+    public function setTotalAsistenciasVisitante(string $totalAsistenciasVisitante){
+        $this->fields["total_asistencias_visitante"] = $totalAsistenciasVisitante;
+    }
+   
     public function set(array $values){
         foreach (array_keys($this->fields) as $field) {
             if (!array_key_exists($field, $values)) {
@@ -173,6 +182,13 @@ class ResultadoPartido extends AbstractModel
     public function getTotalRojasVisitante(): ?int
     {
         return $this->fields['total_rojas_visitante'];
+    }
+
+     public function getTotalAsistenciasLocal(){
+        return $this->fields["total_asistencias_local"];
+    }
+    public function getTotalAsistenciasVisitante(){
+        return $this->fields["total_asistencias_visitante"];
     }
 
     public function getFechaJugado(): ?string

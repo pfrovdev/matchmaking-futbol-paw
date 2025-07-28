@@ -27,10 +27,11 @@ return [
         ['path' => '/dashboard', 'action' => 'EquipoController@dashboard', 'method' => 'GET'],
         ['path' => '/ranking-teams', 'action' => 'EquipoController@rankingTeams', 'method' => 'GET'],
         ['path' => '/details-team', 'action' => 'EquipoController@detailsTeam', 'method' => 'GET'],
-
+        
         // POST Methods
         ['path' => '/register', 'action' => 'EquipoController@register', 'method' => 'POST'],
         ['path' => '/register-team', 'action' => 'EquipoController@registerTeam', 'method' => 'POST'],
+        ['path' => '/update-team', 'action' => 'EquipoController@updateTeam', 'method' => 'POST'],
 
         // === ComentarioController ===
         // GET Methods

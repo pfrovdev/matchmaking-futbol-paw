@@ -25,8 +25,8 @@
     <span class="elo-change <?= $match['eloChange'] >= 0 ? 'up' : 'down' ?>">
       <?= ($match['eloChange'] >= 0 ? '+' : '') . $match['eloChange'] ?> ELO
     </span>
-    <a href="<?= htmlspecialchars($match['matchUrl']) ?>" class="hc-btn-link">ver partido</a>
-    <span class="match-date"><?= htmlspecialchars($match['date']) ?></span>
+    <a href="<?= htmlspecialchars($match['matchUrl'], ENT_QUOTES, 'UTF-8') ?>" class="hc-btn-link">ver partido</a>
+    <span class="match-date"><?= htmlspecialchars($match['date'], ENT_QUOTES, 'UTF-8') ?></span>
   </div>
 
   <div class="hc-body">
@@ -38,8 +38,8 @@
           : '/icons/defaultTeamIcon.png';
       ?>
       <div class="team-img">
-        <img src="<?= htmlspecialchars($logoHome) ?>" alt="<?= htmlspecialchars($match['home']['name']) ?>">
-        <span class="team-abbr"><?= htmlspecialchars($match['home']['abbr']) ?></span>
+        <img src="<?= htmlspecialchars($logoHome, ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($match['home']['name'], ENT_QUOTES, 'UTF-8') ?>">
+        <span class="team-abbr"><?= htmlspecialchars($match['home']['abbr'], ENT_QUOTES, 'UTF-8') ?></span>
       </div>
       <div class="team-info">
         <div class="tarjetas">
@@ -54,7 +54,7 @@
     </div>
 
     <!-- Marcador -->
-    <div class="hc-score"><?= htmlspecialchars($match['score']) ?></div>
+    <div class="hc-score"><?= htmlspecialchars($match['score'], ENT_QUOTES, 'UTF-8') ?></div>
 
     <!-- Equipo visitante -->
     <div class="team-block away">
@@ -74,8 +74,8 @@
           : '/icons/defaultTeamIcon.png';
       ?>
       <div class="team-img">
-        <img src="<?= htmlspecialchars($logoAway) ?>" alt="<?= htmlspecialchars($match['away']['name']) ?>">
-        <span class="team-abbr"><?= htmlspecialchars($match['away']['abbr']) ?></span>
+        <img src="<?= htmlspecialchars($logoAway, ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($match['away']['name'], ENT_QUOTES, 'UTF-8') ?>">
+        <span class="team-abbr"><?= htmlspecialchars($match['away']['abbr'], ENT_QUOTES, 'UTF-8') ?></span>
       </div>
     </div>
   </div>

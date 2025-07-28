@@ -10,7 +10,7 @@ use Paw\App\Services\PartidoService;
 use Paw\Core\AbstractController;
 use Paw\Core\Middelware\AuthMiddelware;
 
-class  ComentarioController extends AbstractController
+class ComentarioController extends AbstractController
 {
     private ComentarioEquipoService $comentarioEquipoService;
     private EquipoService $equipoService;
@@ -23,54 +23,35 @@ class  ComentarioController extends AbstractController
         $this->partidoService = $partidoService;
     }
 
-    public function index()
+    public function index(): void
     {
         $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
 
-        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
-        $perPage = $_GET['per_page'] ?? 3;
-        $order = $_GET['order'] ?? 'fecha_creacion';
-        $dir = $_GET['dir']  ?? 'DESC';
+        $page = max(1, (int) ($_GET['page'] ?? 1));
+        $perPage = min(20, max(1, (int) ($_GET['per_page'] ?? 3)));
 
-        $equipoId = isset($_GET['equipo_id'])
-            ? (int) $_GET['equipo_id']
-            : $miEquipo->getIdEquipo();
+        $order = in_array($_GET['order'] ?? '', ['fecha_creacion', 'deportividad']) ? $_GET['order'] : 'fecha_creacion';
+        $dir = in_array(strtoupper($_GET['dir'] ?? ''), ['ASC', 'DESC']) ? strtoupper($_GET['dir']) : 'DESC';
 
-        if ($page < 1) $page = 1;
-        if ($perPage < 1 || $perPage > 20) $perPage = 3;
+        $equipoId = isset($_GET['equipo_id']) ? (int) $_GET['equipo_id'] : $miEquipo->getIdEquipo();
 
-        $allowedOrders = ['fecha_creacion', 'deportividad'];
-        if (!in_array($order, $allowedOrders)) {
-            $order = 'fecha_creacion';
-        }
-        $allowedDirs = ['ASC', 'DESC'];
-        if (!in_array(strtoupper($dir), $allowedDirs)) {
-            $dir = 'DESC';
-        }
+        $this->logger->info("page={$page} perPage={$perPage} order={$order} dir={$dir} equipoId={$equipoId}");
 
-        $this->logger->info('page ' . $page . ' perPage ' . $perPage . ' order ' . $order . ' dir ' . $dir . ' equipoId ' . $equipoId);
-
-        $resultadoPaginado = $this->comentarioEquipoService
-            ->getComentariosByEquipoPaginated(
-                $equipoId,
-                $page,
-                $perPage,
-                $order,
-                $dir
-            );
+        $resultadoPaginado = $this->comentarioEquipoService->getComentariosByEquipoPaginated($equipoId, $page, $perPage, $order, $dir);
 
         if (!empty($resultadoPaginado['data'])) {
-            $this->logger->info('resultadoPaginado ' . json_encode($resultadoPaginado) . json_encode($resultadoPaginado['data'][0]->getComentario()));
+            $this->logger->info('comentario sample: ' . json_encode($resultadoPaginado['data'][0]->getComentario()));
         } else {
-            $this->logger->info('resultadoPaginado sin datos');
+            $this->logger->info('No hay comentarios para mostrar.');
         }
 
         header('Content-Type: application/json');
         echo json_encode($resultadoPaginado);
     }
 
-    public function comentarEquipoRival()
+
+    public function comentarEquipoRival(): void
     {
         $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
@@ -84,8 +65,10 @@ class  ComentarioController extends AbstractController
         ];
 
 
-        if (empty($input['idEquipoComentado']) || empty($input['id_partido']) || empty($input['deportividad']) || trim($input['comentario']) === '') {
-            throw new \InvalidArgumentException('Faltan datos o formato inválido');
+        if (empty($input['idEquipoComentado']) || empty($input['id_partido']) || empty($input['deportividad']) || trim($input['comentario']) === '' || $input['deportividad'] < 0 || $input['deportividad'] > 5) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Datos inválidos.']);
+            return;
         }
 
         if (! $this->partidoService->partidoAcordado(

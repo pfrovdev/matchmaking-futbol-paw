@@ -33,7 +33,7 @@
         <?php if (!empty($errors)): ?>
         <section class="error-messages">
             <?php foreach ($errors as $error): ?>
-            <p class="error-text"><?php echo htmlspecialchars($error); ?></p>
+            <p class="error-text"><?php echo htmlspecialchars($error,  ENT_QUOTES, 'UTF-8'); ?></p>
             <?php endforeach; ?>
         </section>
         <?php endif; ?>
@@ -44,11 +44,11 @@
         <form action="/register" method="post" class="form-container">              
             <label for="email">Correo electrónico *</label>
             <input type="email" id="email" name="email" placeholder="ej: email@gmail.com"
-                value="<?php echo htmlspecialchars($old['email'] ?? ''); ?>" required>
+                value="<?php echo htmlspecialchars($old['email'] ?? '',  ENT_QUOTES, 'UTF-8'); ?>" required>
             
             <label for="confirm-email">Confirma tu correo *</label>
             <input type="email" id="confirm-email" name="confirm-email" placeholder="ej: email@gmail.com"
-                value="<?php echo htmlspecialchars($old['confirm-email'] ?? ''); ?>" required>
+                value="<?php echo htmlspecialchars($old['confirm-email'] ?? '',  ENT_QUOTES, 'UTF-8'); ?>" required>
             
             <label for="password">Contraseña *</label>
             <div class="input-with-icon">
@@ -64,7 +64,7 @@
 
             <label for="telefono">Teléfono *</label>
             <input type="tel" id="telefono" name="telefono" placeholder="ej: +54 1108111111"
-                value="<?php echo htmlspecialchars($old['telefono'] ?? ''); ?>" required>
+                value="<?php echo htmlspecialchars($old['telefono'] ?? '',  ENT_QUOTES, 'UTF-8'); ?>" required>
 
             <p class="mandatory-note">(* Campo obligatorio)</p>
             <button type="submit">Siguiente</button>

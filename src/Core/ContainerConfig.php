@@ -15,6 +15,7 @@ use Paw\App\Controllers\PartidoController;
 use Paw\App\DataMapper\ComentarioDataMapper;
 use Paw\App\DataMapper\DesafioDataMapper;
 use Paw\App\DataMapper\EquipoDataMapper;
+use Paw\App\DataMapper\EstaditicasDataMapper;
 use Paw\App\DataMapper\EstadoDesafioDataMapper;
 use Paw\App\DataMapper\EstadoPartidoDataMapper;
 use Paw\App\DataMapper\FormularioPartidoDataMapper;
@@ -84,6 +85,10 @@ class ContainerConfig
             $c->get(QueryBuilder::class),
             $logger
         ));
+        $c->set(EstaditicasDataMapper::class, fn($c) => new EstaditicasDataMapper(
+            $c->get(QueryBuilder::class),
+            $logger
+        ));
         $c->set(FormularioPartidoDataMapper::class, fn($c) => new FormularioPartidoDataMapper(
             $c->get(QueryBuilder::class),
             $logger
@@ -100,7 +105,7 @@ class ContainerConfig
                 case 'redis':
                     return new RedisStorage(
                         getenv('REDIS_HOST') ?: '127.0.0.1',
-                        (int)(getenv('REDIS_PORT') ?: 6379),
+                        (int) (getenv('REDIS_PORT') ?: 6379),
                         getenv('JWT_REDIS_PREFIX') ?: 'jwt:blacklist:'
                     );
                 default:
@@ -132,7 +137,8 @@ class ContainerConfig
             $c->get(HistorialPartidoDataMapper::class),
             $c->get(ResultadoPartidoDataMapper::class),
             $c->get(FormularioPartidoDataMapper::class),
-            $c->get(NotificationService::class)
+            $c->get(NotificationService::class),
+            $c->get(EstaditicasDataMapper::class)
         ));
 
         $c->set(EquipoService::class, fn($c) => new EquipoServiceImpl(
@@ -173,7 +179,9 @@ class ContainerConfig
             $c->get(DesafioService::class),
             $c->get(NotificationService::class),
             $c->get(ComentarioEquipoService::class),
-            $c->get(AuthMiddelware::class)
+            $c->get(AuthMiddelware::class),
+              $c->get(EstaditicasDataMapper::class),
+              $c->get(ResultadoPartidoDataMapper::class),
         ));
 
         $c->set(DesafioController::class, fn($c) => new DesafioController(
