@@ -73,12 +73,6 @@ class PartidoController extends AbstractController
             $dir
         );
 
-        if (!empty($partidosHistorial['data'])) {
-            $this->logger->info('resultadoPaginado: ' . json_encode($partidosHistorial['data'][0]->getComentario()));
-        } else {
-            $this->logger->info('resultadoPaginado sin datos');
-        }
-
         header('Content-Type: application/json');
         echo json_encode($partidosHistorial);
     }

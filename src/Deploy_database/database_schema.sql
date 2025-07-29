@@ -30,6 +30,8 @@ VALUES
 CREATE TABLE
     NivelElo (
         id_nivel_elo INT AUTO_INCREMENT PRIMARY KEY,
+        desde int not null, /* cargar con la tabla que tenemos en el figma */
+        hasta int not null,
         descripcion VARCHAR(20),
         descripcion_corta VARCHAR(20),
         color_inicio VARCHAR(10),
@@ -241,13 +243,13 @@ SELECT
     r.fecha_jugado,
     CASE
         WHEN r.resultado = 'empate' THEN NULL
-        WHEN r.resultado = 'gana_local' THEN r.id_equipo_local
-        WHEN r.resultado = 'gana_visitante' THEN r.id_equipo_visitante
+        WHEN r.resultado = 'gano_local' THEN r.id_equipo_local
+        WHEN r.resultado = 'gano_visitante' THEN r.id_equipo_visitante
     END AS id_equipo_ganador,
     CASE
         WHEN r.resultado = 'empate' THEN NULL
-        WHEN r.resultado = 'gana_local' THEN r.id_equipo_visitante
-        WHEN r.resultado = 'gana_visitante' THEN r.id_equipo_local
+        WHEN r.resultado = 'gano_local' THEN r.id_equipo_visitante
+        WHEN r.resultado = 'gano_visitante' THEN r.id_equipo_local
     END AS id_equipo_perdedor
 FROM
     Partido p
@@ -260,5 +262,5 @@ WHERE
         FROM
             EstadoPartido
         WHERE
-            descripcion_corta = 'acordado'
+            descripcion_corta = 'acordado' or 'jugado'
     );

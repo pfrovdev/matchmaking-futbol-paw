@@ -124,8 +124,14 @@ if ($estadisticas) {
                                     <span>1300</span>
                                 </div>
                             </div>
+                            <form action="/desafios" method="POST" class="form-desafiar">
+                                <input type="hidden" name="id_equipo_desafiar"
+                                    value="<?= htmlspecialchars($equipoBanner->getIdEquipo(),  ENT_QUOTES, 'UTF-8') ?>">
+                                <button type="submit" class="btn btn-desafiar">Desafiar</button>
+                            </form>
                         </div>
                     </div>
+
 
                     <!-- Card 2: historial de partidos -->
                     <div class="card history-card">
@@ -140,12 +146,6 @@ if ($estadisticas) {
                         <div id="history-list" class="history-list"></div>
                         <div id="history-pagination" class="pagination"></div>
                     </div>
-
-                    <form action="/desafios" method="POST" class="form-desafiar">
-                        <input type="hidden" name="id_equipo_desafiar"
-                            value="<?= htmlspecialchars($equipoBanner->getIdEquipo(),  ENT_QUOTES, 'UTF-8') ?>">
-                        <button type="submit" class="btn btn-desafiar">Desafiar</button>
-                    </form>
 
                 </section>
 
