@@ -30,7 +30,7 @@ VALUES
 CREATE TABLE
     NivelElo (
         id_nivel_elo INT AUTO_INCREMENT PRIMARY KEY,
-        desde int not null, /* cargar con la tabla que tenemos en el figma */
+        desde int not null,
         hasta int not null,
         descripcion VARCHAR(20),
         descripcion_corta VARCHAR(20),
@@ -40,6 +40,8 @@ CREATE TABLE
 
 INSERT INTO
     NivelElo (
+        desde,
+        hasta,
         descripcion,
         descripcion_corta,
         color_inicio,
@@ -47,19 +49,30 @@ INSERT INTO
     )
 VALUES
     (
+        0,
+        600,
         'Principiante',
         'principiante',
         '#AF6E06',
         '#804F01'
     ),
-    ('Amateur', 'amateur', '#C3C3C3', '#5D5D5D'),
+    (   601, 
+        1300, 
+        'Amateur', 
+        'amateur', 
+        '#C3C3C3', 
+        '#5D5D5D'),
     (
+        1301,
+        1800,
         'Semi profesional',
         'semi_profesional',
         '#C2BB00',
         '#535039'
     ),
     (
+        1801,
+        2000,
         'Profesional',
         'profesional',
         '#E67070',

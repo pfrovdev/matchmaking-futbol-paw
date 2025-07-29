@@ -163,7 +163,6 @@ class PartidoController extends AbstractController
             return;
         }
 
-        // Sanitizar e interpretar datos POST
         $input = filter_input_array(INPUT_POST, [
             'goles_visitante' => FILTER_VALIDATE_INT,
             'asistencias_visitante' => FILTER_VALIDATE_INT,
@@ -175,7 +174,6 @@ class PartidoController extends AbstractController
             'tarjetas_rojas_local' => FILTER_VALIDATE_INT,
         ]);
 
-        // Normalizar nulos
         foreach ($input as $key => $val) {
             $input[$key] = $val ?? 0;
         }

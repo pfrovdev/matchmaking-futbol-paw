@@ -166,8 +166,8 @@ class EquipoController extends AbstractController
             "id_tipo_equipo" => $typeTeam->id_tipo_equipo,
             "ubicacion" => $equipo->setUbicacionFromCoords($lng, $lat),
             "lema" => $teamMotto,
-            "elo_actual" => 1500,
-            "id_nivel_elo" => 1,
+            "elo_actual" => 800,
+            "id_nivel_elo" => 2,
             "id_rol" => 2,
         ]);
 
