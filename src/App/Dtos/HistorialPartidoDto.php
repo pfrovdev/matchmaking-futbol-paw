@@ -8,14 +8,12 @@ class HistorialPartidoDto
     public ResultadoPartidoDto $resultadoGanador;
     public ResultadoPartidoDto $resultadoPerdedor;
     public bool $esEmpate = false;
-    public bool $soy_observador = false;
 
-    public function __construct(string $fecha_finalizacion, ResultadoPartidoDto $resultadoPerdedor, ResultadoPartidoDto $resultadoGanador, bool $soy_observador = false, bool $esEmpate = false)
+    public function __construct(string $fecha_finalizacion, ResultadoPartidoDto $resultadoPerdedor, ResultadoPartidoDto $resultadoGanador, bool $esEmpate = false)
     {
         $this->fecha_finalizacion = $fecha_finalizacion;
         $this->resultadoPerdedor = $resultadoPerdedor;
         $this->resultadoGanador = $resultadoGanador;
-        $this->soy_observador = $soy_observador;
         $this->esEmpate = $esEmpate;
     }
 
@@ -33,16 +31,6 @@ class HistorialPartidoDto
     public function getResultadoPerdedor(): ResultadoPartidoDto
     {
         return $this->resultadoPerdedor;
-    }
-
-    public function isSoyObservador(): bool
-    {
-        return $this->soy_observador;
-    }
-
-    public function setSoyObservador(bool $soy_observador): void
-    {
-        $this->soy_observador = $soy_observador;
     }
 
 }

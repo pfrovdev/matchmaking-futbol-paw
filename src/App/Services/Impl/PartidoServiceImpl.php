@@ -252,13 +252,10 @@ class PartidoServiceImpl implements PartidoService
                     $dtoPerdedor = $dtoLocal;
                 }
 
-                $soyObs = ((int) $r['id_equipo_desafiante'] === $idEquipo);
-
                 $historialDtos[] = new HistorialPartidoDto(
                     $r['fecha_finalizacion'],
                     $dtoPerdedor,
                     $dtoGanador,
-                    $soyObs,
                     false
                 );
             }

@@ -46,9 +46,6 @@ export default class HistorialComponent {
       } else {
         claseCard = 'history-card-default';
       }
-      if (m.soyObservador) {
-        claseCard = 'history-card-observer';
-      }
 
       let equipoPerfil, equipoRival;
       if (idPerfilStr === ganadorIdStr) {
@@ -77,26 +74,12 @@ export default class HistorialComponent {
         eloChangeSpan.classList.add('down');
       }
 
-      if (m.soyObservador) {
-        eloChangeSpan.textContent = 'Observador';
-      } else {
-        const icon = document.createElement('i');
-        icon.classList.add('fas', `fa-arrow-${equipoPerfil.eloConseguido >= 0 ? 'up' : 'down'}`);
-        eloChangeSpan.appendChild(icon);
-        eloChangeSpan.append(` ${equipoPerfil.eloConseguido >= 0 ? '+' : ''}${equipoPerfil.eloConseguido} ELO`);
-      }
+      const icon = document.createElement('i');
+      icon.classList.add('fas', `fa-arrow-${equipoPerfil.eloConseguido >= 0 ? 'up' : 'down'}`);
+      eloChangeSpan.appendChild(icon);
+      eloChangeSpan.append(` ${equipoPerfil.eloConseguido >= 0 ? '+' : ''}${equipoPerfil.eloConseguido} ELO`);
+      
       headerDiv.appendChild(eloChangeSpan);
-
-      if (m.soyObservador) {
-        const btnLink = document.createElement('a');
-        btnLink.href = `/match/${m.id_partido}`;
-        btnLink.classList.add('hc-btn-link');
-        const eyeIcon = document.createElement('i');
-        eyeIcon.classList.add('fas', 'fa-eye');
-        btnLink.appendChild(eyeIcon);
-        btnLink.append(' Ver partido');
-        headerDiv.appendChild(btnLink);
-      }
 
       const matchDateSpan = document.createElement('span');
       matchDateSpan.classList.add('match-date');

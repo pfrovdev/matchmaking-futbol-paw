@@ -4,13 +4,11 @@ export default class HistorialDto {
         resultadoGanador,
         resultadoPerdedor,
         esEmpate,
-        soy_observador
     }) {
         this.fecha = new Date(fecha_finalizacion);
         this.resultadoGanador = resultadoGanador;
         this.resultadoPerdedor = resultadoPerdedor;
         this.esEmpate = esEmpate;
-        this.soyObservador = soy_observador;
     }
 
     getFechaFormateada() {
