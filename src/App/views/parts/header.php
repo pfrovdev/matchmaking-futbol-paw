@@ -13,7 +13,7 @@
     <?php if ($miEquipo->fields['nombre']): ?>
         <section class="header-my-account">
             <button type="button" aria-label="Mi equipo">
-                <img src="../icons/defaultTeamIcon.png" class="icon">
+                <img src=<?= htmlspecialchars($miEquipo->fields['url_foto_perfil'], ENT_QUOTES, 'UTF-8') ?> class="icon">
                 <?= htmlspecialchars($miEquipo->fields['nombre'], ENT_QUOTES, 'UTF-8') ?>
             </button>
             <ul>
