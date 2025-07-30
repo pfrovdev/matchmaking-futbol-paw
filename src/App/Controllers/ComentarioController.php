@@ -68,6 +68,7 @@ class ComentarioController extends AbstractController
         if (empty($input['idEquipoComentado']) || empty($input['id_partido']) || empty($input['deportividad']) || trim($input['comentario']) === '' || $input['deportividad'] < 0 || $input['deportividad'] > 5) {
             http_response_code(400);
             echo json_encode(['error' => 'Datos inválidos.']);
+            echo json_encode($input);
             return;
         }
 
@@ -87,7 +88,7 @@ class ComentarioController extends AbstractController
         );
 
         //dirección POST para terminar el partido
-        $this->redirectPost('/terminarPartido', [
+        $this->redirectPost('/terminar-partido', [
             'id_partido' => $input['id_partido'],
             'id_equipo_rival' => $input['idEquipoComentado'],
         ]);
