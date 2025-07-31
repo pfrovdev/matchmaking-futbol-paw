@@ -101,12 +101,12 @@ class PartidoServiceImpl implements PartidoService
 
     public function terminarPartido(int $partidoId, int $idEquipo, int $idEquipoRival): void
     {
-        if (! $this->partidoAcordado($idEquipo, $idEquipoRival, $partidoId)) {
+        if (!$this->partidoAcordado($idEquipo, $idEquipoRival, $partidoId)) {
             throw new \RuntimeException('El partido no está acordado');
         }
 
         $partido = $this->partidoDataMapper->findById(['id_partido' => $partidoId]);
-        if (! $partido) {
+        if (!$partido) {
             throw new \InvalidArgumentException("Partido {$partidoId} no existe");
         }
 
@@ -133,20 +133,40 @@ class PartidoServiceImpl implements PartidoService
         //Obtenemos todos los partidos pendientes
         $partidosPendientes = $this->partidoDataMapper->getAll(['id_estado_partido' => $estadoPartidoPendiente]);
         $partidosAcordados = $this->partidoDataMapper->getAll(['id_estado_partido' => $this->estadoPartidoDataMapper->findIdByCode('acordado')]);
-        $totalPartidosPendientes = array_merge($partidosPendientes, $partidosAcordados);
-        $misPartidosPendientes = [];
-        foreach ($totalPartidosPendientes as $partidoPendiente) {
+        $totalProximosPartidos = array_merge($partidosPendientes, $partidosAcordados);
+        $misPartidosPendientes = [];        
+        
+        foreach ($totalProximosPartidos as $proximosPartidos) {
             // Obtenemos el desafio a partir del partido para obtener el equipo
-            $getDesafio = $this->desafioDataMapper->findById(['id_partido' => $partidoPendiente->getIdPartido()]);
+            $getDesafio = $this->desafioDataMapper->findById(['id_partido' => $proximosPartidos->getIdPartido()]);
+            // Filtramos los desafios que tengan como desafiado o desafiante el id_equipo en cuestión
+            if (
+                $getDesafio && ((int) $getDesafio->getIdEquipoDesafiante() === (int) $idEquipo ||
+                    (int) $getDesafio->getIdEquipoDesafiado() === (int) $idEquipo)
+            ) {
 
-            if ($getDesafio && ((int) $getDesafio->getIdEquipoDesafiante() === (int) $idEquipo || (int) $getDesafio->getIdEquipoDesafiado() === (int) $idEquipo)) {
-
-                if ($getDesafio->getIdEquipoDesafiante() !== $idEquipo) {
-                    $equipo = $this->equipoService->getEquipoBanner($this->equipoService->getEquipoById((int) $getDesafio->getIdEquipoDesafiante()));
-                } else {
-                    $equipo = $this->equipoService->getEquipoBanner($this->equipoService->getEquipoById((int) $getDesafio->getIdEquipoDesafiado()));
+                if ($getDesafio->getIdEquipoDesafiante() !== $idEquipo && $proximosPartidos->getFinalizadoEquipoDesafiado() === 0) {
+                    $equipo = $this->equipoService->getEquipoBanner(
+                        $this->equipoService->getEquipoById((int) $getDesafio->getIdEquipoDesafiante())
+                    );
+                    $misPartidosPendientes[] = new PartidoDto(
+                        $equipo,
+                        $proximosPartidos->getIdPartido(),
+                        $proximosPartidos->getFinalizado(),
+                        $proximosPartidos->getFechaCreacion()
+                    );
+                } else if ($getDesafio->getIdEquipoDesafiado() !== $idEquipo && $proximosPartidos->getFinalizadoEquipoDesafiante() === 0) {
+                    $equipo = $this->equipoService->getEquipoBanner(
+                        $this->equipoService->getEquipoById((int) $getDesafio->getIdEquipoDesafiado())
+                    );
+                    $misPartidosPendientes[] = new PartidoDto(
+                        $equipo,
+                        $proximosPartidos->getIdPartido(),
+                        $proximosPartidos->getFinalizado(),
+                        $proximosPartidos->getFechaCreacion()
+                    );
                 }
-                $misPartidosPendientes[] = new PartidoDto($equipo, $partidoPendiente->getIdPartido(), $partidoPendiente->getFinalizado(), $partidoPendiente->getFechaCreacion());
+
             }
         }
 
@@ -198,7 +218,7 @@ class PartidoServiceImpl implements PartidoService
     public function getHistorialPartidosByIdEquipo(int $idEquipo, int $page, int $perPage, string $orderBy, string $direction): array
     {
         $offset = ($page - 1) * $perPage;
-
+        
         $rows = $this->historialDataMapper->findByEquipoPaginated($idEquipo, $perPage, $offset, $orderBy, $direction);
 
         $historialDtos = [];
@@ -571,18 +591,18 @@ class PartidoServiceImpl implements PartidoService
                     $estaditicasEquipoLocal->setEmpatados($estaditicasEquipoLocal->getEmpatados() + 1);
                     $estaditicasEquipoVisitante->setEmpatados($estaditicasEquipoVisitante->getEmpatados() + 1);
                 }
-                if ($primerasEstadisticasLocal){
+                if ($primerasEstadisticasLocal) {
                     $this->estadisticasDataMapper->save($estaditicasEquipoLocal);
-                }else{
+                } else {
                     $this->estadisticasDataMapper->updateEstadisticas($estaditicasEquipoLocal);
                 }
 
-                if ($primerasEstadisticasVisitante){
+                if ($primerasEstadisticasVisitante) {
                     $this->estadisticasDataMapper->save($estaditicasEquipoVisitante);
-                }else{
+                } else {
                     $this->estadisticasDataMapper->updateEstadisticas($estaditicasEquipoVisitante);
                 }
-                
+
                 $idResultadoPartido = $this->resultadoPartidoDataMapper->save($resultadoPartido);
                 $idResultadoPartido = true;
                 if ($idResultadoPartido) {
