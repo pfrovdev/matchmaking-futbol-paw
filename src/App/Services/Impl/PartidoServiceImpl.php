@@ -319,12 +319,26 @@ class PartidoServiceImpl implements PartidoService
         }
 
         $formularioPartido = $this->formularioPartidoDataMapper->findByIdFormularioPartido($idPartido);
-
+        
         if ($formularioPartido->getTotalIteraciones() == 5) {
             throw new \RuntimeException("El formulario llegó a su máximo de iteraciones");
         }
-
+        
         return true;
+    }
+
+    public function estaFinalizado($idPartido, $miEquipo): bool
+    {
+        $partido = $this->partidoDataMapper->findByIdAndFinalizado($idPartido, false);
+        $desafio = $this->desafioDataMapper->findByIdPartido($idPartido);
+
+        if ($desafio->getIdEquipoDesafiado() === $miEquipo) {
+            return $partido->getFinalizadoEquipoDesafiado() === 1;
+        }
+        if ($desafio->getIdEquipoDesafiante() !== $miEquipo) {
+            return $partido->getFinalizadoEquipoDesafiante() === 1;
+        }
+        return false;
     }
 
     public function getUltimosFormulariosEquipoContrario(int $id_partido, int $id_equipo): ?FormularioPartidoDto
@@ -629,7 +643,7 @@ class PartidoServiceImpl implements PartidoService
     {
         if ($this->validarPartido($idPartido, $idEquipo) && $this->validarPartido($idPartido, $idEquipoRival)) {
             $partido = $this->partidoDataMapper->findById(['id_partido' => $idPartido]);
-            return $partido->getIdEstadoPartido() == $this->estadoPartidoDataMapper->findIdByCode('acordado');
+            return $partido->getIdEstadoPartido() == $this->estadoPartidoDataMapper->findIdByCode('acordado') && $this->estaFinalizado($idPartido, $idEquipo); // y mi equipo no tenga el finalizado en true
         }
         return false;
     }
