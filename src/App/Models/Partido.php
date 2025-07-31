@@ -10,9 +10,11 @@ class Partido extends AbstractModel
     public $fields = [
         "id_partido" => null,
         "fecha_creacion" => null,
-        "finalizado" => null,
         "fecha_finalizacion" => null,
         "id_estado_partido" => null,
+        "finalizado" => null,
+        "finalizado_equipo_desafiante" => null,
+        "finalizado_equipo_desafiado"=> null,
     ];
 
     public function set(array $values)
@@ -41,6 +43,16 @@ class Partido extends AbstractModel
     public function setFinalizado(int $finalizado)
     {
         $this->fields["finalizado"] = $finalizado;
+    }
+
+    public function setFinalizadoEquipoDesafiante(int $finalizadoEquipoDesafiante)
+    {
+        $this->fields["finalizado_equipo_desafiante"] = $finalizadoEquipoDesafiante;
+    }
+
+    public function setFinalizadoEquipoDesafiado(int $finalizadoEquipoDesafiado)
+    {
+        $this->fields["finalizado_equipo_desafiado"] = $finalizadoEquipoDesafiado;
     }
 
     public function setFechaFinalizacion(?string $fechaFinalizacion)
@@ -76,6 +88,17 @@ class Partido extends AbstractModel
     public function getFinalizado(): ?string
     {
         return $this->fields["finalizado"];
+    }
+
+
+    public function getFinalizadoEquipoDesafiante(): ?int
+    {
+        return $this->fields["finalizado_equipo_desafiante"];
+    }
+
+    public function getFinalizadoEquipoDesafiado(): ?int
+    {
+        return $this->fields["finalizado_equipo_desafiado"];
     }
 
     public function getIdEstadoPartido()

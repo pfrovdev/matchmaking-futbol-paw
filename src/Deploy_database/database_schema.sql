@@ -168,6 +168,8 @@ CREATE TABLE
         fecha_finalizacion DATETIME,
         id_estado_partido INT NOT NULL,
         finalizado TINYINT (1) DEFAULT 0,
+        finalizado_equipo_desafiante TINYINT (1) DEFAULT 0,
+        finalizado_equipo_desafiado TINYINT (1) DEFAULT 0,
         FOREIGN KEY (id_estado_partido) REFERENCES EstadoPartido (id_estado_partido)
     );
 
