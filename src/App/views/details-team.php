@@ -23,6 +23,7 @@ $promedioGoles = 0;
 $promedioAsistencias = 0;
 $promedioAmarillas = 0;
 
+$mostrar_estadisticas = true;
 if ($estadisticas) {
     $jugados = $estadisticas->getJugados();
     $goles = $estadisticas->getGoles();

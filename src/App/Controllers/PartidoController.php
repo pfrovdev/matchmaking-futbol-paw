@@ -73,12 +73,6 @@ class PartidoController extends AbstractController
             $dir
         );
 
-        if (!empty($partidosHistorial['data'])) {
-            $this->logger->info('resultadoPaginado: ' . json_encode($partidosHistorial['data'][0]->getComentario()));
-        } else {
-            $this->logger->info('resultadoPaginado sin datos');
-        }
-
         header('Content-Type: application/json');
         echo json_encode($partidosHistorial);
     }
@@ -95,40 +89,95 @@ class PartidoController extends AbstractController
             return;
         }
 
+        $partido = $this->partidoService->getPartidoById($id_partido);
+
         list($formularioPartidoContrario, $miUltimaIteracion) =
             $this->prepararVistaCoordinar($id_partido, $miEquipo->getIdEquipo());
 
-        if ($this->partidoService->manejarDeadlineSiCorresponde($id_partido)) {
-            $formularioPartidoContrario = $this->partidoService
-                ->getUltimosFormulariosEquipoContrario($id_partido, $miEquipo->getIdEquipo());
-            $miUltimaIteracion = $this->partidoService
-                ->getUltimaIteracion($id_partido, $miEquipo->getIdEquipo());
-
-            if (!$formularioPartidoContrario) {
-                $idEquipoRival = $this->partidoService
-                    ->getEquipoRival($id_partido, $miEquipo->getIdEquipo());
-                $formularioPartidoContrario = new FormularioPartidoDto(
-                    $idEquipoRival,
-                    $id_partido,
-                    0,
-                    new FormularioEquipoDto($this->equipoService->getBadgeEquipo($idEquipoRival), 0,0,0,0),
-                    new FormularioEquipoDto($this->equipoService->getBadgeEquipo($miEquipo->getIdEquipo()), 0,0,0,0)
-                );
+            if ($this->partidoService->manejarDeadlineSiCorresponde($id_partido)) {
+                $_SESSION['flash'] = [
+                    'mensaje'    => 'Se pasó el plazo de 48 hs, el partido se dio por finalizado automáticamente con la última carga.',
+                    'finalizado' => true,
+                    'tipo'       => 'info'
+                ];
+            
+                // Iteración propia
+                $miUltimaIteracion = $this->partidoService
+                    ->getUltimaIteracion($id_partido, $miEquipo->getIdEquipo());
+            
+                // >>> TU FORMULARIO (propio)
+                $miFormulario = $this->partidoService
+                    ->getUltimosFormulariosEquipoContrario(
+                        $id_partido,
+                        $this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo())
+                    );
+                // Si no hay ninguno, creá uno en ceros:
+                if (!$miFormulario) {
+                    $miFormulario = new FormularioPartidoDto(
+                        $miEquipo->getIdEquipo(),
+                        $id_partido,
+                        0,
+                        new FormularioEquipoDto(
+                            $this->equipoService->getBadgeEquipo($miEquipo->getIdEquipo()),
+                            0, 0, 0, 0
+                        ),
+                        new FormularioEquipoDto(
+                            $this->equipoService->getBadgeEquipo(
+                               $this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo())
+                            ),
+                            0, 0, 0, 0
+                        )
+                    );
+                }
+            
+                // >>> FORMULARIO CONTRARIO (igual que antes)
+                $formularioPartidoContrario = $this->partidoService
+                    ->getUltimosFormulariosEquipoContrario($id_partido, $miEquipo->getIdEquipo());
+                if (!$formularioPartidoContrario) {
+                    $idEquipoRival = $this->partidoService
+                        ->getEquipoRival($id_partido, $miEquipo->getIdEquipo());
+                    $formularioPartidoContrario = new FormularioPartidoDto(
+                        $idEquipoRival,
+                        $id_partido,
+                        0,
+                        new FormularioEquipoDto($this->equipoService->getBadgeEquipo($idEquipoRival), 0,0,0,0),
+                        new FormularioEquipoDto($this->equipoService->getBadgeEquipo($miEquipo->getIdEquipo()), 0,0,0,0)
+                    );
+                }
+            
+                require $this->viewsDir . 'coordinar-resultado.php';
+                return;
             }
-
-            $_SESSION['flash'] = [
-                'mensaje'    => 'Se pasó el plazo de 48 hs, el partido se dio por finalizado automáticamente con la última carga.',
-                'finalizado' => true
-            ];
-            $this->logger->info('>>> formularioPartidoContrario ' . 
-            ($formularioPartidoContrario ? 'OK id=' . $formularioPartidoContrario->getIdPartido() : 'NULL'));
-
-            require $this->viewsDir . 'coordinar-resultado.php';
-            return;
-        }
 
         $formularioPartidoContrario = $this->partidoService->getUltimosFormulariosEquipoContrario($id_partido, $miEquipo->getIdEquipo());
         $miUltimaIteracion = $this->partidoService->getUltimaIteracion($id_partido, $miEquipo->getIdEquipo());
+
+        if ($miUltimaIteracion > 0) {
+            $miFormulario = $this->partidoService->getUltimosFormulariosEquipoContrario(
+                $id_partido,
+                $this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo()),
+            );
+        } else {
+            $miFormulario =  new FormularioPartidoDto(
+                $miEquipo->getIdEquipo(),
+                $id_partido,
+                0,
+                new FormularioEquipoDto(
+                    $this->equipoService->getBadgeEquipo($miEquipo->getIdEquipo()),
+                    0,
+                    0,
+                    0,
+                    0
+                ),
+                new FormularioEquipoDto(
+                    $this->equipoService->getBadgeEquipo($this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo())),
+                    0,
+                    0,
+                    0,
+                    0
+                )
+            );
+        }
 
         if (!$formularioPartidoContrario) {
             $idEquipoRival = $this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo());
@@ -141,7 +190,7 @@ class PartidoController extends AbstractController
             );
         }
 
-        if ($this->partidoService->partidoAcordado($miEquipo->getIdEquipo(), $id_partido)) {
+        if ($this->partidoService->partidoAcordado($miEquipo->getIdEquipo(), $this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo()), $id_partido)) {
             $_SESSION['flash']['mensaje'] = $this->generarMensajeEstado(ProcesarFormularioEstado::PARTIDO_TERMINADO);
             $_SESSION['flash']['finalizado'] = true;
         }
@@ -193,7 +242,6 @@ class PartidoController extends AbstractController
             return;
         }
 
-        // Sanitizar e interpretar datos POST
         $input = filter_input_array(INPUT_POST, [
             'goles_visitante' => FILTER_VALIDATE_INT,
             'asistencias_visitante' => FILTER_VALIDATE_INT,
@@ -208,18 +256,9 @@ class PartidoController extends AbstractController
             $input = [];
         }
 
-        // Normalizar nulos
-        $defaults = [
-            'goles_visitante' => 0,
-            'asistencias_visitante' => 0,
-            'tarjetas_amarillas_visitante' => 0,
-            'tarjetas_rojas_visitante' => 0,
-            'goles_local' => 0,
-            'asistencias_local' => 0,
-            'tarjetas_amarillas_local' => 0,
-            'tarjetas_rojas_local' => 0,
-        ];
-        $input = array_merge($defaults, $input);
+        foreach ($input as $key => $val) {
+            $input[$key] = $val ?? 0;
+        }
 
         $formularioVisitante = new FormularioPartido();
         $formularioVisitante->set([
@@ -257,6 +296,36 @@ class PartidoController extends AbstractController
         exit;
     }
 
+    public function terminarPartido()
+    {
+        $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($userData->id_equipo);
+        $idMiEquipo = $miEquipo->getIdEquipo();
+
+        $input = filter_input_array(INPUT_POST, [
+            'id_partido' => FILTER_VALIDATE_INT,
+            'id_equipo_rival' => FILTER_VALIDATE_INT,
+        ]);
+
+        if (empty($input['id_partido'])) {
+            throw new \InvalidArgumentException('ID de partido inválido');
+        }
+        if (empty($input['id_equipo_rival'])) {
+            throw new \InvalidArgumentException('ID de equipo rival inválido');
+        }
+
+        $idPartido = $input['id_partido'];
+        $idEquipoRival = $input['id_equipo_rival'];
+
+        if (! $this->partidoService->partidoAcordado($idMiEquipo, $idEquipoRival, $idPartido)) {
+            throw new \DomainException('No se puede terminar un partido no acordado');
+        }
+
+        $this->partidoService->terminarPartido($idPartido, $idMiEquipo, $idEquipoRival);
+
+        header("Location: /dashboard");
+        exit;
+    }
 
     private function generarMensajeEstado($estado): string
     {

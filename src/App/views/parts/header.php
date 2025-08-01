@@ -18,7 +18,7 @@
             </button>
             <ul>
                 <li><a href="./dashboard">Mi Perfil</a></li>
-                <li><a href="./">Cerrar sesión</a></li>
+                <li><a href="./logout">Cerrar sesión</a></li>
             </ul>
         </section>
     <?php endif; ?>

@@ -68,7 +68,7 @@ if ($estadisticas) {
       "alternateName": "<?= htmlspecialchars($miEquipo->fields['acronimo'], ENT_QUOTES, 'UTF-8') ?>",
       "description": "<?= htmlspecialchars($equipoBanner->getLema(), ENT_QUOTES, 'UTF-8') ?>",
       <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
-            "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
+                  "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
       <?php endif; ?>
       "gender": "<?= htmlspecialchars($equipoBanner->getTipoEquipo(), ENT_QUOTES, 'UTF-8') ?>",
       "location": {
@@ -103,10 +103,10 @@ if ($estadisticas) {
             <div class="perfil-foto">
               <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
                 <?php
-                  $foto = $equipoBanner->getUrlFotoPerfil();
-                  if (!filter_var($foto, FILTER_VALIDATE_URL)) {
-                    $foto = 'icons/defaultTeamIcon.png';
-                  }
+                $foto = $equipoBanner->getUrlFotoPerfil();
+                if (!filter_var($foto, FILTER_VALIDATE_URL)) {
+                  $foto = 'icons/defaultTeamIcon.png';
+                }
                 ?>
                 <img src="<?= htmlspecialchars($foto, ENT_QUOTES, 'UTF-8') ?>" alt="Foto de perfil">
               <?php else: ?>
@@ -116,13 +116,14 @@ if ($estadisticas) {
               <?php endif; ?>
             </div>
             <div class="perfil-info">
-            <h2 class="team-header">
-              <?= htmlspecialchars($equipoBanner->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>
-              <span class="acronym">(<?= htmlspecialchars($miEquipo->fields['acronimo'], ENT_QUOTES, 'UTF-8') ?>)</span>
-              <button type="button" class="btn-link open-edit-modal" title="Editar perfil">
-                ✎
-              </button>
-            </h2>
+              <h2 class="team-header">
+                <?= htmlspecialchars($equipoBanner->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>
+                <span
+                  class="acronym">(<?= htmlspecialchars($miEquipo->fields['acronimo'], ENT_QUOTES, 'UTF-8') ?>)</span>
+                <button type="button" class="btn-link open-edit-modal" title="Editar perfil">
+                  ✎
+                </button>
+              </h2>
               <p class="lema"><?= htmlspecialchars($equipoBanner->getLema(), ENT_QUOTES, 'UTF-8') ?></p>
               <div class="sport-icons">
                 Deportividad:
@@ -138,18 +139,38 @@ if ($estadisticas) {
                 <?= "(" . $cantidadDeVotos . ")" ?>
               </div>
               <p>Género: <?= htmlspecialchars($equipoBanner->getTipoEquipo(), ENT_QUOTES, 'UTF-8') ?></p>
-              <div class="elo-bar">
-                <span
-                  class="label"><?= htmlspecialchars($equipoBanner->getDescripcionElo(), ENT_QUOTES, 'UTF-8') ?></span>
-                <div class="bar-bg">
-                  <div class="bar-fill" style="width:<?= min(100, ($equipoBanner->getEloActual() / 1300) * 100) ?>%">
+              <?php foreach ($listLevelsElo as $row):
+                $id = $row['id_nivel_elo'];
+                $label = $row['descripcion'];
+                $desde = (float) $row['desde'];
+                $hasta = (float) $row['hasta'];
+                $colorInicio = $row['color_inicio'];
+                $colorFin = $row['color_fin'];
+                $gradient = "linear-gradient(90deg, $colorInicio, $colorFin)";
+                $eloActual = (float) $equipoBanner->getEloActual();
+
+                if ($eloActual >= $desde && $eloActual <= $hasta):
+                  $porcentaje = ($hasta > $desde)
+                    ? min(100, max(0, (($eloActual - $desde) / ($hasta - $desde)) * 100))
+                    : 0;
+                  ?>
+                  <div class="elo-bar">
+                    <span class="label"><?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?></span>
+                    <div class="bar-bg">
+                      <div class="bar-fill" style="background: <?= htmlspecialchars($gradient, ENT_QUOTES, 'UTF-8') ?>;
+                       width: <?= round($porcentaje, 2) ?>%">
+                      </div>
+                    </div>
+                    <div class="elo-values">
+                      <span>Elo: <?= htmlspecialchars($eloActual, ENT_QUOTES, 'UTF-8') ?></span> /
+                      <span><?= htmlspecialchars($hasta, ENT_QUOTES, 'UTF-8') ?></span>
+                    </div>
                   </div>
-                </div>
-                <div class="elo-values">
-                  <span>Elo: <?= htmlspecialchars($equipoBanner->getEloActual(), ENT_QUOTES, 'UTF-8') ?></span> /
-                  <span>1300</span>
-                </div>
-              </div>
+                  <?php
+                endif;
+              endforeach;
+              ?>
+
             </div>
           </div>
 
@@ -257,42 +278,32 @@ if ($estadisticas) {
         </section>
 
       </div>
-    <div id="edit-team-modal" class="modal-overlay hidden">
-      <div class="modal-content">
-        <button id="close-modal" class="modal-close">&times;</button>
-        <h2>Editar perfil de equipo</h2>
-        <form action="/update-team" method="POST" class="edit-team-form">
-          <label>
-            Acrónimo (máx. 3 chars)
-            <input type="text" name="team-acronym"
-                  value="<?= htmlspecialchars($miEquipo->getAcronimo()) ?>">
-          </label>
-          <label>
-            Lema 
-            <input type="text" name="team-motto"
-                  value="<?= htmlspecialchars($miEquipo->getLema()) ?>">
-          </label>
-          <label>
-            URL foto perfil
-            <input
-              type="url"
-              name="team-url"
-              id="team-url"
-              value="<?= htmlspecialchars($miEquipo->getUrlFotoPerfil()) ?>"
-              maxlength="255"
-              pattern="https?://.+"
-              title="Debe empezar con http:// o https:// y tener como máximo 255 caracteres.">
-          </label>
-          <small
-            id="url-error"
-            class="error-message"
-            style="display:none; color:#d32f2f; font-size:0.8rem;">
-            La URL debe empezar con http:// o https:// y no superar 255 caracteres.
-          </small>
-          <button type="submit" class="btn-primary">Guardar</button>
-        </form>
+      <div id="edit-team-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+          <button id="close-modal" class="modal-close">&times;</button>
+          <h2>Editar perfil de equipo</h2>
+          <form action="/update-team" method="POST" class="edit-team-form">
+            <label>
+              Acrónimo (máx. 3 chars)
+              <input type="text" name="team-acronym" value="<?= htmlspecialchars($miEquipo->getAcronimo()) ?>">
+            </label>
+            <label>
+              Lema
+              <input type="text" name="team-motto" value="<?= htmlspecialchars($miEquipo->getLema()) ?>">
+            </label>
+            <label>
+              URL foto perfil
+              <input type="url" name="team-url" id="team-url"
+                value="<?= htmlspecialchars($miEquipo->getUrlFotoPerfil()) ?>" maxlength="255" pattern="https?://.+"
+                title="Debe empezar con http:// o https:// y tener como máximo 255 caracteres.">
+            </label>
+            <small id="url-error" class="error-message" style="display:none; color:#d32f2f; font-size:0.8rem;">
+              La URL debe empezar con http:// o https:// y no superar 255 caracteres.
+            </small>
+            <button type="submit" class="btn-primary">Guardar</button>
+          </form>
+        </div>
       </div>
-    </div>
   </main>
 
   <?php require "parts/footer.php"; ?>

@@ -30,6 +30,8 @@ VALUES
 CREATE TABLE
     NivelElo (
         id_nivel_elo INT AUTO_INCREMENT PRIMARY KEY,
+        desde int not null,
+        hasta int not null,
         descripcion VARCHAR(20),
         descripcion_corta VARCHAR(20),
         color_inicio VARCHAR(10),
@@ -38,6 +40,8 @@ CREATE TABLE
 
 INSERT INTO
     NivelElo (
+        desde,
+        hasta,
         descripcion,
         descripcion_corta,
         color_inicio,
@@ -45,19 +49,30 @@ INSERT INTO
     )
 VALUES
     (
+        0,
+        600,
         'Principiante',
         'principiante',
         '#AF6E06',
         '#804F01'
     ),
-    ('Amateur', 'amateur', '#C3C3C3', '#5D5D5D'),
+    (   601, 
+        1300, 
+        'Amateur', 
+        'amateur', 
+        '#C3C3C3', 
+        '#5D5D5D'),
     (
+        1301,
+        1800,
         'Semi profesional',
         'semi_profesional',
         '#C2BB00',
         '#535039'
     ),
     (
+        1801,
+        2000,
         'Profesional',
         'profesional',
         '#E67070',
@@ -154,6 +169,8 @@ CREATE TABLE
         deadline_formulario DATETIME NULL,
         id_estado_partido INT NOT NULL,
         finalizado TINYINT (1) DEFAULT 0,
+        finalizado_equipo_desafiante TINYINT (1) DEFAULT 0,
+        finalizado_equipo_desafiado TINYINT (1) DEFAULT 0,
         FOREIGN KEY (id_estado_partido) REFERENCES EstadoPartido (id_estado_partido)
     );
 
@@ -242,13 +259,13 @@ SELECT
     r.fecha_jugado,
     CASE
         WHEN r.resultado = 'empate' THEN NULL
-        WHEN r.resultado = 'gana_local' THEN r.id_equipo_local
-        WHEN r.resultado = 'gana_visitante' THEN r.id_equipo_visitante
+        WHEN r.resultado = 'gano_local' THEN r.id_equipo_local
+        WHEN r.resultado = 'gano_visitante' THEN r.id_equipo_visitante
     END AS id_equipo_ganador,
     CASE
         WHEN r.resultado = 'empate' THEN NULL
-        WHEN r.resultado = 'gana_local' THEN r.id_equipo_visitante
-        WHEN r.resultado = 'gana_visitante' THEN r.id_equipo_local
+        WHEN r.resultado = 'gano_local' THEN r.id_equipo_visitante
+        WHEN r.resultado = 'gano_visitante' THEN r.id_equipo_local
     END AS id_equipo_perdedor
 FROM
     Partido p
@@ -261,5 +278,5 @@ WHERE
         FROM
             EstadoPartido
         WHERE
-            descripcion_corta = 'acordado'
+            descripcion_corta = 'acordado' or 'jugado'
     );

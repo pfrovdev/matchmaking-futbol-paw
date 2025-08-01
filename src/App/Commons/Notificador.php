@@ -2,6 +2,7 @@
 
 namespace Paw\App\Commons;
 
+use Paw\App\Models\Comentario;
 use Paw\App\Models\Desafio;
 use Paw\App\Models\Equipo;
 use Paw\App\Models\FormularioPartido;
@@ -15,6 +16,8 @@ interface Notificador{
     function enviarNotificacionPartidoNoAcordado(Equipo $equipoLocal, Equipo $equipoVisitante): void;
 
     function enviarNotificacionNuevaIteracion(Equipo $equipoLocal, Equipo $equipoVisitante, int $iteracion, int $idPartido);
+
+    function enviarNotificacionComentarioEquipo(Equipo $equipoComentado, Equipo $equipoComentador, Comentario $comentario);
 }
 
 

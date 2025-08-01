@@ -7,7 +7,6 @@
   --card-bg-win: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
   --card-bg-lose: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
   --card-bg-draw: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);
-  --card-bg-observer: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
 
   --shadow-base: 0 6px 12px rgba(0, 0, 0, 0.2);
   --shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.3);
@@ -44,10 +43,6 @@
 
 .history-card-draw {
   background: var(--card-bg-draw);
-}
-
-.history-card-observer {
-  background: var(--card-bg-observer);
 }
 
 .hc-header {

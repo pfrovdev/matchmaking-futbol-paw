@@ -10,6 +10,8 @@ class NivelElo extends AbstractModel
     public $fields = [
 
         "id_nivel_elo" => null,
+        "desde" => null,
+        "hasta" => null,
         "descripcion" => null,
         "descripcion_corta" => null,
     ];
@@ -24,6 +26,13 @@ class NivelElo extends AbstractModel
     }
     public function setDescripcion(string $descripcion){
         $this->fields["descripcion"] = $descripcion;
+    }
+    public function setDesde(string $desde){
+        $this->fields["desde"] = $desde;
+    }
+
+    public function setHasta(string $hasta){
+        $this->fields["hasta"] = $hasta;
     }
     public function setDescripcionCorta(string $descripcionCorta){
         $this->fields["descripcion_corta"] = $descripcionCorta;
@@ -66,6 +75,14 @@ class NivelElo extends AbstractModel
     public function getDescripcion(): ?string
     {
         return $this->fields['descripcion'];
+    }
+    public function getDesde(): ?int
+    {
+        return $this->fields['desde'];
+    }
+    public function getHasta(): ?int
+    {
+        return $this->fields['hasta'];
     }
 
     public function getDescripcionCorta(): ?string

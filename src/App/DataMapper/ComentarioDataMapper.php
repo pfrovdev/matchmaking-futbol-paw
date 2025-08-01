@@ -42,6 +42,11 @@ class ComentarioDataMapper extends DataMapper
         return $this->mapAll($rawRows);
     }
 
+    public function insertarComentario(Comentario $comentario): void
+    {
+        $this->qb->insert($this->table, $comentario->fields);
+    }
+
     public function countByEquipo(int $idEquipo): int {
         return $this->qb->count($this->table, ['id_equipo_comentado' => $idEquipo]);
     }
