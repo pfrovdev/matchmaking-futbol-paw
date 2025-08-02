@@ -284,9 +284,20 @@ if ($estadisticas) {
           <h2>Editar perfil de equipo</h2>
           <form action="/update-team" method="POST" class="edit-team-form">
             <label>
-              Acrónimo (máx. 3 chars)
-              <input type="text" name="team-acronym" value="<?= htmlspecialchars($miEquipo->getAcronimo()) ?>">
+                Acrónimo (máx. 3 chars)
+                <input
+                  type="text"
+                  name="team-acronym"
+                  id="team-acronym"
+                  maxlength="3"
+                  value="<?= htmlspecialchars($miEquipo->getAcronimo(), ENT_QUOTES, 'UTF-8') ?>">
             </label>
+            <small
+              id="acronym-error"
+              class="error-message"
+              style="display:none; color:#d32f2f; font-size:0.8rem;">
+              El acrónimo no puede tener más de 3 caracteres.
+            </small>
             <label>
               Lema
               <input type="text" name="team-motto" value="<?= htmlspecialchars($miEquipo->getLema()) ?>">

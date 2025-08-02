@@ -324,11 +324,6 @@ class PartidoServiceImpl implements PartidoService
             throw new \RuntimeException("El formulario llegó a su máximo de iteraciones");
         }
 
-        $dl = $partido->getDeadlineFormulario();
-        if ($dl !== null && new DateTime() > new DateTime($dl)) {
-            $this->finalizarPartido($idPartido);
-            throw new RuntimeException("Se pasó el plazo de 48 hs, el partido se dio por acordado.");
-        }
 
         return true;
     }
@@ -382,10 +377,17 @@ class PartidoServiceImpl implements PartidoService
         foreach ($formulariosContrario as $f) {
             $porIteracion[$f->getTotalIteraciones()][] = $f;
         }
+        // 5) Agrupo por iteración y obtengo la máxima
         $ultimaIteracion   = max(array_keys($porIteracion));
         $formulariosUltima = $porIteracion[$ultimaIteracion];
 
-        // 5) Localizo los dos formularios de esa iteración
+        // Si en la última iteración hay menos de dos formularios (solo uno o ninguno), 
+        // devolvemos null para que el controller arme el fallback
+        if (count($formulariosUltima) < 2) {
+            return null;
+        }
+
+        // 6) Mapeo los dos formularios
         $mi     = null;
         $contra = null;
         foreach ($formulariosUltima as $f) {
@@ -396,26 +398,31 @@ class PartidoServiceImpl implements PartidoService
             }
         }
 
-        // 6) Armo y devuelvo el DTO
-        return new FormularioPartidoDto(
-            $mi->getIdEquipo(),
-            $id_partido,
-            $ultimaIteracion,
-            new FormularioEquipoDto(
-                $this->equipoService->getBadgeEquipo($mi->getIdEquipo()),
-                $mi->getTotalGoles()      ?? 0,
-                $mi->getTotalAsistencias()?? 0,
-                $mi->getTotalAmarillas()  ?? 0,
-                $mi->getTotalRojas()      ?? 0
-            ),
-            new FormularioEquipoDto(
-                $this->equipoService->getBadgeEquipo($id_equipo),
-                $contra->getTotalGoles()      ?? 0,
-                $contra->getTotalAsistencias()?? 0,
-                $contra->getTotalAmarillas()  ?? 0,
-                $contra->getTotalRojas()      ?? 0
-            )
-        );
+        // Devuelvo el DTO solo si encontré ambos
+        if ($mi && $contra) {
+            return new FormularioPartidoDto(
+                $mi->getIdEquipo(),
+                $id_partido,
+                $ultimaIteracion,
+                new FormularioEquipoDto(
+                    $this->equipoService->getBadgeEquipo($mi->getIdEquipo()),
+                    $mi->getTotalGoles()      ?? 0,
+                    $mi->getTotalAsistencias()?? 0,
+                    $mi->getTotalAmarillas()  ?? 0,
+                    $mi->getTotalRojas()      ?? 0
+                ),
+                new FormularioEquipoDto(
+                    $this->equipoService->getBadgeEquipo($id_equipo),
+                    $contra->getTotalGoles()      ?? 0,
+                    $contra->getTotalAsistencias()?? 0,
+                    $contra->getTotalAmarillas()  ?? 0,
+                    $contra->getTotalRojas()      ?? 0
+                )
+            );
+        }
+
+        // Si algo falta, devolvemos null para fallback en controller
+        return null;
     }
 
     public function getUltimaIteracion(int $idPartido, int $idEquipo): int
@@ -684,7 +691,7 @@ class PartidoServiceImpl implements PartidoService
         $p = $this->partidoDataMapper->findById(['id_partido' => $idPartido]);
         $dl = $p->getDeadlineFormulario();
         if ($dl && new DateTime() > new DateTime($dl)) {
-            // tomo el único formulario ingresado a tiempo (última iteración)
+            // tomo el unico formulario ingresado a tiempo (ultima iteracion)
             $todos   = $this->formularioPartidoDataMapper
                             ->findByIdPartidoOrderByFechaDesc($idPartido);
             $unico   = reset($todos);
