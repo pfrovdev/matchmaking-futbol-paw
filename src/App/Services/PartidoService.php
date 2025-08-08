@@ -20,6 +20,7 @@ interface PartidoService
     function getEquipoRival(int $idPartido, int $idEquipo): int;
     function procesarFormulario(int $idEquipo, int $idPartido, FormularioPartido $formularioLocal, FormularioPartido $formularioVisitante): ProcesarFormularioEstado;
     function partidoAcordado(int $idEquipo, int $idEquipoRival, int $idPartido): bool;
+    function partidoAcordadoYNoFinalizado(int $idEquipo, int $idEquipoRival, int $idPartido): bool;
 
     function terminarPartido(int $partidoId, int $idEquipo, int $idEquipoRival): void;
 

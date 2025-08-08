@@ -1,5 +1,5 @@
 <?php
-$flash = $_SESSION['flash'] ?? ['mensaje' => '', 'finalizado' => false, 'tipo' => ''];
+$flash = $_SESSION['flash'] ?? ['mensaje' => '', 'finalizado' => false, 'tipo' => '', 'acordado' => false];
 unset($_SESSION['flash']);
 
 $maxIntentos = 5;
@@ -12,45 +12,61 @@ $mismatchedFields = [];
 $statusMessage = $flash['mensaje'] ?? '';
 $statusType = $flash['tipo'] ?? 'info';
 
+// Si el partido ya fue acordado, solo le queda comentarlo y/o terminarlo.
+$partidoAcordado = $flash['acordado'];
+
 // Formularios deshabilitados si ya finalizó
-$myFormDisabled = $partidoFinalizado;
+$myFormDisabled = $partidoAcordado || $partidoFinalizado;
 $rivalFormDisabled = true;
 
-// Si no hay mensaje en flash, generamos el estado intermedio para la vista
-if (empty($flash['mensaje'])) {
-    if ($formularioPartidoContrario->getIteracionActual() === 0) {
-        if ($miUltimaIteracion === 0) {
-            $statusMessage = "Ingresa el resultado de tu partido para iniciar la coordinación.";
-            $statusType = "info";
-            $myFormDisabled = false;
-        } else {
-            $statusMessage = "Tu resultado fue enviado. Esperando que el equipo contrario cargue el suyo.";
-            $statusType = "info";
-        }
-    } else {
-        // Ambos formularios existen, comparamos solo para resaltar discrepancias
-        $statusMessage = "Revisa los campos resaltados e intenta de nuevo. Te quedan {$intentosRestantes} intentos.";
-        $statusType = "warning";
+$mostrarSubtitlo = true;
 
-        $fieldsToCompare = [
-            'goles_local' => ['mine' => $miFormulario->getEquipoLocal()->getGoles(),       'rival' => $formularioPartidoContrario->getEquipoVisitante()->getGoles()],
-            'asistencias_local' => ['mine' => $miFormulario->getEquipoLocal()->getAsistencias(),  'rival' => $formularioPartidoContrario->getEquipoVisitante()->getAsistencias()],
-            'tarjetas_amarillas_local' => ['mine' => $miFormulario->getEquipoLocal()->getTarjetasAmarilla(), 'rival' => $formularioPartidoContrario->getEquipoVisitante()->getTarjetasAmarilla()],
-            'tarjetas_rojas_local' => ['mine' => $miFormulario->getEquipoLocal()->getTarjetasRoja(),    'rival' => $formularioPartidoContrario->getEquipoVisitante()->getTarjetasRoja()],
-            'goles_visitante' => ['mine' => $miFormulario->getEquipoVisitante()->getGoles(),   'rival' => $formularioPartidoContrario->getEquipoLocal()->getGoles()],
-            'asistencias_visitante' => ['mine' => $miFormulario->getEquipoVisitante()->getAsistencias(), 'rival' => $formularioPartidoContrario->getEquipoLocal()->getAsistencias()],
-            'tarjetas_amarillas_visitante' => ['mine' => $miFormulario->getEquipoVisitante()->getTarjetasAmarilla(), 'rival' => $formularioPartidoContrario->getEquipoLocal()->getTarjetasAmarilla()],
-            'tarjetas_rojas_visitante' => ['mine' => $miFormulario->getEquipoVisitante()->getTarjetasRoja(), 'rival' => $formularioPartidoContrario->getEquipoLocal()->getTarjetasRoja()],
-        ];
-        foreach ($fieldsToCompare as $field => $vals) {
-            if ((int)$vals['mine'] !== (int)$vals['rival']) {
-                $mismatchedFields[] = $field;
+// Si no hay mensaje en flash, generamos el estado intermedio para la vista
+if (!$partidoAcordado) {
+    if (empty($flash['mensaje'])) {
+        if ($formularioPartidoContrario->getIteracionActual() === 0) {
+            if ($miUltimaIteracion === 0) {
+                $statusMessage = "Ingresa el resultado de tu partido para iniciar la coordinación.";
+                $statusType = "info";
+                $myFormDisabled = false;
+            } else {
+                $statusMessage = "Tu resultado fue enviado. Esperando que el equipo contrario cargue el suyo.";
+                $statusType = "info";
+            }
+        } else {
+            // Ambos formularios existen, comparamos solo para resaltar discrepancias
+            $statusMessage = "Revisa los campos resaltados e intenta de nuevo. Te quedan {$intentosRestantes} intentos.";
+            $statusType = "warning";
+
+            $fieldsToCompare = [
+                'goles_local' => ['mine' => $miFormulario->getEquipoLocal()->getGoles(), 'rival' => $formularioPartidoContrario->getEquipoVisitante()->getGoles()],
+                'asistencias_local' => ['mine' => $miFormulario->getEquipoLocal()->getAsistencias(), 'rival' => $formularioPartidoContrario->getEquipoVisitante()->getAsistencias()],
+                'tarjetas_amarillas_local' => ['mine' => $miFormulario->getEquipoLocal()->getTarjetasAmarilla(), 'rival' => $formularioPartidoContrario->getEquipoVisitante()->getTarjetasAmarilla()],
+                'tarjetas_rojas_local' => ['mine' => $miFormulario->getEquipoLocal()->getTarjetasRoja(), 'rival' => $formularioPartidoContrario->getEquipoVisitante()->getTarjetasRoja()],
+                'goles_visitante' => ['mine' => $miFormulario->getEquipoVisitante()->getGoles(), 'rival' => $formularioPartidoContrario->getEquipoLocal()->getGoles()],
+                'asistencias_visitante' => ['mine' => $miFormulario->getEquipoVisitante()->getAsistencias(), 'rival' => $formularioPartidoContrario->getEquipoLocal()->getAsistencias()],
+                'tarjetas_amarillas_visitante' => ['mine' => $miFormulario->getEquipoVisitante()->getTarjetasAmarilla(), 'rival' => $formularioPartidoContrario->getEquipoLocal()->getTarjetasAmarilla()],
+                'tarjetas_rojas_visitante' => ['mine' => $miFormulario->getEquipoVisitante()->getTarjetasRoja(), 'rival' => $formularioPartidoContrario->getEquipoLocal()->getTarjetasRoja()],
+            ];
+            foreach ($fieldsToCompare as $field => $vals) {
+                if ((int) $vals['mine'] !== (int) $vals['rival']) {
+                    $mismatchedFields[] = $field;
+                }
             }
         }
     }
+} else {
+    $statusMessage = "El partido ya fue acordado, por favor terminalo dentro de los próximos X minutos.";
+    $statusType = "info";
+    $mostrarSubtitlo = false;
 }
 
-$myTeamAcronym    = $miEquipo->getAcronimo();
+// Cuando mostrar botones
+$mostrarBotonEnviarResultados = !$partidoAcordado && !$partidoFinalizado;
+$mostrarBotonWhatsapp = !$partidoAcordado && !$partidoFinalizado;
+$mostrarBotonTerminarPartido = $partidoAcordado;
+
+$myTeamAcronym = $miEquipo->getAcronimo();
 $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->getAcronimo();
 ?>
 <!DOCTYPE html>
@@ -73,29 +89,35 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
         <section class="coordinar-resultado">
             <h1>Coordinar resultado</h1>
 
+
             <div class="alert alert-<?= htmlspecialchars($statusType) ?>">
                 <?= htmlspecialchars($statusMessage) ?>
             </div>
 
-            <p class="subtitle">
-                Si ambos formularios coinciden, podrás distribuir las estadísticas a tu equipo!
-                <?php if (!$partidoFinalizado): ?>
-                    <br>Solo te quedan <span class="intentos"><?= htmlspecialchars($intentosRestantes) ?></span> intentos más.
-                <?php endif; ?>
-            </p>
+            <?php if ($mostrarSubtitlo): ?>
+                <p class="subtitle">
+                    Si ambos formularios coinciden, podrás distribuir las estadísticas a tu equipo!
+                    <?php if (!$partidoFinalizado): ?>
+                        <br>Solo te quedan <span class="intentos"><?= htmlspecialchars($intentosRestantes) ?></span> intentos
+                        más.
+                    <?php endif; ?>
+                </p>
+            <?php endif; ?>
 
             <div class="progress-bar-container">
                 <?php for ($i = 0; $i < $maxIntentos; $i++): ?>
                     <span class="progress-dot <?= ($i < $miUltimaIteracion) ? 'filled' : '' ?>"></span>
                 <?php endfor; ?>
-                <span class="progress-text">Intento <?= htmlspecialchars($miUltimaIteracion) ?>/<?= htmlspecialchars($maxIntentos) ?></span>
+                <span class="progress-text">Intento
+                    <?= htmlspecialchars($miUltimaIteracion) ?>/<?= htmlspecialchars($maxIntentos) ?></span>
             </div>
 
             <div class="forms-wrapper">
                 <!-- Formulario propio -->
                 <div class="form-column my-form-column active" id="my-form">
                     <strong>Tu formulario (Iteración: <?= htmlspecialchars($miUltimaIteracion + 1) ?>)</strong>
-                    <form method="POST" action="/coordinar-resultado?id_partido=<?= htmlspecialchars($id_partido) ?>" class="form-team">
+                    <form method="POST" action="/coordinar-resultado?id_partido=<?= htmlspecialchars($id_partido) ?>"
+                        class="form-team">
                         <?php
                         // Campos Locales
                         $teamAcronym = $miEquipo->getAcronimo();
@@ -132,7 +154,7 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                         require 'parts/match-form-fields.php';
                         ?>
 
-                        <?php if (!$partidoFinalizado && !$myFormDisabled): ?>
+                        <?php if ($mostrarBotonEnviarResultados): ?>
                             <button type="submit" name="submit_my_form">Enviar resultado</button>
                         <?php endif; ?>
 
@@ -179,19 +201,22 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                         require 'parts/match-form-fields.php';
                         ?>
 
-                        <?php if (!$partidoFinalizado): ?>
-                            <button type="button" class="btn-whatsapp" onclick="window.open('https://wa.me/?text=Hola%2C soy%20<?= urlencode($myTeamAcronym) ?>. Por favor, carga el resultado o revisa las diferencias.', '_blank')">Abrir WhatsApp</button>
+                        <?php if ($mostrarBotonWhatsapp): ?>
+                            <button type="button" class="btn-whatsapp"
+                                onclick="window.open('https://wa.me/?text=Hola%2C soy%20<?= urlencode($myTeamAcronym) ?>. Por favor, carga el resultado o revisa las diferencias.', '_blank')">Abrir
+                                WhatsApp</button>
                         <?php endif; ?>
 
                     </form>
                 </div>
             </div>
 
-            <?php if ($partidoFinalizado): ?>
+            <?php if ($mostrarBotonTerminarPartido): ?>
                 <div class="final-buttons-container">
                     <form action="/terminar-partido" method="POST" style="display:inline;" class="btn">
                         <input type="hidden" name="id_partido" value="<?= htmlspecialchars($id_partido) ?>">
-                        <input type="hidden" name="id_equipo_rival" value="<?= htmlspecialchars($formularioPartidoContrario->getIdEquipo()) ?>">
+                        <input type="hidden" name="id_equipo_rival"
+                            value="<?= htmlspecialchars($formularioPartidoContrario->getIdEquipo()) ?>">
                         <button class="btn" type="submit">Terminar partido</button>
                     </form>
                     <button class="btn" type="button" id="btnCalificarDeportividad">Calificar deportividad</button>
@@ -213,9 +238,7 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                             <input type="hidden" name="idEquipoComentado"
                                 value="<?= htmlspecialchars($formularioPartidoContrario->getIdEquipo()) ?>">
 
-                            <textarea name="comentario"
-                                class="textArea"
-                                maxlength="100"
+                            <textarea name="comentario" class="textArea" maxlength="100"
                                 placeholder="Deja un comentario... (100 caracteres max.)"></textarea>
                             <button type="submit" class="btn">Enviar Calificación</button>
                         </form>
