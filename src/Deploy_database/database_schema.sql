@@ -107,7 +107,7 @@ CREATE TABLE
         acronimo VARCHAR(5),
         elo_actual INT NOT NULL DEFAULT 800,
         fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-        url_foto_perfil VARCHAR(100),
+        url_foto_perfil VARCHAR(255),
         id_tipo_equipo INT,
         id_nivel_elo INT,
         id_rol INT,
@@ -151,6 +151,7 @@ CREATE TABLE
         id_partido INT AUTO_INCREMENT PRIMARY KEY,
         fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
         fecha_finalizacion DATETIME,
+        deadline_formulario DATETIME NULL,
         id_estado_partido INT NOT NULL,
         finalizado TINYINT (1) DEFAULT 0,
         FOREIGN KEY (id_estado_partido) REFERENCES EstadoPartido (id_estado_partido)

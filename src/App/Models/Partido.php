@@ -13,6 +13,7 @@ class Partido extends AbstractModel
         "finalizado" => null,
         "fecha_finalizacion" => null,
         "id_estado_partido" => null,
+        "deadline_formulario"  => null, 
     ];
 
     public function set(array $values)
@@ -83,12 +84,23 @@ class Partido extends AbstractModel
         return $this->fields["id_estado_partido"];
     }
 
+    public function setDeadlineFormulario(?string $deadline)
+    {
+        $this->fields["deadline_formulario"] = $deadline;
+    }
+
+    public function getDeadlineFormulario(): ?string
+    {
+        return $this->fields["deadline_formulario"];
+    }
+
     public function iniciarPendiente(string $fecha, int $estadoPendiente): void
     {
         $this->setFechaCreacion($fecha);
         $this->setFinalizado(0);
         $this->setFechaFinalizacion(null);
         $this->setIdEstadoPartido($estadoPendiente);
+        $this->setDeadlineFormulario(null);
     }
 
     public function finalizar(string $fechaFinal, int $estadoFinalizado): void

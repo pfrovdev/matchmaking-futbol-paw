@@ -95,10 +95,35 @@ class PartidoController extends AbstractController
             return;
         }
 
-        try {
-            $this->partidoService->validarPartido($id_partido, $miEquipo->getIdEquipo());
-        } catch (Exception $e) {
-            $this->renderNotFound();
+        list($formularioPartidoContrario, $miUltimaIteracion) =
+            $this->prepararVistaCoordinar($id_partido, $miEquipo->getIdEquipo());
+
+        if ($this->partidoService->manejarDeadlineSiCorresponde($id_partido)) {
+            $formularioPartidoContrario = $this->partidoService
+                ->getUltimosFormulariosEquipoContrario($id_partido, $miEquipo->getIdEquipo());
+            $miUltimaIteracion = $this->partidoService
+                ->getUltimaIteracion($id_partido, $miEquipo->getIdEquipo());
+
+            if (!$formularioPartidoContrario) {
+                $idEquipoRival = $this->partidoService
+                    ->getEquipoRival($id_partido, $miEquipo->getIdEquipo());
+                $formularioPartidoContrario = new FormularioPartidoDto(
+                    $idEquipoRival,
+                    $id_partido,
+                    0,
+                    new FormularioEquipoDto($this->equipoService->getBadgeEquipo($idEquipoRival), 0,0,0,0),
+                    new FormularioEquipoDto($this->equipoService->getBadgeEquipo($miEquipo->getIdEquipo()), 0,0,0,0)
+                );
+            }
+
+            $_SESSION['flash'] = [
+                'mensaje'    => 'Se pasó el plazo de 48 hs, el partido se dio por finalizado automáticamente con la última carga.',
+                'finalizado' => true
+            ];
+            $this->logger->info('>>> formularioPartidoContrario ' . 
+            ($formularioPartidoContrario ? 'OK id=' . $formularioPartidoContrario->getIdPartido() : 'NULL'));
+
+            require $this->viewsDir . 'coordinar-resultado.php';
             return;
         }
 
@@ -120,8 +145,34 @@ class PartidoController extends AbstractController
             $_SESSION['flash']['mensaje'] = $this->generarMensajeEstado(ProcesarFormularioEstado::PARTIDO_TERMINADO);
             $_SESSION['flash']['finalizado'] = true;
         }
+        $this->logger->info('>>> formularioPartidoContrario ' . 
+        ($formularioPartidoContrario ? 'OK id=' . $formularioPartidoContrario->getIdPartido() : 'NULL'));
 
         require $this->viewsDir . 'coordinar-resultado.php';
+    }
+
+
+    private function prepararVistaCoordinar(int $id_partido, int $miEquipoId): array
+    {
+        $dto  = $this->partidoService
+                    ->getUltimosFormulariosEquipoContrario($id_partido, $miEquipoId);
+        $iter = $this->partidoService
+                    ->getUltimaIteracion($id_partido, $miEquipoId);
+
+        if (! $dto) {
+            $rival     = $this->partidoService->getEquipoRival($id_partido, $miEquipoId);
+            $badgeRival= $this->equipoService->getBadgeEquipo($rival);
+            $badgeMio  = $this->equipoService->getBadgeEquipo($miEquipoId);
+            $dto       = new FormularioPartidoDto(
+                $rival,
+                $id_partido,
+                0,
+                new FormularioEquipoDto($badgeRival, 0,0,0,0),
+                new FormularioEquipoDto($badgeMio,   0,0,0,0)
+            );
+        }
+
+        return [ $dto, $iter ];
     }
 
     private function renderNotFound(): void
@@ -153,11 +204,22 @@ class PartidoController extends AbstractController
             'tarjetas_amarillas_local' => FILTER_VALIDATE_INT,
             'tarjetas_rojas_local' => FILTER_VALIDATE_INT,
         ]);
+        if (! is_array($input)) {
+            $input = [];
+        }
 
         // Normalizar nulos
-        foreach ($input as $key => $val) {
-            $input[$key] = $val ?? 0;
-        }
+        $defaults = [
+            'goles_visitante' => 0,
+            'asistencias_visitante' => 0,
+            'tarjetas_amarillas_visitante' => 0,
+            'tarjetas_rojas_visitante' => 0,
+            'goles_local' => 0,
+            'asistencias_local' => 0,
+            'tarjetas_amarillas_local' => 0,
+            'tarjetas_rojas_local' => 0,
+        ];
+        $input = array_merge($defaults, $input);
 
         $formularioVisitante = new FormularioPartido();
         $formularioVisitante->set([

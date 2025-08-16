@@ -285,6 +285,12 @@ class PartidoServiceImpl implements PartidoService
             throw new \RuntimeException("El formulario llegó a su máximo de iteraciones");
         }
 
+        $dl = $partido->getDeadlineFormulario();
+        if ($dl !== null && new DateTime() > new DateTime($dl)) {
+            $this->finalizarPartido($idPartido);
+            throw new RuntimeException("Se pasó el plazo de 48 hs, el partido se dio por acordado.");
+        }
+
         return true;
     }
 
@@ -387,193 +393,65 @@ class PartidoServiceImpl implements PartidoService
 
     public function procesarFormulario(int $idEquipo, int $idPartido, FormularioPartido $formularioLocal, FormularioPartido $formularioVisitante): ProcesarFormularioEstado
     {
-        // recupero los ultimos formularios del equipo contrario
-        $formulariosRival = $this->getUltimosFormulariosEquipoContrario($idPartido, $idEquipo);
-
-        // determino la iteración actual del equipo
-        $iteracionActual = $this->getUltimaIteracion($idPartido, $idEquipo) + 1;
-
-        // determino la iteración actual del rival
+        // 0) Recupero partido y desafío
+        $p            = $this->partidoDataMapper->findById(['id_partido' => $idPartido]);
         $equipoRivalId = $this->getEquipoRival($idPartido, $idEquipo);
-        $iteracionRival = $this->getUltimaIteracion($idPartido, $equipoRivalId);
-
-        // si ambos llegaron al maximo
-        if ($iteracionRival > 5 && $iteracionActual > 5) {
-            // Avisar que el partido no se acordó
-            $this->notificationService->notifyParitdoNoAcordado(
-                $this->equipoService->getEquipoById($idEquipo),
-                $this->equipoService->getEquipoById($equipoRivalId)
-            );
-            return ProcesarFormularioEstado::PARTIDO_NO_ACORDADO;
+    
+        
+    
+        // 1) Determino iteraciones
+        $iteracionActual = $this->getUltimaIteracion($idPartido, $idEquipo) + 1;
+        $iteracionRival  = $this->getUltimaIteracion($idPartido, $equipoRivalId);
+    
+        // 2) Primera iteración: seteo deadline a +2 días
+        if ($iteracionActual === 1) {
+            $deadline = (new DateTime())->modify('+2 days')->format('Y-m-d H:i:s');
+            $p->setDeadlineFormulario($deadline);
+            $this->partidoDataMapper->updatePartido($p);
         }
-
-        // 1) Límite de iteraciones alcanzado
+    
+        // 3) Límite iteraciones
         if ($iteracionActual > 5) {
             $this->finalizarPartido($idPartido);
             return ProcesarFormularioEstado::MAXIMAS_ITERACIONES_ALCANZADAS;
         }
-
-        // 2) Fuera de turno
+    
+        // 4) Fuera de turno
         if ($iteracionActual > $iteracionRival + 1) {
             return ProcesarFormularioEstado::FUERA_DE_TURNO;
         }
-
-        // actualizo la iteración en los formularios
+    
+        // Actualizo iteración en los objetos
         $formularioLocal->setTotalIteraciones($iteracionActual);
         $formularioVisitante->setTotalIteraciones($iteracionActual);
-
-        // 3) Mismo turno: verificar coincidencia
-        if ($iteracionActual == $iteracionRival) {
+    
+        // 5) Mismo turno: verifico coincidencia
+        if ($iteracionActual === $iteracionRival) {
+            $formulariosRival = $this->getUltimosFormulariosEquipoContrario($idPartido, $idEquipo);
             if ($this->formulariosCoinciden($formulariosRival, $formularioLocal, $formularioVisitante)) {
+                // Marco partido como acordado
                 $this->acordarPartido($idPartido);
+    
+                // Notificación de partido finalizado
                 $this->notificationService->notifyParitdoFinalizado(
                     $this->equipoService->getEquipoById($idEquipo),
                     $this->equipoService->getEquipoById($equipoRivalId),
                     $formularioLocal,
                     $formularioVisitante
                 );
+    
+                // Guardo formularios
                 $this->formularioPartidoDataMapper->save($formularioLocal);
                 $this->formularioPartidoDataMapper->save($formularioVisitante);
-                $fecha_jugado = (new DateTime())->format('Y-m-d H:i:s');
-
-                $resultadoPartido = new ResultadoPartido();
-
-                $desafioPorIdPartido = $this->desafioDataMapper->findByIdPartido($formularioLocal->getIdPartido());
-
-                $equipoLocal = $this->equipoService->getEquipoById((int) $desafioPorIdPartido->getIdEquipoDesafiante());
-                $equipoVisitante = $this->equipoService->getEquipoById((int) $desafioPorIdPartido->getIdEquipoDesafiado());
-                $elo_inicial_local = $equipoLocal->getEloActual();
-                $elo_inicial_visitante = $equipoVisitante->getEloActual();
-
-                $K = 40;
-
-                $expectativa_local = 1 / (1 + pow(10, ($elo_inicial_visitante - $elo_inicial_local) / 400));
-                $expectativa_visitante = 1 - $expectativa_local;
-                $golesLocal = $formularioLocal->getTotalGoles();
-                $golesVisitante = $formularioVisitante->getTotalGoles();
-
-                if ($golesLocal > $golesVisitante) {
-                    $resultado = "gano_local";
-                    $score_local = 1;
-                    $score_visitante = 0;
-                } elseif ($golesLocal < $golesVisitante) {
-                    $resultado = "gano_visitante";
-                    $score_local = 0;
-                    $score_visitante = 1;
-                } else {
-                    $resultado = "empate";
-                    $score_local = 0.5;
-                    $score_visitante = 0.5;
-                }
-
-                $elo_final_local = round($elo_inicial_local + $K * ($score_local - $expectativa_local));
-                $elo_final_visitante = round($elo_inicial_visitante + $K * ($score_visitante - $expectativa_visitante));
-
-                $resultadoPartido->set([
-                    "id_partido" => $formularioLocal->getIdPartido(),
-                    "id_equipo_local" => $equipoLocal->getIdEquipo(),
-                    "id_equipo_visitante" => $equipoVisitante->getIdEquipo(),
-                    "goles_equipo_local" => $formularioLocal->getTotalGoles(),
-                    "goles_equipo_visitante" => $formularioVisitante->getTotalGoles(),
-                    "elo_inicial_local" => $elo_inicial_local,
-                    "elo_final_local" => $elo_final_local,
-                    "elo_inicial_visitante" => $elo_inicial_visitante,
-                    "elo_final_visitante" => $elo_final_visitante,
-                    "total_amarillas_local" => $formularioLocal->getTotalAmarillas(),
-                    "total_amarillas_visitante" => $formularioVisitante->getTotalAmarillas(),
-                    "total_rojas_local" => $formularioLocal->getTotalRojas(),
-                    "total_rojas_visitante" => $formularioVisitante->getTotalRojas(),
-                    "total_asistencias_local" => $formularioLocal->getTotalAsistencias(),
-                    "total_asistencias_visitante" => $formularioVisitante->getTotalAsistencias(),
-                    "fecha_jugado" => $fecha_jugado,
-                    "resultado" => $resultado
-                ]);
-
-                $equipoLocal->setEloActual($elo_final_local);
-                $equipoVisitante->setEloActual($elo_final_visitante);
-                $this->equipoService->ActualizarEloActualEquipo($equipoLocal);
-                $this->equipoService->ActualizarEloActualEquipo($equipoVisitante);
-
-                $estaditicasEquipoLocal = $this->estadisticasDataMapper->findIdByIdEquipo($equipoLocal->getIdEquipo());
-                $estaditicasEquipoVisitante = $this->estadisticasDataMapper->findIdByIdEquipo($equipoVisitante->getIdEquipo());
-                $primerasEstadisticasLocal = false;
-                $primerasEstadisticasVisitante = false;
-                if ($estaditicasEquipoLocal == null) {
-                    $primerasEstadisticasLocal = true;
-                    $estaditicasEquipoLocal = new Estadisticas();
-                    $estaditicasEquipoLocal->setIdEquipo($equipoLocal->getIdEquipo());
-                    $estaditicasEquipoLocal->setGoles(0);
-                    $estaditicasEquipoLocal->setAsistencias(0);
-                    $estaditicasEquipoLocal->setTarjetasRojas(0);
-                    $estaditicasEquipoLocal->setTarjetasAmarillas(0);
-                    $estaditicasEquipoLocal->setJugados(0);
-                    $estaditicasEquipoLocal->setGanados(0);
-                    $estaditicasEquipoLocal->setPerdidos(0);
-                    $estaditicasEquipoLocal->setEmpatados(0);
-                }
-                if ($estaditicasEquipoVisitante == null) {
-                    $primerasEstadisticasVisitante = true;
-                    $estaditicasEquipoVisitante = new Estadisticas();
-                    $estaditicasEquipoVisitante->setIdEquipo($equipoVisitante->getIdEquipo());
-                    $estaditicasEquipoVisitante->setGoles(0);
-                    $estaditicasEquipoVisitante->setAsistencias(0);
-                    $estaditicasEquipoVisitante->setTarjetasRojas(0);
-                    $estaditicasEquipoVisitante->setTarjetasAmarillas(0);
-                    $estaditicasEquipoVisitante->setJugados(0);
-                    $estaditicasEquipoVisitante->setGanados(0);
-                    $estaditicasEquipoVisitante->setPerdidos(0);
-                    $estaditicasEquipoVisitante->setEmpatados(0);
-                }
-
-                // Estadísticas local
-                $estaditicasEquipoLocal->setGoles($estaditicasEquipoLocal->getGoles() + $golesLocal);
-                $estaditicasEquipoLocal->setAsistencias($estaditicasEquipoLocal->getAsistencias() + $formularioLocal->getTotalAsistencias());
-                $estaditicasEquipoLocal->setTarjetasRojas($estaditicasEquipoLocal->getTarjetasRojas() + $formularioLocal->getTotalRojas());
-                $estaditicasEquipoLocal->setTarjetasAmarillas($estaditicasEquipoLocal->getTarjetasAmarillas() + $formularioLocal->getTotalAmarillas());
-                $estaditicasEquipoLocal->setJugados($estaditicasEquipoLocal->getJugados() + 1);
-
-                // Estadísticas visitante
-                $estaditicasEquipoVisitante->setGoles($estaditicasEquipoVisitante->getGoles() + $golesVisitante);
-                $estaditicasEquipoVisitante->setAsistencias($estaditicasEquipoVisitante->getAsistencias() + $formularioVisitante->getTotalAsistencias());
-                $estaditicasEquipoVisitante->setTarjetasRojas($estaditicasEquipoVisitante->getTarjetasRojas() + $formularioVisitante->getTotalRojas());
-                $estaditicasEquipoVisitante->setTarjetasAmarillas($estaditicasEquipoVisitante->getTarjetasAmarillas() + $formularioVisitante->getTotalAmarillas());
-                $estaditicasEquipoVisitante->setJugados($estaditicasEquipoVisitante->getJugados() + 1);
-
-                if ($resultado == "gano_local") {
-                    $estaditicasEquipoLocal->setGanados($estaditicasEquipoLocal->getGanados() + 1);
-                    $estaditicasEquipoVisitante->setPerdidos($estaditicasEquipoVisitante->getPerdidos() + 1);
-                }
-                if ($resultado == "gano_visitante") {
-                    $estaditicasEquipoLocal->setPerdidos($estaditicasEquipoLocal->getPerdidos() + 1);
-                    $estaditicasEquipoVisitante->setGanados($estaditicasEquipoVisitante->getGanados() + 1);
-
-                }
-                if ($resultado == "empate") {
-                    $estaditicasEquipoLocal->setEmpatados($estaditicasEquipoLocal->getEmpatados() + 1);
-                    $estaditicasEquipoVisitante->setEmpatados($estaditicasEquipoVisitante->getEmpatados() + 1);
-                }
-                if ($primerasEstadisticasLocal){
-                    $this->estadisticasDataMapper->save($estaditicasEquipoLocal);
-                }else{
-                    $this->estadisticasDataMapper->updateEstadisticas($estaditicasEquipoLocal);
-                }
-
-                if ($primerasEstadisticasVisitante){
-                    $this->estadisticasDataMapper->save($estaditicasEquipoVisitante);
-                }else{
-                    $this->estadisticasDataMapper->updateEstadisticas($estaditicasEquipoVisitante);
-                }
-                
-                $idResultadoPartido = $this->resultadoPartidoDataMapper->save($resultadoPartido);
-                $idResultadoPartido = true;
-                if ($idResultadoPartido) {
-                    return ProcesarFormularioEstado::PARTIDO_TERMINADO;
-                }
-
+    
+                // Unifico finalización
+                $this->finalizarConFormularios($formularioLocal, $formularioVisitante);
+    
+                return ProcesarFormularioEstado::PARTIDO_TERMINADO;
             }
         }
-
-        // 4) Nueva iteración válida
+    
+        // 6) Nueva iteración válida
         $this->notificationService->notifyNuevaIteracion(
             $this->equipoService->getEquipoById($idEquipo),
             $this->equipoService->getEquipoById($equipoRivalId),
@@ -582,9 +460,144 @@ class PartidoServiceImpl implements PartidoService
         );
         $this->formularioPartidoDataMapper->save($formularioLocal);
         $this->formularioPartidoDataMapper->save($formularioVisitante);
-
+    
         return ProcesarFormularioEstado::NUEVA_ITERACION;
     }
+
+    private function finalizarConFormularios(FormularioPartido $formularioLocal, FormularioPartido $formularioVisitante): void
+{
+    $fecha_jugado = (new DateTime())->format('Y-m-d H:i:s');
+
+    $resultadoPartido = new ResultadoPartido();
+
+    $desafioPorIdPartido = $this->desafioDataMapper->findByIdPartido($formularioLocal->getIdPartido());
+
+    $equipoLocal = $this->equipoService->getEquipoById((int) $desafioPorIdPartido->getIdEquipoDesafiante());
+    $equipoVisitante = $this->equipoService->getEquipoById((int) $desafioPorIdPartido->getIdEquipoDesafiado());
+    $elo_inicial_local = $equipoLocal->getEloActual();
+    $elo_inicial_visitante = $equipoVisitante->getEloActual();
+
+    $K = 40;
+
+    $expectativa_local = 1 / (1 + pow(10, ($elo_inicial_visitante - $elo_inicial_local) / 400));
+    $expectativa_visitante = 1 - $expectativa_local;
+    $golesLocal = $formularioLocal->getTotalGoles();
+    $golesVisitante = $formularioVisitante->getTotalGoles();
+
+    if ($golesLocal > $golesVisitante) {
+        $resultado = "gano_local";
+        $score_local = 1;
+        $score_visitante = 0;
+    } elseif ($golesLocal < $golesVisitante) {
+        $resultado = "gano_visitante";
+        $score_local = 0;
+        $score_visitante = 1;
+    } else {
+        $resultado = "empate";
+        $score_local = 0.5;
+        $score_visitante = 0.5;
+    }
+
+    $elo_final_local = round($elo_inicial_local + $K * ($score_local - $expectativa_local));
+    $elo_final_visitante = round($elo_inicial_visitante + $K * ($score_visitante - $expectativa_visitante));
+
+    $resultadoPartido->set([
+        "id_partido" => $formularioLocal->getIdPartido(),
+        "id_equipo_local" => $equipoLocal->getIdEquipo(),
+        "id_equipo_visitante" => $equipoVisitante->getIdEquipo(),
+        "goles_equipo_local" => $formularioLocal->getTotalGoles(),
+        "goles_equipo_visitante" => $formularioVisitante->getTotalGoles(),
+        "elo_inicial_local" => $elo_inicial_local,
+        "elo_final_local" => $elo_final_local,
+        "elo_inicial_visitante" => $elo_inicial_visitante,
+        "elo_final_visitante" => $elo_final_visitante,
+        "total_amarillas_local" => $formularioLocal->getTotalAmarillas(),
+        "total_amarillas_visitante" => $formularioVisitante->getTotalAmarillas(),
+        "total_rojas_local" => $formularioLocal->getTotalRojas(),
+        "total_rojas_visitante" => $formularioVisitante->getTotalRojas(),
+        "total_asistencias_local" => $formularioLocal->getTotalAsistencias(),
+        "total_asistencias_visitante" => $formularioVisitante->getTotalAsistencias(),
+        "fecha_jugado" => $fecha_jugado,
+        "resultado" => $resultado
+    ]);
+
+    $equipoLocal->setEloActual($elo_final_local);
+    $equipoVisitante->setEloActual($elo_final_visitante);
+    $this->equipoService->ActualizarEloActualEquipo($equipoLocal);
+    $this->equipoService->ActualizarEloActualEquipo($equipoVisitante);
+
+    $estaditicasEquipoLocal = $this->estadisticasDataMapper->findIdByIdEquipo($equipoLocal->getIdEquipo());
+    $estaditicasEquipoVisitante = $this->estadisticasDataMapper->findIdByIdEquipo($equipoVisitante->getIdEquipo());
+    $primerasEstadisticasLocal = false;
+    $primerasEstadisticasVisitante = false;
+    if ($estaditicasEquipoLocal == null) {
+        $primerasEstadisticasLocal = true;
+        $estaditicasEquipoLocal = new Estadisticas();
+        $estaditicasEquipoLocal->setIdEquipo($equipoLocal->getIdEquipo());
+        $estaditicasEquipoLocal->setGoles(0);
+        $estaditicasEquipoLocal->setAsistencias(0);
+        $estaditicasEquipoLocal->setTarjetasRojas(0);
+        $estaditicasEquipoLocal->setTarjetasAmarillas(0);
+        $estaditicasEquipoLocal->setJugados(0);
+        $estaditicasEquipoLocal->setGanados(0);
+        $estaditicasEquipoLocal->setPerdidos(0);
+        $estaditicasEquipoLocal->setEmpatados(0);
+    }
+    if ($estaditicasEquipoVisitante == null) {
+        $primerasEstadisticasVisitante = true;
+        $estaditicasEquipoVisitante = new Estadisticas();
+        $estaditicasEquipoVisitante->setIdEquipo($equipoVisitante->getIdEquipo());
+        $estaditicasEquipoVisitante->setGoles(0);
+        $estaditicasEquipoVisitante->setAsistencias(0);
+        $estaditicasEquipoVisitante->setTarjetasRojas(0);
+        $estaditicasEquipoVisitante->setTarjetasAmarillas(0);
+        $estaditicasEquipoVisitante->setJugados(0);
+        $estaditicasEquipoVisitante->setGanados(0);
+        $estaditicasEquipoVisitante->setPerdidos(0);
+        $estaditicasEquipoVisitante->setEmpatados(0);
+    }
+
+    // Estadísticas local
+    $estaditicasEquipoLocal->setGoles($estaditicasEquipoLocal->getGoles() + $golesLocal);
+    $estaditicasEquipoLocal->setAsistencias($estaditicasEquipoLocal->getAsistencias() + $formularioLocal->getTotalAsistencias());
+    $estaditicasEquipoLocal->setTarjetasRojas($estaditicasEquipoLocal->getTarjetasRojas() + $formularioLocal->getTotalRojas());
+    $estaditicasEquipoLocal->setTarjetasAmarillas($estaditicasEquipoLocal->getTarjetasAmarillas() + $formularioLocal->getTotalAmarillas());
+    $estaditicasEquipoLocal->setJugados($estaditicasEquipoLocal->getJugados() + 1);
+
+    // Estadísticas visitante
+    $estaditicasEquipoVisitante->setGoles($estaditicasEquipoVisitante->getGoles() + $golesVisitante);
+    $estaditicasEquipoVisitante->setAsistencias($estaditicasEquipoVisitante->getAsistencias() + $formularioVisitante->getTotalAsistencias());
+    $estaditicasEquipoVisitante->setTarjetasRojas($estaditicasEquipoVisitante->getTarjetasRojas() + $formularioVisitante->getTotalRojas());
+    $estaditicasEquipoVisitante->setTarjetasAmarillas($estaditicasEquipoVisitante->getTarjetasAmarillas() + $formularioVisitante->getTotalAmarillas());
+    $estaditicasEquipoVisitante->setJugados($estaditicasEquipoVisitante->getJugados() + 1);
+
+    if ($resultado == "gano_local") {
+        $estaditicasEquipoLocal->setGanados($estaditicasEquipoLocal->getGanados() + 1);
+        $estaditicasEquipoVisitante->setPerdidos($estaditicasEquipoVisitante->getPerdidos() + 1);
+    }
+    if ($resultado == "gano_visitante") {
+        $estaditicasEquipoLocal->setPerdidos($estaditicasEquipoLocal->getPerdidos() + 1);
+        $estaditicasEquipoVisitante->setGanados($estaditicasEquipoVisitante->getGanados() + 1);
+
+    }
+    if ($resultado == "empate") {
+        $estaditicasEquipoLocal->setEmpatados($estaditicasEquipoLocal->getEmpatados() + 1);
+        $estaditicasEquipoVisitante->setEmpatados($estaditicasEquipoVisitante->getEmpatados() + 1);
+    }
+    if ($primerasEstadisticasLocal){
+        $this->estadisticasDataMapper->save($estaditicasEquipoLocal);
+    }else{
+        $this->estadisticasDataMapper->updateEstadisticas($estaditicasEquipoLocal);
+    }
+
+    if ($primerasEstadisticasVisitante){
+        $this->estadisticasDataMapper->save($estaditicasEquipoVisitante);
+    }else{
+        $this->estadisticasDataMapper->updateEstadisticas($estaditicasEquipoVisitante);
+    }
+    
+    $this->resultadoPartidoDataMapper->save($resultadoPartido);
+}
 
     public function partidoAcordado(int $idEquipo, int $idPartido): bool
     {
@@ -605,5 +618,41 @@ class PartidoServiceImpl implements PartidoService
             && $formulariosRival->equipo_local->getTarjetasAmarilla() == $formularioVisitante->getTotalAmarillas()
             && $formulariosRival->equipo_local->getTarjetasRoja() == $formularioVisitante->getTotalRojas()
             && $formulariosRival->equipo_visitante->getTarjetasRoja() == $formularioLocal->getTotalRojas();
+    }
+
+    public function manejarDeadlineSiCorresponde(int $idPartido): bool
+    {
+        $p = $this->partidoDataMapper->findById(['id_partido' => $idPartido]);
+        $dl = $p->getDeadlineFormulario();
+        if ($dl && new DateTime() > new DateTime($dl)) {
+            // tomo el único formulario ingresado a tiempo (última iteración)
+            $todos   = $this->formularioPartidoDataMapper
+                            ->findByIdPartidoOrderByFechaDesc($idPartido);
+            $unico   = reset($todos);
+            $rivalId = $this->getEquipoRival($idPartido, $unico->getIdEquipo());
+
+            // armo “fantasma” del rival
+            $fantasma = new FormularioPartido();
+            $fantasma->set([
+                'id_equipo'       => $rivalId,
+                'id_partido'      => $idPartido,
+                'fecha'           => (new DateTime())->format('Y-m-d H:i:s'),
+                'total_goles'     => 0,
+                'total_asistencias'=> 0,
+                'total_amarillas' => 0,
+                'total_rojas'     => 0,
+                'tipo_formulario' => $unico->getTipoFormulario() === 'FORMULARIO_MI_EQUIPO'
+                                    ? 'FORMULARIO_EQUIPO_CONTRARIO'
+                                    : 'FORMULARIO_MI_EQUIPO'
+            ]);
+
+            // marco partido como acordado y guardo
+            $this->acordarPartido($idPartido);
+            $this->formularioPartidoDataMapper->save($fantasma);
+            $this->finalizarConFormularios($unico, $fantasma);
+
+            return true;
+        }
+        return false;
     }
 }
