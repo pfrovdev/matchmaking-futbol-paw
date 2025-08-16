@@ -49,6 +49,8 @@ if ($estadisticas) {
   <link rel="stylesheet" href="css/dashboard.css">
   <script type="module" src="js/pages/Dashboard.js" defer></script>
   <script src="/js/sidebar.js"></script>
+  <link rel="stylesheet" href="./css/spinner.css">
+  <script src="./js/components/spinner.js" defer></script>
 
   <script type="application/ld+json">
     {
@@ -68,7 +70,7 @@ if ($estadisticas) {
       "alternateName": "<?= htmlspecialchars($miEquipo->fields['acronimo'], ENT_QUOTES, 'UTF-8') ?>",
       "description": "<?= htmlspecialchars($equipoBanner->getLema(), ENT_QUOTES, 'UTF-8') ?>",
       <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
-                  "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
+                    "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
       <?php endif; ?>
       "gender": "<?= htmlspecialchars($equipoBanner->getTipoEquipo(), ENT_QUOTES, 'UTF-8') ?>",
       "location": {
@@ -283,21 +285,14 @@ if ($estadisticas) {
           <button id="close-modal" class="modal-close">&times;</button>
           <h2>Editar perfil de equipo</h2>
           <form action="/update-team" method="POST" class="edit-team-form">
-          <label>
-            Acrónimo (máx. 3 chars)
-            <input
-              type="text"
-              name="team-acronym"
-              id="team-acronym"
-              maxlength="3"
-              value="<?= htmlspecialchars($miEquipo->getAcronimo(), ENT_QUOTES, 'UTF-8') ?>">
-          </label>
-          <small
-            id="acronym-error"
-            class="error-message"
-            style="display:none; color:#d32f2f; font-size:0.8rem;">
-            El acrónimo no puede tener más de 3 caracteres.
-          </small>
+            <label>
+              Acrónimo (máx. 3 chars)
+              <input type="text" name="team-acronym" id="team-acronym" maxlength="3"
+                value="<?= htmlspecialchars($miEquipo->getAcronimo(), ENT_QUOTES, 'UTF-8') ?>">
+            </label>
+            <small id="acronym-error" class="error-message" style="display:none; color:#d32f2f; font-size:0.8rem;">
+              El acrónimo no puede tener más de 3 caracteres.
+            </small>
             <label>
               Lema
               <input type="text" name="team-motto" value="<?= htmlspecialchars($miEquipo->getLema()) ?>">

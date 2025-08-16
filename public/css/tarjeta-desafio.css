@@ -113,8 +113,12 @@
 }
 
 .card-actions button {
+  display: flex;
   font-size: .9rem;
-  padding: .5rem .2rem;
+  height: 2.5rem;
+  width: 8rem;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-desafiar {

@@ -1,4 +1,6 @@
 <?php
+$errors = $_SESSION['errors'] ?? [];
+unset($_SESSION['errors']);
 $queryParams = $_GET;
 unset($queryParams['page']);
 
@@ -29,49 +31,51 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <link rel="stylesheet" href="./css/parts/map.css">
     <link rel="stylesheet" href="./css/search-team.css">
+    <link rel="stylesheet" href="./css/spinner.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
     <script src="./js/maps.js" defer></script>
+    <script src="./js/components/spinner.js" defer></script>
     <script src="./js/sidebar.js"></script>
     <script src="./js/filtros.js" defer></script>
 
     <?php if (!empty($equipos)): ?>
         <script type="application/ld+json">
-            <?= json_encode([
-                "@context" => "https://schema.org",
-                "@type" => "ItemList",
-                "name" => "Resultados de búsqueda de equipos",
-                "numberOfItems" => count($equipos),
-                "itemListElement" => array_map(function ($equipo, $index) {
-                    return [
-                        "@type" => "ListItem",
-                        "position" => $index + 1,
-                        "item" => [
-                            "@type" => "SportsTeam",
-                            "name" => htmlspecialchars($equipo->getNombreEquipo(),  ENT_QUOTES, 'UTF-8'),
-                            "alternateName" => htmlspecialchars($equipo->getAcronimo() ?? '',  ENT_QUOTES, 'UTF-8'),
-                            "identifier" => [
-                                "@type" => "PropertyValue",
-                                "name" => "Elo Ranking",
-                                "value" => $equipo->getEloActual()
-                            ],
-                            "description" => htmlspecialchars($equipo->getLema() ?? '',  ENT_QUOTES, 'UTF-8'),
-                            "url" => "/team-profile.php?id=" . $equipo->getIdEquipo(),
-                            "location" => [
-                                "@type" => "Place",
-                                "geo" => [
-                                    "@type" => "GeoCoordinates",
-                                    "latitude" => $equipo->getLatitud(),
-                                    "longitude" => $equipo->getLongitud()
-                                ]
-                            ]
-                        ]
-                    ];
-                }, $equipos, array_keys($equipos))
-            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?>
-        </script>
+                    <?= json_encode([
+                        "@context" => "https://schema.org",
+                        "@type" => "ItemList",
+                        "name" => "Resultados de búsqueda de equipos",
+                        "numberOfItems" => count($equipos),
+                        "itemListElement" => array_map(function ($equipo, $index) {
+                                                return [
+                                                    "@type" => "ListItem",
+                                                    "position" => $index + 1,
+                                                    "item" => [
+                                                        "@type" => "SportsTeam",
+                                                        "name" => htmlspecialchars($equipo->getNombreEquipo(), ENT_QUOTES, 'UTF-8'),
+                                                        "alternateName" => htmlspecialchars($equipo->getAcronimo() ?? '', ENT_QUOTES, 'UTF-8'),
+                                                        "identifier" => [
+                                                            "@type" => "PropertyValue",
+                                                            "name" => "Elo Ranking",
+                                                            "value" => $equipo->getEloActual()
+                                                        ],
+                                                        "description" => htmlspecialchars($equipo->getLema() ?? '', ENT_QUOTES, 'UTF-8'),
+                                                        "url" => "/team-profile.php?id=" . $equipo->getIdEquipo(),
+                                                        "location" => [
+                                                            "@type" => "Place",
+                                                            "geo" => [
+                                                                "@type" => "GeoCoordinates",
+                                                                "latitude" => $equipo->getLatitud(),
+                                                                "longitude" => $equipo->getLongitud()
+                                                            ]
+                                                        ]
+                                                    ]
+                                                ];
+                                            }, $equipos, array_keys($equipos))
+                    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?>
+                </script>
     <?php endif; ?>
 
 </head>
@@ -85,6 +89,13 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
             <h1>Buscar desafío</h1>
             <p>Busca rivales, por rango o zona</p>
         </header>
+        <?php if (!empty($errors)): ?>
+            <section class="error-messages">
+                <?php foreach ($errors as $error): ?>
+                    <p class="error-text"><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></p>
+                <?php endforeach; ?>
+            </section>
+        <?php endif; ?> 
 
         <section class="search-container">
             <!-- === COLUMNA IZQUIERDA: FILTROS y MAPA === -->
@@ -94,10 +105,11 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                 <h2 id="buscar-nombre">Buscar por nombre</h2>
                 <form method="get" action="/search-team">
                     <input type="text" id="nombre" name="nombre" placeholder="Ejemplo FC"
-                        value="<?= htmlspecialchars($nombre,  ENT_QUOTES, 'UTF-8') ?>" />
+                        value="<?= htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8') ?>" />
 
-                    <input type="hidden" name="id_nivel_elo" value="<?= htmlspecialchars($rangoSelectedId ?? '',  ENT_QUOTES, 'UTF-8') ?>">
-                    <input type="hidden" name="orden" value="<?= htmlspecialchars($orden,  ENT_QUOTES, 'UTF-8') ?>">
+                    <input type="hidden" name="id_nivel_elo"
+                        value="<?= htmlspecialchars($rangoSelectedId ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                    <input type="hidden" name="orden" value="<?= htmlspecialchars($orden, ENT_QUOTES, 'UTF-8') ?>">
                     <button class="filter-button" type="submit">Buscar</button>
                 </form>
 
@@ -113,11 +125,13 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                         <h2 id="ordenar">Ordenar por</h2>
                         <form id="ordenForm" class="radio-btns" method="get">
                             <input type="hidden" name="id_nivel_elo"
-                                value="<?= htmlspecialchars($rangoSelectedId ?? '',  ENT_QUOTES, 'UTF-8') ?>">
-                            <input type="hidden" name="lat" value="<?= htmlspecialchars($_GET['lat'] ?? '',  ENT_QUOTES, 'UTF-8') ?>">
-                            <input type="hidden" name="lng" value="<?= htmlspecialchars($_GET['lng'] ?? '',  ENT_QUOTES, 'UTF-8') ?>">
+                                value="<?= htmlspecialchars($rangoSelectedId ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                            <input type="hidden" name="lat"
+                                value="<?= htmlspecialchars($_GET['lat'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                            <input type="hidden" name="lng"
+                                value="<?= htmlspecialchars($_GET['lng'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                             <input type="hidden" name="radius_km"
-                                value="<?= htmlspecialchars($_GET['radius_km'] ?? '',  ENT_QUOTES, 'UTF-8') ?>">
+                                value="<?= htmlspecialchars($_GET['radius_km'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
 
                             <label>
                                 <input type="radio" name="orden" value="desc" <?= $orden === 'desc' ? 'checked' : '' ?>>
@@ -141,16 +155,16 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                     <h2 id="zona-busqueda">Zona de búsqueda</h2>
                     <form id="mapForm" method="GET">
                         <input type="hidden" id="lat" name="lat" readonly
-                            value="<?= htmlspecialchars($_GET['lat'] ?? '',  ENT_QUOTES, 'UTF-8') ?>" />
+                            value="<?= htmlspecialchars($_GET['lat'] ?? '', ENT_QUOTES, 'UTF-8') ?>" />
                         <input type="hidden" id="lng" name="lng" readonly
-                            value="<?= htmlspecialchars($_GET['lng'] ?? '',  ENT_QUOTES, 'UTF-8') ?>" />
+                            value="<?= htmlspecialchars($_GET['lng'] ?? '', ENT_QUOTES, 'UTF-8') ?>" />
 
                         <label for="radiusSlider">Radio del área (km)</label>
                         <div class="input-group">
                             <input type="range" id="radiusSlider" name="radius_km" min="0.1" max="10" step="0.1"
-                                value="<?= htmlspecialchars($_GET['radius_km'] ?? 1,  ENT_QUOTES, 'UTF-8') ?>">
+                                value="<?= htmlspecialchars($_GET['radius_km'] ?? 1, ENT_QUOTES, 'UTF-8') ?>">
                             <span id="radiusValue">
-                                <?= htmlspecialchars($_GET['radius_km'] ?? 1.0,  ENT_QUOTES, 'UTF-8') ?>
+                                <?= htmlspecialchars($_GET['radius_km'] ?? 1.0, ENT_QUOTES, 'UTF-8') ?>
                             </span>
                         </div>
                         <button class="filter-button" type="submit">Enviar</button>
@@ -158,7 +172,8 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                 </section>
 
                 <figure>
-                    <div id="map" data-team-zone="<?php echo htmlspecialchars($equipo_temp['team-zone'] ?? '',  ENT_QUOTES, 'UTF-8') ?>">
+                    <div id="map"
+                        data-team-zone="<?php echo htmlspecialchars($equipo_temp['team-zone'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                     </div>
                 </figure>
 

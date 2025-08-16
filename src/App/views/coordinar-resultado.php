@@ -20,7 +20,6 @@ $myFormDisabled = $partidoAcordado || $partidoFinalizado;
 $rivalFormDisabled = true;
 
 $mostrarSubtitlo = true;
-
 // Si no hay mensaje en flash, generamos el estado intermedio para la vista
 if (!$partidoAcordado) {
     if (empty($flash['mensaje'])) {
@@ -78,7 +77,9 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
     <meta name="description" content="Formulario para coordinar resultados de un partido - F5 Futbol Match">
     <title>Coordinar Resultado</title>
     <link rel="stylesheet" href="css/coordinar-resultado.css">
+    <link rel="stylesheet" href="./css/spinner.css">
     <script src="/js/sidebar.js"></script>
+    <script src="./js/components/spinner.js" defer></script>
 </head>
 
 <body>
@@ -155,7 +156,10 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                         ?>
 
                         <?php if ($mostrarBotonEnviarResultados): ?>
-                            <button type="submit" name="submit_my_form">Enviar resultado</button>
+                            <button type="submit" name="submit_my_form" class="btn btn-enviar">
+                                <span class="btn-text">Enviar resultado</span>
+                                <span class="spinner" style="display:none;"></span>
+                            </button>
                         <?php endif; ?>
 
                     </form>
@@ -217,7 +221,10 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                         <input type="hidden" name="id_partido" value="<?= htmlspecialchars($id_partido) ?>">
                         <input type="hidden" name="id_equipo_rival"
                             value="<?= htmlspecialchars($formularioPartidoContrario->getIdEquipo()) ?>">
-                        <button class="btn" type="submit">Terminar partido</button>
+                        <button type="submit" name="submit_my_form" class="btn btn-enviar">
+                            <span class="btn-text">Terminar partido</span>
+                            <span class="spinner" style="display:none;"></span>
+                        </button>
                     </form>
                     <button class="btn" type="button" id="btnCalificarDeportividad">Calificar deportividad</button>
                 </div>

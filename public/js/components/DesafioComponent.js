@@ -154,7 +154,6 @@ export default class DesafioComponent {
       const formAccept = document.createElement('form');
       formAccept.action = '/accept-desafio';
       formAccept.method = 'POST';
-      formAccept.style.display = 'inline';
 
       const inputEquipoAccept = document.createElement('input');
       inputEquipoAccept.type = 'hidden';
@@ -171,8 +170,23 @@ export default class DesafioComponent {
       const btnAccept = document.createElement('button');
       btnAccept.type = 'submit';
       btnAccept.classList.add('btn', 'btn-accept');
-      btnAccept.textContent = 'Aceptar desafío';
+      
+      const btnText = document.createElement('span');
+      btnText.classList.add('btn-text');
+      btnText.textContent = 'Aceptar desafío';
+      btnAccept.appendChild(btnText);
+      
+      const spinner = document.createElement('span');
+      spinner.classList.add('spinner');
+      spinner.style.display = 'none';
+      btnAccept.appendChild(spinner);
+
       formAccept.appendChild(btnAccept);
+      formAccept.classList.add('form-accept');
+
+      formAccept.addEventListener('submit', function () {
+          activarSpinner(btnAccept);
+      });
 
       actionsDiv.appendChild(formAccept);
 
