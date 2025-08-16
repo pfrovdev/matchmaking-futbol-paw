@@ -1,6 +1,6 @@
 @import url('./base.css');
-@import url('./header.css');
-@import url('./footer.css');
+@import url('./parts/header.css');
+@import url('./parts/footer.css');
 
 .home-container {
   background: linear-gradient(90deg, var(--primary-color) 0%, var(--gradient-primary-color) 100%);

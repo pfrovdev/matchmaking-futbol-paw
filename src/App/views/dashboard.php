@@ -72,7 +72,7 @@ if ($estadisticas) {
       "alternateName": "<?= htmlspecialchars($miEquipo->fields['acronimo'], ENT_QUOTES, 'UTF-8') ?>",
       "description": "<?= htmlspecialchars($equipoBanner->getLema(), ENT_QUOTES, 'UTF-8') ?>",
       <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
-                    "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
+                      "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
       <?php endif; ?>
       "gender": "<?= htmlspecialchars($equipoBanner->getTipoEquipo(), ENT_QUOTES, 'UTF-8') ?>",
       "location": {
@@ -90,7 +90,10 @@ if ($estadisticas) {
 <body data-profile-id="<?= $equipoVistoId ?>"
   data-is-owner="<?= ($equipoVistoId === $miEquipo->getIdEquipo()) ? 'true' : 'false' ?>">
 
-  <?php require "parts/header.php"; ?>
+  <?php
+  $estaLogueado = !!$miEquipo->getIdEquipo();
+  require "parts/header.php";
+  ?>
   <?php require "parts/side-navbar.php"; ?>
   <main>
 

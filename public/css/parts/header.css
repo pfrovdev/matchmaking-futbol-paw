@@ -1,0 +1,157 @@
+/* HEADER */
+.header {
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--gradient-primary-color) 100%);
+    height: 6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-login {
+    justify-content: flex-start;
+}
+
+h1 a {
+    font-size: 0;
+}
+
+.header h1 {
+    display: flex;
+    align-items: center;
+}
+
+.hamburger-checkbox {
+    display: none;
+}
+
+.hamburger-menu {
+    margin: 0 1rem;
+}
+
+.header-my-account {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+}
+
+.icon {
+    width: 3rem;
+    border-radius: 50%;
+}
+
+.header-my-account button {
+    padding: 0;
+    border: none;
+    font-size: 0;
+    background: none;
+    margin: 0 1rem 0 .5rem;
+}
+
+.header-my-account ul {
+    display: none;
+}
+
+.header-my-account ul {
+    display: none;
+    position: absolute;
+    top: 80%;
+    right: 1rem;
+    margin: 0;
+    padding: 0.5rem 0;
+    background-color: var(--background-contents);
+
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    list-style: none;
+    min-width: 160px;
+    z-index: 10;
+}
+
+.header-my-account ul li {
+    margin: 0;
+}
+
+.header-my-account ul li a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.header-my-account ul li a:hover {
+    background-color: var(--primary-color);
+    color: var(--muted-text-color);
+}
+
+.header-my-account ul::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #ffffff;
+}
+
+.header-my-account.show ul {
+    display: block;
+}
+
+@media (min-width: 1024px) {
+    .hamburger-checkbox {
+        display: none;
+    }
+
+    .hamburger-menu {
+        display: none;
+    }
+
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 6rem;
+        position: relative;
+    }
+
+    .header h1 {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        padding-left: 1rem;
+    }
+
+    #enterprise-icon {
+        width: 10rem;
+        margin-left: 0.5rem;
+    }
+
+    .header-my-account {
+        width: 25rem;
+        position: static;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-right: 1rem;
+    }
+
+    .header-my-account button {
+        font-size: 1.2rem;
+        margin: 0;
+        width: 70%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .header-my-account ul {
+        display: none;
+    }
+
+    .header-my-account .icon {
+        margin-right: .7em;
+        width: 4rem;
+    }
+}

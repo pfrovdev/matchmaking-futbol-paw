@@ -56,7 +56,10 @@ if ($estadisticas) {
 </head>
 
 <body>
-    <?php require "parts/header.php"; ?>
+    <?php
+        $estaLogueado = !!$miEquipo->getIdEquipo();
+        require "parts/header.php";
+    ?>
     <?php require "parts/side-navbar.php"; ?>
     <main>
         <?php if (empty($equipo)): ?>

@@ -17,7 +17,10 @@
 
 <body>
     
-    <?php require "parts/header-no-account.php"; ?>
+    <?php
+        $estaLogueado = false;
+        require "parts/header.php";
+    ?>
     
     <main>
         <section class="container register-container">

@@ -6,11 +6,12 @@
     <meta name="description" content="Página principal de F5 Futbol Match, Busqueda y organizacion de partidos de futbol">
     <meta name="author" content="F5 Futbol Match">
     <title>Home</title>
-    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/home.css">
 </head>
 <body>
     <?php
-        require "parts/header-no-account.php";
+        $estaLogueado = false;
+        require "parts/header.php";
     ?>
     
     <main>

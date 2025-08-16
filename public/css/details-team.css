@@ -1,10 +1,10 @@
 @import url("./base.css");
-@import url("./header.css");
+@import url('./parts/header.css');
 @import url("side-navbar.css");
 @import url("./parts/pagination.css");
 @import url("./parts/tarjeta.css");
 @import url("./parts/filtro-por-rango.css");
-@import url("./footer.css");
+@import url('./parts/footer.css');
 
 main > header {
   margin: 5rem 5rem 2rem;

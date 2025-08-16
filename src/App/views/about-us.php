@@ -11,6 +11,7 @@
 </head>
 <body>
     <?php
+        $estaLogueado = !!$miEquipo->getIdEquipo();
         require "parts/header.php";
     ?>
     
