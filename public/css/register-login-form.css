@@ -2,12 +2,17 @@
 @import url('./parts/header.css');
 @import url('./parts/footer.css');
 
-.container{
+.container {
   margin: 0 5rem;
 }
 
 .register-container {
-  padding: 5% 8%; /* 5% arriba/abajo, 8% izquierda/derecha */
+  padding: 5% 8%;
+  /* 5% arriba/abajo, 8% izquierda/derecha */
+}
+
+.login-container {
+  margin-top: 2rem;
 }
 
 /* Header interno */
@@ -17,6 +22,7 @@
   color: var(--text-color);
   margin-bottom: .25rem;
 }
+
 .register-header p {
   font-size: 1rem;
   color: var(--text-color);
@@ -34,22 +40,26 @@
 ----------------------------------------------------*/
 .register-body {
   display: flex;
-  gap: 5%;         /* separación en % */
+  gap: 5%;
+  /* separación en % */
   align-items: flex-start;
 }
 
 /* Formulario */
 .form-container {
-  flex: 0 1 60%;   /* flex-grow:0, flex-shrink:1, base:60% */
+  flex: 0 1 60%;
+  /* flex-grow:0, flex-shrink:1, base:60% */
   min-width: 280px;
   display: flex;
   flex-direction: column;
 }
+
 /* Labels e inputs */
 .form-container label {
   font-weight: 500;
   margin-bottom: .5rem;
 }
+
 .form-container input {
   width: 100%;
   padding: .75rem 1rem;
@@ -61,12 +71,12 @@
 
 .form-container fieldset {
   display: flex;
-  flex-wrap: wrap;      
-  align-items: center;  
-  gap: 1.5rem;         
-  border: none;          
-  margin-bottom: 1.5rem; 
-  padding: 0;            
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  border: none;
+  margin-bottom: 1.5rem;
+  padding: 0;
 }
 
 .form-container legend {
@@ -92,11 +102,11 @@
 
 /* Wrapper para iconos en inputs */
 .input-with-icon {
-  position: relative;  
+  position: relative;
 }
 
 .input-with-icon input {
-  padding-right: 2.5rem; 
+  padding-right: 2.5rem;
 }
 
 .icon-forms {
@@ -129,6 +139,7 @@
   cursor: pointer;
   transition: background-color .3s;
 }
+
 .form-container button:hover {
   filter: brightness(0.95);
 }
@@ -139,6 +150,7 @@
   color: #666;
   text-align: center;
 }
+
 .login-link a {
   color: var(--muted-text-color);
   text-decoration: underline;
@@ -156,63 +168,74 @@
   object-fit: cover;
 }
 
-.leaflet-control-geocoder-icon{
+.leaflet-control-geocoder-icon {
   vertical-align: middle !important;
   width: 2rem !important;
   height: 2rem !important;
-  background-color:white !important;
+  background-color: white !important;
 }
 
-.leaflet-control-geocoder{
+.leaflet-control-geocoder {
   height: 100%;
   border-radius: 1rem !important;
 }
 
-.leaflet-control-geocoder-form input{
+.leaflet-control-geocoder-form input {
   width: 100%;
   margin-bottom: 0;
 }
+
 /* ------------ Media Queries ------------ */
 /* Tablet (768px–1024px) */
 @media (min-width: 768px) and (max-width: 1024px) {
-  .container{
-    margin: 0 1rem;
-  }
-  
-  .register-container {
-    /* Un poco menos de padding lateral */
-    padding: 3% 5%;
-  }
-  .register-body {
-    gap: 3%;
-  }
-  .form-container {
-    flex-basis: 65%;
-  }
-  .image-container {
-    flex-basis: 35%;
-  }
-}
-/* Móvil estándar (480px–767px) */
-@media (max-width: 767px) and (min-width: 480px) {
-  .container{
+  .container {
     margin: 0 1rem;
   }
 
   .register-container {
-    padding: 1rem 1.5rem; /* menos padding lateral */
+    /* Un poco menos de padding lateral */
+    padding: 3% 5%;
   }
+
+  .register-body {
+    gap: 3%;
+  }
+
+  .form-container {
+    flex-basis: 65%;
+  }
+
+  .image-container {
+    flex-basis: 35%;
+  }
+}
+
+/* Móvil estándar (480px–767px) */
+@media (max-width: 767px) and (min-width: 480px) {
+  .container {
+    margin: 0 1rem;
+  }
+
+  .register-container {
+    padding: 1rem 1.5rem;
+    /* menos padding lateral */
+  }
+
   .register-body {
     flex-direction: column;
     gap: 2rem;
   }
+
   .form-container,
   .image-container {
     width: 100%;
     max-width: 100%;
-    margin: 0;           /* quita márgenes extra */
-    padding: 0;          /* si tenías padding específico, aquí lo eliminas */
+    margin: 0;
+    /* quita márgenes extra */
+    padding: 0;
+    /* si tenías padding específico, aquí lo eliminas */
   }
+
   .image-container {
     display: none;
   }
@@ -220,17 +243,20 @@
 
 /* Pequeños móviles (<480px) */
 @media (max-width: 479px) {
-  .container{
+  .container {
     margin: 0 1rem;
   }
-  
+
   .register-container {
-    padding: 0.75rem 1rem;  /* aún más ajustado */
+    padding: 0.75rem 1rem;
+    /* aún más ajustado */
   }
+
   .register-body {
     flex-direction: column;
     gap: 1.5rem;
   }
+
   .form-container,
   .image-container {
     width: 100%;
@@ -238,6 +264,7 @@
     margin: 0;
     padding: 0;
   }
+
   /* opcional: ocultar la imagen lateral si sigue muy apretado */
   .image-container {
     display: none;

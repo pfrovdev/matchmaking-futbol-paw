@@ -71,7 +71,7 @@
                         value="<?php echo htmlspecialchars($old['telefono'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" required>
 
                     <p class="mandatory-note">(* Campo obligatorio)</p>
-                    <button type="submit">Siguiente</button>
+                    <button type="submit" class="button">Siguiente</button>
 
                     <p class="login-link">¿Ya tenés una cuenta? <a href="/login">Iniciar sesión</a></p>
                 </form>

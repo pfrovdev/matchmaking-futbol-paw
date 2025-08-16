@@ -22,6 +22,10 @@ footer section:first-of-type ul {
     border-bottom: 1px solid var(--contrast-text-color);
 }
 
+footer section p{
+    padding: 0 .5rem;
+}
+
 footer address ul {
     list-style: none;
     padding: 0 .5rem;
