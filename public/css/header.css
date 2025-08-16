@@ -1,20 +1,22 @@
 /* HEADER */
-#header{
+#header {
     background: linear-gradient(90deg, var(--primary-color) 0%, var(--gradient-primary-color) 100%);
     width: 100%;
     height: 8rem;
 }
-#header h1{
+
+#header h1 {
     display: inline-block;
     position: relative;
     top: .5rem;
 }
-#enterprise-icon{
+
+#enterprise-icon {
     width: 10rem;
     display: inline-block;
 }
 
-.hamburger-menu{
+.hamburger-menu {
     margin: 0 1rem;
     display: inline-block;
 }
@@ -25,23 +27,23 @@
     cursor: pointer;
 }
 
-h1 a{
+h1 a {
     font-size: 0;
 }
 
-.header-my-account{
+.header-my-account {
 
     display: inline-block;
-    position:absolute;
+    position: absolute;
     top: 2rem;
     right: 0;
 }
 
-.icon{
+.icon {
     width: 3rem;
 }
 
-.header-my-account button{
+.header-my-account button {
     padding: 0;
     border: none;
     font-size: 0;
@@ -49,7 +51,7 @@ h1 a{
     margin: 0 1rem 0 .5rem;
 }
 
-.header-my-account ul{
+.header-my-account ul {
     display: none;
 }
 
@@ -104,14 +106,14 @@ h1 a{
     padding: 0;
     margin-top: 5rem;
     display: block;
-} 
+}
 
 .mobile-menu ul li {
     padding: 1rem;
     border-bottom: 1px solid #ccc;
 }
 
-.enterprise-icon{
+.enterprise-icon {
     width: 10rem;
     display: block;
     margin: 0 auto;
@@ -124,7 +126,7 @@ h1 a{
     font-weight: bold;
 }
 
-.hamburger-checkbox:checked ~ .mobile-menu {
+.hamburger-checkbox:checked~.mobile-menu {
     left: 0;
 }
 
@@ -144,57 +146,59 @@ h1 a{
 }
 
 
-  .header-my-account ul {
+.header-my-account ul {
     display: none;
     position: absolute;
-    top: 100%;   
-    right: 0;      
+    top: 80%;
+    right: 1rem;
     margin: 0;
-    padding: 0.5rem 0; 
+    padding: 0.5rem 0;
     background-color: var(--background-contents);
 
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     list-style: none;
-    min-width: 160px;  
-    z-index: 10;       
-  }
-  
-  .header-my-account ul li {
+    min-width: 160px;
+    z-index: 10;
+}
+
+.header-my-account ul li {
     margin: 0;
-  }
-  .header-my-account ul li a {
+}
+
+.header-my-account ul li a {
     display: block;
     padding: 0.5rem 1rem;
     color: var(--text-color);
     text-decoration: none;
     font-size: 0.9rem;
-  }
-  .header-my-account ul li a:hover {
+}
+
+.header-my-account ul li a:hover {
     background-color: var(--primary-color);
     color: var(--muted-text-color);
-  }
-  
-  .header-my-account ul::before {
+}
+
+.header-my-account ul::before {
     content: "";
     position: absolute;
-    top: -8px;            
-    right: 12px;          
+    top: -8px;
+    right: 12px;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-bottom: 8px solid #ffffff; 
-  }
-  
- 
-  .header-my-account.show ul {
+    border-bottom: 8px solid #ffffff;
+}
+
+.header-my-account.show ul {
     display: block;
-  }
+}
 
 @media (min-width: 1024px) {
-    .hamburger-checkbox{
+    .hamburger-checkbox {
         display: none;
     }
-    .hamburger-menu{
+
+    .hamburger-menu {
         display: none;
     }
 
@@ -218,8 +222,10 @@ h1 a{
         margin-left: 0.5rem;
     }
 
-    header section img:first-of-type{
+    header section img:first-of-type {
         border-radius: 10rem;
+        width: 4rem;
+        margin: 0 .5rem;
     }
 
     .header-my-account {
@@ -232,7 +238,7 @@ h1 a{
         margin-right: 1rem;
     }
 
-    .header-my-account button{
+    .header-my-account button {
         font-size: 1.2rem;
         margin: 0;
         width: 70%;
@@ -245,17 +251,19 @@ h1 a{
         display: none;
     }
 
-    .header-my-account .icon{
+    .header-my-account .icon {
         margin-right: .7em;
     }
 
     .header-shopping-cart-link {
         margin-right: .5rem;
     }
+
     .header-search__form img {
         right: 0;
         bottom: -1rem;
     }
+
     .desktop-nav {
         display: block;
         background-color: var(--footer-background-color);
