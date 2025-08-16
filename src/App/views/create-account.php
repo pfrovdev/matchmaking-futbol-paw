@@ -13,14 +13,14 @@
 
 <body>
     <?php
-        $errors = $_SESSION['errors'] ?? [];
-        $old = $_SESSION['old'] ?? [];
-        unset($_SESSION['errors']);
-        unset($_SESSION['old']);
-        $estaLogueado = false;
-        require "parts/header.php";
+    $errors = $_SESSION['errors'] ?? [];
+    $old = $_SESSION['old'] ?? [];
+    unset($_SESSION['errors']);
+    unset($_SESSION['old']);
+    $estaLogueado = false;
+    require "parts/header.php";
     ?>
-    
+
     <main>
         <section class="container register-container">
 
@@ -84,7 +84,7 @@
 
         </section>
     </main>
-
+    <?php require "parts/footer.php"; ?>
 </body>
 
 </html>
