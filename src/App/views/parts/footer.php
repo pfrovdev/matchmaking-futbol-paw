@@ -18,7 +18,7 @@
         <h2>Newsletter</h2>
         <form>
             <input type="email" id="email" name="email" placeholder="Tu correo electrónico" required>
-            <button type="submit">Suscribirse</button>
+            <button type="submit" class="button">Suscribirse</button>
         </form>
     </section>
 

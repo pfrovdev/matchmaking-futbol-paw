@@ -44,28 +44,16 @@
   gap: 1rem;
 }
 
-.home-container a {
-  background-color: var(--button-secondary-background-color);
-  color: var(--secondary-buttons-color);
-  text-align: center;
-  padding: 0.75rem 2rem;
-  border-radius: .5rem;
-  transition: background-color .3s, color .3s;
+.button-group a:nth-of-type(2) {
+  background-color: var(--contrast-text-color);
+  color: var(--muted-text-color);
+  border: 1px solid var(--muted-text-color);
 }
 
-.home-container a:hover {
+.button-group a:nth-of-type(2):hover {
   background-color: var(--button-primary-background-color);
   color: var(--primary-buttons-color);
-}
-
-.button-group a:nth-child(1) {
-  background-color: var(--secondary-buttons-color);
-  color: var(--button-secondary-background-color);
-}
-
-.button-group a:nth-child(1):hover {
-  background-color: var(--button-secondary-background-color);
-  color: var(--secondary-buttons-color);
+  border: 1px solid var(--primary-buttons-color);
 }
 
 .benefits-section {
@@ -135,11 +123,6 @@
     grid-row: 2;
     justify-self: start;
     max-width: 30rem;
-  }
-
-  .button-group {
-    grid-column: 2;
-    grid-row: 3;
   }
 
   .home-container a {

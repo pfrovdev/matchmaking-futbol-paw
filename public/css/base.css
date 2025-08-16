@@ -84,7 +84,7 @@ a:hover {
   color: var(--secondary-color);
 }
 
-button {
+.button {
   font-family: inherit;
   background-color: var(--button-primary-background-color);
   color: var(--primary-buttons-color);
@@ -92,9 +92,10 @@ button {
   border: 1px solid var(--primary-buttons-color);
   border-radius: 0.5rem;
   cursor: pointer;
+  text-align: center;
 }
 
-button:hover {
+.button:hover {
   background-color: var(--contrast-text-color);
   color: var(--muted-text-color);
   border: 1px solid var(--muted-text-color);

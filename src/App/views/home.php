@@ -24,8 +24,8 @@
                 Organizá tus partidos, mejorá tu ranking y construí una reputación como jugador o como equipo.
             </p>
             <div class="button-group">
-              <a href="create-account">Registrar mi equipo</a>
-              <a href="login">Iniciar sesión</a>
+              <a href="create-account" class="button">Registrar mi equipo</a>
+              <a href="login" class="button secondary">Iniciar sesión</a>
             </div>
           </div>
         </section>

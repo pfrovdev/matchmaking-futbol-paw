@@ -59,12 +59,12 @@ document.addEventListener('DOMContentLoaded', ()=> {
         contenedor.classList.toggle('show');
       });
     }
-  }
 
     // 3) Si se hace clic en cualquier parte fuera del .header-my-account, cerramos el menú
     document.addEventListener('click', function() {
       contenedor.classList.remove('show');
     });
+  }
 
   });
 
