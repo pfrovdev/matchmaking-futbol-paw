@@ -83,7 +83,7 @@
           <p class="mandatory-note">
             (* Campo obligatorio) ** Tu teléfono será utilizado para la coordinación entre equipos
           </p>
-          <button type="submit">Crear equipo</button>
+          <button type="submit" class="button">Crear equipo</button>
         </form>
 
         <div class="image-container">
