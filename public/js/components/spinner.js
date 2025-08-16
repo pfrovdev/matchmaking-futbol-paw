@@ -13,8 +13,7 @@ document.querySelectorAll(".form-team").forEach(form => {
     });
 });
 document.querySelectorAll(".btn").forEach(form => {
-    form.addEventListener("submit", function (event) {
-        event.preventDefault();
+    form.addEventListener("submit", function () {
         const button = this.querySelector("button");
         activarSpinner(button);
     });
