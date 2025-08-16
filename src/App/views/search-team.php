@@ -43,39 +43,39 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
 
     <?php if (!empty($equipos)): ?>
         <script type="application/ld+json">
-                    <?= json_encode([
-                        "@context" => "https://schema.org",
-                        "@type" => "ItemList",
-                        "name" => "Resultados de búsqueda de equipos",
-                        "numberOfItems" => count($equipos),
-                        "itemListElement" => array_map(function ($equipo, $index) {
-                                                return [
-                                                    "@type" => "ListItem",
-                                                    "position" => $index + 1,
-                                                    "item" => [
-                                                        "@type" => "SportsTeam",
-                                                        "name" => htmlspecialchars($equipo->getNombreEquipo(), ENT_QUOTES, 'UTF-8'),
-                                                        "alternateName" => htmlspecialchars($equipo->getAcronimo() ?? '', ENT_QUOTES, 'UTF-8'),
-                                                        "identifier" => [
-                                                            "@type" => "PropertyValue",
-                                                            "name" => "Elo Ranking",
-                                                            "value" => $equipo->getEloActual()
-                                                        ],
-                                                        "description" => htmlspecialchars($equipo->getLema() ?? '', ENT_QUOTES, 'UTF-8'),
-                                                        "url" => "/team-profile.php?id=" . $equipo->getIdEquipo(),
-                                                        "location" => [
-                                                            "@type" => "Place",
-                                                            "geo" => [
-                                                                "@type" => "GeoCoordinates",
-                                                                "latitude" => $equipo->getLatitud(),
-                                                                "longitude" => $equipo->getLongitud()
+                        <?= json_encode([
+                            "@context" => "https://schema.org",
+                            "@type" => "ItemList",
+                            "name" => "Resultados de búsqueda de equipos",
+                            "numberOfItems" => count($equipos),
+                            "itemListElement" => array_map(function ($equipo, $index) {
+                                                        return [
+                                                            "@type" => "ListItem",
+                                                            "position" => $index + 1,
+                                                            "item" => [
+                                                                "@type" => "SportsTeam",
+                                                                "name" => htmlspecialchars($equipo->getNombreEquipo(), ENT_QUOTES, 'UTF-8'),
+                                                                "alternateName" => htmlspecialchars($equipo->getAcronimo() ?? '', ENT_QUOTES, 'UTF-8'),
+                                                                "identifier" => [
+                                                                    "@type" => "PropertyValue",
+                                                                    "name" => "Elo Ranking",
+                                                                    "value" => $equipo->getEloActual()
+                                                                ],
+                                                                "description" => htmlspecialchars($equipo->getLema() ?? '', ENT_QUOTES, 'UTF-8'),
+                                                                "url" => "/team-profile.php?id=" . $equipo->getIdEquipo(),
+                                                                "location" => [
+                                                                    "@type" => "Place",
+                                                                    "geo" => [
+                                                                        "@type" => "GeoCoordinates",
+                                                                        "latitude" => $equipo->getLatitud(),
+                                                                        "longitude" => $equipo->getLongitud()
+                                                                    ]
+                                                                ]
                                                             ]
-                                                        ]
-                                                    ]
-                                                ];
-                                            }, $equipos, array_keys($equipos))
-                    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?>
-                </script>
+                                                        ];
+                                                    }, $equipos, array_keys($equipos))
+                        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?>
+                    </script>
     <?php endif; ?>
 
 </head>
@@ -89,13 +89,13 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
             <h1>Buscar desafío</h1>
             <p>Busca rivales, por rango o zona</p>
         </header>
-        <?php if (!empty($errors)): ?>
-            <section class="error-messages">
-                <?php foreach ($errors as $error): ?>
-                    <p class="error-text"><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></p>
-                <?php endforeach; ?>
-            </section>
-        <?php endif; ?> 
+        <?php
+        if (!empty($errors)) {
+            $type = "error";
+            $messages = $errors;
+            include __DIR__ . "/parts/alert.php";
+        }
+        ?>
 
         <section class="search-container">
             <!-- === COLUMNA IZQUIERDA: FILTROS y MAPA === -->

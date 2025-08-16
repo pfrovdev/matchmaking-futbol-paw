@@ -16,19 +16,3 @@
     }
 }
 
-.btn-loading {
-    position: relative;
-    pointer-events: none;
-    opacity: 0.8;
-}
-
-.btn-loading .btn-text {
-    visibility: hidden;
-}
-
-.btn-loading .spinner {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-}

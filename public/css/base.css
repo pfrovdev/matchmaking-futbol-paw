@@ -8,7 +8,8 @@
 
   /* Colores de fondo */
   --background-color: #f4f6f5;
-  --background-contents: #ffffff; /* Para contenido como forms, sections*/
+  --background-contents: #ffffff;
+  /* Para contenido como forms, sections*/
   --footer-background-color: #092469;
   --button-primary-background-color: #64c67c;
   --button-cancel-background-color: #df2727;
@@ -46,10 +47,13 @@ html {
   margin: 0;
   padding: 0;
 }
+
 header,
 footer {
-  z-index: 10;           /* asegúrate de que esté por encima de la sidebar */
+  z-index: 10;
+  /* asegúrate de que esté por encima de la sidebar */
 }
+
 body {
   font-family: "Montserrat", sans-serif;
   color: var(--text-color);
@@ -96,9 +100,12 @@ button:hover {
   color: var(--muted-text-color);
   border: 1px solid var(--muted-text-color);
 }
-ul, li {
+
+ul,
+li {
   list-style: none;
 }
+
 input {
   border-radius: 0.5rem;
 }
@@ -107,16 +114,52 @@ main nav {
   display: none;
 }
 
-main > header {
+main>header {
   margin: 2rem 5rem 2rem;
 }
 
+/* FLASH ALERTS */
+.alert {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: flex-start;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+  margin-left: 5rem;
+  width: 45rem;
+}
+
+.alert-error {
+  background-color: #e9bdbd;
+  color: #cc0000;
+  border: 1px solid #cc0000;
+}
+
+.alert-close {
+  font-size: 1.25rem;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #cc0000;
+  border: 1px solid #e9bdbd;
+  color: #e9bdbd;
+  line-height: 1;
+}
+
+.alert-close:hover {
+  opacity: 0.7;
+  background-color: #fff;
+  border: 1px solid #cc0000;
+  color: #cc0000;
+}
+
+/* FOOTER */
 footer {
-  background: linear-gradient(
-    180deg,
-    var(--primary-color) 0%,
-    var(--gradient-primary-color) 100%
-  );
+  background: linear-gradient(180deg,
+      var(--primary-color) 0%,
+      var(--gradient-primary-color) 100%);
   color: var(--contrast-text-color);
 }
 
@@ -143,13 +186,14 @@ footer {
 
 .btn {
   flex: 1;
-  padding: 0.5rem 0;
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
   transition: transform 0.1s;
   text-align: center;
+  width: 10rem;
 }
+
 .btn:hover {
   transform: scale(1.02);
 }
@@ -183,8 +227,9 @@ footer {
     height: 3rem;
     margin-bottom: 0.5rem;
   }
+
   .container h1,
-  .container > p:nth-of-type(1) {
+  .container>p:nth-of-type(1) {
     margin-left: -2rem;
   }
 

@@ -6,6 +6,8 @@ if (!$isOwner) {
   require $this->viewsDir . 'profile.php';
   return;
 }
+$errors = $_SESSION['errors'] ?? [];
+unset($_SESSION['errors']);
 $jugados = 0;
 $goles = 0;
 $asistencias = 0;

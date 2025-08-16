@@ -222,7 +222,11 @@ export default class DesafioComponent {
       btnRejectText.classList.add('btn-text');
       btnRejectText.textContent = 'Rechazar desafío';
       btnReject.appendChild(btnRejectText);
-      btnReject.appendChild(spinner);
+      
+      const spinnerRechazar = document.createElement('span');
+      spinnerRechazar.classList.add('spinner');
+      spinnerRechazar.style.display = 'none';
+      btnReject.appendChild(spinnerRechazar);
 
       formReject.appendChild(btnReject);
       actionsDiv.appendChild(formReject);

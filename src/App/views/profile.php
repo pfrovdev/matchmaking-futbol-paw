@@ -1,6 +1,8 @@
 <?php
 // src/App/views/profile.php
 // Variables: $miEquipo, $comentariosPag, $desafiosRecib, $nivelDesc, $deportividad, $ultimoPartidoJugado, $page, $per, $order, $dir
+$errors = $_SESSION['errors'] ?? [];
+unset($_SESSION['errors']);
 $jugados = 0;
 $goles = 0;
 $asistencias = 0;
@@ -32,6 +34,7 @@ if ($estadisticas) {
     $promedioAmarillas = $jugados > 0 ? round($amarillas / $jugados, 2) : 0;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -41,9 +44,11 @@ if ($estadisticas) {
     <meta name="description" content="Perfil público del equipo de futbol">
     <title>Perfil - <?= htmlspecialchars($miEquipo->fields['nombre'], ENT_QUOTES, 'UTF-8') ?></title>
     <link rel="stylesheet" href="css/dashboard.css">
-    <script type="module" src="js/pages/Dashboard.js" defer></script>
-    <script src="/js/sidebar.js"></script>
+    <link rel="stylesheet" href="./css/spinner.css">
 
+    <script type="module" src="js/pages/Dashboard.js" defer></script>
+    <script src="./js/components/spinner.js" defer></script>
+    <script src="/js/sidebar.js"></script>
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
@@ -59,7 +64,7 @@ if ($estadisticas) {
             },
             "gender": "<?= htmlspecialchars($equipoBanner->getTipoEquipo(), ENT_QUOTES, 'UTF-8') ?>",
             <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
-                        "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
+                                            "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
             <?php endif; ?>
             "location": {
             "@type": "Place",
@@ -80,7 +85,13 @@ if ($estadisticas) {
     <main>
 
         <div class="dashboard-container">
-
+            <?php
+                if (!empty($errors)) {
+                    $type = "error";
+                    $messages = $errors;
+                    include __DIR__ . "/parts/alert.php";
+            }
+            ?>
             <!-- GRID PRINCIPAL -->
             <div class="dashboard-grid">
 
@@ -147,7 +158,11 @@ if ($estadisticas) {
                             <form action="/desafios" method="POST" class="form-desafiar">
                                 <input type="hidden" name="id_equipo_desafiar"
                                     value="<?= htmlspecialchars($equipoBanner->getIdEquipo(), ENT_QUOTES, 'UTF-8') ?>">
-                                <button type="submit" class="btn btn-desafiar">Desafiar</button>
+
+                                <button type="submit" name="submit_my_form" class="btn btn-desafiar">
+                                    <span class="btn-text">Desafiar</span>
+                                    <span class="spinner" style="display:none;"></span>
+                                </button>
                             </form>
                         </div>
                     </div>

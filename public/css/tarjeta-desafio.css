@@ -125,7 +125,7 @@
   background: var(--button-primary-background-color);
   color: var(--contrast-text-color);
   border: 0.1rem solid var(--contrast-text-color);
-  padding: .5rem 4rem;
+  width: 10rem;
 }
 
 .btn-accept {
