@@ -36,6 +36,7 @@ h1 a {
 
 .icon {
     width: 3rem;
+    height: 3rem;
     border-radius: 50%;
 }
 
@@ -157,5 +158,6 @@ h1 a {
     .header-my-account .icon {
         margin-right: .7em;
         width: 4rem;
+        height: 4rem;
     }
 }
