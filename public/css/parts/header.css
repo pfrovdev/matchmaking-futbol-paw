@@ -40,6 +40,7 @@ h1 a {
 }
 
 .header-my-account button {
+    color: var(--muted-text-color);
     padding: 0;
     border: none;
     font-size: 0;
@@ -47,6 +48,9 @@ h1 a {
     margin: 0 1rem 0 .5rem;
 }
 
+.header-my-account button:hover {
+    font-weight: 500;
+}
 .header-my-account ul {
     display: none;
 }
