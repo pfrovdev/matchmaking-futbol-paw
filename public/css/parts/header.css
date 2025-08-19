@@ -52,6 +52,7 @@ h1 a {
 .header-my-account button:hover {
     font-weight: 500;
 }
+
 .header-my-account ul {
     display: none;
 }

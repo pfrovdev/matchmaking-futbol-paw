@@ -49,9 +49,9 @@ foreach ($listLevelsElo as $row) {
     </div>
 
     <div class="card-actions">
-      <a href="?<?= http_build_query(array_merge($_GET, [
+      <a class="button btn-desafiar" href="?<?= http_build_query(array_merge($_GET, [
         'id_equipo_desafiar' => $equipo->getIdEquipo()
-      ])) ?>" class="btn btn-desafiar">
+      ])) ?>">
         <span class="btn-text">Desafiar</span>
         <span class="spinner" style="display:none;"></span>
       </a>

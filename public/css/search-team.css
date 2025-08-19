@@ -5,6 +5,10 @@
 @import url("side-navbar.css");
 @import url('./parts/footer.css');
 
+main header {
+  margin: 1rem;
+}
+
 .search-container {
   display: flex;
   flex-direction: column;
@@ -107,6 +111,10 @@ aside input[type="radio"] {
 }
 
 @media (min-width: 460px) {
+  main header {
+    margin: 1rem 1.5rem;
+  }
+
   .group-filters {
     display: flex;
     flex-direction: row;
@@ -143,6 +151,10 @@ aside input[type="radio"] {
 }
 
 @media (min-width: 1024px) {
+  main header {
+    margin: 1.5rem 5rem;
+  }
+
   .search-container {
     flex-direction: row;
     justify-content: space-between;

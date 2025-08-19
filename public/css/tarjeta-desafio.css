@@ -11,7 +11,7 @@
 /* --- Lado izquierdo con imagen o placeholder --- */
 .card-side {
   position: relative;
-  width: 40%;
+  width: 45%;
   margin-top: 2rem;
   margin-bottom: 1rem;
 }
