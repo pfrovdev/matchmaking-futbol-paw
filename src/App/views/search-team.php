@@ -113,7 +113,7 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                     <input type="hidden" name="id_nivel_elo"
                         value="<?= htmlspecialchars($rangoSelectedId ?? '', ENT_QUOTES, 'UTF-8') ?>">
                     <input type="hidden" name="orden" value="<?= htmlspecialchars($orden, ENT_QUOTES, 'UTF-8') ?>">
-                    <button class="filter-button" type="submit">Buscar</button>
+                    <button class="button" type="submit">Buscar</button>
                 </form>
 
 
@@ -170,7 +170,7 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                                 <?= htmlspecialchars($_GET['radius_km'] ?? 1.0, ENT_QUOTES, 'UTF-8') ?>
                             </span>
                         </div>
-                        <button class="filter-button" type="submit">Enviar</button>
+                        <button class="button" type="submit">Enviar</button>
                     </form>
                 </section>
 
@@ -181,7 +181,7 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                 </figure>
 
                 <section class="limpiar-filtros">
-                    <button id="clearFilters" class="filter-button" type="button">Limpiar filtros</button>
+                    <button id="clearFilters" class="button" type="button">Limpiar filtros</button>
                 </section>
             </aside>
 
