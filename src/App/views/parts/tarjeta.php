@@ -43,8 +43,8 @@ $mostrar_estadisticas ?? true;
           </p>
         </div>
         <div class="team-actions">
-          <a href="/details-team?id=<?= urlencode((string) $equipo->getIdEquipo()) ?>" class="btn-profile">
-            Ver perfil del equipo
+          <a href="/details-team?id=<?= urlencode((string) $equipo->getIdEquipo()) ?>" class="button btn-profile">
+            Ver perfil
           </a>
         </div>
         <?php if ($mostrar_estadisticas): ?>

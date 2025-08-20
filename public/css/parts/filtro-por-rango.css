@@ -1,17 +1,17 @@
 .filters-container {
-  margin: 0 4rem 2rem;
+  margin: 0 2rem;
   padding: 1rem 2rem;
   background-color: var(--background-contents);
   margin-bottom: 2rem;
   border-radius: 0.5rem;
 }
 
+.leaflet-left {
+  display: none;
+}
+
 .filters-container form {
   width: 95%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  column-gap: 4rem;
 }
 
 .filters-container form ul {
@@ -39,11 +39,23 @@
   border: 0.2rem solid var(--text-color);
   font-size: 0.9rem;
 }
-@media (max-width: 1024px) {
+
+
+@media (min-width: 700px) {
+  .leaflet-left {
+    display: block;
+  }
+}
+
+@media (min-width: 1025px) {
+  .filters-container {
+    margin: 0 5rem 2rem;
+  }
+
   .filters-container form ul {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 0.5rem;  
+    gap: 0.5rem;
   }
 }

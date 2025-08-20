@@ -1,6 +1,6 @@
 .zona-busqueda-container {
-  margin: 0 4rem 2rem;
-  padding: 1rem 2rem;
+  margin: 0 2rem;
+  padding: 1rem;
   background-color: var(--background-contents);
   margin-bottom: 2rem;
   border-radius: 0.5rem;
@@ -11,6 +11,25 @@
   flex-direction: column;
   justify-content: space-around;
   gap: 1.5rem;
+}
+
+.zona-busqueda__form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: .5rem;
+}
+
+.input-group input {
+  margin: 0;
 }
 
 .zona-busqueda-container>form,
@@ -32,11 +51,48 @@
 
 .leaflet-control-geocoder-form input {
   margin-bottom: 0;
+  width: 70%;
 }
 
-@media (min-width: 1350px) {
+.leaflet-touch .leaflet-control-geocoder-icon {
+  border-radius: 1.5rem;
+}
+
+
+@media (min-width: 700px) {
+  .zona-busqueda__form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .input-group {
+    flex-direction: row-reverse;
+    gap: 1rem;
+  }
+
+  .boton-filtro-zona {
+    width: 80%;
+  }
+
+  .leaflet-control-geocoder-form input {
+    width: 50%;
+  }
+}
+
+@media (min-width: 1025px) {
   .zona-busqueda-container {
+    margin: 0 5rem 2rem;
+    border-radius: 0.5rem;
     align-items: flex-start;
+  }
+
+  .zona-busqueda__form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
   }
 
   .zona-busqueda-content {
@@ -48,6 +104,10 @@
     width: 60%;
   }
 
+  .leaflet-control-geocoder-form input {
+    width: 80%;
+  }
+
   .zona-busqueda-container>form {
     flex: 1;
     max-width: 50%;
@@ -56,5 +116,9 @@
   .zona-busqueda-container>figure {
     flex: 1;
     max-width: 50%;
+  }
+
+  .boton-filtro-zona {
+    width: 15rem;
   }
 }
