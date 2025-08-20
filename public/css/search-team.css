@@ -16,9 +16,14 @@ main header {
   margin: 0 1rem;
 }
 
+.left-size {
+  padding-left: .5rem;
+}
+
 .left-size,
-.right-size {
+.rigth-size {
   width: 100%;
+  background-color: var(--background-contents);
 }
 
 .filters-container {
@@ -73,6 +78,8 @@ figure {
 .left-size #nombre,
 .left-size #ordenForm input {
   height: 2.5rem;
+  width: 50%;
+  background-color: var(--background-color);
 }
 
 .group-filters {
@@ -145,6 +152,11 @@ aside input[type="radio"] {
     margin: 0 2rem;
   }
 
+  .left-size #nombre,
+  .left-size #ordenForm input {
+    width: 30%;
+  }
+
   .order-container {
     border: none;
   }
@@ -155,12 +167,18 @@ aside input[type="radio"] {
     margin: 1.5rem 5rem;
   }
 
+  .left-size #nombre,
+  .left-size #ordenForm input {
+    width: 50%;
+    margin-right: .5rem;
+  }
+
   .search-container {
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
     gap: 2rem;
-    margin: 0 5rem 5rem;
+    margin: 0 3rem 5rem 5rem;
   }
 
   .group-filters {
