@@ -49,11 +49,11 @@ if ($estadisticas) {
   <meta name="description" content="Pagina principal del equipo de futbol del usuario">
   <title>Dashboard - <?= htmlspecialchars($miEquipo->fields['nombre'], ENT_QUOTES, 'UTF-8') ?></title>
   <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="./css/spinner.css">
+
   <script type="module" src="js/pages/Dashboard.js" defer></script>
   <script src="/js/sidebar.js"></script>
-  <link rel="stylesheet" href="./css/spinner.css">
   <script src="./js/components/spinner.js" defer></script>
-
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",

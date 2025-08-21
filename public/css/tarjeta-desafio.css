@@ -1,4 +1,5 @@
 /* --- Contenedor general --- */
+
 .challenge-card {
   display: flex;
   background: var(--primary-color);
@@ -6,12 +7,18 @@
   overflow: hidden;
   color: var(--contrast-text-color);
   font-family: sans-serif;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-side {
+  width: 70%;
 }
 
 /* --- Lado izquierdo con imagen o placeholder --- */
 .card-side {
   position: relative;
-  width: 45%;
+  width: 70%;
   margin-top: 2rem;
   margin-bottom: 1rem;
 }
@@ -64,13 +71,9 @@
 }
 
 .team-record {
+  margin: 0;
   font-size: 0.9rem;
-  color: var(--contrast-text-color);
-}
-
-/* --- Body: iconos, lema y elo --- */
-.card-body {
-  margin-top: 0.5rem;
+  font-weight: 600;
 }
 
 .sport-icons {
@@ -93,39 +96,40 @@
 }
 
 .profile-link {
-  display: inline-block;
-  margin-top: 0.25rem;
-  font-size: 0.8rem;
+  display: flex;
+  justify-content: center;
+  margin: .6rem 0;
   color: var(--muted-text-color);
-  text-decoration: none;
 }
 
 .profile-link:hover {
   text-decoration: underline;
 }
 
-/* --- Acciones: botones pill --- */
 .card-actions {
-  margin-top: 1rem;
-  margin: .5rem auto;
   display: flex;
-  gap: 1rem;
+  flex-direction: row;
+  justify-content: center;
+  gap: .5rem;
+  flex-wrap: wrap;
 }
 
-.card-actions button {
+.card-actions .btn-accept,
+.card-actions .btn-reject {
   display: flex;
-  font-size: .9rem;
-  height: 2.5rem;
-  width: 8rem;
+  padding: 0;
+  width: 10rem;
+  height: 3rem;
   align-items: center;
   justify-content: center;
 }
 
 .btn-desafiar {
-  background: var(--button-primary-background-color);
-  color: var(--contrast-text-color);
-  border: 0.1rem solid var(--contrast-text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 10rem;
+  height: 3rem;
 }
 
 .btn-accept {
@@ -173,4 +177,15 @@
 
 .challenge-card--send .card-actions {
   justify-content: center;
+  margin-top: 1rem;
+}
+
+@media (min-width: 400px) {
+  .challenge-card {
+    flex-direction: row;
+  }
+
+  .card-side {
+    width: 45%;
+  }
 }

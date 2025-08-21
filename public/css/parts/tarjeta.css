@@ -74,6 +74,10 @@
   font-size: 1.2rem;
 }
 
+.team-record{
+  font-weight: 600;
+}
+
 .team-record .wins {
   color: green;
 }

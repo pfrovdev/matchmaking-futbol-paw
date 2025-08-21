@@ -120,8 +120,8 @@ export default class DesafioComponent {
         d.equipoDesafiante.resultadosEquipo &&
         typeof d.equipoDesafiante.resultadosEquipo === 'object' &&
         ('ganados' in d.equipoDesafiante.resultadosEquipo ||
-         'perdidos' in d.equipoDesafiante.resultadosEquipo ||
-         'empates' in d.equipoDesafiante.resultadosEquipo)
+        'perdidos' in d.equipoDesafiante.resultadosEquipo ||
+        'empates' in d.equipoDesafiante.resultadosEquipo)
       ) {
         const {
           ganados = 0,
@@ -129,9 +129,28 @@ export default class DesafioComponent {
           empates = 0
         } = d.equipoDesafiante.resultadosEquipo;
 
+        function createSpan(className, text) {
+          const span = document.createElement('span');
+          span.classList.add(className);
+          span.textContent = text;
+          return span;
+        }
+
         const recordP = document.createElement('p');
         recordP.classList.add('team-record');
-        recordP.textContent = `W/L/D: ${ganados}-${perdidos}-${empates}`;
+
+        recordP.append("W/");
+        recordP.append("L/");
+        recordP.append("D:");
+
+        recordP.append(
+          createSpan('wins', ganados),
+          "/",
+          createSpan('losses', perdidos),
+          "/",
+          createSpan('draws', empates)
+        );
+
         body.appendChild(recordP);
       }
 
@@ -139,7 +158,7 @@ export default class DesafioComponent {
       const aProfile = document.createElement('a');
       aProfile.href = `/dashboard?id=${d.equipoDesafiante.idEquipo}`;
       aProfile.classList.add('profile-link');
-      aProfile.textContent = 'ver perfil del equipo';
+      aProfile.textContent = 'Ver perfil equipo';
       body.appendChild(aProfile);
 
       mainDiv.appendChild(body);
@@ -169,7 +188,7 @@ export default class DesafioComponent {
 
       const btnAccept = document.createElement('button');
       btnAccept.type = 'submit';
-      btnAccept.classList.add('btn', 'btn-accept');
+      btnAccept.classList.add('button', 'btn-accept');
       
       const btnText = document.createElement('span');
       btnText.classList.add('btn-text');
@@ -216,7 +235,7 @@ export default class DesafioComponent {
 
       const btnReject = document.createElement('button');
       btnReject.type = 'submit';
-      btnReject.classList.add('btn', 'btn-reject');
+      btnReject.classList.add('button', 'btn-reject');
 
       const btnRejectText = document.createElement('span');
       btnRejectText.classList.add('btn-text');

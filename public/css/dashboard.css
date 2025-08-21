@@ -49,41 +49,9 @@
   padding: 1rem;
 }
 
-/* .error-messages .error-text {
-  color: red;
-  margin-bottom: .5rem;
+.challenge-card {
+  align-items: unset;
 }
-
-.alert {
-  position: relative;
-  padding: 1rem 1.25rem;
-  margin-bottom: 1.5rem;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  line-height: 1.4;
-}
-
-.alert-error {
-  background-color: #fce8e8;
-  color: #cc0000;
-  border: 1px solid #cc0000;
-}
-
-.alert-close {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.75rem;
-  background: none;
-  border: none;
-  font-size: 1.25rem;
-  font-weight: bold;
-  cursor: pointer;
-  color: inherit;
-  line-height: 1;
-}
-.alert-close:hover {
-  opacity: 0.7;
-} */
 
 /* ----- PERFIL ----- */
 .perfil-card {
@@ -191,23 +159,18 @@
   color: #999;
 }
 
-.match-score {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  font-size: 1.5rem;
-  font-weight: bold;
+.team-record .wins {
+  color: green;
 }
 
-.match-score .team {
-  font-size: 1rem;
-  color: #666;
+.team-record .losses {
+  color: red;
 }
 
+.team-record .draws {
+  color: rgb(212, 212, 193);
+}
 /* ----- CHALLENGES ----- */
-.challenges-card h3 {
-  margin-bottom: 0.75rem;
-}
 
 .challenge-list {
   list-style: none;
@@ -312,9 +275,15 @@
 .btn-link {
   background: none;
   border: 1px solid var(--button-primary-background-color);
+  border-radius: 2rem;
   color: var(--primary-color);
   cursor: pointer;
   padding: 0;
+}
+
+.btn-link:hover {
+  background: var(--button-primary-background-color);
+  border: 1px solid var(--muted-text-color);
 }
 
 .small {
@@ -417,12 +386,6 @@
     width: 100%;
     height: 100%;
   }
-
-  /* Tarjetas de historial: reduce tamaño de imagen */
-  .team-block .team-img {
-    width: 80px;
-    height: 80px;
-  }
 }
 
 /* -------------------------
@@ -469,37 +432,6 @@
     text-align: center;
   }
 
-  /* Último partido: apilar elementos */
-  .match-score {
-    flex-direction: column;
-    font-size: 1.25rem;
-  }
-
-  .match-score .team {
-    margin: 0.25rem 0;
-  }
-
-  /* Desafíos: botones más grandes */
-  .btn {
-    font-size: 1rem;
-    padding: 0.75rem 0;
-  }
-
-  /* Historial: apilar bloques de equipo */
-  .hc-body {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .team-block {
-    justify-content: center !important;
-    margin-bottom: 0.5rem;
-  }
-
-  .hc-score {
-    margin: 1rem 0;
-  }
-
   .next-matches {
     padding: 0.75rem 1rem;
   }
@@ -539,15 +471,12 @@
     padding: 0.75rem;
   }
 
-  /* Perfil: foto circular y más pequeña */
   .perfil-foto {
     width: 100%;
     height: 100%;
-    border-radius: 50%;
     background-size: cover;
   }
 
-  /* Desafíos: stack total */
   .challenge-card {
     flex-direction: column;
   }
@@ -556,23 +485,16 @@
     padding: 0.75rem;
   }
 
-  /* Botones full width */
   .btn {
     width: 100%;
     padding: 0.6rem 0;
     font-size: 0.9rem;
   }
 
-  /* Ajustes generales de listas */
   .challenge-list li,
   .comment-list li,
   .match-item {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .team-block .team-img {
-    width: 100%;
-    height: 50%;
   }
 }

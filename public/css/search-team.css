@@ -5,6 +5,7 @@
 @import url("side-navbar.css");
 @import url('./parts/footer.css');
 
+
 main header {
   margin: 1rem;
 }
@@ -116,7 +117,6 @@ aside input[type="radio"] {
   border: 0.2rem solid var(--text-color);
   font-size: 0.9rem;
 }
-
 @media (min-width: 460px) {
   main header {
     margin: 1rem 1.5rem;

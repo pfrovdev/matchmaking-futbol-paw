@@ -44,7 +44,7 @@ foreach ($listLevelsElo as $row) {
       <p class="team-motto"><?= htmlspecialchars($equipo->getLema(), ENT_QUOTES, 'UTF-8') ?></p>
       <small class="elo">ELO: <?= htmlspecialchars((string) $equipo->getEloActual(), ENT_QUOTES, 'UTF-8') ?></small>
       <a href="/dashboard?id=<?= urlencode((string) $equipo->getIdEquipo()) ?>" class="profile-link">
-        Ver perfil del equipo
+        Ver perfil equipo
       </a>
     </div>
 

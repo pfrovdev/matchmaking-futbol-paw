@@ -10,13 +10,9 @@
     margin: 0 auto;
     vertical-align: middle;
 }
-.btn-desafiar{
-    padding: .5rem 1.5rem;
-}
 
 @keyframes spin {
     to {
         transform: rotate(360deg);
     }
 }
-

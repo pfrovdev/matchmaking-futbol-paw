@@ -37,8 +37,12 @@ $mostrar_estadisticas ?? true;
           </p>
           <p class="team-lema"><?= htmlspecialchars($equipo->getLema(), ENT_QUOTES, 'UTF-8') ?></p>
           <p class="team-record">
-            W/L/D: <span class="wins"><?= htmlspecialchars($equipo->ganados, ENT_QUOTES, 'UTF-8') ?></span>,
-            <span class="losses"><?= htmlspecialchars($equipo->perdidos, ENT_QUOTES, 'UTF-8') ?></span>,
+            <span class="wins">W</span>/
+            <span class="losses">L</span>/
+            <span class="draws">D:</span>
+
+            <span class="wins"><?= htmlspecialchars($equipo->ganados, ENT_QUOTES, 'UTF-8') ?></span>/
+            <span class="losses"><?= htmlspecialchars($equipo->perdidos, ENT_QUOTES, 'UTF-8') ?></span>/
             <span class="draws"><?= htmlspecialchars($equipo->empatados, ENT_QUOTES, 'UTF-8') ?></span>
           </p>
         </div>
