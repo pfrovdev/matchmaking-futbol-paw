@@ -185,10 +185,12 @@
 
 .tarjeta.yellow {
   background: #f1c40f;
+  border: 1px solid var(--text-dark);
 }
 
 .tarjeta.red {
   background: #e74c3c;
+  border: 1px solid var(--text-dark);
   color: var(--text-light);
 }
 

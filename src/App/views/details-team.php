@@ -53,12 +53,13 @@ if ($estadisticas) {
     <meta name="description" content="Detalle del equipo. Consulta su deportividad, lema y rendimiento." />
     <link rel="stylesheet" href="./css/details-team.css" />
     <script src="/js/sidebar.js"></script>
+    <script src="/js/components/graficosEstadisticas.js"></script>
 </head>
 
 <body>
     <?php
-        $estaLogueado = !!$miEquipo->getIdEquipo();
-        require "parts/header.php";
+    $estaLogueado = !!$miEquipo->getIdEquipo();
+    require "parts/header.php";
     ?>
     <?php require "parts/side-navbar.php"; ?>
     <main>
@@ -66,11 +67,10 @@ if ($estadisticas) {
             <li>No se encontraro al equipo.</li>
         <?php else: ?>
             <section class="details-team-container">
-                <?php require __DIR__ . '/parts/tarjeta.php'; ?>
+                <?php require __DIR__ . '/parts/tarjeta-equipo.php'; ?>
             </section>
         <?php endif; ?>
     </main>
     <?php require "parts/footer.php"; ?>
 </body>
-
 </html>
