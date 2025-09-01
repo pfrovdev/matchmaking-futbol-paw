@@ -175,7 +175,9 @@
 .challenge-list {
   list-style: none;
 }
-
+.form-desafiar{
+  margin: 0 auto;
+}
 .challenge-list li {
   justify-content: space-between;
   align-items: center;

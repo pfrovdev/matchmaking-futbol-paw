@@ -130,6 +130,11 @@
   justify-content: center;
   width: 10rem;
   height: 3rem;
+  margin: 0 auto;
+}
+
+.btn-desafiar-profile {
+  width: 15rem;
 }
 
 .btn-accept {

@@ -162,7 +162,7 @@ if ($estadisticas) {
                                 <input type="hidden" name="id_equipo_desafiar"
                                     value="<?= htmlspecialchars($equipoBanner->getIdEquipo(), ENT_QUOTES, 'UTF-8') ?>">
 
-                                <button type="submit" name="submit_my_form" class="button btn-desafiar">
+                                <button type="submit" name="submit_my_form" class="button btn-desafiar btn-desafiar-profile">
                                     <span class="btn-text">Desafiar</span>
                                     <span class="spinner" style="display:none;"></span>
                                 </button>
