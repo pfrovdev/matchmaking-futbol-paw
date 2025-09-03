@@ -77,19 +77,31 @@ export default class PartidoComponent {
       h3.textContent = p.equipo.nombreEquipo;
       header.appendChild(h3);
 
-      // <div class="nm-team-record">record</div>
       // Formateamos record como "ganados-perdidos-empates"
       const resultados = p.equipo.resultadosEquipo || {};
       const ganados  = resultados.ganados  ?? 0;
       const perdidos = resultados.perdidos ?? 0;
       const empates  = resultados.empates  ?? 0;
-      const recordStr = `${ganados}-${perdidos}-${empates}`;
 
-      const recordDiv = document.createElement('div');
-      recordDiv.classList.add('nm-team-record');
-      recordDiv.textContent = recordStr;
-      header.appendChild(recordDiv);
+      function createSpan(className, text) {
+        const span = document.createElement('span');
+        span.classList.add(className);
+        span.textContent = text;
+        return span;
+      }
 
+      const recordP = document.createElement('p');
+      recordP.classList.add('team-record', 'nm-team-record');
+
+      recordP.append(
+        createSpan('wins', ganados),
+        "/",
+        createSpan('losses', perdidos),
+        "/",
+        createSpan('draws', empates)
+      );
+      
+      header.appendChild(recordP);
       mainDiv.appendChild(header);
 
       // nm-card-body
@@ -112,17 +124,15 @@ export default class PartidoComponent {
       }
       body.appendChild(deportDiv);
 
-      // <p class="nm-team-motto">Lema del equipo</p>
       const pMotto = document.createElement('p');
       pMotto.classList.add('nm-team-motto');
       pMotto.textContent = p.equipo.lema;
       body.appendChild(pMotto);
 
-      // <a href="profile-link" class="profile-link">ver perfil del equipo</a>
       const aProfile = document.createElement('a');
       aProfile.href = `/dashboard?id=${p.equipo.idEquipo}`;
       aProfile.classList.add('profile-link');
-      aProfile.textContent = 'ver perfil del equipo';
+      aProfile.textContent = 'Ver perfil equipo';
       body.appendChild(aProfile);
 
       mainDiv.appendChild(body);

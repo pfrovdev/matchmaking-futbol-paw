@@ -8,6 +8,7 @@ use Paw\App\Models\Desafio;
 interface DesafioService {
     function acceptDesafio(int $desafioId): Desafio;
     function createDesafio(int $eqA, int $eqB): Desafio;
+    function existeDesafioPendiente(int $miEquipo, int $equipoDesafiado): bool;
     function rejectDesafio(int $desafioId): Desafio;
     function getDesafiosByEquipoAndEstadoDesafio(int $idEquipo, string $estado, int $page, int $perPage, string $orderBy, string $direction): array;
 }

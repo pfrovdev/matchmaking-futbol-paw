@@ -17,7 +17,10 @@
 
 <body>
     
-    <?php require "parts/header-no-account.php"; ?>
+    <?php
+        $estaLogueado = false;
+        require "parts/header.php";
+    ?>
     
     <main>
         <section class="container register-container">
@@ -38,7 +41,7 @@
 
             <!-- Flex wrapper: formulario | imagen -->
             <div class="register-body">
-                <form action="/login" method="POST" class="form-container">
+                <form action="/login" method="POST" class="form-container login-container">
                     <label for="email">Correo electrónico *</label>
                     <input type="email" id="email" name="email" placeholder="ej: email@gmail.com"
                         value="<?php echo htmlspecialchars($email,  ENT_QUOTES, 'UTF-8'); ?>" required>
@@ -49,7 +52,7 @@
                         <img src="../icons/close-eye.png" alt="mostrar/ocultar" class="icon-forms icon-password">
                     </div>
 
-                    <button type="submit">Iniciar sesión</button>
+                    <button type="submit" class="button">Iniciar sesión</button>
 
                     <p class="login-link">¿No tenés cuenta aún? <a href="/create-account">Crear cuenta</a></p>
                 </form>

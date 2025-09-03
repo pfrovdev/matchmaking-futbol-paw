@@ -1,6 +1,6 @@
 @import url('./base.css');
-@import url('./header.css');
-@import url('./footer.css');
+@import url('./parts/header.css');
+@import url('./parts/footer.css');
 @import url('./side-navbar.css');
 
 /* Contenedor principal del formulario */

@@ -142,9 +142,15 @@ class DesafioController extends AbstractController
 
         $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $miEquipo = $this->equipoService->getEquipoById($userData->id_equipo);
+        $equipoVistoId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT) ?: $miEquipo->getIdEquipo();
+        $isOwner = ($equipoVistoId === $miEquipo->getIdEquipo());
         $referer = $_SERVER['HTTP_REFERER'] ?? '/dashboard';
 
         $id_equipo_desafiar = filter_input(INPUT_POST, 'id_equipo_desafiar', FILTER_VALIDATE_INT);
+        if ($this->desafioService->existeDesafioPendiente($miEquipo->getIdEquipo(), $id_equipo_desafiar)) {
+            $this->redirigirConError($referer, "El equipo la que intenta desafiar ya fue desafiado previamente y se encuentra en estado pendiente de aprobación.");
+            return;
+        }
         if (!$id_equipo_desafiar || $id_equipo_desafiar === $miEquipo->getIdEquipo()) {
             $this->redirigirConError($referer, 'ID de equipo a desafiar inválido.');
             return;

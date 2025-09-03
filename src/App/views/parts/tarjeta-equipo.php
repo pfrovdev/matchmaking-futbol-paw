@@ -16,41 +16,40 @@ $mostrar_estadisticas ?? true;
   <ol class="ranking-list">
     <li class="ranking-item">
       <article class="team-card">
-        <figure class="team-image">
-          <img
-            src="<?= htmlspecialchars($equipo->getUrlFotoPerfil() ?? '/icons/defaultTeamIcon.png', ENT_QUOTES, 'UTF-8') ?>"
-            alt="Escudo del equipo <?= htmlspecialchars($equipo->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>" />
-          <figcaption class="team-rank" style="background: <?= htmlspecialchars($gradient, ENT_QUOTES, 'UTF-8') ?>;">
-            <?= htmlspecialchars($equipo->getDescripcionElo(), ENT_QUOTES, 'UTF-8') ?>
-          </figcaption>
-        </figure>
-        <div class="team-info">
+        <section class="left-size">
+          <figure class="team-image">
+            <img
+              src="<?= htmlspecialchars($equipo->getUrlFotoPerfil() ?? '/icons/defaultTeamIcon.png', ENT_QUOTES, 'UTF-8') ?>"
+              alt="Escudo del equipo <?= htmlspecialchars($equipo->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>" />
+            <figcaption class="team-rank" style="background: <?= htmlspecialchars($gradient, ENT_QUOTES, 'UTF-8') ?>;">
+              <?= htmlspecialchars($equipo->getDescripcionElo(), ENT_QUOTES, 'UTF-8') ?>
+            </figcaption>
+          </figure>
           <h2 class="team-name"><?= htmlspecialchars($equipo->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?></h2>
-          <p class="team-sportsmanship">Deportividad:
-            <?php for ($i = 1; $i <= 5; $i++): ?>
-              <?php if ($i <= $equipo->getDeportividad()): ?>
-                <span class="icon">⚽</span>
-              <?php else: ?>
-                <span class="icon" style="opacity: 0.4; color: grey;">⚽</span>
-              <?php endif; ?>
-            <?php endfor; ?>
-          </p>
-          <p class="team-lema"><?= htmlspecialchars($equipo->getLema(), ENT_QUOTES, 'UTF-8') ?></p>
-          <p class="team-record">
-            <span class="wins">W</span>/
-            <span class="losses">L</span>/
-            <span class="draws">D:</span>
 
-            <span class="wins"><?= htmlspecialchars($equipo->ganados, ENT_QUOTES, 'UTF-8') ?></span>/
-            <span class="losses"><?= htmlspecialchars($equipo->perdidos, ENT_QUOTES, 'UTF-8') ?></span>/
-            <span class="draws"><?= htmlspecialchars($equipo->empatados, ENT_QUOTES, 'UTF-8') ?></span>
-          </p>
-        </div>
-        <div class="team-actions">
-          <a href="/details-team?id=<?= urlencode((string) $equipo->getIdEquipo()) ?>" class="button btn-profile">
-            Ver perfil
-          </a>
-        </div>
+          <div class="team-info">
+            <p class="team-sportsmanship">Deportividad:
+              <?php for ($i = 1; $i <= 5; $i++): ?>
+                <?php if ($i <= $equipo->getDeportividad()): ?>
+                  <span class="icon">⚽</span>
+                <?php else: ?>
+                  <span class="icon" style="opacity: 0.4; color: grey;">⚽</span>
+                <?php endif; ?>
+              <?php endfor; ?>
+            </p>
+            <p class="team-lema"><?= htmlspecialchars($equipo->getLema(), ENT_QUOTES, 'UTF-8') ?></p>
+            <p class="team-record">
+              <span class="wins">W</span>/
+              <span class="losses">L</span>/
+              <span class="draws">D:</span>
+
+              <span class="wins"><?= htmlspecialchars($equipo->ganados, ENT_QUOTES, 'UTF-8') ?></span>/
+              <span class="losses"><?= htmlspecialchars($equipo->perdidos, ENT_QUOTES, 'UTF-8') ?></span>/
+              <span class="draws"><?= htmlspecialchars($equipo->empatados, ENT_QUOTES, 'UTF-8') ?></span>
+            </p>
+          </div>
+        </section>
+
         <?php if ($mostrar_estadisticas): ?>
           <?php if (!empty($estadisticas)): ?>
             <section class="card stats-card">
@@ -94,6 +93,21 @@ $mostrar_estadisticas ?? true;
             </section>
           <?php endif; ?>
         <?php endif; ?>
+        <section class="charts-card">
+          <article class="chart-card">
+            <h3 class="title-subsection">Gráfico de resultados</h3>
+            <canvas id="resultsChart" width="350" height="250" data-wins="<?= (int) $ganados ?>"
+              data-draws="<?= (int) $empatados ?>" data-losses="<?= (int) $perdidos ?>">
+            </canvas>
+          </article>
+
+          <article class="chart-card">
+            <h3 class="title-subsection">Goles</h3>
+            <canvas id="goalsChart" width="350" height="250" data-goles="<?= (int) $goles ?>"
+              data-golescontra="<?= (int) ($golesEnContra ?? 0) ?>">
+            </canvas>
+          </article>
+        </section>
       </article>
     </li>
   </ol>

@@ -239,6 +239,12 @@ class EquipoController extends AbstractController
 
         if ($id_equipo) {
             try {
+                if($this->desafioService->existeDesafioPendiente($miEquipo->getIdEquipo(), $id_equipo)){
+                     $_SESSION['errors'] = ["El equipo la que intenta desafiar ya fue desafiado previamente y se encuentra en estado pendiente de aprobación."];
+                    header('Location: /search-team');
+                    exit;
+                }
+
                 $desafio = $this->desafioService->createDesafio($miEquipo->getIdEquipo(), $id_equipo);
                 $equipoDesafiado = $this->equipoService->getEquipoById($id_equipo);
                 $this->notificationService->notifyDesafioCreated($miEquipo, $equipoDesafiado, $desafio);
@@ -262,7 +268,7 @@ class EquipoController extends AbstractController
             'lng' => $longitud,
             'radio_km' => $radio_km
         ];
-
+        
         $listLevelsElo = $this->equipoService->getAllNivelElo();
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
         $todosLosEquipos = $this->equipoService->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);

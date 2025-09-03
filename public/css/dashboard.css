@@ -1,6 +1,6 @@
 @import url("./base.css");
-@import url("./header.css");
-@import url("./footer.css");
+@import url('./parts/header.css');
+@import url('./parts/footer.css');
 @import url("./tarjeta-desafio.css");
 @import url("./tarjeta-historial.css");
 @import url("./tarjeta-proximo.css");
@@ -47,6 +47,10 @@
   border-radius: 0.75rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   padding: 1rem;
+}
+
+.challenge-card {
+  align-items: unset;
 }
 
 /* ----- PERFIL ----- */
@@ -155,28 +159,25 @@
   color: #999;
 }
 
-.match-score {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  font-size: 1.5rem;
-  font-weight: bold;
+.team-record .wins {
+  color: green;
 }
 
-.match-score .team {
-  font-size: 1rem;
-  color: #666;
+.team-record .losses {
+  color: red;
 }
 
+.team-record .draws {
+  color: rgb(212, 212, 193);
+}
 /* ----- CHALLENGES ----- */
-.challenges-card h3 {
-  margin-bottom: 0.75rem;
-}
 
 .challenge-list {
   list-style: none;
 }
-
+.form-desafiar{
+  margin: 0 auto;
+}
 .challenge-list li {
   justify-content: space-between;
   align-items: center;
@@ -276,9 +277,15 @@
 .btn-link {
   background: none;
   border: 1px solid var(--button-primary-background-color);
+  border-radius: 2rem;
   color: var(--primary-color);
   cursor: pointer;
   padding: 0;
+}
+
+.btn-link:hover {
+  background: var(--button-primary-background-color);
+  border: 1px solid var(--muted-text-color);
 }
 
 .small {
@@ -291,15 +298,21 @@
 
 .modal-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.6);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 1rem;
 }
-.modal-overlay.hidden { display: none; }
+
+.modal-overlay.hidden {
+  display: none;
+}
 
 /* Modal box */
 .modal-content {
@@ -309,13 +322,14 @@
   width: 100%;
   padding: 1.5rem;
   position: relative;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Close button */
 .modal-close {
   position: absolute;
-  top: .5rem; right: .5rem;
+  top: .5rem;
+  right: .5rem;
   background: none;
   border: none;
   font-size: 1.5rem;
@@ -328,6 +342,7 @@
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
+
 .edit-team-form input {
   width: 100%;
   padding: 0.5rem;
@@ -336,6 +351,7 @@
   border-radius: .25rem;
   font-size: 1rem;
 }
+
 .edit-team-form .btn-primary {
   width: 100%;
   padding: .75rem;
@@ -371,12 +387,6 @@
   .card-side {
     width: 100%;
     height: 100%;
-  }
-
-  /* Tarjetas de historial: reduce tamaño de imagen */
-  .team-block .team-img {
-    width: 80px;
-    height: 80px;
   }
 }
 
@@ -424,37 +434,6 @@
     text-align: center;
   }
 
-  /* Último partido: apilar elementos */
-  .match-score {
-    flex-direction: column;
-    font-size: 1.25rem;
-  }
-
-  .match-score .team {
-    margin: 0.25rem 0;
-  }
-
-  /* Desafíos: botones más grandes */
-  .btn {
-    font-size: 1rem;
-    padding: 0.75rem 0;
-  }
-
-  /* Historial: apilar bloques de equipo */
-  .hc-body {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .team-block {
-    justify-content: center !important;
-    margin-bottom: 0.5rem;
-  }
-
-  .hc-score {
-    margin: 1rem 0;
-  }
-
   .next-matches {
     padding: 0.75rem 1rem;
   }
@@ -494,15 +473,12 @@
     padding: 0.75rem;
   }
 
-  /* Perfil: foto circular y más pequeña */
   .perfil-foto {
     width: 100%;
     height: 100%;
-    border-radius: 50%;
     background-size: cover;
   }
 
-  /* Desafíos: stack total */
   .challenge-card {
     flex-direction: column;
   }
@@ -511,23 +487,16 @@
     padding: 0.75rem;
   }
 
-  /* Botones full width */
   .btn {
     width: 100%;
     padding: 0.6rem 0;
     font-size: 0.9rem;
   }
 
-  /* Ajustes generales de listas */
   .challenge-list li,
   .comment-list li,
   .match-item {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .team-block .team-img {
-    width: 100%;
-    height: 50%;
   }
 }

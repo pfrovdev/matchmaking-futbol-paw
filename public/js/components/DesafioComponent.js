@@ -120,8 +120,8 @@ export default class DesafioComponent {
         d.equipoDesafiante.resultadosEquipo &&
         typeof d.equipoDesafiante.resultadosEquipo === 'object' &&
         ('ganados' in d.equipoDesafiante.resultadosEquipo ||
-         'perdidos' in d.equipoDesafiante.resultadosEquipo ||
-         'empates' in d.equipoDesafiante.resultadosEquipo)
+        'perdidos' in d.equipoDesafiante.resultadosEquipo ||
+        'empates' in d.equipoDesafiante.resultadosEquipo)
       ) {
         const {
           ganados = 0,
@@ -129,9 +129,28 @@ export default class DesafioComponent {
           empates = 0
         } = d.equipoDesafiante.resultadosEquipo;
 
+        function createSpan(className, text) {
+          const span = document.createElement('span');
+          span.classList.add(className);
+          span.textContent = text;
+          return span;
+        }
+
         const recordP = document.createElement('p');
         recordP.classList.add('team-record');
-        recordP.textContent = `W/L/D: ${ganados}-${perdidos}-${empates}`;
+
+        recordP.append("W/");
+        recordP.append("L/");
+        recordP.append("D:");
+
+        recordP.append(
+          createSpan('wins', ganados),
+          "/",
+          createSpan('losses', perdidos),
+          "/",
+          createSpan('draws', empates)
+        );
+
         body.appendChild(recordP);
       }
 
@@ -139,7 +158,7 @@ export default class DesafioComponent {
       const aProfile = document.createElement('a');
       aProfile.href = `/dashboard?id=${d.equipoDesafiante.idEquipo}`;
       aProfile.classList.add('profile-link');
-      aProfile.textContent = 'ver perfil del equipo';
+      aProfile.textContent = 'Ver perfil equipo';
       body.appendChild(aProfile);
 
       mainDiv.appendChild(body);
@@ -154,7 +173,6 @@ export default class DesafioComponent {
       const formAccept = document.createElement('form');
       formAccept.action = '/accept-desafio';
       formAccept.method = 'POST';
-      formAccept.style.display = 'inline';
 
       const inputEquipoAccept = document.createElement('input');
       inputEquipoAccept.type = 'hidden';
@@ -170,9 +188,24 @@ export default class DesafioComponent {
 
       const btnAccept = document.createElement('button');
       btnAccept.type = 'submit';
-      btnAccept.classList.add('btn', 'btn-accept');
-      btnAccept.textContent = 'Aceptar desafío';
+      btnAccept.classList.add('button', 'btn-accept');
+      
+      const btnText = document.createElement('span');
+      btnText.classList.add('btn-text');
+      btnText.textContent = 'Aceptar desafío';
+      btnAccept.appendChild(btnText);
+      
+      const spinner = document.createElement('span');
+      spinner.classList.add('spinner');
+      spinner.style.display = 'none';
+      btnAccept.appendChild(spinner);
+
       formAccept.appendChild(btnAccept);
+      formAccept.classList.add('form-accept');
+
+      formAccept.addEventListener('submit', function () {
+          activarSpinner(btnAccept);
+      });
 
       actionsDiv.appendChild(formAccept);
 
@@ -202,11 +235,24 @@ export default class DesafioComponent {
 
       const btnReject = document.createElement('button');
       btnReject.type = 'submit';
-      btnReject.classList.add('btn', 'btn-reject');
-      btnReject.textContent = 'Rechazar desafío';
-      formReject.appendChild(btnReject);
+      btnReject.classList.add('button', 'btn-reject');
 
+      const btnRejectText = document.createElement('span');
+      btnRejectText.classList.add('btn-text');
+      btnRejectText.textContent = 'Rechazar desafío';
+      btnReject.appendChild(btnRejectText);
+      
+      const spinnerRechazar = document.createElement('span');
+      spinnerRechazar.classList.add('spinner');
+      spinnerRechazar.style.display = 'none';
+      btnReject.appendChild(spinnerRechazar);
+
+      formReject.appendChild(btnReject);
       actionsDiv.appendChild(formReject);
+
+      formReject.addEventListener('submit', function () {
+          activarSpinner(btnReject);
+      });
 
       mainDiv.appendChild(actionsDiv);
 

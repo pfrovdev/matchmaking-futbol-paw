@@ -45,6 +45,15 @@ class DesafioDataMapper extends DataMapper
         return $this->mapAll($rows);
     }
 
+    public function yaExisteDesafioPendiente(int $idEquipoDesafiado, int $estadoId, int $idEquipoDesafiante): array
+    {
+        $rows = $this->qb->select(
+            $this->table,
+            ["id_equipo_desafiado" => $idEquipoDesafiado,"id_equipo_desafiante" => $idEquipoDesafiante, "id_estado_desafio" => $estadoId],
+        );
+        return $this->mapAll($rows);
+    }
+
     public function countByEquipoAndEstado(int $equipoId, int $estadoId): int
     {
         return $this->qb->count(

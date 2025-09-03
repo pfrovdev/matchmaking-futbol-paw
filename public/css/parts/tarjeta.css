@@ -74,6 +74,10 @@
   font-size: 1.2rem;
 }
 
+.team-record{
+  font-weight: 600;
+}
+
 .team-record .wins {
   color: green;
 }
@@ -90,23 +94,6 @@
   font-weight: bold;
   position: absolute;
   right: 10%;
-}
-
-.btn-profile {
-  display: inline-block;
-  background: var(--button-primary-background-color);
-  color: var(--primary-buttons-color);
-  border: 0.2rem solid var(--primary-buttons-color);
-  padding: 0.6rem 1.2rem;
-  border-radius: 1rem;
-  text-decoration: none;
-  transition: background 0.3s ease;
-}
-
-.btn-profile:hover {
-  background: var(--background-contents);
-  color: var(--muted-text-color);
-  border: 0.2rem solid var(--muted-text-color);
 }
 
 .team-actions {

@@ -70,6 +70,8 @@ class PartidoDataMapper extends DataMapper
             'finalizado' => $p->fields['finalizado'],
             'fecha_finalizacion' => $p->fields['fecha_finalizacion'],
             'id_estado_partido' => $p->fields['id_estado_partido'],
+            'finalizado_equipo_desafiante' => $p->fields['finalizado_equipo_desafiante'],
+            'finalizado_equipo_desafiado' => $p->fields['finalizado_equipo_desafiado'],
         ];
         return (bool)$this->update($data, ['id_partido' => $p->fields['id_partido']]);
     }

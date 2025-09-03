@@ -38,9 +38,9 @@ class DesafioServiceImpl implements DesafioService
         $d = new Desafio();
         $d->set([
             'id_equipo_desafiante' => $eqA,
-            'id_equipo_desafiado'  => $eqB,
-            'fecha_creacion'       => $fecha,
-            'id_estado_desafio'    => $idPendiente,
+            'id_equipo_desafiado' => $eqB,
+            'fecha_creacion' => $fecha,
+            'id_estado_desafio' => $idPendiente,
         ]);
 
         $newId = $this->desafioDataMapper->insertDesafio($d);
@@ -49,10 +49,28 @@ class DesafioServiceImpl implements DesafioService
         return $d;
     }
 
+    public function existeDesafioPendiente(int $miEquipo, int $equipoDesafiado): bool
+    {
+        $estadoId = $this->estadoDesafioDataMapper->findIdByCode('pendiente');
+
+        $desafiosComoDesafiado = $this->desafioDataMapper->yaExisteDesafioPendiente($miEquipo, $estadoId, $equipoDesafiado);
+
+        if (count($desafiosComoDesafiado) > 0) {
+            return true;
+        }
+
+        $desafiosComoDesafiante = $this->desafioDataMapper->yaExisteDesafioPendiente($equipoDesafiado, $estadoId, $miEquipo);
+
+        if (count($desafiosComoDesafiante) > 0) {
+            return true;
+        }
+
+        return false;
+    }
     public function acceptDesafio(int $desafioId): Desafio
     {
         $d = $this->desafioDataMapper->findById(['id_desafio' => $desafioId]);
-        if (! $d) {
+        if (!$d) {
             throw new \InvalidArgumentException("Desafío $desafioId no existe");
         }
 
@@ -73,7 +91,7 @@ class DesafioServiceImpl implements DesafioService
     public function rejectDesafio(int $desafioId): Desafio
     {
         $d = $this->desafioDataMapper->findById(['id_desafio' => $desafioId]);
-        if (! $d) {
+        if (!$d) {
             throw new \InvalidArgumentException("Desafío $desafioId no existe");
         }
         $idRechazo = $this->estadoDesafioDataMapper->findIdByCode('rechazado');

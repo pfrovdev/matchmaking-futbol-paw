@@ -49,7 +49,7 @@
         -<?php echo $challenge['elo']['losses'] ?>,
         <?php echo $challenge['elo']['draws'] ?>
       </small>
-      <a href="<?php echo $challenge['profile-link'] ?>" class="profile-link">ver perfil del equipo</a>
+      <a href="<?php echo $challenge['profile-link'] ?>" class="profile-link">Ver perfil equipo</a>
     </div>
 
     <div class="card-actions">
