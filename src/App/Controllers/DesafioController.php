@@ -2,6 +2,7 @@
 
 namespace Paw\App\Controllers;
 
+use Exception;
 use Monolog\Logger;
 use Paw\App\Services\DesafioService;
 use Paw\App\Services\EquipoService;
