@@ -70,7 +70,7 @@ export default class TutorialCoordinarResultadoComponent {
 
         const prevButton = document.createElement('button');
         prevButton.id = 'prev-slide';
-        prevButton.className = 'btn-estilo tutorial-nav-btn';
+        prevButton.className = 'button btn-estilo tutorial-nav-btn';
         prevButton.innerHTML = this.options.prevButtonText;
         carouselNavigation.appendChild(prevButton);
 
@@ -81,7 +81,7 @@ export default class TutorialCoordinarResultadoComponent {
 
         const nextButton = document.createElement('button');
         nextButton.id = 'next-slide';
-        nextButton.className = 'btn-estilo tutorial-nav-btn';
+        nextButton.className = 'button btn-estilo tutorial-nav-btn';
         nextButton.innerHTML = this.options.nextButtonText;
         carouselNavigation.appendChild(nextButton);
 
@@ -91,7 +91,7 @@ export default class TutorialCoordinarResultadoComponent {
         // Botón de acción final (Entendido / Comenzar)
         const actionButton = document.createElement('button');
         actionButton.id = 'tutorial-action-button';
-        actionButton.className = 'btn-estilo tutorial-final-button';
+        actionButton.className = 'button btn-estilo tutorial-final-button';
         actionButton.textContent = this.options.actionButtonInitialText;
         modal.appendChild(actionButton);
 
