@@ -4,6 +4,12 @@ document.querySelectorAll(".form-desafiar").forEach(form => {
         activarSpinner(button);
     });
 });
+document.querySelectorAll(".form-calificar").forEach(form => {
+    form.addEventListener("submit", function () {
+        const button = this.querySelector("button");
+        activarSpinner(button);
+    });
+});
 
 document.querySelectorAll(".form-team").forEach(form => {
     form.addEventListener("submit", function () {

@@ -84,8 +84,8 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
 
 <body>
     <?php
-        $estaLogueado = !!$miEquipo->getIdEquipo();
-        require "parts/header.php";
+    $estaLogueado = !!$miEquipo->getIdEquipo();
+    require "parts/header.php";
     ?>
     <?php require "parts/side-navbar.php"; ?>
 
@@ -159,7 +159,7 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                         ?>
 
                         <?php if ($mostrarBotonEnviarResultados): ?>
-                            <button type="submit" name="submit_my_form" class="btn btn-enviar">
+                            <button type="submit" name="submit_my_form" class="button btn-enviar">
                                 <span class="btn-text">Enviar resultado</span>
                                 <span class="spinner" style="display:none;"></span>
                             </button>
@@ -209,7 +209,7 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                         ?>
 
                         <?php if ($mostrarBotonWhatsapp): ?>
-                            <button type="button" class="btn-whatsapp"
+                            <button type="button" class="button btn-whatsapp"
                                 onclick="window.open('https://wa.me/?text=Hola%2C soy%20<?= urlencode($myTeamAcronym) ?>. Por favor, carga el resultado o revisa las diferencias.', '_blank')">Abrir
                                 WhatsApp</button>
                         <?php endif; ?>
@@ -220,22 +220,22 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
 
             <?php if ($mostrarBotonTerminarPartido): ?>
                 <div class="final-buttons-container">
-                    <form action="/terminar-partido" method="POST" style="display:inline;" class="btn">
+                    <form action="/terminar-partido" method="POST" style="display:inline;">
                         <input type="hidden" name="id_partido" value="<?= htmlspecialchars($id_partido) ?>">
                         <input type="hidden" name="id_equipo_rival"
                             value="<?= htmlspecialchars($formularioPartidoContrario->getIdEquipo()) ?>">
-                        <button type="submit" name="submit_my_form" class="btn btn-enviar">
+                        <button type="submit" name="submit_my_form" class="button btn-enviar">
                             <span class="btn-text">Terminar partido</span>
                             <span class="spinner" style="display:none;"></span>
                         </button>
                     </form>
-                    <button class="btn" type="button" id="btnCalificarDeportividad">Calificar deportividad</button>
+                    <button class="button" type="button" id="btnCalificarDeportividad">Calificar deportividad</button>
                 </div>
 
                 <div id="calificacionModal" class="modal">
                     <div class="modal-content">
                         <span class="close-button">&times;</span>
-                        <form id="formCalificacion" action="/comentarios" method="POST">
+                        <form id="formCalificacion" action="/comentarios" method="POST" class="form-calificar">
                             <h3>Califica la deportividad del equipo rival</h3>
                             <div class="rating-group" id="ratingGroup">
                                 <?php for ($i = 1; $i <= 5; $i++): ?>
@@ -250,7 +250,10 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
 
                             <textarea name="comentario" class="textArea" maxlength="100"
                                 placeholder="Deja un comentario... (100 caracteres max.)"></textarea>
-                            <button type="submit" class="btn">Enviar Calificación</button>
+                            <button type="submit" name="submit_calification" class="button">
+                                <span class="btn-text">Enviar Calificación</span>
+                                <span class="spinner" style="display:none;"></span>
+                            </button>
                         </form>
                     </div>
                 </div>
