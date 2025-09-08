@@ -93,10 +93,18 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
         <section class="coordinar-resultado">
             <h1>Coordinar resultado</h1>
 
+            <?php if (!empty($_SESSION['error'])): ?>
+                <div class="alert alert-error">
+                    <?= htmlspecialchars($_SESSION['error']) ?>
+                </div>
+                <?php unset($_SESSION['error']); ?>
+            <?php else: ?>
+                <div class="alert alert-<?= htmlspecialchars($statusType) ?>">
+                    <?= htmlspecialchars($statusMessage) ?>
+                </div>
+            <?php endif; ?>
 
-            <div class="alert alert-<?= htmlspecialchars($statusType) ?>">
-                <?= htmlspecialchars($statusMessage) ?>
-            </div>
+
 
             <?php if ($mostrarSubtitlo): ?>
                 <p class="subtitle">
@@ -250,7 +258,7 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
 
                             <textarea name="comentario" class="textArea" maxlength="100"
                                 placeholder="Deja un comentario... (100 caracteres max.)"></textarea>
-                            <button type="submit" name="submit_calification" class="button">
+                            <button type="submit" name="submit_calification" class="button btn-calificar">
                                 <span class="btn-text">Enviar Calificación</span>
                                 <span class="spinner" style="display:none;"></span>
                             </button>
