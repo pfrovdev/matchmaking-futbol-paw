@@ -42,6 +42,7 @@ foreach ($listLevelsElo as $row) {
         <?php endfor; ?>
       </p>
       <p class="team-motto"><?= htmlspecialchars($equipo->getLema(), ENT_QUOTES, 'UTF-8') ?></p>
+      <p> Genero: <?= htmlspecialchars($equipo->getTipoEquipo(), ENT_QUOTES, 'UTF-8') ?></p>
       <small class="elo">ELO: <?= htmlspecialchars((string) $equipo->getEloActual(), ENT_QUOTES, 'UTF-8') ?></small>
       <a href="/dashboard?id=<?= urlencode((string) $equipo->getIdEquipo()) ?>" class="profile-link">
         Ver perfil equipo
@@ -49,12 +50,14 @@ foreach ($listLevelsElo as $row) {
     </div>
 
     <div class="card-actions">
-      <a class="button btn-desafiar" href="?<?= http_build_query(array_merge($_GET, [
-        'id_equipo_desafiar' => $equipo->getIdEquipo()
-      ])) ?>">
+    <form method="post" action="/desafios" class="challenge-form">
+      <input type="hidden" name="id_equipo_desafiar" value="<?= htmlspecialchars($equipo->getIdEquipo(), ENT_QUOTES, 'UTF-8') ?>">
+      <input type="hidden" name="return_to" value="<?= htmlspecialchars($_SERVER['REQUEST_URI'] ?? '/search-team', ENT_QUOTES, 'UTF-8') ?>">
+      <button class="button btn-desafiar" type="submit">
         <span class="btn-text">Desafiar</span>
         <span class="spinner" style="display:none;"></span>
-      </a>
+      </button>
+    </form>
     </div>
   </div>
 </div>

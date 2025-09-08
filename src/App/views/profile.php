@@ -48,6 +48,7 @@ if ($estadisticas) {
 
     <script type="module" src="js/pages/Dashboard.js" defer></script>
     <script src="./js/components/spinner.js" defer></script>
+    <script src="./js/components/modals.js"></script>
     <script src="/js/sidebar.js"></script>
     <script type="application/ld+json">
         {
@@ -256,7 +257,11 @@ if ($estadisticas) {
             </div>
 
     </main>
-
+    <?php
+    $success = $_SESSION['success'] ?? null;
+    unset($_SESSION['success']);
+    if ($success) require __DIR__ . '/parts/modal-success.php';
+    ?>
     <?php require "parts/footer.php"; ?>
     <script>
         const levelsEloMap = <?= json_encode(array_map(function ($row) {
