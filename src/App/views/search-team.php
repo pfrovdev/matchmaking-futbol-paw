@@ -40,6 +40,7 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
     <script src="./js/components/spinner.js" defer></script>
     <script src="./js/sidebar.js"></script>
     <script src="./js/filtros.js" defer></script>
+    <script src="./js/components/modals.js" defer></script>
 
     <?php if (!empty($equipos)): ?>
         <script type="application/ld+json">
@@ -202,8 +203,14 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                 </ul>
             </section>
         </section>
+    
     </main>
-
+    <?php
+    $success = $_SESSION['success'] ?? null;
+    unset($_SESSION['success']);
+    if ($success) require __DIR__ . '/parts/modal-success.php';
+    ?>
+        
     <?php require "parts/footer.php"; ?>
 </body>
 
