@@ -53,6 +53,7 @@ return [
         // GET Methods
         ['path' => '/partidos', 'action' => 'PartidoController@index', 'method' => 'GET'],
         ['path' => '/coordinar-resultado', 'action' => 'PartidoController@coordinarResultado', 'method' => 'GET'],
+        ['path' => '/cancelar-partido', 'action' => 'PartidoController@cancelarPartido', 'method' => 'GET'],
         ['path' => '/historial-partidos', 'action' => 'PartidoController@getHistorial', 'method' => 'GET'],
 
         // POST Methods

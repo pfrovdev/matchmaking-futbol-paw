@@ -98,12 +98,11 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                     <?= htmlspecialchars($_SESSION['error']) ?>
                 </div>
                 <?php unset($_SESSION['error']); ?>
-            <?php else: ?>
-                <div class="alert alert-<?= htmlspecialchars($statusType) ?>">
-                    <?= htmlspecialchars($statusMessage) ?>
-                </div>
             <?php endif; ?>
 
+            <div class="alert alert-<?= htmlspecialchars($statusType) ?>">
+                <?= htmlspecialchars($statusMessage) ?>
+            </div>
 
 
             <?php if ($mostrarSubtitlo): ?>

@@ -49,6 +49,13 @@
   padding: 1rem;
 }
 
+.alert-info {
+  background-color: #e8f1fc;
+  color: #083b8c;
+  border: 1px solid var(--primary-color);
+  flex-direction: column;
+}
+
 .challenge-card {
   align-items: unset;
 }

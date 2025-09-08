@@ -72,7 +72,7 @@ if ($estadisticas) {
       "alternateName": "<?= htmlspecialchars($miEquipo->fields['acronimo'], ENT_QUOTES, 'UTF-8') ?>",
       "description": "<?= htmlspecialchars($equipoBanner->getLema(), ENT_QUOTES, 'UTF-8') ?>",
       <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
-                      "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
+                          "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
       <?php endif; ?>
       "gender": "<?= htmlspecialchars($equipoBanner->getTipoEquipo(), ENT_QUOTES, 'UTF-8') ?>",
       "location": {
@@ -98,10 +98,17 @@ if ($estadisticas) {
   <main>
 
     <div class="dashboard-container">
-
+      <?php if (!empty($_SESSION['message'])): ?>
+        <section class="alert alert-info">
+          <?= htmlspecialchars($_SESSION['message']) ?>
+        </section>
+        <?php unset($_SESSION['message']); ?>
+      <?php endif; ?>
 
       <!-- GRID PRINCIPAL -->
       <div class="dashboard-grid">
+
+
 
         <!-- Columna Izquierda -->
         <section class="col-left">

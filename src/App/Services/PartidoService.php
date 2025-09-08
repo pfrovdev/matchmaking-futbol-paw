@@ -23,5 +23,6 @@ interface PartidoService
     function partidoAcordadoYNoFinalizado(int $idEquipo, int $idEquipoRival, int $idPartido): bool;
 
     function terminarPartido(int $partidoId, int $idEquipo, int $idEquipoRival): void;
+    function cancelarPartido(int $partidoId, int $idEquipo): bool;
 
 }
