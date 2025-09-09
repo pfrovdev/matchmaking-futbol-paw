@@ -39,6 +39,47 @@ class HistorialPartidoDataMapper extends DataMapper
         );
     }
 
+    public function getHistorialEloByIdEquipo(int $id_equipo): array
+    {
+        $local = $this->selectAdvanced(
+            $this->table,
+            ['id_equipo_local' => $id_equipo],
+            [],
+            'fecha_jugado',
+            'ASC'
+        );
+
+        $visitante = $this->selectAdvanced(
+            $this->table,
+            ['id_equipo_visitante' => $id_equipo],
+            [],
+            'fecha_jugado',
+            'ASC'
+        );
+
+        $historial = [];
+
+        foreach ($local as $partido) {
+            $historial[] = [
+                'id_partido' => $partido['id_partido'],
+                'fecha' => $partido['fecha_jugado'],
+                'elo' => $partido['elo_final_local']
+            ];
+        }
+
+        foreach ($visitante as $partido) {
+            $historial[] = [
+                'id_partido' => $partido['id_partido'],
+                'fecha' => $partido['fecha_jugado'],
+                'elo' => $partido['elo_final_visitante']
+            ];
+        }
+
+        usort($historial, fn($a, $b) => strcmp($a['fecha'], $b['fecha']));
+
+        return $historial;
+    }
+
     public function mapAll(array $rows): array
     {
         return $rows;

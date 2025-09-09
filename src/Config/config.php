@@ -65,6 +65,10 @@ return [
 
         // GET Methods
         ['path' => '/logout', 'action' => 'AuthController@logout', 'method' => 'GET'],
+
+        // === EstadisticaController ===
+        // GET Methods
+        ['path' => '/estadisticas', 'action' => 'EstadisticaController@showEstadisticasEquipo', 'method' => 'GET']
     ],
 
 
