@@ -2,6 +2,7 @@ import ComentarioController from '../controllers/ComentarioController.js';
 import DesafioController from '../controllers/DesafioController.js';
 import PartidoController from '../controllers/PartidoController.js';
 import HistorialController from '../controllers/HistorialController.js';
+import EstadisticaController from '../controllers/EstadisticaController.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -26,6 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     comentarioController.init();
   }
+
+  // ----------- Inicialización de Estadísticas -----------
+  const estadisticaController = new EstadisticaController();
+  estadisticaController.inicializar();
+
 
   // ------------ Inicialización de Historial de Partidos ------------
   const historyContainer = document.getElementById('history-list');
@@ -87,76 +93,76 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     controller.init();
   }
- // ----------- Lógica del Modal de edición ------------
- const modalTriggers = document.querySelectorAll('.open-edit-modal, .perfil-foto .btn-link');
- const modal = document.getElementById('edit-team-modal');
- const closeBtn = document.getElementById('close-modal');
- const form = modal?.querySelector('form');
- const urlInput = form?.querySelector('#team-url');
- const urlError = form.querySelector('#url-error');
+  // ----------- Lógica del Modal de edición ------------
+  const modalTriggers = document.querySelectorAll('.open-edit-modal, .perfil-foto .btn-link');
+  const modal = document.getElementById('edit-team-modal');
+  const closeBtn = document.getElementById('close-modal');
+  const form = modal?.querySelector('form');
+  const urlInput = form?.querySelector('#team-url');
+  const urlError = form.querySelector('#url-error');
 
- modalTriggers.forEach(btn => {
-   btn.addEventListener('click', () => {
-     modal.classList.remove('hidden');
-     document.body.style.overflow = 'hidden'; // evitar scroll atrás
-   });
- });
+  modalTriggers.forEach(btn => {
+    btn.addEventListener('click', () => {
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden'; // evitar scroll atrás
+    });
+  });
 
- closeBtn?.addEventListener('click', () => {
-   modal.classList.add('hidden');
-   document.body.style.overflow = '';
-   urlError.style.display = 'none';
- });
+  closeBtn?.addEventListener('click', () => {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+    urlError.style.display = 'none';
+  });
 
- modal?.addEventListener('click', e => {
-   if (e.target === modal) {
-     modal.classList.add('hidden');
-     document.body.style.overflow = '';
-     urlError.style.display = 'none';
-   }
- });
-
- if (form && urlInput && urlError) {
-  const acronymInput = form.querySelector('#team-acronym');
-  const acronymError = form.querySelector('#acronym-error');
-
-  form.addEventListener('submit', e => {
-    let hayError = false;
-
-    // — Validación del acrónimo —
-    const acr = acronymInput.value.trim();
-    if (acr.length > 3) {
-      hayError = true;
-      acronymError.style.display = 'block';
-      acronymError.textContent = 'El acrónimo no puede exceder 3 caracteres.';
-      acronymInput.focus();
-    } else {
-      acronymError.style.display = 'none';
+  modal?.addEventListener('click', e => {
+    if (e.target === modal) {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+      urlError.style.display = 'none';
     }
+  });
 
-    // — Validación de la URL (solo si no hubo error de acrónimo) —
-    if (!hayError) {
-      const url = urlInput.value.trim();
-      if (url !== '') {
-        const validPattern = /^https?:\/\/.+/;
-        if (url.length > 255 || !validPattern.test(url)) {
-          hayError = true;
-          urlError.style.display = 'block';
-          urlError.textContent = url.length > 255
-            ? 'La URL no puede superar 255 caracteres.'
-            : 'La URL debe empezar con http:// o https://';
-          urlInput.focus();
+  if (form && urlInput && urlError) {
+    const acronymInput = form.querySelector('#team-acronym');
+    const acronymError = form.querySelector('#acronym-error');
+
+    form.addEventListener('submit', e => {
+      let hayError = false;
+
+      // — Validación del acrónimo —
+      const acr = acronymInput.value.trim();
+      if (acr.length > 3) {
+        hayError = true;
+        acronymError.style.display = 'block';
+        acronymError.textContent = 'El acrónimo no puede exceder 3 caracteres.';
+        acronymInput.focus();
+      } else {
+        acronymError.style.display = 'none';
+      }
+
+      // — Validación de la URL (solo si no hubo error de acrónimo) —
+      if (!hayError) {
+        const url = urlInput.value.trim();
+        if (url !== '') {
+          const validPattern = /^https?:\/\/.+/;
+          if (url.length > 255 || !validPattern.test(url)) {
+            hayError = true;
+            urlError.style.display = 'block';
+            urlError.textContent = url.length > 255
+              ? 'La URL no puede superar 255 caracteres.'
+              : 'La URL debe empezar con http:// o https://';
+            urlInput.focus();
+          } else {
+            urlError.style.display = 'none';
+          }
         } else {
           urlError.style.display = 'none';
         }
-      } else {
-        urlError.style.display = 'none';
       }
-    }
 
-    if (hayError) {
-      e.preventDefault();
-    }
-  });
- }
+      if (hayError) {
+        e.preventDefault();
+      }
+    });
+  }
 });
