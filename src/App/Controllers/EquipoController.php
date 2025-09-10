@@ -3,7 +3,7 @@
 namespace Paw\App\Controllers;
 
 use Monolog\Logger;
-use Paw\App\DataMapper\EstaditicasDataMapper;
+use Paw\App\DataMapper\EstadisticaDataMapper;
 use Paw\App\DataMapper\ResultadoPartidoDataMapper;
 use Paw\App\Dtos\EquipoBannerDto;
 use Paw\App\Models\Equipo;
@@ -23,7 +23,7 @@ class EquipoController extends AbstractController
     private DesafioService $desafioService;
     private NotificationService $notificationService;
     private ComentarioEquipoService $comentarioEquipoService;
-    private EstaditicasDataMapper $estadisticasDataMapper;
+    private EstadisticaDataMapper $estadisticasDataMapper;
     private ResultadoPartidoDataMapper $resultadoPartidoDataMapper;
 
     public function __construct(
@@ -34,7 +34,7 @@ class EquipoController extends AbstractController
         NotificationService $notificationService,
         ComentarioEquipoService $comentarioEquipoService,
         AuthMiddelware $auth,
-        EstaditicasDataMapper $estadisticasDataMapper,
+        EstadisticaDataMapper $estadisticasDataMapper,
         ResultadoPartidoDataMapper $resultadoPartidoDataMapper
     ) {
         parent::__construct($logger, $auth);

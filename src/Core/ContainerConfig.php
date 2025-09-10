@@ -184,10 +184,13 @@ class ContainerConfig
         $c->set(EquipoController::class, fn($c) => new EquipoController(
             $logger,
             $c->get(EquipoService::class),
+            $c->get(PartidoService::class),
             $c->get(DesafioService::class),
             $c->get(NotificationService::class),
             $c->get(ComentarioEquipoService::class),
-            $c->get(AuthMiddelware::class)
+            $c->get(AuthMiddelware::class),
+            $c->get(EstadisticaDataMapper::class),
+            $c->get(ResultadoPartidoDataMapper::class),
         ));
 
         $c->set(DesafioController::class, fn($c) => new DesafioController(
