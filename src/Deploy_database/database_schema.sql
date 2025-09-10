@@ -166,6 +166,7 @@ CREATE TABLE
         id_partido INT AUTO_INCREMENT PRIMARY KEY,
         fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
         fecha_finalizacion DATETIME,
+        deadline_formulario DATETIME NULL,
         id_estado_partido INT NOT NULL,
         finalizado TINYINT (1) DEFAULT 0,
         finalizado_equipo_desafiante TINYINT (1) DEFAULT 0,

@@ -99,7 +99,14 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                 </div>
                 <?php unset($_SESSION['error']); ?>
             <?php endif; ?>
-
+            <?php
+            $dl = $partido->getDeadlineFormulario();
+            ?>
+            <?php if ($dl): ?>
+                <p>🕑 Plazo para coordinar resultados hasta: 
+                    <strong id="deadline-txt"><?= htmlspecialchars($dl) ?></strong>
+                </p>
+            <?php endif; ?>
             <div class="alert alert-<?= htmlspecialchars($statusType) ?>">
                 <?= htmlspecialchars($statusMessage) ?>
             </div>

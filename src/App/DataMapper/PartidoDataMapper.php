@@ -58,6 +58,7 @@ class PartidoDataMapper extends DataMapper
         $data = [
             'fecha_creacion' => $p->fields['fecha_creacion'],
             'finalizado' => $p->fields['finalizado'],
+            'deadline_formulario' => $p->fields['deadline_formulario'],
             'fecha_finalizacion' => $p->fields['fecha_finalizacion'],
             'id_estado_partido' => $p->fields['id_estado_partido'],
         ];
@@ -69,6 +70,7 @@ class PartidoDataMapper extends DataMapper
         $data = [
             'finalizado' => $p->fields['finalizado'],
             'fecha_finalizacion' => $p->fields['fecha_finalizacion'],
+            'deadline_formulario' => $p->fields['deadline_formulario'],
             'id_estado_partido' => $p->fields['id_estado_partido'],
             'finalizado_equipo_desafiante' => $p->fields['finalizado_equipo_desafiante'],
             'finalizado_equipo_desafiado' => $p->fields['finalizado_equipo_desafiado'],
