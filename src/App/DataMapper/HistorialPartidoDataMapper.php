@@ -80,6 +80,64 @@ class HistorialPartidoDataMapper extends DataMapper
         return $historial;
     }
 
+    public function getRachaMasLargaById(int $id_equipo): int
+    {
+        $partidos = $this->selectAdvanced(
+            'v_historial_partidos',
+            [],
+            [
+                [
+                    'sql' => '(id_equipo_local = ? OR id_equipo_visitante = ?)',
+                    'params' => [$id_equipo, $id_equipo]
+                ]
+            ],
+            'fecha_jugado',
+            'ASC'
+        );
+
+        $rachaActual = 0;
+        $rachaMax = 0;
+
+        foreach ($partidos as $partido) {
+            if ((int) $partido['id_equipo_ganador'] === $id_equipo) {
+                $rachaActual++;
+                $rachaMax = max($rachaMax, $rachaActual);
+            } else {
+                $rachaActual = 0;
+            }
+        }
+
+        return $rachaMax;
+    }
+
+    public function getRachaActualById(int $id_equipo): int
+    {
+        $partidos = $this->selectAdvanced(
+            'v_historial_partidos',
+            [],
+            [
+                [
+                    'sql' => '(id_equipo_local = ? OR id_equipo_visitante = ?)',
+                    'params' => [$id_equipo, $id_equipo]
+                ]
+            ],
+            'fecha_jugado',
+            'DESC'
+        );
+
+        $rachaActual = 0;
+
+        foreach ($partidos as $partido) {
+            if ((int) $partido['id_equipo_ganador'] === $id_equipo) {
+                $rachaActual++;
+            } else {
+                break;
+            }
+        }
+
+        return $rachaActual;
+    }
+
     public function mapAll(array $rows): array
     {
         return $rows;

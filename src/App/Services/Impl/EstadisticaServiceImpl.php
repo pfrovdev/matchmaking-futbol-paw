@@ -45,7 +45,9 @@ class EstadisticaServiceImpl implements EstadisticaService
             'diferencia_gol' => ($estadistica->getGoles() ?? 0) - ($resultadosPartidosEstadisticas['goles_en_contra'] ?? 0),
             'elo_mas_alto' => $resultadosPartidosEstadisticas['elo_mas_alto'] ?? 0,
             'ultimos_5_partidos' => $resultadosPartidosEstadisticas['ultimos_5_partidos'] ?? [],
-            'elo_historial' => $this->historialElo($id_equipo)
+            'elo_historial' => $this->historialElo($id_equipo),
+            'racha_actual' => $this->historialPartidoDataMapper->getRachaActualById($id_equipo),
+            'racha_mas_larga' => $this->historialPartidoDataMapper->getRachaMasLargaById($id_equipo),
         ];
 
         return $estadisticas;
