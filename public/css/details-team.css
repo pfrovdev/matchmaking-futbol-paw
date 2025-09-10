@@ -156,6 +156,17 @@
   width: 100%;
 }
 
+.elo-badge {
+  background: #fff;
+  color: var(--primary-color);
+  font-weight: bold;
+  text-align: center;
+  padding: 0.3rem 5rem;
+  border-radius: 0.6rem;
+  margin-bottom: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
 @media (min-width: 768px) {
   .team-card {
     align-items: center;
@@ -187,9 +198,11 @@
     align-items: center;
     flex-direction: column;
   }
+
   .stats-card {
     flex: .5;
   }
+
   .ranking-list {
     padding: 1rem 0;
   }

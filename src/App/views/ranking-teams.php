@@ -25,47 +25,47 @@ $mostrar_estadisticas = false;
     <script src="/js/sidebar.js"></script>
 
     <?php if (!empty($equipos)): ?>
-        <script type="application/ld+json">
-            <?= json_encode([
-                "@context" => "https://schema.org",
-                "@type" => "ItemList",
-                "name" => "Resultados de búsqueda de equipos",
-                "numberOfItems" => count($equipos),
-                "itemListElement" => array_map(function ($equipo, $index) {
-                                    return [
-                                        "@type" => "ListItem",
-                                        "position" => $index + 1,
-                                        "item" => [
-                                            "@type" => "SportsTeam",
-                                            "name" => htmlspecialchars($equipo->getNombreEquipo(), ENT_QUOTES, 'UTF-8'),
-                                            "alternateName" => htmlspecialchars($equipo->getAcronimo() ?? '', ENT_QUOTES, 'UTF-8'),
-                                            "identifier" => [
-                                                "@type" => "PropertyValue",
-                                                "name" => "Elo Ranking",
-                                                "value" => $equipo->getEloActual()
-                                            ],
-                                            "description" => htmlspecialchars($equipo->getLema() ?? '', ENT_QUOTES, 'UTF-8'),
-                                            "url" => "/team-profile.php?id=" . $equipo->getIdEquipo(),
-                                            "location" => [
-                                                "@type" => "Place",
-                                                "geo" => [
-                                                    "@type" => "GeoCoordinates",
-                                                    "latitude" => $equipo->getLatitud(),
-                                                    "longitude" => $equipo->getLongitud()
-                                                ]
-                                            ]
-                                        ]
-                                    ];
-                                }, $equipos, array_keys($equipos))
-            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?>
-        </script>
+    <script type="application/ld+json">
+    <?= json_encode([
+            "@context" => "https://schema.org",
+            "@type" => "ItemList",
+            "name" => "Resultados de búsqueda de equipos",
+            "numberOfItems" => count($equipos),
+            "itemListElement" => array_map(function ($equipo, $index) {
+                        return [
+                            "@type" => "ListItem",
+                            "position" => $index + 1,
+                            "item" => [
+                                "@type" => "SportsTeam",
+                                "name" => htmlspecialchars($equipo->getNombreEquipo(), ENT_QUOTES, 'UTF-8'),
+                                "alternateName" => htmlspecialchars($equipo->getAcronimo() ?? '', ENT_QUOTES, 'UTF-8'),
+                                "identifier" => [
+                                    "@type" => "PropertyValue",
+                                    "name" => "Elo Ranking",
+                                    "value" => $equipo->getEloActual()
+                                ],
+                                "description" => htmlspecialchars($equipo->getLema() ?? '', ENT_QUOTES, 'UTF-8'),
+                                "url" => "/team-profile.php?id=" . $equipo->getIdEquipo(),
+                                "location" => [
+                                    "@type" => "Place",
+                                    "geo" => [
+                                        "@type" => "GeoCoordinates",
+                                        "latitude" => $equipo->getLatitud(),
+                                        "longitude" => $equipo->getLongitud()
+                                    ]
+                                ]
+                            ]
+                        ];
+                    }, $equipos, array_keys($equipos))
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?>
+    </script>
     <?php endif; ?>
 </head>
 
 <body>
     <?php
-        $estaLogueado = !!$miEquipo->getIdEquipo();
-        require "parts/header.php";
+    $estaLogueado = !!$miEquipo->getIdEquipo();
+    require "parts/header.php";
     ?>
     <?php require "parts/side-navbar.php"; ?>
     <main>
@@ -74,25 +74,24 @@ $mostrar_estadisticas = false;
             <p>Estos son los mejores</p>
         </header>
 
-        <?php if (!empty($listLevelsElo)): ?>
-            <?php require "parts/filtro-por-rango.php"; ?>
-        <?php endif; ?>
-
-        <?php require "parts/filtro-por-ubicacion.php"; ?>
 
         <ul class="teams-container">
             <?php if (empty($equipos)): ?>
-                <li>No se encontraron equipos.</li>
+            <li>No se encontraron equipos.</li>
             <?php else:
-                foreach ($equipos as $equipo): ?>
-                    <li>
-                        <?php require __DIR__ . '/parts/tarjeta.php'; ?>
-                    </li>
-                    <br>
-                <?php endforeach; ?>
-                <?php require "parts/pagination.php"; ?>
+                foreach ($equipos as $index => $equipo): ?>
+            <li>
+                <?php
+                        $rankingPos = $offset + $index + 1;
+                        require __DIR__ . '/parts/tarjeta.php';
+                        ?>
+            </li>
+            <?php endforeach; ?>
             <?php endif; ?>
         </ul>
+        <?php if ($equipos): ?>
+        <?php require "parts/pagination.php"; ?>
+        <?php endif; ?>
 
     </main>
     <?php require "parts/footer.php"; ?>

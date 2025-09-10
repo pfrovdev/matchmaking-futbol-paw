@@ -239,8 +239,8 @@ class EquipoController extends AbstractController
 
         if ($id_equipo) {
             try {
-                if($this->desafioService->existeDesafioPendiente($miEquipo->getIdEquipo(), $id_equipo)){
-                     $_SESSION['errors'] = ["El equipo la que intenta desafiar ya fue desafiado previamente y se encuentra en estado pendiente de aprobación."];
+                if ($this->desafioService->existeDesafioPendiente($miEquipo->getIdEquipo(), $id_equipo)) {
+                    $_SESSION['errors'] = ["El equipo la que intenta desafiar ya fue desafiado previamente y se encuentra en estado pendiente de aprobación."];
                     header('Location: /search-team');
                     exit;
                 }
@@ -268,7 +268,7 @@ class EquipoController extends AbstractController
             'lng' => $longitud,
             'radio_km' => $radio_km
         ];
-        
+
         $listLevelsElo = $this->equipoService->getAllNivelElo();
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
         $todosLosEquipos = $this->equipoService->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);
@@ -298,13 +298,8 @@ class EquipoController extends AbstractController
             exit;
         }
 
-        $latitud = filter_input(INPUT_GET, 'lat', FILTER_VALIDATE_FLOAT);
-        $longitud = filter_input(INPUT_GET, 'lng', FILTER_VALIDATE_FLOAT);
-        $radio_km = filter_input(INPUT_GET, 'radius_km', FILTER_VALIDATE_FLOAT);
-        $id_nivel_elo = filter_input(INPUT_GET, 'id_nivel_elo', FILTER_VALIDATE_INT);
-
-        $orden = $_GET['orden'] ?? 'asc';
-        $orden = in_array($orden, ['asc', 'desc', 'alpha']) ? $orden : 'asc';
+        $orden = $_GET['orden'] ?? 'desc';
+        $orden = in_array($orden, ['asc', 'desc', 'alpha']) ? $orden : 'desc';
 
         $paginaActual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT);
         $paginaActual = $paginaActual && $paginaActual > 0 ? $paginaActual : 1;
@@ -312,17 +307,9 @@ class EquipoController extends AbstractController
         $offset = ($paginaActual - 1) * $porPagina;
 
         $orderBy = $orden === 'alpha' ? 'nombre' : 'elo_actual';
-        $direction = $orden === 'alpha' ? 'ASC' : strtoupper($orden);
+        $direction = $orden === 'alpha' ? 'DESC' : strtoupper($orden);
 
         $selectParams = [];
-        if ($id_nivel_elo) {
-            $selectParams['id_nivel_elo'] = $id_nivel_elo;
-        }
-        if ($latitud && $longitud && $radio_km) {
-            $selectParams['lat'] = $latitud;
-            $selectParams['lng'] = $longitud;
-            $selectParams['radio_km'] = $radio_km;
-        }
 
         $listLevelsElo = $this->equipoService->getAllNivelElo();
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
