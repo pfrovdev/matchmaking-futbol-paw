@@ -54,17 +54,17 @@ class PartidoController extends AbstractController
     {
         $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
         $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
-        
+
         $page = max(1, (int) ($_GET['page'] ?? 1));
         $perPage = max(1, min(20, (int) ($_GET['per_page'] ?? 3)));
         $order = in_array($_GET['order'] ?? 'fecha_finalizacion', ['fecha_finalizacion', 'deportividad']) ? $_GET['order'] : 'fecha_finalizacion';
         $dir = strtoupper($_GET['dir'] ?? 'DESC');
         $dir = in_array($dir, ['ASC', 'DESC']) ? $dir : 'DESC';
-        
+
         $equipoId = isset($_GET['equipo_id']) ? (int) $_GET['equipo_id'] : $miEquipo->getIdEquipo();
 
         $this->logger->info("page $page perPage $perPage order $order dir $dir equipoId $equipoId");
-        
+
         $partidosHistorial = $this->partidoService->getHistorialPartidosByIdEquipo(
             $equipoId,
             $page,
@@ -151,6 +151,34 @@ class PartidoController extends AbstractController
     {
         header("HTTP/1.1 404 Not Found");
         require $this->viewsDir . 'errors/not-found.php';
+    }
+
+    public function cancelarPartido()
+    {
+        $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($userData->id_equipo);
+        $idMiEquipo = $miEquipo->getIdEquipo();
+
+        $id_partido = filter_input(INPUT_GET, 'id_partido', FILTER_VALIDATE_INT);
+        if (!$id_partido || $id_partido < 1) {
+            $this->renderNotFound();
+            return;
+        }
+
+        try {
+            $response = $this->partidoService->cancelarPartido($id_partido, $idMiEquipo);
+            if ($response) {
+                $_SESSION['message'] = "Se canceló el partido correctamente y se notificó al rival.";
+            }
+
+        } catch (\InvalidArgumentException $e) {
+            $_SESSION['error'] = $e->getMessage();
+        } catch (\Throwable $e) {
+            $_SESSION['error'] = "Ocurrió un error inesperado. Intenta de nuevos.";
+        }
+        
+        header("Location: /dashboard");
+        exit;
     }
 
 

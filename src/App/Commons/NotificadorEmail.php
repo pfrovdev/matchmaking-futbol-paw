@@ -17,6 +17,7 @@ class NotificadorEmail implements Notificador
     private string $rechazarDesafioTemplate = 'mail-desafio-rechazado.html';
     private string $crearDesafioTemplate = 'mail-desafio-creado.html';
     private string $finalizarPartidoTemplate = 'mail-partido-finalizado.html';
+    private string $cancelarPartidoTemplate = 'mail-partido-cancelado.html';
 
     public function enviarNotificacionDesafioAceptado(Equipo $equipoDesafiado, Equipo $equipoDesafiante, Desafio $desafioCreado): void
     {
@@ -40,6 +41,21 @@ class NotificadorEmail implements Notificador
             $this->rechazarDesafioTemplate,
             [
                 'teamName' => $equipoDesafiado->fields['nombre'],
+                'link' => getenv('JWT_APP_URL') . '/search-team',
+            ]
+        );
+    }
+
+
+    public function enviarNotificacionPartidoCancelado(Equipo $equipoQueCancela, Equipo $equipoDebeSerNotificado): void
+    {
+        $this->enviarEmail(
+            $equipoDebeSerNotificado->fields['email'] ?? throw new Exception("Email destinatario no puede ser nulo id_equipo: {$equipoDesafiante->fields['id_equipo']}"),
+            "{$equipoQueCancela->fields['nombre']} canceló el partido",
+            $this->cancelarPartidoTemplate,
+            [
+                'teamName' => $equipoDebeSerNotificado->fields['nombre'],
+                'teamNameCencelador' => $equipoQueCancela->fields['nombre'],
                 'link' => getenv('JWT_APP_URL') . '/search-team',
             ]
         );
@@ -176,11 +192,14 @@ class NotificadorEmail implements Notificador
             $mail->SMTPSecure = getenv('MAIL_ENCRYPTION');
             $mail->Port = (int) getenv('MAIL_PORT');
 
+            $mail->CharSet = 'UTF-8';
+            $mail->Encoding = 'base64';
+
             $mail->setFrom(getenv('MAIL_FROM_ADDRESS'), getenv('MAIL_FROM_NAME'));
             $mail->addAddress($destinatario);
 
             $mail->isHTML(true);
-            $mail->Subject = htmlspecialchars($asunto);
+            $mail->Subject = $asunto;
             $mail->Body = $this->renderTemplate($templateFile, $vars);
 
             $mail->send();

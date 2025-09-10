@@ -165,14 +165,27 @@ export default class PartidoComponent {
       actionsDiv.appendChild(aCoordinar);
 
       // Botón “Cancelar”
-      const btnCancelar = document.createElement('button');
-      btnCancelar.classList.add('nm-btn-danger', 'nm-small');
-      btnCancelar.textContent = 'Cancelar';
-      btnCancelar.dataset.finalizado = p.finalizado ? 'true' : 'false';
+      const btnCancelar = document.createElement("a");
+      btnCancelar.classList.add("nm-btn-danger", "nm-small", "btn-cancelar");
+      btnCancelar.dataset.finalizado = p.finalizado ? "true" : "false";
+      btnCancelar.href = "/cancelar-partido?id_partido=" + p.idPartido;
+
+      const spanText = document.createElement("span");
+      spanText.classList.add("btn-text");
+      spanText.textContent = "Cancelar";
+
+      const spanSpinner = document.createElement("span");
+      spanSpinner.classList.add("spinner");
+      spanSpinner.style.display = "none";
+
+      btnCancelar.appendChild(spanText);
+      btnCancelar.appendChild(spanSpinner);
+
       if (p.finalizado) {
-        btnCancelar.disabled = true;
-        btnCancelar.classList.add('disabled-link');
+        btnCancelar.removeAttribute("href");
+        btnCancelar.classList.add("disabled-link");
       }
+
       actionsDiv.appendChild(btnCancelar);
 
       mainDiv.appendChild(actionsDiv);

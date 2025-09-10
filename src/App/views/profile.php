@@ -18,6 +18,7 @@ unset($_SESSION['errors']);
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     <script type="module" src="js/pages/Dashboard.js" defer></script>
     <script src="./js/components/spinner.js" defer></script>
+    <script src="./js/components/modals.js"></script>
     <script src="/js/sidebar.js"></script>
     <script type="application/ld+json">
         {
@@ -182,7 +183,11 @@ unset($_SESSION['errors']);
             </div>
 
     </main>
-
+    <?php
+    $success = $_SESSION['success'] ?? null;
+    unset($_SESSION['success']);
+    if ($success) require __DIR__ . '/parts/modal-success.php';
+    ?>
     <?php require "parts/footer.php"; ?>
     <script>
         const levelsEloMap = <?= json_encode(array_map(function ($row) {

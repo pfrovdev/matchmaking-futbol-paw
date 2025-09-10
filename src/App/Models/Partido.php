@@ -129,4 +129,8 @@ class Partido extends AbstractModel
             $this->setFinalizadoEquipoDesafiado($this->getFinalizadoEquipoDesafiado());
         }
     }
+
+    public function cancelar(int $estadoFinalizado): void {
+        $this->setIdEstadoPartido($estadoFinalizado);
+    }
 }

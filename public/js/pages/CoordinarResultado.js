@@ -26,4 +26,5 @@ document.addEventListener('DOMContentLoaded', () => {
         new RatingComponent({ containerSelector: '#ratingGroup', inputName: 'deportividad' });
         new ModalComponent({ triggerSelector: '#btnCalificarDeportividad', modalSelector });
     }
+
 });

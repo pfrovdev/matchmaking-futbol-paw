@@ -33,6 +33,13 @@ document.querySelectorAll(".btn-desafiar").forEach(link => {
     });
 });
 
+document.addEventListener("click", function (e) {
+  const target = e.target.closest(".btn-cancelar");
+  if (target && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
+    activarSpinner(target);
+  }
+});
+
 function activarSpinner(elemento) {
     const spinner = elemento.querySelector(".spinner");
     const btnText = elemento.querySelector(".btn-text");
@@ -40,3 +47,5 @@ function activarSpinner(elemento) {
     spinner.style.display = "inline-block";
     btnText.style.display = "none";
 }
+
+

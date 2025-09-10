@@ -100,6 +100,38 @@ class PartidoServiceImpl implements PartidoService
         $this->partidoDataMapper->updatePartido($p);
     }
 
+    public function cancelarPartido(int $partidoId, int $idEquipo): bool
+    {
+        $partido = $this->partidoDataMapper->findById(['id_partido' => $partidoId]);
+        if (!$partido) {
+            throw new \InvalidArgumentException("El partido con ID {$partidoId} no existe.");
+        }
+        if ($partido->getFinalizado()) {
+            throw new \InvalidArgumentException("El partido ya está finalizado.");
+        }
+        if ($partido->getFinalizadoEquipoDesafiado() || $partido->getFinalizadoEquipoDesafiante()) {
+            throw new \InvalidArgumentException("No se puede cancelar: el rival ya dio por finalizado el partido.");
+        }
+
+        $idEstadoCancelado = $this->estadoPartidoDataMapper->findIdByCode('cancelado');
+        $partido->cancelar($idEstadoCancelado);
+        $this->partidoDataMapper->updatePartido($partido);
+
+        $desafio = $this->desafioDataMapper->findByIdPartido($partidoId);
+        $equipoDesafiadoID = $desafio->getIdEquipoDesafiado();
+        $equipoDesafianteID = $desafio->getIdEquipoDesafiante();
+        $equipoDesafiado = $this->equipoService->getEquipoById($equipoDesafiadoID);
+        $equipoDesafiante = $this->equipoService->getEquipoById($equipoDesafianteID);
+        if ($equipoDesafiadoID === $idEquipo) {
+            $this->notificationService->notifyParitdoCancelado($equipoDesafiado, $equipoDesafiante);
+            
+        }
+        if ($equipoDesafianteID === $idEquipo) {
+            $this->notificationService->notifyParitdoCancelado($equipoDesafiante, $equipoDesafiado);
+        }
+        return true;
+    }
+
     public function terminarPartido(int $partidoId, int $idEquipo, int $idEquipoRival): void
     {
         if (!$this->partidoAcordado($idEquipo, $idEquipoRival, $partidoId)) {
@@ -115,12 +147,12 @@ class PartidoServiceImpl implements PartidoService
         if ($desafio->getIdEquipoDesafiado() !== $idEquipo && $desafio->getIdEquipoDesafiante() !== $idEquipo) {
             throw new \RuntimeException("El equipo {$partidoId} no participó en el partido");
         }
-        
-        if($desafio->getIdEquipoDesafiado() === $idEquipo && $partido->getFinalizadoEquipoDesafiado() === 0){
+
+        if ($desafio->getIdEquipoDesafiado() === $idEquipo && $partido->getFinalizadoEquipoDesafiado() === 0) {
             $partido->setFinalizadoEquipoDesafiado(1);
             $esDesfiadooDesafiante = "Desafiado";
         }
-        if($desafio->getIdEquipoDesafiante() === $idEquipo && $partido->getFinalizadoEquipoDesafiante() === 0){
+        if ($desafio->getIdEquipoDesafiante() === $idEquipo && $partido->getFinalizadoEquipoDesafiante() === 0) {
             $partido->setFinalizadoEquipoDesafiante(1);
             $esDesfiadooDesafiante = "Desafiante";
         }
@@ -128,9 +160,11 @@ class PartidoServiceImpl implements PartidoService
         $fechaFinal = (new \DateTime())->format('Y-m-d H:i:s');
         $idEstadoJugado = $this->estadoPartidoDataMapper->findIdByCode('acordado');
         $esFinalizado = 0;
-        
-        if((($desafio->getIdEquipoDesafiante() === $idEquipoRival) && $partido->getFinalizadoEquipoDesafiante() === 1 )
-                || (($desafio->getIdEquipoDesafiado() === $idEquipoRival) && $partido->getFinalizadoEquipoDesafiado() === 1)){
+
+        if (
+            (($desafio->getIdEquipoDesafiante() === $idEquipoRival) && $partido->getFinalizadoEquipoDesafiante() === 1)
+            || (($desafio->getIdEquipoDesafiado() === $idEquipoRival) && $partido->getFinalizadoEquipoDesafiado() === 1)
+        ) {
             $esFinalizado = 1;
             $idEstadoJugado = $this->estadoPartidoDataMapper->findIdByCode('jugado');
         }
@@ -156,8 +190,8 @@ class PartidoServiceImpl implements PartidoService
         $partidosPendientes = $this->partidoDataMapper->getAll(['id_estado_partido' => $estadoPartidoPendiente]);
         $partidosAcordados = $this->partidoDataMapper->getAll(['id_estado_partido' => $this->estadoPartidoDataMapper->findIdByCode('acordado')]);
         $totalProximosPartidos = array_merge($partidosPendientes, $partidosAcordados);
-        $misPartidosPendientes = [];        
-        
+        $misPartidosPendientes = [];
+
         foreach ($totalProximosPartidos as $proximosPartidos) {
             // Obtenemos el desafio a partir del partido para obtener el equipo
             $getDesafio = $this->desafioDataMapper->findById(['id_partido' => $proximosPartidos->getIdPartido()]);
@@ -240,7 +274,7 @@ class PartidoServiceImpl implements PartidoService
     public function getHistorialPartidosByIdEquipo(int $idEquipo, int $page, int $perPage, string $orderBy, string $direction): array
     {
         $offset = ($page - 1) * $perPage;
-        
+
         $historialPartidosEquipo = $this->historialDataMapper->findByEquipoPaginated($idEquipo, $perPage, $offset, $orderBy, $direction);
         $historialDtos = [];
         $partidosProcesados = [];
@@ -339,11 +373,11 @@ class PartidoServiceImpl implements PartidoService
         }
 
         $formularioPartido = $this->formularioPartidoDataMapper->findByIdFormularioPartido($idPartido);
-        
+
         if ($formularioPartido->getTotalIteraciones() == 5) {
             throw new \RuntimeException("El formulario llegó a su máximo de iteraciones");
         }
-        
+
         return true;
     }
 
