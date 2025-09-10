@@ -3,11 +3,15 @@
 namespace Paw\App\Controllers;
 
 use Monolog\Logger;
+use Paw\App\DataMapper\EstaditicasDataMapper;
+use Paw\App\DataMapper\ResultadoPartidoDataMapper;
+use Paw\App\Dtos\EquipoBannerDto;
 use Paw\App\Models\Equipo;
 use Paw\App\Services\ComentarioEquipoService;
 use Paw\App\Services\DesafioService;
 use Paw\App\Services\NotificationService;
 use Paw\App\Services\EquipoService;
+use Paw\App\Services\PartidoService;
 use Paw\Core\AbstractController;
 use Paw\Core\Middelware\AuthMiddelware;
 
@@ -15,23 +19,32 @@ class EquipoController extends AbstractController
 {
 
     private EquipoService $equipoService;
+    private PartidoService $partidoService;
     private DesafioService $desafioService;
     private NotificationService $notificationService;
     private ComentarioEquipoService $comentarioEquipoService;
+    private EstaditicasDataMapper $estadisticasDataMapper;
+    private ResultadoPartidoDataMapper $resultadoPartidoDataMapper;
 
     public function __construct(
         Logger $logger,
         EquipoService $equipoService,
+        PartidoService $partidoService,
         DesafioService $desafioService,
         NotificationService $notificationService,
         ComentarioEquipoService $comentarioEquipoService,
-        AuthMiddelware $auth
+        AuthMiddelware $auth,
+        EstaditicasDataMapper $estadisticasDataMapper,
+        ResultadoPartidoDataMapper $resultadoPartidoDataMapper
     ) {
         parent::__construct($logger, $auth);
         $this->equipoService = $equipoService;
+        $this->partidoService = $partidoService;
         $this->desafioService = $desafioService;
         $this->notificationService = $notificationService;
         $this->comentarioEquipoService = $comentarioEquipoService;
+        $this->estadisticasDataMapper = $estadisticasDataMapper;
+        $this->resultadoPartidoDataMapper = $resultadoPartidoDataMapper;
     }
 
     public function createAccount()
@@ -186,9 +199,14 @@ class EquipoController extends AbstractController
             exit;
         }
 
+        $cantidadDeVotos = $this->comentarioEquipoService->getCantidadDeVotosByIdEquipo($equipoVistoId);
+        $estadisticas = $this->estadisticasDataMapper->findIdByIdEquipo($equipoVistoId);
+        $resultadosPartidosEstadisticas = $estadisticas
+            ? $this->resultadoPartidoDataMapper->getResultadosPartidosEstadisticas($equipoVistoId)
+            : null;
+
         $equipoBanner = $this->equipoService->getEquipoBanner($equipoVisto);
         $listLevelsElo = $this->equipoService->getAllNivelElo();
-        $cantidadDeVotos = $this->comentarioEquipoService->getCantidadDeVotosByIdEquipo($equipoVisto->getIdEquipo());
 
         require $this->viewsDir . ($isOwner ? 'dashboard.php' : 'profile.php');
     }
@@ -281,7 +299,7 @@ class EquipoController extends AbstractController
         }
 
         $orden = $_GET['orden'] ?? 'desc';
-        $orden = in_array($orden, ['asc', 'desc', 'alpha']) ? $orden : 'desc';
+        $orden = in_array($orden, ['asc', 'desc', 'alpha']) ? $orden : 'asc';
 
         $paginaActual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT);
         $paginaActual = $paginaActual && $paginaActual > 0 ? $paginaActual : 1;
@@ -336,6 +354,10 @@ class EquipoController extends AbstractController
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner([], '', '');
         $todosLosEquipos = $this->equipoService->setRestultadosPartido($todosLosEquipos);
         $listLevelsElo = $this->equipoService->getAllNivelElo();
+        $estadisticas = $this->estadisticasDataMapper->findIdByIdEquipo($equipo->getIdEquipo());
+        $resultadosPartidosEstadisticas = $estadisticas
+            ? $this->resultadoPartidoDataMapper->getResultadosPartidosEstadisticas($equipo->getIdEquipo())
+            : null;
         $equipo = $this->equipoService->getAllEquiposbyId($equipo->getIdEquipo(), $todosLosEquipos);
         require $this->viewsDir . 'details-team.php';
     }
