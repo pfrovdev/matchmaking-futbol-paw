@@ -6,6 +6,7 @@
 @import url("./tarjeta-proximo.css");
 @import url("./side-navbar.css");
 @import url("./comentario.css");
+@import url("./parts/tarjeta-estadistica.css");
 
 /* -------------------------
    CONTENEDOR PRINCIPAL
@@ -177,14 +178,17 @@
 .team-record .draws {
   color: rgb(212, 212, 193);
 }
+
 /* ----- CHALLENGES ----- */
 
 .challenge-list {
   list-style: none;
 }
-.form-desafiar{
+
+.form-desafiar {
   margin: 0 auto;
 }
+
 .challenge-list li {
   justify-content: space-between;
   align-items: center;

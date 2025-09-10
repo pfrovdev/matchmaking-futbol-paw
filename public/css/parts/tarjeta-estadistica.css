@@ -1,0 +1,391 @@
+/* Base tarjeta */
+.tarjeta-estadisticas {
+    padding: 1.5rem;
+    background: var(--background-contents, #ffffff);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e9e9e9;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    max-width: 100%;
+}
+
+/* Título */
+.tarjeta-estadisticas .seccion-titulo {
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color, #092469);
+    margin: 0;
+}
+
+/* Resumen destacado (header) */
+.resumen-destacado {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    padding: 0.9rem;
+    background: linear-gradient(135deg, var(--primary-color, #092469) 0%, #0d2d73 100%);
+    border-radius: 8px;
+    color: var(--contrast-text-color, #fff);
+}
+
+.dato-destacado {
+    text-align: center;
+}
+
+.dato-destacado-valor {
+    font-size: 1.6rem;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.15rem;
+}
+
+.dato-destacado-etiqueta {
+    font-size: 0.75rem;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Contenedor principal: métricas + últimos partidos */
+.analisis-rendimiento {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+    align-items: start;
+}
+
+/* Grilla de métricas (interno) */
+.metricas-rendimiento {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 1rem;
+}
+
+/* Filas de métricas */
+.fila-metrica {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid #f4f4f4;
+    font-size: 0.9rem;
+}
+
+.fila-metrica :last-child {
+    border-bottom: none;
+}
+
+.etiqueta-metrica {
+    color: #666;
+    font-weight: 500;
+}
+
+.valor-metrica {
+    font-weight: 700;
+    color: var(--primary-color, #092469);
+    min-width: 3.2rem;
+    text-align: right;
+}
+
+.valor-metrica.positivo {
+    color: #64c67c;
+}
+
+.valor-metrica.negativo {
+    color: #df2727;
+}
+
+.valor-metrica.neutro {
+    color: #666;
+}
+
+/* Últimos partidos */
+.forma-reciente {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    border-top: 1px dashed #f2f2f2;
+    margin-bottom: 0.7rem;
+}
+
+.titulo-forma {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary-color, #092469);
+    margin: 0;
+}
+
+#resultados-recientes {
+    display: flex;
+    gap: 0.45rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.insignia-resultado {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.16s ease;
+}
+
+.insignia-resultado:hover {
+    transform: scale(1.08);
+}
+
+.insignia-resultado.ganado {
+    background: #64c67c;
+}
+
+.insignia-resultado.empatado {
+    background: #f2c94c;
+    color: #222;
+}
+
+.insignia-resultado.perdido {
+    background: #df2727;
+}
+
+.sin-datos {
+    font-size: 0.82rem;
+    color: #999;
+    font-style: italic;
+}
+
+/* Pestañas para switchear los graficos*/
+.pestanas-nav {
+    display: flex;
+    border-bottom: 2px solid #f0f0f0;
+    margin-bottom: 0.75rem;
+}
+
+.pestana-boton {
+    flex: 1;
+    padding: 0.65rem 0.9rem;
+    border: none;
+    background: transparent;
+    color: #666;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.22s ease;
+}
+
+.pestana-boton:hover {
+    color: var(--primary-color, #092469);
+    background: rgba(9, 36, 105, 0.04);
+}
+
+.pestana-boton.activo {
+    color: var(--primary-color, #092469);
+    background: rgba(9, 36, 105, 0.08);
+}
+
+.pestana-boton.activo::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 8%;
+    right: 8%;
+    height: 3px;
+    background: var(--primary-color, #092469);
+    border-radius: 2px 2px 0 0;
+}
+
+/* Pestañas: paneles */
+.pestanas-contenido {
+    min-height: 180px;
+}
+
+.panel-pestana {
+    display: none;
+}
+
+.panel-pestana.activo {
+    display: block;
+}
+
+/* Gráficos */
+.grafico-contenedor {
+    position: relative;
+    height: 220px;
+    width: 100%;
+    margin-bottom: 0.8rem;
+}
+
+#grafico-resumen,
+#grafico-rendimiento,
+#grafico-promedios {
+    width: 100% !important; 
+    height: 100% !important;
+}
+
+/* Insights de graficos */
+.grafico-insights {
+    margin-top: 0.75rem;
+}
+
+.grafico-insights.compacto {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 0.6rem;
+    justify-items: center;
+    align-items: stretch;
+}
+
+.grafico-insights.compacto .tarjeta-insight {
+    padding: 0.6rem;
+    width: 100%;
+    background: #f8f9fa;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.insight-valor {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-color, #092469);
+    display: block;
+    margin-bottom: 0.2rem;
+}
+
+.insight-etiqueta {
+    font-size: 0.72rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.45px;
+}
+
+.caja-grafico.pequeno {
+    height: 160px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 0.4rem;
+    border: 1px solid #f0f0f0;
+}
+
+.stats-card,
+.card.stats-card {
+    max-width: 100%;
+}
+
+/* ----------------
+   MEDIA QUERIES
+   ---------------- */
+
+@media (max-width: 1024px) {
+    .tarjeta-estadisticas {
+        padding: 1.25rem;
+    }
+
+    .resumen-destacado {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem;
+    }
+
+    .metricas-rendimiento {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .grafico-contenedor {
+        height: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .tarjeta-estadisticas {
+        padding: 1rem;
+        gap: 0.9rem;
+    }
+
+    .resumen-destacado {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 0.6rem;
+    }
+
+    .dato-destacado-valor {
+        font-size: 1.3rem;
+    }
+
+    .pestana-boton {
+        font-size: 0.82rem;
+        padding: 0.45rem 0.6rem;
+    }
+
+    .grafico-insights.compacto {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+
+    .grafico-contenedor {
+        height: 190px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tarjeta-estadisticas {
+        padding: 0.75rem;
+        gap: 0.6rem;
+    }
+
+    .resumen-destacado {
+        grid-template-columns: 1fr;
+        gap: 0.45rem;
+    }
+
+    .dato-destacado {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+    }
+
+    .dato-destacado-valor {
+        font-size: 1.1rem;
+    }
+
+    .fila-metrica {
+        padding: 0.35rem 0;
+        font-size: 0.88rem;
+    }
+
+    .etiqueta-metrica {
+        font-size: 0.8rem;
+    }
+
+    .valor-metrica {
+        font-size: 0.85rem;
+        min-width: 2.8rem;
+    }
+
+    .insignia-resultado {
+        width: 24px;
+        height: 24px;
+        font-size: 0.72rem;
+    }
+
+    .metricas-rendimiento {
+        grid-template-columns: 1fr;
+    }
+
+    .grafico-insights.compacto .tarjeta-insight {
+        min-width: 45%;
+    }
+
+    .grafico-contenedor {
+        height: 160px;
+    }
+}
