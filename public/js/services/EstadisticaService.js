@@ -8,7 +8,7 @@ export default class EstadisticaService {
         }
 
         try {
-            const response = await fetch(`/estadisticas?equipo_id=${perfilId}`);
+            const response = await fetch(`/estadisticas?id_equipo=${perfilId}`);
             if (!response.ok) {
                 console.error('Error al obtener estadísticas:', response);
                 throw new Error(`Error al obtener estadísticas: ${response.statusText}`);
