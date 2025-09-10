@@ -1,12 +1,10 @@
 export default class EstadisticaService {
     static async getStats() {
-        console.log('Iniciando fetch de estadísticas...');
         const perfilId = document.body.dataset.profileId;
         if (!perfilId) {
             console.error('No se pudo obtener el ID del perfil.');
             return null;
         }
-
         try {
             const response = await fetch(`/estadisticas?id_equipo=${perfilId}`);
             if (!response.ok) {
