@@ -14,6 +14,7 @@ use Paw\App\Models\Partido;
 use Paw\App\Models\Desafio;
 use DateTime;
 use Paw\App\DataMapper\DesafioDataMapper;
+use Paw\App\DataMapper\EstadisticaDataMapper;
 use Paw\App\DataMapper\FormularioPartidoDataMapper;
 use Paw\App\DataMapper\HistorialPartidoDataMapper;
 use Paw\App\DataMapper\ResultadoPartidoDataMapper;
@@ -37,7 +38,7 @@ class PartidoServiceImpl implements PartidoService
     private ResultadoPartidoDataMapper $resultadoPartidoDataMapper;
     private FormularioPartidoDataMapper $formularioPartidoDataMapper;
     private NotificationService $notificationService;
-    private EstaditicasDataMapper $estadisticasDataMapper;
+    private EstadisticaDataMapper $estadisticasDataMapper;
     public function __construct(
         PartidoDataMapper $partidoDataMapper,
         EstadoPartidoDataMapper $estadoPartidoDataMapper,
@@ -47,7 +48,7 @@ class PartidoServiceImpl implements PartidoService
         ResultadoPartidoDataMapper $resultadoPartidoDataMapper,
         FormularioPartidoDataMapper $formularioPartidoDataMapper,
         NotificationService $notificationService,
-        EstaditicasDataMapper $estadisticasDataMapper
+        EstadisticaDataMapper $estadisticasDataMapper
     ) {
         $this->partidoDataMapper = $partidoDataMapper;
         $this->estadoPartidoDataMapper = $estadoPartidoDataMapper;
