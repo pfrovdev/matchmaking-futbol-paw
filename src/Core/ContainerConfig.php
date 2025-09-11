@@ -119,10 +119,10 @@ class ContainerConfig
         });
 
         $c->set(AuthMiddelware::class, fn($c) => new AuthMiddelware(
+            $logger,
             $c->get(TokenService::class),
             (int) getenv('JWT_ACCESS_TTL'),
-            (int) getenv('JWT_REFRESH_TTL'),
-            (int) getenv('JWT_REFRESH_WINDOW')
+            (int) getenv('JWT_REFRESH_TTL')
         ));
 
         // Services

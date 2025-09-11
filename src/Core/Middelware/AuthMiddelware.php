@@ -2,87 +2,136 @@
 
 namespace Paw\Core\Middelware;
 
-use Paw\Core\JWT\JsonFileStorage;
-use Paw\Core\JWT\RedisStorage;
 use Paw\Core\JWT\Services\TokenService;
+use Firebase\JWT\ExpiredException;
+use Monolog\Logger;
 
 class AuthMiddelware
 {
+
     private TokenService $tokenService;
     private int $accessTTL;
     private int $refreshTTL;
-    private int $refreshWindow;
+    private Logger $logger;
 
-    public function __construct(TokenService $tokenService, int $accessTTL, int $refreshTTL, int $refreshWindow) 
+    public function __construct(Logger $logger, TokenService $tokenService, int $accessTTL, int $refreshTTL)
     {
         $this->tokenService = $tokenService;
         $this->accessTTL = $accessTTL;
         $this->refreshTTL = $refreshTTL;
-        $this->refreshWindow = $refreshWindow;
+        $this->logger = $logger;
     }
+
+    // verifica el token, si expiró se hace refresh
     public function verificar(array $roles = []): object
     {
         $accessToken = $_COOKIE['access_token'] ?? null;
+
+        $payload = null;
+
+        // Si no llego el acces token, hacemos un refresh utilizando el refresh token
         if (!$accessToken) {
-            $this->unauthorized('No autenticado');
+            $this->logger->info("[AuthMiddelware] No se recibió access_token en la request. Comprobando refresh_token...");
+            $refreshJwt = $_COOKIE['refresh_token'] ?? null;
+            if ($refreshJwt) {
+                $payload = $this->attemptRefreshOrFail();
+            } else {
+                $this->unauthorized('No autenticado (sin access_token en cookie)');
+            }
+        } else {
+            try {
+                $payload = $this->tokenService->decodeToken($accessToken);
+                $this->logger->info("[AuthMiddelware] Access token decodificado", ['payload' => (array) $payload]);
+
+                if (!$payload) {
+                    $this->unauthorized('Token inválido (decode vacío)');
+                }
+
+                if (!isset($payload->typ) || $payload->typ !== 'access') {
+                    $this->unauthorized('Token no es de tipo access');
+                }
+
+                if (isset($payload->jti) && $this->tokenService->isTokenRevoked($payload->jti)) {
+                    $this->unauthorized('Token revocado', ['jti' => $payload->jti]);
+                }
+            } catch (ExpiredException $e) {
+                $this->logger->warning("[AuthMiddelware] Access token expirado, intentando refresh");
+                $payload = $this->attemptRefreshOrFail();
+            } catch (\Exception $e) {
+                $this->unauthorized('Token inválido (excepción decode)', ['error' => $e->getMessage()]);
+            }
         }
 
-        $payload = $this->tokenService->decodeToken($accessToken);
-        if (!$payload || $this->tokenService->isTokenRevoked($payload->jti)) {
-            $this->unauthorized('Token inválido o expirado');
+        if (!isset($payload->exp)) {
+            $this->unauthorized('Token sin expiración');
         }
 
         $timeLeft = $payload->exp - time();
-        if ($timeLeft < $this->refreshWindow) {
-            $this->refreshTokens((array) $payload->data);
+        $this->logger->info("[AuthMiddelware] Tiempo restante del access", ['timeLeft' => $timeLeft]);
+
+        $userData = $payload->data ?? null;
+        if (!$userData) {
+            $this->unauthorized('Token sin data de usuario');
         }
 
-        $userData = $payload->data;
         if ($roles && !in_array($userData->role, $roles, true)) {
-            $this->forbidden('Acceso prohibido para tu rol');
+            $this->forbidden('Acceso prohibido para tu rol', ['role' => $userData->role]);
         }
 
         return $userData;
     }
 
-    private function refreshTokens(array $data): void
+    private function attemptRefreshOrFail(): \stdClass
     {
-        $oldRefresh = $_COOKIE['refresh_token'] ?? null;
-        if ($oldRefresh) {
-            $oldPayload = $this->tokenService->decodeToken($oldRefresh);
-            if ($oldPayload) {
-                $this->tokenService->revokeToken($oldPayload->jti, $oldPayload->exp);
-            }
+        $refreshJwt = $_COOKIE['refresh_token'] ?? null;
+        if (!$refreshJwt) {
+            $this->unauthorized('Acceso expirado y sin refresh token');
         }
 
-        $newAccess  = $this->tokenService->createToken($data, $this->accessTTL);
-        $newRefresh = $this->tokenService->createToken($data, $this->refreshTTL);
+        $tokens = $this->tokenService->refreshTokens($refreshJwt, $this->accessTTL, $this->refreshTTL);
+        if (!$tokens) {
+            $this->unauthorized('Refresh inválido o reutilizado. Re-login requerido.');
+        }
 
-        setcookie('access_token', $newAccess, [
-            'expires' => time() + $this->accessTTL,
-            'path' => '/',
-            'secure' => false,
-            'httponly' => true,
-            'samesite' => 'Strict',
-        ]);
-        setcookie('refresh_token', $newRefresh, [
-            'expires' => time() + $this->refreshTTL,
-            'path' => '/',
-            'secure' => false,
-            'httponly' => true,
-            'samesite' => 'Strict',
-        ]);
+        $this->setAuthCookies($tokens['access'], $tokens['refresh']);
+        $decoded = $this->tokenService->decodeToken($tokens['access']);
+
+        if (!$decoded) {
+            $this->unauthorized('Error al decodificar nuevo access token');
+        }
+
+        $this->logger->info("[AuthMiddelware] Refresh exitoso, nuevos tokens generados");
+
+        return $decoded;
     }
 
-    private function unauthorized(string $message): void
+    private function setAuthCookies(string $accessJwt, string $refreshJwt): void
     {
+        $cookieSecure = getenv('APP_ENV') === 'production';
+        $cookieOptions = [
+            'path' => '/',
+            'httponly' => true,
+            'secure' => $cookieSecure,
+            'samesite' => 'Lax',
+        ];
+
+        setcookie('access_token', $accessJwt, array_merge($cookieOptions, ['expires' => time() + $this->accessTTL]));
+        setcookie('refresh_token', $refreshJwt, array_merge($cookieOptions, ['expires' => time() + $this->refreshTTL]));
+
+        $this->logger->info("[AuthMiddelware] Nuevas cookies seteadas");
+    }
+
+    private function unauthorized(string $message, array $context = []): void
+    {
+        $this->logger->error("[AuthMiddelware] Unauthorized: {$message}", $context);
         http_response_code(401);
         echo json_encode(['error' => $message]);
         exit;
     }
 
-    private function forbidden(string $message): void
+    private function forbidden(string $message, array $context = []): void
     {
+        $this->logger->warning("[AuthMiddelware] Forbidden: {$message}", $context);
         http_response_code(403);
         echo json_encode(['error' => $message]);
         exit;

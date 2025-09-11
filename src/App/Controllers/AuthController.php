@@ -38,14 +38,23 @@ class AuthController extends AbstractController
                 'email' => $user->getEmail(),
                 'role' => $user->getIdRol() == 2 ? 'USUARIO' : 'ADMIN',
             ];
-
+            
             $accessTtl = (int) getenv('JWT_ACCESS_TTL');
             $refreshTtl = (int) getenv('JWT_REFRESH_TTL');
-            $accessJwt = $this->tokenService->createToken($data, $accessTtl);
-            $refreshJwt = $this->tokenService->createToken($data, $refreshTtl);
 
-            setcookie('access_token', $accessJwt, ['expires' => time() + $accessTtl, 'path' => '/', 'secure' => false, 'httponly' => true, 'samesite' => 'Strict']);
-            setcookie('refresh_token', $refreshJwt, ['expires' => time() + $refreshTtl, 'path' => '/', 'secure' => false, 'httponly' => true, 'samesite' => 'Strict']);
+            $accessJwt = $this->tokenService->createAccessToken($data, $accessTtl);
+            $refreshJwt = $this->tokenService->createRefreshToken($data, $refreshTtl);
+
+            $cookieSecure = getenv('APP_ENV') === 'production';
+            $cookieOptions = [
+                'path' => '/',
+                'httponly' => true,
+                'secure' => $cookieSecure,
+                'samesite' => 'Lax',
+            ];
+
+            setcookie('access_token', $accessJwt, array_merge($cookieOptions, ['expires' => time() + $accessTtl]));
+            setcookie('refresh_token', $refreshJwt, array_merge($cookieOptions, ['expires' => time() + $refreshTtl]));
 
             header('Location: /dashboard');
             exit;
@@ -68,6 +77,40 @@ class AuthController extends AbstractController
         }
         session_destroy();
         header('Location: /login');
+        exit;
+    }
+
+    public function refresh(): void
+    {
+        $refreshJwt = $_COOKIE['refresh_token'] ?? null;
+        if (!$refreshJwt) {
+            http_response_code(401);
+            echo json_encode(['error' => 'No refresh token']);
+            exit;
+        }
+
+        $accessTtl = (int) getenv('JWT_ACCESS_TTL');
+        $refreshTtl = (int) getenv('JWT_REFRESH_TTL');
+
+        $tokens = $this->tokenService->refreshTokens($refreshJwt, $accessTtl, $refreshTtl);
+        if (!$tokens) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Refresh invalido']);
+            exit;
+        }
+
+        $cookieSecure = getenv('APP_ENV') === 'production';
+        $cookieOptions = [
+            'path' => '/',
+            'httponly' => true,
+            'secure' => $cookieSecure,
+            'samesite' => 'Lax',
+        ];
+
+        setcookie('access_token', $tokens['access'], array_merge($cookieOptions, ['expires' => time() + $accessTtl]));
+        setcookie('refresh_token', $tokens['refresh'], array_merge($cookieOptions, ['expires' => time() + $refreshTtl]));
+
+        echo json_encode(['ok' => true]);
         exit;
     }
 }
