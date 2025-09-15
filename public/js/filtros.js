@@ -138,11 +138,11 @@ document.addEventListener("DOMContentLoaded", () => {
     forms.search.forEach((form) => {
         const btnBuscar = form.querySelector('button[type="submit"]');
         btnBuscar?.addEventListener("click", (e) => {
-        e.preventDefault();
-        const nombre = form.querySelector('[name="nombre"]')?.value || "";
-        updateHiddenInput(forms.search, "nombre", nombre);
-        updateEquipos();
-        if (isMobile()) window.closeFiltersModal();
+            e.preventDefault();
+            const nombre = form.querySelector('[name="nombre"]')?.value || "";
+            updateHiddenInput(forms.search, "nombre", nombre);
+            updateEquipos();
+            if (isMobile()) window.closeFiltersModal();
         });
     });
 
