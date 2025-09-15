@@ -1,21 +1,22 @@
-#map {
-    width: 100%;
-    height: 300px;
-    border-radius: 8px;
+#map,
+#map-mobile {
+  width: 100%;
+  height: 300px;
+  border-radius: 8px;
 }
 
-.leaflet-control-geocoder-icon{
+.leaflet-control-geocoder-icon {
   vertical-align: middle !important;
   width: 2rem !important;
   height: 2rem !important;
-  background-color:white !important;
+  background-color: white !important;
 }
 
-.leaflet-control-geocoder{
+.leaflet-control-geocoder {
   height: 100%;
   border-radius: 1rem !important;
 }
 
-.leaflet-control-geocoder-form input{
+.leaflet-control-geocoder-form input {
   margin-bottom: 0;
 }

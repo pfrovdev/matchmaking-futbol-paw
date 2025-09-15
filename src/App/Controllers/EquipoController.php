@@ -257,17 +257,24 @@ class EquipoController extends AbstractController
             }
         }
 
+        $usarUbicacion = ($latitud !== null && $longitud !== null && $radio_km !== null && ($latitud != 0 || $longitud != 0));
         $orderBy = $orden === 'alpha' ? 'nombre' : 'elo_actual';
         $direction = $orden === 'alpha' ? 'ASC' : strtoupper($orden);
 
         $selectParams = [
             'nombre' => $nombre,
             'id_equipo' => $miEquipo->getIdEquipo(),
-            'id_nivel_elo' => $id_nivel_elo,
-            'lat' => $latitud,
-            'lng' => $longitud,
-            'radio_km' => $radio_km
         ];
+
+        if ($usarUbicacion) {
+            $selectParams['lat'] = $latitud;
+            $selectParams['lng'] = $longitud;
+            $selectParams['radio_km'] = $radio_km;
+        }
+
+        if ($id_nivel_elo) {
+            $selectParams['id_nivel_elo'] = $id_nivel_elo;
+        }
 
         $listLevelsElo = $this->equipoService->getAllNivelElo();
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);

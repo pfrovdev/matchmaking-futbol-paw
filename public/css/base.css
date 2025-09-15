@@ -179,7 +179,8 @@ footer {
   margin: 0 10rem;
 }
 
-#map {
+#map,
+#map-mobile {
   border: 1px solid #ccc;
   border-radius: 0.5rem;
   width: 100%;
