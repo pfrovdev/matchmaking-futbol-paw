@@ -16,7 +16,9 @@ COPY . /var/www/html
 
 RUN mkdir -p /var/www/html/Core/JWT \
     && touch /var/www/html/Core/JWT/blacklist.json \
-    && chmod -R 666 /var/www/html/Core/JWT/blacklist.json
+    && touch /var/www/html/Core/JWT/blacklist.json.refresh \
+    && chmod 666 /var/www/html/Core/JWT/blacklist.json \
+    && chmod 666 /var/www/html/Core/JWT/blacklist.json.refresh
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

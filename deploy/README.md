@@ -87,3 +87,9 @@ php src/Deploy_database/insert_demo_data.php
 
 kubectl get pods -l app=mysql
 kubectl exec -it NOMBRE_DEL_POD -- bash
+
+## Cargar la base de datos
+
+kubectl exec -it web-7878c5c668-bqsfs -- /bin/bash  
+cd /var/www/html
+php src/Deploy_database/insert_demo_data.php
