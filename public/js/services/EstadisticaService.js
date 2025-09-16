@@ -7,13 +7,22 @@ export default class EstadisticaService {
         }
         try {
             const response = await fetch(`/estadisticas?id_equipo=${perfilId}`);
-            if (!response.ok) {
-                console.error('Error al obtener estadísticas:', response);
-                throw new Error(`Error al obtener estadísticas: ${response.statusText}`);
+
+            if (response.status === 204) {
+                console.warn('El equipo no tiene estadísticas');
+                return null;
             }
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                console.error('Error al obtener estadísticas:', errData);
+                return null;
+            }
+
             const data = await response.json();
             console.log('Estadísticas obtenidas:', data);
             return data;
+
         } catch (error) {
             console.error('Error en EstadisticaService:', error);
             return null;
