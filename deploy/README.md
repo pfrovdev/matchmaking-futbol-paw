@@ -10,22 +10,15 @@ gcloud container clusters get-credentials matchmaking-cluster --region us-centra
 ## Luego de realizar los cambios que necesitamos en el código:
 
 ## Regenerar la imagen de docker desde la raiz del repo con:
-
-docker build -t gcr.io/matchmaking-app-paw/php-app:<NOMBRE-TAG> -f deploy/app/Dockerfile .
-
+docker build -t us-central1-docker.pkg.dev/matchmaking-paw/matchmaking-repo/app:latest -f deploy/app/Dockerfile .
+docker build -t us-central1-docker.pkg.dev/matchmaking-paw/matchmaking-repo/nginx:latest -f deploy/nginx/Dockerfile .
+docker build -t us-central1-docker.pkg.dev/matchmaking-paw/matchmaking-repo/mysql:latest -f deploy/mysql/Dockerfile .
 ## Pushear la nueva imagen de docker con:
-
-docker push gcr.io/matchmaking-app-paw/php-app:<NOMBRE-TAG>
-
+docker push us-central1-docker.pkg.dev/matchmaking-paw/matchmaking-repo/app:latest
+docker push us-central1-docker.pkg.dev/matchmaking-paw/matchmaking-repo/nginx:latest
+docker push us-central1-docker.pkg.dev/matchmaking-paw/matchmaking-repo/mysql:latest
 ## Luego en el deployment deploy/kubernetes/nginx-php-deployment.yaml, modificar el tag de la imagen:
 
-cambiar esto:
-
-image: gcr.io/matchmaking-app-paw/php-app:<NOMBRE-ANTERIOR-TAG>
-
-por esto:
-
-image: gcr.io/matchmaking-app-paw/php-app:<NOMBRE-NUEVO-TAG>
 
 ## Luego aplicamos el nuevo deployment desde la raiz del repo con:
 

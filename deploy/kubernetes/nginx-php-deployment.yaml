@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: php
-          image: gcr.io/matchmaking-app-paw/php-mm-app:mm-v2
+          image: us-central1-docker.pkg.dev/matchmaking-paw/matchmaking-repo/app:latest
           ports:
             - containerPort: 9000
           envFrom:
@@ -43,6 +43,6 @@ spec:
                   key: MAIL_PASSWORD
 
         - name: nginx
-          image: gcr.io/matchmaking-app-paw/nginx:mm-v2
+          image: us-central1-docker.pkg.dev/matchmaking-paw/matchmaking-repo/nginx:latest
           ports:
             - containerPort: 80

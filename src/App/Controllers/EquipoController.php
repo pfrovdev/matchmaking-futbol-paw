@@ -62,7 +62,9 @@ class EquipoController extends AbstractController
     {
         $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
         $confirmEmail = filter_input(INPUT_POST, 'confirm-email', FILTER_VALIDATE_EMAIL);
-        $telefono = filter_input(INPUT_POST, 'telefono', FILTER_SANITIZE_STRING);
+        $telefono = filter_input(INPUT_POST, 'telefono', FILTER_UNSAFE_RAW);
+        $telefono = trim($telefono);
+        $telefono = htmlspecialchars($telefono, ENT_QUOTES | ENT_SUBSTITUTE);
         $password = $_POST['password'] ?? null;
         $confirmPassword = $_POST['confirm_password'] ?? null;
 
@@ -123,7 +125,6 @@ class EquipoController extends AbstractController
         $lng = filter_var($_POST['lng'] ?? null, FILTER_VALIDATE_FLOAT);
         $teamMotto = trim($_POST['team-motto'] ?? '');
 
-        // Validaciones básicas
         if ($lat === false || $lng === false) {
             $errors[] = "Coordenadas inválidas.";
         }

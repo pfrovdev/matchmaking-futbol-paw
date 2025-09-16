@@ -1,5 +1,5 @@
 provider "google" {
-  credentials = file("~/universidad/1er_cuatri_2025/PAW_2025/matchmaking-futbol-paw/deploy/secrets/credentials-matchmaking-app.json")
+  credentials = file("~/universidad/PAW/matchmaking-futbol-paw/deploy/secrets/credentials-matchmaking-app.json")
   project     = var.project_id
   region      = var.region
 }
