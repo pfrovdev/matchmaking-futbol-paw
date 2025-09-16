@@ -62,7 +62,8 @@
   padding: 1rem;
 }
 
-.btn-enviar, .btn-calificar {
+.btn-enviar,
+.btn-calificar {
   display: flex;
   height: 3rem;
   align-items: center;
@@ -737,6 +738,6 @@
 /* Responsive */
 @media (max-width: 1024px) {
   .container {
-    margin: 0 7rem;
+    margin: 0 1rem;
   }
 }
