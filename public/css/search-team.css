@@ -23,6 +23,7 @@ main header {
 
 .left-size,
 .rigth-size {
+  padding: 1rem;
   width: 100%;
   background-color: var(--background-contents);
 }
@@ -352,6 +353,10 @@ aside input[type="radio"] {
 
 .mobile-modal.show {
   bottom: 0;
+}
+
+.mobile-modal-content form {
+  padding: 1rem;
 }
 
 .mobile-modal-content h2 {
