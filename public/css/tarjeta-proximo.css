@@ -113,8 +113,8 @@
   background-color: var(--button-secondary-background-color);
   color: var(--muted-text-color);
   border: 1px solid var(--muted-text-color);
-  padding: 0.5rem 0.75rem;
   border-radius: 0.25rem;
+  height: 2.5rem;
   cursor: pointer;
   flex: 1;
   transition: transform 0.1s;
@@ -129,7 +129,6 @@
   background-color: var(--button-primary-background-color);
   color: var(--primary-buttons-color);
   border: none;
-  padding: 0.5rem 0.75rem;
   border-radius: 0.25rem;
   cursor: pointer;
   flex: 1;
@@ -194,5 +193,7 @@
   .nm-btn-primary,
   .nm-btn-danger {
     width: 100%;
+    padding: .5rem 0;
   }
+
 }

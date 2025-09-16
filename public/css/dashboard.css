@@ -265,7 +265,6 @@
   background-color: var(--button-primary-background-color);
   color: var(--primary-buttons-color);
   border: none;
-  padding: 0.5rem 1rem;
   border-radius: 0.25rem;
 }
 
@@ -273,17 +272,16 @@
   background-color: var(--button-secondary-background-color);
   color: var(--muted-text-color);
   border: 1px solid var(--muted-text-color);
-  padding: 0.5rem 1rem;
   border-radius: 0.25rem;
 }
 
 .btn-danger {
   background-color: #d32f2f;
   color: #fff;
-  padding: 0.5rem 1rem;
   border: none;
   border-radius: 0.25rem;
 }
+
 
 .btn-link {
   background: none;
@@ -312,7 +310,7 @@
 }
 
 .modal-content {
-  max-width: 28rem; 
+  max-width: 28rem;
   width: 100%;
   padding: 1.5rem;
   box-sizing: border-box;
@@ -320,11 +318,19 @@
 }
 
 @keyframes modal-appear {
-  0% { opacity: 0; transform: translateY(-8px) scale(.99); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(.99);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
+
 .modal-overlay:not(.hidden) .modal-content {
-  animation: modal-appear 220ms cubic-bezier(.2,.9,.3,1) both;
+  animation: modal-appear 220ms cubic-bezier(.2, .9, .3, 1) both;
 }
 
 .modal-header {
@@ -333,6 +339,7 @@
   gap: .75rem;
   margin-bottom: .25rem;
 }
+
 .modal-title {
   font-size: 1.1rem;
   margin: 0;
@@ -345,7 +352,7 @@
   height: 44px;
   flex: 0 0 44px;
   border-radius: 50%;
-  background: linear-gradient(180deg, #38b000 0%, #2fa43a 100%); 
+  background: linear-gradient(180deg, #38b000 0%, #2fa43a 100%);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -379,7 +386,11 @@
   color: #fff;
   box-shadow: 0 6px 14px rgba(43, 113, 40, 0.12);
 }
-.modal-ok-button:active { transform: translateY(1px); }
+
+.modal-ok-button:active {
+  transform: translateY(1px);
+}
+
 .modal-ok-button:focus {
   outline: 3px solid rgba(46, 125, 50, 0.18);
   outline-offset: 2px;
@@ -404,11 +415,11 @@
 
 .modal-overlay {
   position: fixed !important;
-  inset: 0 !important;               
+  inset: 0 !important;
   display: flex !important;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   z-index: 9999 !important;
   padding: 1rem;
   box-sizing: border-box;
@@ -426,7 +437,7 @@
   width: 100%;
   padding: 1.5rem;
   position: relative;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
   transform-origin: center top;
 }
 
@@ -442,49 +453,50 @@
 }
 
 
-.modal-header { 
-  display:flex; 
-  gap:.75rem; 
-  align-items:center; 
-  margin-bottom:.25rem; 
+.modal-header {
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  margin-bottom: .25rem;
 }
 
-.modal-icon { 
-  width:44px; 
-  height:44px; 
-  border-radius:50%; 
-  display:inline-flex; 
-  align-items:center; 
-  justify-content:center; 
-  color:#fff; 
-  background:linear-gradient(180deg,#38b000,#2fa43a); 
-  font-weight:700; 
+.modal-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: linear-gradient(180deg, #38b000, #2fa43a);
+  font-weight: 700;
 }
 
-.modal-title { 
-  margin:0; 
-  font-size:1.05rem; 
+.modal-title {
+  margin: 0;
+  font-size: 1.05rem;
 }
 
-.modal-body { 
-  color:#222; 
-  margin-top:.25rem; 
+.modal-body {
+  color: #222;
+  margin-top: .25rem;
 }
 
-.modal-actions { 
-  display:flex; 
-  justify-content:flex-end;
-  gap:.5rem; margin-top:1rem;
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: .5rem;
+  margin-top: 1rem;
 }
 
-.modal-ok-button { 
-  padding:.5rem .9rem; 
-  border-radius:.375rem; 
-  border:0; 
-  cursor:pointer; 
-  background:linear-gradient(180deg,#2fa43a,#238b2d); 
-  color:#fff; 
-  font-weight:600; 
+.modal-ok-button {
+  padding: .5rem .9rem;
+  border-radius: .375rem;
+  border: 0;
+  cursor: pointer;
+  background: linear-gradient(180deg, #2fa43a, #238b2d);
+  color: #fff;
+  font-weight: 600;
 }
 
 .edit-team-form label {
