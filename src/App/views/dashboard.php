@@ -22,40 +22,47 @@ unset($_SESSION['errors']);
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="./css/spinner.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script>
+    const levelsEloMap = <?= json_encode(array_map(function ($row) {
+      return [
+        'descripcion' => $row['descripcion'],
+        'color_inicio' => $row['color_inicio'],
+        'color_fin' => $row['color_fin'],
+      ];
+    }, $listLevelsElo)) ?>;
+  </script>
   <script type="module" src="js/pages/Dashboard.js" defer></script>
   <script src="/js/sidebar.js"></script>
   <script src="./js/components/spinner.js" defer></script>
   <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "SportsTeam",
-      "name": "<?= htmlspecialchars($equipoBanner->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>",
-      "sport": "Soccer",
-      "memberOf": {
-        "@type": "SportsOrganization",
-        "name": "Ligas de Fútbol Amateur"
-      },
-      "identifier": {
-        "@type": "PropertyValue",
-        "name": "Elo Ranking",
-        "value": "<?= htmlspecialchars($equipoBanner->getEloActual(), ENT_QUOTES, 'UTF-8') ?>"
-      },
-      "alternateName": "<?= htmlspecialchars($miEquipo->fields['acronimo'], ENT_QUOTES, 'UTF-8') ?>",
-      "description": "<?= htmlspecialchars($equipoBanner->getLema(), ENT_QUOTES, 'UTF-8') ?>",
-      <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
-                          "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
-      <?php endif; ?>
-      "gender": "<?= htmlspecialchars($equipoBanner->getTipoEquipo(), ENT_QUOTES, 'UTF-8') ?>",
-      "location": {
-        "@type": "Place",
-        "geo": {
-          "@type": "GeoCoordinates",
-          "latitude": <?= $equipoBanner->getLatitud() ?>,
-          "longitude": <?= $equipoBanner->getLongitud() ?>
+        "@context": "https://schema.org",
+        "@type": "SportsTeam",
+        "name": "<?= htmlspecialchars($equipoBanner->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>",
+        "sport": "Soccer",
+        "memberOf": {
+            "@type": "SportsOrganization",
+            "name": "Ligas de Fútbol Amateur"
+        },
+        "identifier": {
+            "@type": "PropertyValue",
+            "name": "Elo Ranking",
+            "value": "<?= htmlspecialchars($equipoBanner->getEloActual(), ENT_QUOTES, 'UTF-8') ?>"
+        },
+        "alternateName": "<?= htmlspecialchars($miEquipo->fields['acronimo'], ENT_QUOTES, 'UTF-8') ?>",
+        "description": "<?= htmlspecialchars($equipoBanner->getLema(), ENT_QUOTES, 'UTF-8') ?>",
+        <?php if ($equipoBanner->getUrlFotoPerfil()): ?> "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
+        <?php endif; ?> "gender": "<?= htmlspecialchars($equipoBanner->getTipoEquipo(), ENT_QUOTES, 'UTF-8') ?>",
+        "location": {
+            "@type": "Place",
+            "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": <?= $equipoBanner->getLatitud() ?>,
+                "longitude": <?= $equipoBanner->getLongitud() ?>
+            }
         }
-      }
     }
-  </script>
+    </script>
 </head>
 
 <body data-profile-id="<?= $equipoVistoId ?>"
@@ -138,7 +145,7 @@ unset($_SESSION['errors']);
                   $porcentaje = ($hasta > $desde)
                     ? min(100, max(0, (($eloActual - $desde) / ($hasta - $desde)) * 100))
                     : 0;
-              ?>
+                  ?>
                   <div class="elo-bar">
                     <span class="label"><?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?></span>
                     <div class="bar-bg">
@@ -151,7 +158,7 @@ unset($_SESSION['errors']);
                       <span><?= htmlspecialchars($hasta, ENT_QUOTES, 'UTF-8') ?></span>
                     </div>
                   </div>
-              <?php
+                  <?php
                 endif;
               endforeach;
               ?>
@@ -261,15 +268,7 @@ unset($_SESSION['errors']);
   </main>
 
   <?php require "parts/footer.php"; ?>
-  <script>
-    const levelsEloMap = <?= json_encode(array_map(function ($row) {
-                            return [
-                              'descripcion' => $row['descripcion'],
-                              'color_inicio' => $row['color_inicio'],
-                              'color_fin' => $row['color_fin'],
-                            ];
-                          }, $listLevelsElo)) ?>;
-  </script>
+
 </body>
 
 </html>

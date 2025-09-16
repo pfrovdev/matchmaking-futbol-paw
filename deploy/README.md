@@ -93,3 +93,7 @@ kubectl exec -it NOMBRE_DEL_POD -- bash
 kubectl exec -it web-7878c5c668-bqsfs -- /bin/bash  
 cd /var/www/html
 php src/Deploy_database/insert_demo_data.php
+
+## Borrar datos base de datos - OJO-
+php src/Deploy_database/clean_db.php
+
