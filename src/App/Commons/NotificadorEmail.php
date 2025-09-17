@@ -161,8 +161,12 @@ class NotificadorEmail implements Notificador
     {
         $deportividad = (int) $comentario->getDeportividad();
 
-        $deportividadHTML = '<span style="color:green;">' . str_repeat('⚽', $deportividad) . '</span>';
-        $deportividadHTML .= '<span style="color:lightgray;">' . str_repeat('⚽', 5 - $deportividad) . '</span>';
+        $pelotitaLlena = '<span style="font-size:20px; color:green; opacity:1;">⚽</span>';
+
+        $pelotitaVacia = '<span style="font-size:20px; color:grey; opacity:0.4;">⚽</span>';
+
+        $deportividadHTML = str_repeat($pelotitaLlena, $deportividad)
+            . str_repeat($pelotitaVacia, 5 - $deportividad);
 
         $comentarioSanitizado = nl2br(htmlspecialchars($comentario->getComentario(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
 
@@ -212,7 +216,11 @@ class NotificadorEmail implements Notificador
     {
         $html = file_get_contents($this->viewsDir . $file);
         foreach ($vars as $key => $value) {
-            $html = str_replace("{{{$key}}}", htmlspecialchars($value), $html);
+            if (in_array($key, ['deportividad', 'comentario', 'link'], true)) {
+                $html = str_replace("{{{$key}}}", $value, $html);
+            } else {
+                $html = str_replace("{{{$key}}}", htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'), $html);
+            }
         }
         return $html;
     }
