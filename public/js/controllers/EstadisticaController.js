@@ -114,7 +114,7 @@ export default class EstadisticasController {
                     const s = item.trim();
                     if (s === '✅' || s.toLowerCase().includes('g')) resultado = 'ganado';
                     else if (s === '❌' || s.toLowerCase().includes('p')) resultado = 'perdido';
-                    else if (s === '➖' || s === '-' || s === 'E' || s.toLowerCase().includes('e')) resultado = 'empatado';
+                    else if (s === '⚪' || s === '-' || s === 'E' || s.toLowerCase().includes('e')) resultado = 'empatado';
                     else {
                         const low = s.toLowerCase();
                         if (low.includes('gan')) resultado = 'ganado';
