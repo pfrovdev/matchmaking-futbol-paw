@@ -8,6 +8,31 @@ $intentosRestantes = $maxIntentos - $miUltimaIteracion;
 $partidoFinalizado = $flash['finalizado'];
 $mismatchedFields = [];
 
+// Calcular deadline
+$deadline = $partido->getDeadlineFormulario(); // "2025-09-19 04:20:00"
+
+// Crear objeto DateTime para la fecha límite
+$deadlineDate = new DateTime($deadline);
+$now = new DateTime();
+$diff = $now->diff($deadlineDate);
+$partidoExpirado = false;
+if ($deadlineDate < $now) {
+    $partidoExpirado = true;
+} else {
+    $hours = $diff->h + ($diff->days * 24);
+    $minutes = $diff->i;
+
+    $timeLeft = '';
+    if ($hours > 0) {
+        $timeLeft .= $hours . ' hora' . ($hours > 1 ? 's' : '');
+        if ($minutes > 0) {
+            $timeLeft .= ' y ';
+        }
+    }
+    if ($minutes > 0) {
+        $timeLeft .= $minutes . ' minuto' . ($minutes > 1 ? 's' : '');
+    }
+}
 // Estado inicial vacío o desde flash
 $statusMessage = $flash['mensaje'] ?? '';
 $statusType = $flash['tipo'] ?? 'info';
@@ -55,7 +80,7 @@ if (!$partidoAcordado) {
         }
     }
 } else {
-    $statusMessage = "El partido ya fue acordado, por favor terminalo dentro de los próximos X minutos.";
+    $statusMessage = "El partido ya fue acordado, por favor terminalo dentro de los próximos $timeLeft.";
     $statusType = "info";
     $mostrarSubtitlo = false;
 }
@@ -103,8 +128,12 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
             $dl = $partido->getDeadlineFormulario();
             ?>
             <?php if ($dl): ?>
-                <p>🕑 Plazo para coordinar resultados hasta: 
-                    <strong id="deadline-txt"><?= htmlspecialchars($dl) ?></strong>
+                <?php
+                $dateObj = new DateTime($dl);
+                $formattedDate = $dateObj->format('d-m-Y');
+                ?>
+                <p>🕑 Plazo para coordinar resultados hasta:
+                    <strong id="deadline-txt"><?= htmlspecialchars($formattedDate) ?></strong>
                 </p>
             <?php endif; ?>
             <div class="alert alert-<?= htmlspecialchars($statusType) ?>">
