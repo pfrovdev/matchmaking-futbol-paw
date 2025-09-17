@@ -175,7 +175,7 @@ class Equipo extends AbstractModel
     }
 
     public function getUrlFotoPerfil(): ?string {
-        return $this->fields["url_foto_perfil"];
+        return $this->fields["url_foto_perfil"] ?? "";
     }
 
     public function getIdTipoEquipo() {
