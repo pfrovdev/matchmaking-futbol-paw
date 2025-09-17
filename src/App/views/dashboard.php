@@ -6,6 +6,8 @@ if (!$isOwner) {
   require $this->viewsDir . 'profile.php';
   return;
 }
+$errors = $_SESSION['errors'] ?? [];
+unset($_SESSION['errors']);
 $jugados = 0;
 $goles = 0;
 $asistencias = 0;
@@ -47,9 +49,11 @@ if ($estadisticas) {
   <meta name="description" content="Pagina principal del equipo de futbol del usuario">
   <title>Dashboard - <?= htmlspecialchars($miEquipo->fields['nombre'], ENT_QUOTES, 'UTF-8') ?></title>
   <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="./css/spinner.css">
+
   <script type="module" src="js/pages/Dashboard.js" defer></script>
   <script src="/js/sidebar.js"></script>
-
+  <script src="./js/components/spinner.js" defer></script>
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -68,7 +72,7 @@ if ($estadisticas) {
       "alternateName": "<?= htmlspecialchars($miEquipo->fields['acronimo'], ENT_QUOTES, 'UTF-8') ?>",
       "description": "<?= htmlspecialchars($equipoBanner->getLema(), ENT_QUOTES, 'UTF-8') ?>",
       <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
-                  "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
+                          "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
       <?php endif; ?>
       "gender": "<?= htmlspecialchars($equipoBanner->getTipoEquipo(), ENT_QUOTES, 'UTF-8') ?>",
       "location": {
@@ -86,15 +90,25 @@ if ($estadisticas) {
 <body data-profile-id="<?= $equipoVistoId ?>"
   data-is-owner="<?= ($equipoVistoId === $miEquipo->getIdEquipo()) ? 'true' : 'false' ?>">
 
-  <?php require "parts/header.php"; ?>
+  <?php
+  $estaLogueado = !!$miEquipo->getIdEquipo();
+  require "parts/header.php";
+  ?>
   <?php require "parts/side-navbar.php"; ?>
   <main>
 
     <div class="dashboard-container">
-
+      <?php if (!empty($_SESSION['message'])): ?>
+        <section class="alert alert-info">
+          <?= htmlspecialchars($_SESSION['message']) ?>
+        </section>
+        <?php unset($_SESSION['message']); ?>
+      <?php endif; ?>
 
       <!-- GRID PRINCIPAL -->
       <div class="dashboard-grid">
+
+
 
         <!-- Columna Izquierda -->
         <section class="col-left">
@@ -284,18 +298,11 @@ if ($estadisticas) {
           <h2>Editar perfil de equipo</h2>
           <form action="/update-team" method="POST" class="edit-team-form">
             <label>
-                Acrónimo (máx. 3 chars)
-                <input
-                  type="text"
-                  name="team-acronym"
-                  id="team-acronym"
-                  maxlength="3"
-                  value="<?= htmlspecialchars($miEquipo->getAcronimo(), ENT_QUOTES, 'UTF-8') ?>">
+              Acrónimo (máx. 3 chars)
+              <input type="text" name="team-acronym" id="team-acronym" maxlength="3"
+                value="<?= htmlspecialchars($miEquipo->getAcronimo(), ENT_QUOTES, 'UTF-8') ?>">
             </label>
-            <small
-              id="acronym-error"
-              class="error-message"
-              style="display:none; color:#d32f2f; font-size:0.8rem;">
+            <small id="acronym-error" class="error-message" style="display:none; color:#d32f2f; font-size:0.8rem;">
               El acrónimo no puede tener más de 3 caracteres.
             </small>
             <label>

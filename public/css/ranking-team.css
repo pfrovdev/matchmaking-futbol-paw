@@ -1,155 +1,140 @@
 @import url("./base.css");
-@import url("./header.css");
+@import url('./parts/header.css');
 @import url("side-navbar.css");
 @import url("./parts/pagination.css");
 @import url("./parts/tarjeta.css");
 @import url("./parts/filtro-por-rango.css");
 @import url("./parts/filtro-por-ubicacion.css");
-@import url("./footer.css");
+@import url('./parts/footer.css');
+
+main header {
+  margin: 1rem;
+}
 
 .teams-container {
   margin: 0 auto;
-  padding: 2rem 0;
-  width: 90%;
+  padding: 1rem;
+  width: 100%;
   background-color: var(--background-contents);
   border-radius: 0.5rem;
 }
 
 .teams-container li {
   list-style: none;
-  list-style: none;
-  width: 95%;
-  margin: 0 auto;
-
-  background: linear-gradient(
-    90deg,
-    var(--primary-color) 0%,
-    var(--gradient-primary-color) 100%
-  );
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.6rem;
+  background: linear-gradient(90deg,
+      var(--primary-color) 0%,
+      var(--gradient-primary-color) 100%);
   color: var(--background-contents);
   border-radius: 0.5rem;
-  padding: 1rem;
+}
+
+.team-card {
+  flex-direction: column;
+  padding: 0.5rem;
+  gap: 0.5rem;
+}
+
+.team-image {
+  width: 100%;
+}
+
+.team-info {
+  margin-left: 0;
+}
+
+.team-name {
+  font-size: 1.25rem;
+}
+
+.team-elo {
+  position: static;
+  text-align: right;
+  margin-top: 0.5rem;
+}
+
+.team-actions .btn-profile {
+  display: flex;
+  padding: .5rem 2rem;
+}
+
+@media (min-width: 481px) {
+  main header {
+    margin: 1rem;
+  }
+
+  .teams-container {
+    padding: 1rem;
+  }
+
+  .teams-container li {
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.6rem;
+  }
+
+  .team-card {
+    padding: 0.6rem;
+    gap: 0.6rem;
+  }
 }
 
 /* ======================================================
-   1) Pantallas medianas-grandes hasta 1024px de ancho
+   Pantallas grandes: desde 769px hasta 1024px
    ====================================================== */
-   @media (max-width: 1024px) {
-
-    main > header {
-      margin: 3rem 3rem 1.5rem;
-    }
-  
-
-    .teams-container {
-      width: 95%;
-      padding: 1.5rem 0;
-    }
-
-    .teams-container li {
-      padding: 0.8rem;
-    }
-  
- 
-    .team-card {
-      gap: 0.8rem;
-      padding: 0.8rem;
-    }
-  
-
-    .team-image {
-      width: 18rem;
-    }
-  
- 
-    .team-info {
-      margin-left: 1.5rem;
-    }
+@media (min-width: 769px) {
+  main header {
+    margin: 2rem 3rem;
   }
-  
-  /* ===================================
-     2) Pantallas hasta 768px
-     =================================== */
-  @media (max-width: 768px) {
-  
-    .teams-container {
 
-      padding: 1rem;
-    }
-
-    .teams-container li {
-      width: 100%;       
-      margin: 0.5rem 0;  
-      padding: 0.6rem;
-    }
-  
-    .team-card {
-      flex-direction: column;
-      padding: 0.6rem;
-      gap: 0.6rem;
-    }
-  
-
-    .team-image {
-      width: 100%;
-    }
-  
-
-    .team-info {
-      margin-left: 0;
-    }
-  
-    .team-name {
-      font-size: 1.25rem;
-    }
-
-    .team-elo {
-      position: static;
-      text-align: right;
-      margin-top: 0.5rem;
-    }
-  
-    .team-actions .btn-profile {
-      width: 100%;
-      text-align: center;
-      padding: 0.5rem 0;
-    }
+  .teams-container {
+    width: 95%;
+    padding: 1.5rem 0;
   }
-  
-  /* =========================================
-     3) Pantallas móviles: hasta 480px de ancho
-     ========================================= */
-  @media (max-width: 480px) {
 
-  
-    .teams-container {
-
-      padding: 1rem;
-    }
-
-    .teams-container li {
-      width: 100%;       
-      margin: 0.5rem 0;  
-      padding: 0.6rem;
-    }
-  
-  
-    .team-card {
-      padding: 0.5rem;
-      gap: 0.5rem;
-    }
-
-    .team-image {
-      width: 100%;
-    }
-  
-    .team-actions .btn-profile {
-      width: 100%;
-      padding: 0.4rem 0;
-      font-size: 0.9rem;
-    }
-
-    .boton-filtro-zona {
-      width: 100%;
-    }
+  .teams-container li {
+    padding: 0.8rem;
   }
+
+  .team-card {
+    gap: 0.8rem;
+    padding: 0.8rem;
+    flex-direction: row;
+  }
+
+  .team-image {
+    width: 18rem;
+  }
+
+  .team-info {
+    margin-left: 1.5rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  main header {
+    margin: 2rem 5rem;
+  }
+
+  .teams-container {
+    width: 90%;
+    padding: 2rem 0;
+  }
+
+  .teams-container li {
+    width: 95%;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  .team-card {
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .team-image {
+    width: 20rem;
+  }
+}

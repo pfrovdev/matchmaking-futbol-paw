@@ -126,10 +126,23 @@ class Partido extends AbstractModel
         $this->setDeadlineFormulario(null);
     }
 
-    public function finalizar(string $fechaFinal, int $estadoFinalizado): void
-    {
-        $this->setFinalizado(1);
+    public function finalizar(string $fechaFinal, int $estadoFinalizado, int $esFinalizado = 0, string $esDesfiadooDesafiante=""): void
+    {   
+        
+        $this->setFinalizado($esFinalizado);
         $this->setFechaFinalizacion($fechaFinal);
+        $this->setIdEstadoPartido($estadoFinalizado);
+        
+        if($esDesfiadooDesafiante == "Desafiado"){
+            $this->setFinalizadoEquipoDesafiado(1);
+            $this->setFinalizadoEquipoDesafiante($this->getFinalizadoEquipoDesafiante());
+        }elseif($esDesfiadooDesafiante == "Desafiante"){
+            $this->setFinalizadoEquipoDesafiante(1);
+            $this->setFinalizadoEquipoDesafiado($this->getFinalizadoEquipoDesafiado());
+        }
+    }
+
+    public function cancelar(int $estadoFinalizado): void {
         $this->setIdEstadoPartido($estadoFinalizado);
     }
 }

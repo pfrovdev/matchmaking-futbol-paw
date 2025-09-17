@@ -83,8 +83,8 @@ class PartidoServiceImpl implements PartidoService
 
         $fechaFinal = (new DateTime())->format('Y-m-d H:i:s');
         $idFinal = $this->estadoPartidoDataMapper->findIdByCode('jugado');
-
-        $p->finalizar($fechaFinal, $idFinal);
+        $esFinalizado = 1;
+        $p->finalizar($fechaFinal, $idFinal, $esFinalizado);
         $this->partidoDataMapper->updatePartido($p);
     }
 
@@ -99,6 +99,38 @@ class PartidoServiceImpl implements PartidoService
         $this->partidoDataMapper->updatePartido($p);
     }
 
+    public function cancelarPartido(int $partidoId, int $idEquipo): bool
+    {
+        $partido = $this->partidoDataMapper->findById(['id_partido' => $partidoId]);
+        if (!$partido) {
+            throw new \InvalidArgumentException("El partido con ID {$partidoId} no existe.");
+        }
+        if ($partido->getFinalizado()) {
+            throw new \InvalidArgumentException("El partido ya está finalizado.");
+        }
+        if ($partido->getFinalizadoEquipoDesafiado() || $partido->getFinalizadoEquipoDesafiante()) {
+            throw new \InvalidArgumentException("No se puede cancelar: el rival ya dio por finalizado el partido.");
+        }
+
+        $idEstadoCancelado = $this->estadoPartidoDataMapper->findIdByCode('cancelado');
+        $partido->cancelar($idEstadoCancelado);
+        $this->partidoDataMapper->updatePartido($partido);
+
+        $desafio = $this->desafioDataMapper->findByIdPartido($partidoId);
+        $equipoDesafiadoID = $desafio->getIdEquipoDesafiado();
+        $equipoDesafianteID = $desafio->getIdEquipoDesafiante();
+        $equipoDesafiado = $this->equipoService->getEquipoById($equipoDesafiadoID);
+        $equipoDesafiante = $this->equipoService->getEquipoById($equipoDesafianteID);
+        if ($equipoDesafiadoID === $idEquipo) {
+            $this->notificationService->notifyParitdoCancelado($equipoDesafiado, $equipoDesafiante);
+            
+        }
+        if ($equipoDesafianteID === $idEquipo) {
+            $this->notificationService->notifyParitdoCancelado($equipoDesafiante, $equipoDesafiado);
+        }
+        return true;
+    }
+
     public function terminarPartido(int $partidoId, int $idEquipo, int $idEquipoRival): void
     {
         if (!$this->partidoAcordado($idEquipo, $idEquipoRival, $partidoId)) {
@@ -109,15 +141,38 @@ class PartidoServiceImpl implements PartidoService
         if (!$partido) {
             throw new \InvalidArgumentException("Partido {$partidoId} no existe");
         }
+        $desafio = $this->desafioDataMapper->findByIdPartido($partidoId);
+
+        if ($desafio->getIdEquipoDesafiado() !== $idEquipo && $desafio->getIdEquipoDesafiante() !== $idEquipo) {
+            throw new \RuntimeException("El equipo {$partidoId} no participó en el partido");
+        }
+
+        if ($desafio->getIdEquipoDesafiado() === $idEquipo && $partido->getFinalizadoEquipoDesafiado() === 0) {
+            $partido->setFinalizadoEquipoDesafiado(1);
+            $esDesfiadooDesafiante = "Desafiado";
+        }
+        if ($desafio->getIdEquipoDesafiante() === $idEquipo && $partido->getFinalizadoEquipoDesafiante() === 0) {
+            $partido->setFinalizadoEquipoDesafiante(1);
+            $esDesfiadooDesafiante = "Desafiante";
+        }
 
         $fechaFinal = (new \DateTime())->format('Y-m-d H:i:s');
-        $idEstadoJugado = $this->estadoPartidoDataMapper->findIdByCode('jugado');
+        $idEstadoJugado = $this->estadoPartidoDataMapper->findIdByCode('acordado');
+        $esFinalizado = 0;
 
-        if ($partido->getIdEstadoPartido() === $idEstadoJugado) {
+        if (
+            (($desafio->getIdEquipoDesafiante() === $idEquipoRival) && $partido->getFinalizadoEquipoDesafiante() === 1)
+            || (($desafio->getIdEquipoDesafiado() === $idEquipoRival) && $partido->getFinalizadoEquipoDesafiado() === 1)
+        ) {
+            $esFinalizado = 1;
+            $idEstadoJugado = $this->estadoPartidoDataMapper->findIdByCode('jugado');
+        }
+
+        if ($partido->getIdEstadoPartido() === $this->estadoPartidoDataMapper->findIdByCode('jugado')) {
             throw new \RuntimeException('El partido ya fue finalizado');
         }
 
-        $partido->finalizar($fechaFinal, $idEstadoJugado);
+        $partido->finalizar($fechaFinal, $idEstadoJugado, $esFinalizado, $esDesfiadooDesafiante);
         $this->partidoDataMapper->updatePartido($partido);
     }
 
@@ -134,8 +189,8 @@ class PartidoServiceImpl implements PartidoService
         $partidosPendientes = $this->partidoDataMapper->getAll(['id_estado_partido' => $estadoPartidoPendiente]);
         $partidosAcordados = $this->partidoDataMapper->getAll(['id_estado_partido' => $this->estadoPartidoDataMapper->findIdByCode('acordado')]);
         $totalProximosPartidos = array_merge($partidosPendientes, $partidosAcordados);
-        $misPartidosPendientes = [];        
-        
+        $misPartidosPendientes = [];
+
         foreach ($totalProximosPartidos as $proximosPartidos) {
             // Obtenemos el desafio a partir del partido para obtener el equipo
             $getDesafio = $this->desafioDataMapper->findById(['id_partido' => $proximosPartidos->getIdPartido()]);
@@ -218,14 +273,13 @@ class PartidoServiceImpl implements PartidoService
     public function getHistorialPartidosByIdEquipo(int $idEquipo, int $page, int $perPage, string $orderBy, string $direction): array
     {
         $offset = ($page - 1) * $perPage;
-        
-        $rows = $this->historialDataMapper->findByEquipoPaginated($idEquipo, $perPage, $offset, $orderBy, $direction);
 
+        $historialPartidosEquipo = $this->historialDataMapper->findByEquipoPaginated($idEquipo, $perPage, $offset, $orderBy, $direction);
         $historialDtos = [];
         $partidosProcesados = [];
 
-        foreach ($rows as $r) {
-            $idPartido = (int) $r['id_partido'];
+        foreach ($historialPartidosEquipo as $partidoEquipo) {
+            $idPartido = (int) $partidoEquipo['id_partido'];
 
             if (isset($partidosProcesados[$idPartido])) {
                 continue;
@@ -233,36 +287,35 @@ class PartidoServiceImpl implements PartidoService
             $partidosProcesados[$idPartido] = true;
 
             $dtoLocal = $this->buildResultadoDtoPorEquipo(
-                (int) $r['id_equipo_local'],
-                (int) $r['total_amarillas_local'],
-                (int) $r['total_rojas_local'],
-                (int) $r['goles_equipo_local'],
-                (int) $r['elo_inicial_local'],
-                (int) $r['elo_final_local']
+                (int) $partidoEquipo['id_equipo_local'],
+                (int) $partidoEquipo['total_amarillas_local'],
+                (int) $partidoEquipo['total_rojas_local'],
+                (int) $partidoEquipo['goles_equipo_local'],
+                (int) $partidoEquipo['elo_inicial_local'],
+                (int) $partidoEquipo['elo_final_local']
             );
 
             $dtoVisitante = $this->buildResultadoDtoPorEquipo(
-                (int) $r['id_equipo_visitante'],
-                (int) $r['total_amarillas_visitante'],
-                (int) $r['total_rojas_visitante'],
-                (int) $r['goles_equipo_visitante'],
-                (int) $r['elo_inicial_visitante'],
-                (int) $r['elo_final_visitante']
+                (int) $partidoEquipo['id_equipo_visitante'],
+                (int) $partidoEquipo['total_amarillas_visitante'],
+                (int) $partidoEquipo['total_rojas_visitante'],
+                (int) $partidoEquipo['goles_equipo_visitante'],
+                (int) $partidoEquipo['elo_inicial_visitante'],
+                (int) $partidoEquipo['elo_final_visitante']
             );
 
-            if ($r['resultado'] === 'empate') {
+            if ($partidoEquipo['resultado'] === 'empate') {
                 $historialDtos[] = new HistorialPartidoDto(
-                    $r['fecha_finalizacion'],
+                    $partidoEquipo['fecha_finalizacion'],
                     $dtoLocal,
                     $dtoVisitante,
-                    false,
-                    true
+                    true,
                 );
             } else {
-                $idGanador = (int) $r['id_equipo_ganador'];
-                $idPerdedor = (int) $r['id_equipo_perdedor'];
-                $idLocal = (int) $r['id_equipo_local'];
-                $idVisit = (int) $r['id_equipo_visitante'];
+                $idGanador = (int) $partidoEquipo['id_equipo_ganador'];
+                $idPerdedor = (int) $partidoEquipo['id_equipo_perdedor'];
+                $idLocal = (int) $partidoEquipo['id_equipo_local'];
+                $idVisit = (int) $partidoEquipo['id_equipo_visitante'];
 
                 if ($idGanador === $idLocal) {
                     $dtoGanador = $dtoLocal;
@@ -273,7 +326,7 @@ class PartidoServiceImpl implements PartidoService
                 }
 
                 $historialDtos[] = new HistorialPartidoDto(
-                    $r['fecha_finalizacion'],
+                    $partidoEquipo['fecha_finalizacion'],
                     $dtoPerdedor,
                     $dtoGanador,
                     false
@@ -319,11 +372,10 @@ class PartidoServiceImpl implements PartidoService
         }
 
         $formularioPartido = $this->formularioPartidoDataMapper->findByIdFormularioPartido($idPartido);
-        
+
         if ($formularioPartido->getTotalIteraciones() == 5) {
             throw new \RuntimeException("El formulario llegó a su máximo de iteraciones");
         }
-
 
         return true;
     }
@@ -532,6 +584,11 @@ class PartidoServiceImpl implements PartidoService
 
     private function finalizarConFormularios(FormularioPartido $formularioLocal, FormularioPartido $formularioVisitante): void
 {
+    $idPartido = $formularioLocal->getIdPartido();
+    $existing = $this->resultadoPartidoDataMapper->findByIdPartido($idPartido);
+    if (!empty($existing)) {
+        return;
+}
     $fecha_jugado = (new DateTime())->format('Y-m-d H:i:s');
 
     $resultadoPartido = new ResultadoPartido();
@@ -669,7 +726,16 @@ class PartidoServiceImpl implements PartidoService
     {
         if ($this->validarPartido($idPartido, $idEquipo) && $this->validarPartido($idPartido, $idEquipoRival)) {
             $partido = $this->partidoDataMapper->findById(['id_partido' => $idPartido]);
-            return $partido->getIdEstadoPartido() == $this->estadoPartidoDataMapper->findIdByCode('acordado') && $this->estaFinalizado($idPartido, $idEquipo); // y mi equipo no tenga el finalizado en true
+            return $partido->getIdEstadoPartido() == $this->estadoPartidoDataMapper->findIdByCode('acordado');
+        }
+        return false;
+    }
+
+    public function partidoAcordadoYNoFinalizado(int $idEquipo, int $idEquipoRival, int $idPartido): bool
+    {
+        if ($this->validarPartido($idPartido, $idEquipo) && $this->validarPartido($idPartido, $idEquipoRival)) {
+            $partido = $this->partidoDataMapper->findById(['id_partido' => $idPartido]);
+            return $partido->getIdEstadoPartido() == $this->estadoPartidoDataMapper->findIdByCode('acordado') && $this->estaFinalizado($idPartido, $idEquipo);
         }
         return false;
     }
@@ -687,40 +753,122 @@ class PartidoServiceImpl implements PartidoService
     }
 
     public function manejarDeadlineSiCorresponde(int $idPartido): bool
-    {
-        $p = $this->partidoDataMapper->findById(['id_partido' => $idPartido]);
-        $dl = $p->getDeadlineFormulario();
-        if ($dl && new DateTime() > new DateTime($dl)) {
-            // tomo el unico formulario ingresado a tiempo (ultima iteracion)
-            $todos   = $this->formularioPartidoDataMapper
-                            ->findByIdPartidoOrderByFechaDesc($idPartido);
-            $unico   = reset($todos);
-            $rivalId = $this->getEquipoRival($idPartido, $unico->getIdEquipo());
-
-            // armo “fantasma” del rival
-            $fantasma = new FormularioPartido();
-            $fantasma->set([
-                'id_equipo'       => $rivalId,
-                'id_partido'      => $idPartido,
-                'fecha'           => (new DateTime())->format('Y-m-d H:i:s'),
-                'total_goles'     => 0,
-                'total_asistencias'=> 0,
-                'total_amarillas' => 0,
-                'total_rojas'     => 0,
-                'tipo_formulario' => $unico->getTipoFormulario() === 'FORMULARIO_MI_EQUIPO'
-                                    ? 'FORMULARIO_EQUIPO_CONTRARIO'
-                                    : 'FORMULARIO_MI_EQUIPO'
-            ]);
-
-            // marco partido como acordado y guardo
-            $this->acordarPartido($idPartido);
-            $this->formularioPartidoDataMapper->save($fantasma);
-            $this->finalizarConFormularios($unico, $fantasma);
-
-            return true;
-        }
+{
+    $p = $this->partidoDataMapper->findById(['id_partido' => $idPartido]);
+    $dl = $p->getDeadlineFormulario();
+    if (! $dl || new DateTime() <= new DateTime($dl)) {
         return false;
     }
+
+    $todos = $this->formularioPartidoDataMapper
+                  ->findByIdPartidoOrderByFechaDesc($idPartido);
+
+    if (empty($todos)) {
+        return false;
+    }
+
+    // Tomo la última iteración registrada
+    $ultimo = reset($todos);
+    $ultimaIter = $ultimo->getTotalIteraciones() ?? 0;
+
+    // Traigo el desafío para conocer desafiante/desafiado
+    $desafio = $this->desafioDataMapper->findByIdPartido($idPartido);
+    $idDesafiante = (int) $desafio->getIdEquipoDesafiante();
+    $idDesafiado   = (int) $desafio->getIdEquipoDesafiado();
+
+    // Filtrar solo formularios de la última iteración
+    $formsIter = array_filter($todos, fn($f) => ($f->getTotalIteraciones() ?? 0) == $ultimaIter);
+
+    // Agrupar por equipo y tipo (mi / contra)
+    $reported = []; // [idEquipo] => ['mi' => Formulario|null, 'contra' => Formulario|null]
+    foreach ($formsIter as $f) {
+        $idEq = $f->getIdEquipo();
+        if (!isset($reported[$idEq])) {
+            $reported[$idEq] = ['mi' => null, 'contra' => null];
+        }
+        if ($f->getTipoFormulario() === 'FORMULARIO_MI_EQUIPO') {
+            $reported[$idEq]['mi'] = $f;
+        } else {
+            $reported[$idEq]['contra'] = $f;
+        }
+    }
+
+    // Función auxiliar para obtener valor preferido: primero 'mi' del propio equipo, sino 'contra' del rival, sino 0
+    $getStat = function(int $idEquipo, int $idOtroEquipo, string $stat) use ($reported) {
+        // $stat: 'getTotalGoles' | 'getTotalAsistencias' | 'getTotalAmarillas' | 'getTotalRojas'
+        if (isset($reported[$idEquipo]['mi']) && $reported[$idEquipo]['mi']) {
+            return $reported[$idEquipo]['mi']->{$stat}() ?? 0;
+        }
+        if (isset($reported[$idOtroEquipo]['contra']) && $reported[$idOtroEquipo]['contra']) {
+            return $reported[$idOtroEquipo]['contra']->{$stat}() ?? 0;
+        }
+        return 0;
+    };
+
+    // Armar formularios "desafiante" y "desafiado" finales (si falta algún formulario creamos fantasma)
+    $formDesafiante = new FormularioPartido();
+    $formDesafiante->set([
+        'id_equipo' => $idDesafiante,
+        'id_partido' => $idPartido,
+        'fecha' => (new DateTime())->format('Y-m-d H:i:s'),
+        'total_goles' => $getStat($idDesafiante, $idDesafiado, 'getTotalGoles'),
+        'total_asistencias' => $getStat($idDesafiante, $idDesafiado, 'getTotalAsistencias'),
+        'total_amarillas' => $getStat($idDesafiante, $idDesafiado, 'getTotalAmarillas'),
+        'total_rojas' => $getStat($idDesafiante, $idDesafiado, 'getTotalRojas'),
+        'tipo_formulario' => 'FORMULARIO_MI_EQUIPO',
+        'total_iteraciones' => $ultimaIter
+    ]);
+
+    $formDesafiado = new FormularioPartido();
+    $formDesafiado->set([
+        'id_equipo' => $idDesafiado,
+        'id_partido' => $idPartido,
+        'fecha' => (new DateTime())->format('Y-m-d H:i:s'),
+        'total_goles' => $getStat($idDesafiado, $idDesafiante, 'getTotalGoles'),
+        'total_asistencias' => $getStat($idDesafiado, $idDesafiante, 'getTotalAsistencias'),
+        'total_amarillas' => $getStat($idDesafiado, $idDesafiante, 'getTotalAmarillas'),
+        'total_rojas' => $getStat($idDesafiado, $idDesafiante, 'getTotalRojas'),
+        'tipo_formulario' => 'FORMULARIO_MI_EQUIPO',
+        'total_iteraciones' => $ultimaIter
+    ]);
+
+    // Guardar fantasma si es que no existían formularios de alguno de los equipos en esa iteración
+    $toSave = [];
+    if (empty($reported[$idDesafiante]['mi']) && empty($reported[$idDesafiante]['contra'])) {
+        // No hay nada del desafiante en esa iteración: lo dejamos como fantasma (ya creado en $formDesafiante con ceros)
+        $toSave[] = $formDesafiante;
+    } else {
+        // Si existió alguno, preferimos guardar el real (si 'mi' existe lo usamos, si no 'contra' lo guardamos con tipo invertido)
+        if (!empty($reported[$idDesafiante]['mi'])) {
+            $toSave[] = $reported[$idDesafiante]['mi'];
+        } elseif (!empty($reported[$idDesafiante]['contra'])) {
+            // el 'contra' que presentó el desafiante representa al rival; para persistir coherente lo guardamos tal cual
+            $toSave[] = $reported[$idDesafiante]['contra'];
+        }
+    }
+
+    if (empty($reported[$idDesafiado]['mi']) && empty($reported[$idDesafiado]['contra'])) {
+        $toSave[] = $formDesafiado;
+    } else {
+        if (!empty($reported[$idDesafiado]['mi'])) {
+            $toSave[] = $reported[$idDesafiado]['mi'];
+        } elseif (!empty($reported[$idDesafiado]['contra'])) {
+            $toSave[] = $reported[$idDesafiado]['contra'];
+        }
+    }
+
+    // Marcar partido como acordado y persistir formularios faltantes / fantasma
+    $this->acordarPartido($idPartido);
+    foreach ($toSave as $fs) {
+        // evitar guardar duplicados: si el objeto ya tiene id en DB el save debería actualizar pero suponemos save es idempotente
+        $this->formularioPartidoDataMapper->save($fs);
+    }
+
+    // Llamar finalización con el orden que espera (desafiante, desafiado)
+    $this->finalizarConFormularios($formDesafiante, $formDesafiado);
+
+    return true;
+}
 
     public function getPartidoById(int $idPartido): ?Partido
     {

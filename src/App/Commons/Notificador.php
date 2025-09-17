@@ -18,6 +18,8 @@ interface Notificador{
     function enviarNotificacionNuevaIteracion(Equipo $equipoLocal, Equipo $equipoVisitante, int $iteracion, int $idPartido);
 
     function enviarNotificacionComentarioEquipo(Equipo $equipoComentado, Equipo $equipoComentador, Comentario $comentario);
+
+    function enviarNotificacionPartidoCancelado(Equipo $equipoQueCancela, Equipo $equipoDebeSerNotificado): void;
 }
 
 

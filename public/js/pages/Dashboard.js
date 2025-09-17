@@ -118,45 +118,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
  if (form && urlInput && urlError) {
   const acronymInput = form.querySelector('#team-acronym');
-const acronymError = form.querySelector('#acronym-error');
+  const acronymError = form.querySelector('#acronym-error');
 
-form.addEventListener('submit', e => {
-  let hayError = false;
+  form.addEventListener('submit', e => {
+    let hayError = false;
 
-  // — Validación del acrónimo —
-  const acr = acronymInput.value.trim();
-  if (acr.length > 3) {
-    hayError = true;
-    acronymError.style.display = 'block';
-    acronymError.textContent = 'El acrónimo no puede exceder 3 caracteres.';
-    acronymInput.focus();
-  } else {
-    acronymError.style.display = 'none';
-  }
+    // — Validación del acrónimo —
+    const acr = acronymInput.value.trim();
+    if (acr.length > 3) {
+      hayError = true;
+      acronymError.style.display = 'block';
+      acronymError.textContent = 'El acrónimo no puede exceder 3 caracteres.';
+      acronymInput.focus();
+    } else {
+      acronymError.style.display = 'none';
+    }
 
-  // — Validación de la URL (solo si no hubo error de acrónimo) —
-  if (!hayError) {
-    const url = urlInput.value.trim();
-    if (url !== '') {
-      const validPattern = /^https?:\/\/.+/;
-      if (url.length > 255 || !validPattern.test(url)) {
-        hayError = true;
-        urlError.style.display = 'block';
-        urlError.textContent = url.length > 255
-          ? 'La URL no puede superar 255 caracteres.'
-          : 'La URL debe empezar con http:// o https://';
-        urlInput.focus();
+    // — Validación de la URL (solo si no hubo error de acrónimo) —
+    if (!hayError) {
+      const url = urlInput.value.trim();
+      if (url !== '') {
+        const validPattern = /^https?:\/\/.+/;
+        if (url.length > 255 || !validPattern.test(url)) {
+          hayError = true;
+          urlError.style.display = 'block';
+          urlError.textContent = url.length > 255
+            ? 'La URL no puede superar 255 caracteres.'
+            : 'La URL debe empezar con http:// o https://';
+          urlInput.focus();
+        } else {
+          urlError.style.display = 'none';
+        }
       } else {
         urlError.style.display = 'none';
       }
-    } else {
-      urlError.style.display = 'none';
     }
-  }
 
-  if (hayError) {
-    e.preventDefault();
-  }
-});
+    if (hayError) {
+      e.preventDefault();
+    }
+  });
  }
 });

@@ -63,6 +63,16 @@ class NotificationService
         );
     }
 
+    public function notifyParitdoCancelado(
+        Equipo $equipoQueCancela,
+        Equipo $equipoDebeSerNotificado
+    ) {
+        $this->notificador->enviarNotificacionPartidoCancelado(
+            $equipoQueCancela,
+            $equipoDebeSerNotificado,
+        );
+    }
+
     public function notifyParitdoNoAcordado(Equipo $equipoLocal, Equipo $equipoVisitante)
     {
         $this->notificador->enviarNotificacionPartidoNoAcordado(

@@ -97,8 +97,9 @@ class PartidoController extends AbstractController
             if ($this->partidoService->manejarDeadlineSiCorresponde($id_partido)) {
                 $_SESSION['flash'] = [
                     'mensaje'    => 'Se pasó el plazo de 48 hs, el partido se dio por finalizado automáticamente con la última carga.',
-                    'finalizado' => true,
-                    'tipo'       => 'info'
+                    'finalizado' => false,
+                    'tipo'       => 'info',
+                    'acordado'   => true
                 ];
             
                 // Iteración propia
@@ -158,7 +159,7 @@ class PartidoController extends AbstractController
                 $this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo()),
             );
         } else {
-            $miFormulario =  new FormularioPartidoDto(
+            $miFormulario = new FormularioPartidoDto(
                 $miEquipo->getIdEquipo(),
                 $id_partido,
                 0,
@@ -190,9 +191,11 @@ class PartidoController extends AbstractController
             );
         }
 
-        if ($this->partidoService->partidoAcordado($miEquipo->getIdEquipo(), $this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo()), $id_partido)) {
+        $equipoRival = $this->partidoService->getEquipoRival($id_partido, $miEquipo->getIdEquipo());
+        $_SESSION['flash']['acordado'] = $this->partidoService->partidoAcordado($miEquipo->getIdEquipo(), $equipoRival, $id_partido);
+        $_SESSION['flash']['finalizado'] = $this->partidoService->partidoAcordadoYNoFinalizado($miEquipo->getIdEquipo(), $equipoRival, $id_partido);
+        if ($this->partidoService->partidoAcordadoYNoFinalizado($miEquipo->getIdEquipo(), $equipoRival, $id_partido)) {
             $_SESSION['flash']['mensaje'] = $this->generarMensajeEstado(ProcesarFormularioEstado::PARTIDO_TERMINADO);
-            $_SESSION['flash']['finalizado'] = true;
         }
         $this->logger->info('>>> formularioPartidoContrario ' . 
         ($formularioPartidoContrario ? 'OK id=' . $formularioPartidoContrario->getIdPartido() : 'NULL'));
@@ -228,6 +231,34 @@ class PartidoController extends AbstractController
     {
         header("HTTP/1.1 404 Not Found");
         require $this->viewsDir . 'errors/not-found.php';
+    }
+
+    public function cancelarPartido()
+    {
+        $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($userData->id_equipo);
+        $idMiEquipo = $miEquipo->getIdEquipo();
+
+        $id_partido = filter_input(INPUT_GET, 'id_partido', FILTER_VALIDATE_INT);
+        if (!$id_partido || $id_partido < 1) {
+            $this->renderNotFound();
+            return;
+        }
+
+        try {
+            $response = $this->partidoService->cancelarPartido($id_partido, $idMiEquipo);
+            if ($response) {
+                $_SESSION['message'] = "Se canceló el partido correctamente y se notificó al rival.";
+            }
+
+        } catch (\InvalidArgumentException $e) {
+            $_SESSION['error'] = $e->getMessage();
+        } catch (\Throwable $e) {
+            $_SESSION['error'] = "Ocurrió un error inesperado. Intenta de nuevos.";
+        }
+        
+        header("Location: /dashboard");
+        exit;
     }
 
 
@@ -317,7 +348,7 @@ class PartidoController extends AbstractController
         $idPartido = $input['id_partido'];
         $idEquipoRival = $input['id_equipo_rival'];
 
-        if (! $this->partidoService->partidoAcordado($idMiEquipo, $idEquipoRival, $idPartido)) {
+        if (!$this->partidoService->partidoAcordado($idMiEquipo, $idEquipoRival, $idPartido)) {
             throw new \DomainException('No se puede terminar un partido no acordado');
         }
 

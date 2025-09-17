@@ -17,8 +17,10 @@
 /* Lado izquierdo con logo y badge de nivel */
 .nm-card-side {
   position: relative;
-  width: 30%; /* Ajusta según tu preferencia */
-  min-width: 100px; /* Para que no se achique demasiado */
+  width: 30%;
+  /* Ajusta según tu preferencia */
+  min-width: 100px;
+  /* Para que no se achique demasiado */
 }
 
 .nm-team-image {
@@ -60,8 +62,7 @@
 }
 
 .nm-team-record {
-  font-size: 0.9rem;
-  color: var(--contrast-text-color);
+  font-size: 1.2rem;
 }
 
 /* Cuerpo: iconos, lema */
@@ -118,6 +119,7 @@
   flex: 1;
   transition: transform 0.1s;
 }
+
 .nm-btn-secondary:hover {
   transform: scale(1.02);
 }
@@ -132,8 +134,11 @@
   cursor: pointer;
   flex: 1;
   transition: transform 0.1s;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 .nm-btn-primary:hover {
   transform: scale(1.02);
 }
@@ -143,10 +148,12 @@
   background-color: var(--button-cancel-background-color);
   color: var(--contrast-text-color);
   border: none;
-  padding: 0.5rem 0.75rem;
   border-radius: 0.25rem;
   cursor: pointer;
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: transform 0.1s;
 }
 
@@ -164,19 +171,25 @@
   .nm-card {
     flex-direction: column;
   }
+
   .nm-card-side {
     width: 100%;
     min-width: unset;
   }
+
   .nm-team-image {
-    padding-top: 50%; /* más rectangular en pantallas pequeñas */
+    padding-top: 50%;
+    /* más rectangular en pantallas pequeñas */
   }
+
   .nm-card-main {
     padding: 0.5rem 0.75rem;
   }
+
   .nm-card-actions {
     flex-direction: column;
   }
+
   .nm-btn-secondary,
   .nm-btn-primary,
   .nm-btn-danger {

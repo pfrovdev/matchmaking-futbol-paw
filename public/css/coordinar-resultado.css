@@ -1,6 +1,6 @@
 @import url('./base.css');
-@import url('./header.css');
-@import url('./footer.css');
+@import url('./parts/header.css');
+@import url('./parts/footer.css');
 @import url('./side-navbar.css');
 
 /* Contenedor principal del formulario */
@@ -60,6 +60,13 @@
   box-sizing: border-box;
   margin: 0;
   padding: 1rem;
+}
+
+.btn-enviar, .btn-calificar {
+  display: flex;
+  height: 3rem;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Título del equipo (local/visitante) */
@@ -227,6 +234,7 @@
   border-radius: 0.5rem;
   font-size: 1rem;
   line-height: 1.4;
+  flex-direction: row;
 }
 
 .alert-success {
@@ -246,6 +254,7 @@
   background-color: #fce8e8;
   color: #cc0000;
   border: 1px solid #cc0000;
+  flex-direction: row;
 }
 
 .alert.alert-warning {
@@ -367,7 +376,7 @@
 /* Contenedor de los botones finales */
 .final-buttons-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   gap: 1rem;
   margin-top: 2rem;
   flex-wrap: wrap;
@@ -375,14 +384,7 @@
 
 .final-buttons-container form,
 .final-buttons-container button {
-  display: inline-flex;
   width: auto;
-  margin-top: 0;
-}
-
-.final-buttons-container .btn {
-  padding: 0.8rem 1.5rem;
-  min-width: 120px;
 }
 
 /* Tutorial overlay */
@@ -532,22 +534,6 @@
   transform: scale(1.05);
 }
 
-/* Contenedor de los botones finales */
-.final-buttons-container {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 2rem;
-  flex-wrap: wrap;
-}
-
-.final-buttons-container .btn {
-  flex: 0 1 auto;
-  padding: 0.8rem 1.5rem;
-  min-width: 180px;
-  font-size: 1rem;
-}
-
 /* Estilos del Modal (ventana flotante) */
 .modal {
   display: none;
@@ -619,6 +605,73 @@
   cursor: pointer;
 }
 
+@media (max-width: 600px) {
+  .forms-wrapper {
+    flex-direction: column;
+    padding: 0;
+    border: none;
+    gap: 0;
+    align-items: stretch;
+  }
+
+  .form-column {
+    width: 100%;
+    padding: 0;
+    min-width: unset;
+    flex: unset;
+    max-width: unset;
+  }
+
+  .container form {
+    flex-direction: column;
+  }
+
+  .form-column {
+    display: none;
+  }
+
+  .form-column.active {
+    display: block;
+  }
+
+  .tab-nav {
+    display: flex;
+    width: 100%;
+    border-bottom: 2px solid var(--muted-text-color);
+    margin-bottom: 1rem;
+  }
+
+  .tab-button {
+    flex: 1;
+    padding: 0.8rem 0.5rem;
+    text-align: center;
+    background-color: #f0f0f0;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--text-color);
+    transition: background-color 0.3s, border-bottom-color 0.3s;
+    border-radius: 0;
+  }
+
+  .tab-button.active {
+    background-color: var(--background-contents);
+    border-bottom-color: var(--primary-color);
+    color: var(--primary-color);
+  }
+
+  .tab-button:hover:not(.active) {
+    background-color: #e0e0e0;
+  }
+
+  .form-column .form-team {
+    padding: 1rem;
+    border: 1px solid var(--muted-text-color);
+    border-radius: 0.5rem;
+  }
+}
+
 /* Media Queries para responsividad */
 @media (max-width: 768px) {
   .tutorial-modal {
@@ -685,78 +738,5 @@
 @media (max-width: 1024px) {
   .container {
     margin: 0 7rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .container {
-    margin: 0 3rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .forms-wrapper {
-    flex-direction: column;
-    padding: 0;
-    border: none;
-    gap: 0;
-    align-items: stretch;
-  }
-
-  .form-column {
-    width: 100%;
-    padding: 0;
-    min-width: unset;
-    flex: unset;
-    max-width: unset;
-  }
-
-  .container form {
-    flex-direction: column;
-  }
-
-  .form-column {
-    display: none;
-  }
-
-  .form-column.active {
-    display: block;
-  }
-
-  .tab-nav {
-    display: flex;
-    width: 100%;
-    border-bottom: 2px solid var(--muted-text-color);
-    margin-bottom: 1rem;
-  }
-
-  .tab-button {
-    flex: 1;
-    padding: 0.8rem 0.5rem;
-    text-align: center;
-    background-color: #f0f0f0;
-    border: none;
-    border-bottom: 2px solid transparent;
-    cursor: pointer;
-    font-weight: bold;
-    color: var(--text-color);
-    transition: background-color 0.3s, border-bottom-color 0.3s;
-    border-radius: 0;
-  }
-
-  .tab-button.active {
-    background-color: var(--background-contents);
-    border-bottom-color: var(--primary-color);
-    color: var(--primary-color);
-  }
-
-  .tab-button:hover:not(.active) {
-    background-color: #e0e0e0;
-  }
-
-  .form-column .form-team {
-    padding: 1rem;
-    border: 1px solid var(--muted-text-color);
-    border-radius: 0.5rem;
   }
 }

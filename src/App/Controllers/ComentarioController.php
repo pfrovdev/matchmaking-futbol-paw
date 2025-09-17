@@ -65,18 +65,38 @@ class ComentarioController extends AbstractController
         ];
 
 
-        if (empty($input['idEquipoComentado']) || empty($input['id_partido']) || empty($input['deportividad']) || trim($input['comentario']) === '' || $input['deportividad'] < 0 || $input['deportividad'] > 5) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Datos inválidos.']);
-            echo json_encode($input);
+        if (empty($input['idEquipoComentado']) || empty($input['id_partido'])) {
+            $_SESSION['error'] = "Faltan datos obligatorios del partido.";
+            header('Location: ' . '/coordinar-resultado?id_partido=' . $input['id_partido']);
             return;
         }
 
-        if (! $this->partidoService->partidoAcordado(
-            $idEquipoComentador,
-            $input['idEquipoComentado'],
-            $input['id_partido']
-        )) {
+        if ($input['deportividad'] === false) {
+            $_SESSION['error'] = "Debes ingresar una calificación de deportividad.";
+            header('Location: ' . '/coordinar-resultado?id_partido=' . $input['id_partido']);
+            return;
+        }
+
+        if (trim($input['comentario']) === '') {
+            $_SESSION['error'] = "El comentario no puede estar vacío.";
+            header('Location: ' . '/coordinar-resultado?id_partido=' . $input['id_partido']);
+            return;
+        }
+
+        if ($input['deportividad'] < 1 || $input['deportividad'] > 5) {
+            $_SESSION['error'] = "La calificación debe estar entre 1 y 5.";
+            header('Location: ' . '/coordinar-resultado?id_partido=' . $input['id_partido']);
+            return;
+        }
+
+
+        if (
+            !$this->partidoService->partidoAcordado(
+                $idEquipoComentador,
+                $input['idEquipoComentado'],
+                $input['id_partido']
+            )
+        ) {
             throw new \DomainException('No se puede comentar un partido no acordado');
         }
 

@@ -36,10 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (Date.now() >= deadline) {
         clearInterval(tick);
         if (submitBtn) {
-            submitBtn.disabled = true;
             submitBtn.textContent = 'Plazo vencido';
         }
-        alert('Se superó el plazo de coordinación; se tomó tu último resultado cargado.');
+        alert('Se superó el plazo de coordinación; se tomó el último resultado cargado.');
         }
     }, 1000);
     }

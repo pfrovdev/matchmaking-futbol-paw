@@ -2,6 +2,7 @@
 
 namespace Paw\App\Controllers;
 
+use Exception;
 use Monolog\Logger;
 use Paw\App\Services\DesafioService;
 use Paw\App\Services\EquipoService;
@@ -136,28 +137,50 @@ class DesafioController extends AbstractController
     }
 
     public function createDesafio(): void
-    {
-        $this->verificarMetodoPOST();
+{
+    $this->verificarMetodoPOST();
 
-        $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
-        $miEquipo = $this->equipoService->getEquipoById($userData->id_equipo);
-        $referer = $_SERVER['HTTP_REFERER'] ?? '/dashboard';
+    $userData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+    $miEquipo = $this->equipoService->getEquipoById($userData->id_equipo);
 
-        $id_equipo_desafiar = filter_input(INPUT_POST, 'id_equipo_desafiar', FILTER_VALIDATE_INT);
-        if (!$id_equipo_desafiar || $id_equipo_desafiar === $miEquipo->getIdEquipo()) {
-            $this->redirigirConError($referer, 'ID de equipo a desafiar inválido.');
-            return;
+    $returnRaw = filter_input(INPUT_POST, 'return_to', FILTER_SANITIZE_URL);
+    if ($returnRaw) {
+        $parts = parse_url($returnRaw);
+        $path = $parts['path'] ?? '/search-team';
+        $query = isset($parts['query']) ? '?' . $parts['query'] : '';
+        if (substr($path, 0, 1) !== '/') {
+            $referer = '/search-team';
+        } else {
+            $referer = $path . $query;
         }
-
-        try {
-            $desafio = $this->desafioService->createDesafio($miEquipo->getIdEquipo(), $id_equipo_desafiar);
-            $equipoDesafiado = $this->equipoService->getEquipoById($id_equipo_desafiar);
-
-            $this->notificationService->notifyDesafioCreated($miEquipo, $equipoDesafiado, $desafio);
-            header('Location: ' . $referer);
-            exit;
-        } catch (Exception $e) {
-            $this->redirigirConError($referer, 'Error al crear el desafío.');
-        }
+    } else {
+        $ref = $_SERVER['HTTP_REFERER'] ?? '';
+        $parts = parse_url($ref);
+        $path = $parts['path'] ?? '/search-team';
+        $query = isset($parts['query']) ? '?' . $parts['query'] : '';
+        $referer = (substr($path, 0, 1) === '/') ? $path . $query : '/search-team';
     }
+
+    $id_equipo_desafiar = filter_input(INPUT_POST, 'id_equipo_desafiar', FILTER_VALIDATE_INT);
+    if ($this->desafioService->existeDesafioPendiente($miEquipo->getIdEquipo(), $id_equipo_desafiar)) {
+        $this->redirigirConError($referer, "El equipo que intenta desafiar ya fue desafiado previamente y se encuentra en estado pendiente de aprobación.");
+        return;
+    }
+    if (!$id_equipo_desafiar || $id_equipo_desafiar === $miEquipo->getIdEquipo()) {
+        $this->redirigirConError($referer, 'ID de equipo a desafiar inválido.');
+        return;
+    }
+
+    try {
+        $desafio = $this->desafioService->createDesafio($miEquipo->getIdEquipo(), $id_equipo_desafiar);
+        $equipoDesafiado = $this->equipoService->getEquipoById($id_equipo_desafiar);
+
+        $this->notificationService->notifyDesafioCreated($miEquipo, $equipoDesafiado, $desafio);
+        $_SESSION['success'] = 'Desafío enviado correctamente. Se notificó al equipo rival.';
+        header('Location: ' . $referer);
+        exit;
+    } catch (Exception $e) {
+        $this->redirigirConError($referer, 'Error al crear el desafío.');
+    }
+}
 }

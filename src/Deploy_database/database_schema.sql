@@ -235,8 +235,7 @@ CREATE TABLE
         FOREIGN KEY (id_equipo_visitante) REFERENCES Equipo (id_equipo)
     );
 
-CREATE
-OR REPLACE VIEW v_historial_partidos AS
+CREATE OR REPLACE VIEW v_historial_partidos AS
 SELECT
     p.id_partido,
     p.fecha_finalizacion,
@@ -267,16 +266,11 @@ SELECT
         WHEN r.resultado = 'gano_local' THEN r.id_equipo_visitante
         WHEN r.resultado = 'gano_visitante' THEN r.id_equipo_local
     END AS id_equipo_perdedor
-FROM
-    Partido p
-    JOIN Desafio d ON d.id_partido = p.id_partido
-    JOIN ResultadoPartido r ON r.id_partido = p.id_partido
-WHERE
-    p.id_estado_partido = (
-        SELECT
-            id_estado_partido
-        FROM
-            EstadoPartido
-        WHERE
-            descripcion_corta = 'acordado' or 'jugado'
-    );
+FROM Partido p
+JOIN Desafio d 
+    ON d.id_partido = p.id_partido
+JOIN ResultadoPartido r 
+    ON r.id_partido = p.id_partido
+JOIN EstadoPartido ep
+    ON ep.id_estado_partido = p.id_estado_partido
+WHERE ep.descripcion_corta IN ('jugado');
