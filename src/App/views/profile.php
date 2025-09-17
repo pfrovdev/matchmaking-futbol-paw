@@ -21,42 +21,41 @@ unset($_SESSION['errors']);
     <script src="./js/components/modals.js"></script>
     <script src="/js/sidebar.js"></script>
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "SportsTeam",
-        "name": "<?= htmlspecialchars($equipoBanner->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>",
-        "alternateName": "<?= htmlspecialchars($miEquipo->fields['acronimo'], ENT_QUOTES, 'UTF-8') ?>",
-        "description": "<?= htmlspecialchars($equipoBanner->getLema(), ENT_QUOTES, 'UTF-8') ?>",
-        "sport": "Soccer",
-        "identifier": {
-            "@type": "PropertyValue",
-            "name": "Elo Ranking",
-            "value": "<?= htmlspecialchars($equipoBanner->getEloActual(), ENT_QUOTES, 'UTF-8') ?>"
-        },
-        "gender": "<?= htmlspecialchars($equipoBanner->getTipoEquipo(), ENT_QUOTES, 'UTF-8') ?>",
-        <?php if ($equipoBanner->getUrlFotoPerfil()): ?> "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
-        <?php endif; ?> "location": {
-            "@type": "Place",
-            "geo": {
-                "@type": "GeoCoordinates",
-                "latitude": <?= $equipoBanner->getLatitud() ?>,
-                "longitude": <?= $equipoBanner->getLongitud() ?>
+        {
+            "@context": "https://schema.org",
+            "@type": "SportsTeam",
+            "name": "<?= htmlspecialchars($equipoBanner->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>",
+            "alternateName": "<?= htmlspecialchars($miEquipo->fields['acronimo'], ENT_QUOTES, 'UTF-8') ?>",
+            "description": "<?= htmlspecialchars($equipoBanner->getLema(), ENT_QUOTES, 'UTF-8') ?>",
+            "sport": "Soccer",
+            "identifier": {
+                "@type": "PropertyValue",
+                "name": "Elo Ranking",
+                "value": "<?= htmlspecialchars($equipoBanner->getEloActual(), ENT_QUOTES, 'UTF-8') ?>"
+            },
+            "gender": "<?= htmlspecialchars($equipoBanner->getTipoEquipo(), ENT_QUOTES, 'UTF-8') ?>",
+            <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
+                "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
+            <?php endif; ?>
+            "location": {
+                "@type": "Place",
+                "geo": {
+                    "@type": "GeoCoordinates",
+                    "latitude": <?= $equipoBanner->getLatitud() ?>,
+                    "longitude": <?= $equipoBanner->getLongitud() ?>
+                }
             }
         }
-    }
-    }
     </script>
 </head>
 
 <body data-profile-id="<?= $equipoVistoId ?>" data-is-owner="false">
-
     <?php
     $estaLogueado = !!$miEquipo->getIdEquipo();
     require "parts/header.php";
     ?>
     <?php require "parts/side-navbar.php"; ?>
     <main>
-
         <div class="dashboard-container">
             <?php
             if (!empty($errors)) {
@@ -67,17 +66,16 @@ unset($_SESSION['errors']);
             ?>
             <!-- GRID PRINCIPAL -->
             <div class="dashboard-grid">
-
                 <!-- Columna Izquierda -->
                 <section class="col-left">
                     <!-- Card 1: Perfil -->
                     <div class="card perfil-card">
                         <div class="perfil-foto">
                             <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
-                            <img src="<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>"
-                                alt="Foto de perfil">
+                                <img src="<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>"
+                                    alt="Foto de perfil">
                             <?php else: ?>
-                            <div class="placeholder-foto">Sin foto de equipo</div>
+                                <div class="placeholder-foto">Sin foto de equipo</div>
                             <?php endif; ?>
                         </div>
                         <div class="perfil-info">
@@ -88,11 +86,11 @@ unset($_SESSION['errors']);
                             <div class="sport-icons">
                                 Deportividad:
                                 <?php for ($i = 1; $i <= 5; $i++): ?>
-                                <?php if ($i <= $equipoBanner->getDeportividad()): ?>
-                                <span class="icon">⚽</span>
-                                <?php else: ?>
-                                <span class="icon" style="opacity: 0.4; color: grey;">⚽</span>
-                                <?php endif; ?>
+                                    <?php if ($i <= $equipoBanner->getDeportividad()): ?>
+                                        <span class="icon">⚽</span>
+                                    <?php else: ?>
+                                        <span class="icon" style="opacity: 0.4; color: grey;">⚽</span>
+                                    <?php endif; ?>
                                 <?php endfor; ?>
                                 <?= "(" . $cantidadDeVotos . ")" ?>
                             </div>
@@ -111,45 +109,42 @@ unset($_SESSION['errors']);
                                     $porcentaje = ($hasta > $desde)
                                         ? min(100, max(0, (($eloActual - $desde) / ($hasta - $desde)) * 100))
                                         : 0;
-                                    ?>
-                            <div class="elo-bar">
-                                <span class="label"><?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?></span>
-                                <div class="bar-bg">
-                                    <div class="bar-fill" style="background: <?= htmlspecialchars($gradient, ENT_QUOTES, 'UTF-8') ?>;
-                                                                        width: <?= round($porcentaje, 2) ?>%">
+                                ?>
+                                    <div class="elo-bar">
+                                        <span class="label"><?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?></span>
+                                        <div class="bar-bg">
+                                            <div class="bar-fill" style="background: <?= htmlspecialchars($gradient, ENT_QUOTES, 'UTF-8') ?>;
+                                                width: <?= round($porcentaje, 2) ?>%">
+                                            </div>
+                                        </div>
                                     </div>
-                                    <?php
-                                endif;
-                            endforeach;
-                            ?>
-                                    <form action="/desafios" method="POST" class="form-desafiar">
-                                        <input type="hidden" name="id_equipo_desafiar"
-                                            value="<?= htmlspecialchars($equipoBanner->getIdEquipo(), ENT_QUOTES, 'UTF-8') ?>">
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                            <form action="/desafios" method="POST" class="form-desafiar">
+                                <input type="hidden" name="id_equipo_desafiar"
+                                    value="<?= htmlspecialchars($equipoBanner->getIdEquipo(), ENT_QUOTES, 'UTF-8') ?>">
+                                <button type="submit" name="submit_my_form"
+                                    class="button btn-desafiar btn-desafiar-profile">
+                                    <span class="btn-text">Desafiar</span>
+                                    <span class="spinner" style="display:none;"></span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
 
-                                        <button type="submit" name="submit_my_form"
-                                            class="button btn-desafiar btn-desafiar-profile">
-                                            <span class="btn-text">Desafiar</span>
-                                            <span class="spinner" style="display:none;"></span>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-
-
-                            <!-- Card 2: historial de partidos -->
-                            <div class="card history-card">
-                                <h3 class="title-subsection">Historial de partidos</h3>
-                                <div class="comment-filter">
-                                    <label for="filtroHistorial">Ordenar por:</label>
-                                    <select id="filtroHistorial" name="filtroHistorial">
-                                        <option value="fecha_finalizacion-DESC" selected>Más recientes</option>
-                                        <option value="fecha_finalizacion-ASC">Más antiguos</option>
-                                    </select>
-                                </div>
-                                <div id="history-list" class="history-list"></div>
-                                <div id="history-pagination" class="pagination"></div>
-                            </div>
-
+                    <!-- Card 2: historial de partidos -->
+                    <div class="card history-card">
+                        <h3 class="title-subsection">Historial de partidos</h3>
+                        <div class="comment-filter">
+                            <label for="filtroHistorial">Ordenar por:</label>
+                            <select id="filtroHistorial" name="filtroHistorial">
+                                <option value="fecha_finalizacion-DESC" selected>Más recientes</option>
+                                <option value="fecha_finalizacion-ASC">Más antiguos</option>
+                            </select>
+                        </div>
+                        <div id="history-list" class="history-list"></div>
+                        <div id="history-pagination" class="pagination"></div>
+                    </div>
                 </section>
 
                 <!-- Columna Derecha -->
@@ -175,9 +170,8 @@ unset($_SESSION['errors']);
                         <div id="comment-pagination" class="pagination"></div>
                     </div>
                 </aside>
-
             </div>
-
+        </div>
     </main>
     <?php
     $success = $_SESSION['success'] ?? null;
@@ -187,13 +181,13 @@ unset($_SESSION['errors']);
     ?>
     <?php require "parts/footer.php"; ?>
     <script>
-    const levelsEloMap = <?= json_encode(array_map(function ($row) {
-            return [
-                'descripcion' => $row['descripcion'],
-                'color_inicio' => $row['color_inicio'],
-                'color_fin' => $row['color_fin'],
-            ];
-        }, $listLevelsElo)) ?>;
+        const levelsEloMap = <?= json_encode(array_map(function ($row) {
+                                    return [
+                                        'descripcion' => $row['descripcion'],
+                                        'color_inicio' => $row['color_inicio'],
+                                        'color_fin' => $row['color_fin'],
+                                    ];
+                                }, $listLevelsElo)) ?>;
     </script>
 </body>
 
