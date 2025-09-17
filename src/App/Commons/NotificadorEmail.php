@@ -50,7 +50,7 @@ class NotificadorEmail implements Notificador
     public function enviarNotificacionPartidoCancelado(Equipo $equipoQueCancela, Equipo $equipoDebeSerNotificado): void
     {
         $this->enviarEmail(
-            $equipoDebeSerNotificado->fields['email'] ?? throw new Exception("Email destinatario no puede ser nulo id_equipo: {$equipoDesafiante->fields['id_equipo']}"),
+            $equipoDebeSerNotificado->fields['email'] ?? throw new Exception("Email destinatario no puede ser nulo id_equipo: {$equipoDebeSerNotificado->fields['id_equipo']}"),
             "{$equipoQueCancela->fields['nombre']} canceló el partido",
             $this->cancelarPartidoTemplate,
             [
