@@ -10,12 +10,13 @@ use Paw\App\Controllers\AuthController;
 use Paw\App\Controllers\DesafioController;
 use Paw\App\Controllers\EquipoController;
 use Paw\App\Controllers\ErrorController;
+use Paw\App\Controllers\EstadisticaController;
 use Paw\App\Controllers\PageController;
 use Paw\App\Controllers\PartidoController;
 use Paw\App\DataMapper\ComentarioDataMapper;
 use Paw\App\DataMapper\DesafioDataMapper;
 use Paw\App\DataMapper\EquipoDataMapper;
-use Paw\App\DataMapper\EstaditicasDataMapper;
+use Paw\App\DataMapper\EstadisticaDataMapper;
 use Paw\App\DataMapper\EstadoDesafioDataMapper;
 use Paw\App\DataMapper\EstadoPartidoDataMapper;
 use Paw\App\DataMapper\FormularioPartidoDataMapper;
@@ -27,11 +28,13 @@ use Paw\App\DataMapper\TipoEquipoDataMapper;
 use Paw\App\Services\ComentarioEquipoService;
 use Paw\App\Services\DesafioService;
 use Paw\App\Services\EquipoService;
+use Paw\App\Services\EstadisticaService;
 use Paw\App\Services\PartidoService;
 use Paw\App\Services\NotificationService;
 use Paw\App\Services\Impl\ComentarioEquipoServiceImpl;
 use Paw\App\Services\Impl\DesafioServiceImpl;
 use Paw\App\Services\Impl\EquipoServiceImpl;
+use Paw\App\Services\Impl\EstadisticaServiceImpl;
 use Paw\App\Services\Impl\PartidoServiceImpl;
 use Paw\Core\Database\QueryBuilder;
 use Paw\Core\JWT\JsonFileStorage;
@@ -85,7 +88,7 @@ class ContainerConfig
             $c->get(QueryBuilder::class),
             $logger
         ));
-        $c->set(EstaditicasDataMapper::class, fn($c) => new EstaditicasDataMapper(
+        $c->set(EstadisticaDataMapper::class, fn($c) => new EstadisticaDataMapper(
             $c->get(QueryBuilder::class),
             $logger
         ));
@@ -138,7 +141,7 @@ class ContainerConfig
             $c->get(ResultadoPartidoDataMapper::class),
             $c->get(FormularioPartidoDataMapper::class),
             $c->get(NotificationService::class),
-            $c->get(EstaditicasDataMapper::class)
+            $c->get(EstadisticaDataMapper::class)
         ));
 
         $c->set(EquipoService::class, fn($c) => new EquipoServiceImpl(
@@ -165,6 +168,12 @@ class ContainerConfig
             $c->get(Notificador::class)
         ));
 
+        $c->set(EstadisticaService::class, fn($c) => new EstadisticaServiceImpl(
+            $c->get(EstadisticaDataMapper::class),
+            $c->get(ResultadoPartidoDataMapper::class),
+            $c->get(HistorialPartidoDataMapper::class)
+        ));
+
         // Controllers
 
         $c->set(PageController::class, fn($c) => new PageController(
@@ -180,8 +189,8 @@ class ContainerConfig
             $c->get(NotificationService::class),
             $c->get(ComentarioEquipoService::class),
             $c->get(AuthMiddelware::class),
-              $c->get(EstaditicasDataMapper::class),
-              $c->get(ResultadoPartidoDataMapper::class),
+            $c->get(EstadisticaDataMapper::class),
+            $c->get(ResultadoPartidoDataMapper::class),
         ));
 
         $c->set(DesafioController::class, fn($c) => new DesafioController(
@@ -217,6 +226,13 @@ class ContainerConfig
         $c->set(ErrorController::class, fn($c) => new ErrorController(
             $logger,
             $c->get(AuthMiddelware::class)
+        ));
+
+        $c->set(EstadisticaController::class, fn($c) => new EstadisticaController(
+            $logger,
+            $c->get(AuthMiddelware::class),
+            $c->get(EquipoService::class),
+            $c->get(EstadisticaService::class)
         ));
     }
 }

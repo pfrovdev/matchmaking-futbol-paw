@@ -5,7 +5,7 @@ use Monolog\Logger;
 use Paw\App\Models\Estadisticas;
 use Paw\Core\Database\QueryBuilder;
 
-class EstaditicasDataMapper extends DataMapper
+class EstadisticaDataMapper extends DataMapper
 {
     public function __construct(QueryBuilder $qb, Logger $logger)
     {

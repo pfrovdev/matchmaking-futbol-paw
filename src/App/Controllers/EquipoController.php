@@ -3,7 +3,7 @@
 namespace Paw\App\Controllers;
 
 use Monolog\Logger;
-use Paw\App\DataMapper\EstaditicasDataMapper;
+use Paw\App\DataMapper\EstadisticaDataMapper;
 use Paw\App\DataMapper\ResultadoPartidoDataMapper;
 use Paw\App\Dtos\EquipoBannerDto;
 use Paw\App\Models\Equipo;
@@ -23,7 +23,7 @@ class EquipoController extends AbstractController
     private DesafioService $desafioService;
     private NotificationService $notificationService;
     private ComentarioEquipoService $comentarioEquipoService;
-    private EstaditicasDataMapper $estadisticasDataMapper;
+    private EstadisticaDataMapper $estadisticasDataMapper;
     private ResultadoPartidoDataMapper $resultadoPartidoDataMapper;
 
     public function __construct(
@@ -34,7 +34,7 @@ class EquipoController extends AbstractController
         NotificationService $notificationService,
         ComentarioEquipoService $comentarioEquipoService,
         AuthMiddelware $auth,
-        EstaditicasDataMapper $estadisticasDataMapper,
+        EstadisticaDataMapper $estadisticasDataMapper,
         ResultadoPartidoDataMapper $resultadoPartidoDataMapper
     ) {
         parent::__construct($logger, $auth);
@@ -239,8 +239,8 @@ class EquipoController extends AbstractController
 
         if ($id_equipo) {
             try {
-                if($this->desafioService->existeDesafioPendiente($miEquipo->getIdEquipo(), $id_equipo)){
-                     $_SESSION['errors'] = ["El equipo la que intenta desafiar ya fue desafiado previamente y se encuentra en estado pendiente de aprobación."];
+                if ($this->desafioService->existeDesafioPendiente($miEquipo->getIdEquipo(), $id_equipo)) {
+                    $_SESSION['errors'] = ["El equipo la que intenta desafiar ya fue desafiado previamente y se encuentra en estado pendiente de aprobación."];
                     header('Location: /search-team');
                     exit;
                 }
@@ -268,7 +268,7 @@ class EquipoController extends AbstractController
             'lng' => $longitud,
             'radio_km' => $radio_km
         ];
-        
+
         $listLevelsElo = $this->equipoService->getAllNivelElo();
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
         $todosLosEquipos = $this->equipoService->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);
@@ -298,12 +298,7 @@ class EquipoController extends AbstractController
             exit;
         }
 
-        $latitud = filter_input(INPUT_GET, 'lat', FILTER_VALIDATE_FLOAT);
-        $longitud = filter_input(INPUT_GET, 'lng', FILTER_VALIDATE_FLOAT);
-        $radio_km = filter_input(INPUT_GET, 'radius_km', FILTER_VALIDATE_FLOAT);
-        $id_nivel_elo = filter_input(INPUT_GET, 'id_nivel_elo', FILTER_VALIDATE_INT);
-
-        $orden = $_GET['orden'] ?? 'asc';
+        $orden = $_GET['orden'] ?? 'desc';
         $orden = in_array($orden, ['asc', 'desc', 'alpha']) ? $orden : 'asc';
 
         $paginaActual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT);
@@ -312,17 +307,9 @@ class EquipoController extends AbstractController
         $offset = ($paginaActual - 1) * $porPagina;
 
         $orderBy = $orden === 'alpha' ? 'nombre' : 'elo_actual';
-        $direction = $orden === 'alpha' ? 'ASC' : strtoupper($orden);
+        $direction = $orden === 'alpha' ? 'DESC' : strtoupper($orden);
 
         $selectParams = [];
-        if ($id_nivel_elo) {
-            $selectParams['id_nivel_elo'] = $id_nivel_elo;
-        }
-        if ($latitud && $longitud && $radio_km) {
-            $selectParams['lat'] = $latitud;
-            $selectParams['lng'] = $longitud;
-            $selectParams['radio_km'] = $radio_km;
-        }
 
         $listLevelsElo = $this->equipoService->getAllNivelElo();
         $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
