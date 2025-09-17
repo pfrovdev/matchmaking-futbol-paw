@@ -1,8 +1,11 @@
 <?php
-    $errors = $_SESSION['errors'] ?? [];
-    $email = $_SESSION['email'] ?? '';
-    unset($_SESSION['errors']);
-    unset($_SESSION['email']);
+$errors = $_SESSION['errors'] ?? [];
+$email = $_SESSION['email'] ?? '';
+$success = $_SESSION['success'] ?? '';
+
+unset($_SESSION['errors']);
+unset($_SESSION['email']);
+unset($_SESSION['success']);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -16,12 +19,12 @@
 </head>
 
 <body>
-    
+
     <?php
-        $estaLogueado = false;
-        require "parts/header.php";
+    $estaLogueado = false;
+    require "parts/header.php";
     ?>
-    
+
     <main>
         <section class="container register-container">
 
@@ -30,11 +33,17 @@
                 <p>Ingresá tus credenciales aquí</p>
             </header>
 
+            <?php if (!empty($success)): ?>
+                <section>
+                    <p class="alert alert-success"><?php echo htmlspecialchars($success, ENT_QUOTES, 'UTF-8'); ?></p>
+                </section>
+            <?php endif; ?>
+
             <!-- Errores -->
             <?php if (!empty($errors)): ?>
                 <section class="error-messages">
                     <?php foreach ($errors as $error): ?>
-                        <p class="error-text"><?php echo htmlspecialchars($error,  ENT_QUOTES, 'UTF-8'); ?></p>
+                        <p class="error-text"><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></p>
                     <?php endforeach; ?>
                 </section>
             <?php endif; ?>
@@ -44,7 +53,8 @@
                 <form action="/login" method="POST" class="form-container login-container">
                     <label for="email">Correo electrónico *</label>
                     <input type="email" id="email" name="email" placeholder="ej: email@gmail.com"
-                        value="<?php echo htmlspecialchars($email,  ENT_QUOTES, 'UTF-8'); ?>" required>
+                        value="<?php echo !empty($email) ? htmlspecialchars($email, ENT_QUOTES, 'UTF-8') : ''; ?>"
+                        required>
 
                     <label for="password">Contraseña *</label>
                     <div class="input-with-icon">

@@ -174,6 +174,7 @@ class EquipoController extends AbstractController
 
         if ($this->equipoService->saveNewTeam($equipo)) {
             $_SESSION['email'] = $equipoTemp['email'];
+            $_SESSION['success'] = "Tu cuenta se creó con éxito. ¡Ya podés iniciar sesión!";
             header('Location: /login');
             exit;
         }

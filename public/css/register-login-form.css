@@ -130,6 +130,13 @@
   filter: brightness(0.95);
 }
 
+.alert-success {
+  background-color: #d4f7e0;
+  color: #085f32;
+  border: 1px solid var(--button-primary-background-color);
+  flex-direction: column;
+}
+
 .login-link {
   font-size: .9rem;
   color: #666;
