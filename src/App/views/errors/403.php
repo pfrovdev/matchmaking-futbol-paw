@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <title>Página no encontrada</title>
-    <link rel="stylesheet" href="./css/not-found.css">
+    <title>Error 403 - Acceso prohibido</title>
+    <link rel="stylesheet" href="./css/errors.css">
 </head>
+
 <body>
-    <section class="not-found-container">
+    <main class="error-container">
         <h1>Error 403</h1>
-        <p>No tienes permiso para acceder a esta sección.</p>
-        <a href="/">Volver al inicio</a>
-    </section>
+        <p>No tienes permiso para acceder a esta sección, incluso si estás autenticado.</p>
+        <a href="/" aria-label="Volver a la página principal" class="button">Volver al inicio</a>
+    </main>
 </body>
+
 </html>

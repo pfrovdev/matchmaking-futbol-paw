@@ -194,9 +194,10 @@ class EquipoController extends AbstractController
         $equipoVistoId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT) ?: $miEquipo->getIdEquipo();
         $isOwner = ($equipoVistoId === $miEquipo->getIdEquipo());
 
-        $equipoVisto = $this->equipoService->getEquipoById($equipoVistoId);
-        if (!$equipoVisto) {
-            header("HTTP/1.1 404 Not Found");
+        try {
+            $equipoVisto = $this->equipoService->getEquipoById($equipoVistoId);
+        } catch (\Exception $e) {
+            http_response_code(404);
             require $this->viewsDir . 'errors/not-found.php';
             exit;
         }
@@ -353,9 +354,10 @@ class EquipoController extends AbstractController
             exit;
         }
 
-        $equipo = $this->equipoService->getEquipoById($id_equipo);
-        if (!$equipo) {
-            header("HTTP/1.1 404 Not Found");
+        try {
+            $equipo = $this->equipoService->getEquipoById($id_equipo);
+        } catch (\Exception $e) {
+            http_response_code(404);
             require $this->viewsDir . 'errors/not-found.php';
             exit;
         }

@@ -125,7 +125,8 @@ class AuthMiddelware
     {
         $this->logger->error("[AuthMiddelware] Unauthorized: {$message}", $context);
         http_response_code(401);
-        echo json_encode(['error' => $message]);
+
+        require __DIR__ . "/../../App/views/errors/401.php";
         exit;
     }
 
@@ -133,7 +134,8 @@ class AuthMiddelware
     {
         $this->logger->warning("[AuthMiddelware] Forbidden: {$message}", $context);
         http_response_code(403);
-        echo json_encode(['error' => $message]);
+
+        require __DIR__ . "/../../App/views/errors/403.php";
         exit;
     }
 }
