@@ -55,7 +55,7 @@ $mostrar_estadisticas ?? true;
                     </p>
                 </div>
                 <div class="team-actions">
-                    <a href="/details-team?id=<?= urlencode((string) $equipo->getIdEquipo()) ?>"
+                    <a href="/dashboard?id=<?= urlencode((string) $equipo->getIdEquipo()) ?>"
                         class="button btn-profile">
                         Ver perfil
                     </a>
