@@ -4,6 +4,7 @@ metadata:
   name: app-config
 data:
   APP_NAME: futbol-matchmaking
+  APP_ENV: development
 
   DB_NAME: match_making_db
   DB_USER: aeps_user
@@ -11,10 +12,10 @@ data:
   DB_PORT: "3306"
 
   JWT_ALG: HS256
-  JWT_APP_URL: http://localhost:9999
+  JWT_APP_URL: http://34.30.100.40/
   JWT_EXP_SEGUNDOS: "3600"
-  JWT_ACCESS_TTL: "3600"
-  JWT_REFRESH_TTL: "86400"
+  JWT_ACCESS_TTL: "900"
+  JWT_REFRESH_TTL: "604800"
   JWT_REFRESH_WINDOW: "3600"
 
   MAIL_DRIVER: smtp
