@@ -47,6 +47,10 @@ reset_db: down_db
 insertar_datos_demo:
 	php src/Deploy_database/insert_demo_data.php
 
+# Borrar datos demo
+delte_datos_demo:
+	php src/Deploy_database/clean_db.php
+
 # Insertar datos demo- para prod
 insertar_datos_demo_prod:
 	kubectl exec -it web-78ff657cb9-6k8bv -- php src/Deploy_database/insert_demo_data.php

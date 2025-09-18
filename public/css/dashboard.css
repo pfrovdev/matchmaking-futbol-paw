@@ -246,6 +246,10 @@
   margin-bottom: 0.75rem;
 }
 
+.alert-error {
+  flex-direction: column;
+}
+
 .nm-card {
   width: 100%;
 }
@@ -371,7 +375,9 @@
 
 .modal-actions {
   display: flex;
-  justify-content: flex-end;
+  background: none;
+  justify-content: center;
+  align-items: center;
   gap: .5rem;
   margin-top: 1rem;
 }
@@ -424,7 +430,6 @@
   padding: 1rem;
   box-sizing: border-box;
 }
-
 
 .modal-overlay.hidden {
   display: none !important;
@@ -484,7 +489,6 @@
 
 .modal-actions {
   display: flex;
-  justify-content: flex-end;
   gap: .5rem;
   margin-top: 1rem;
 }

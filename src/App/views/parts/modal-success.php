@@ -1,19 +1,23 @@
 <?php
 $visibleClass = $success ? '' : 'hidden';
 ?>
-<div id="success-modal-overlay" class="modal-overlay <?= $visibleClass ?>" aria-hidden="<?= $success ? 'false' : 'true' ?>">
-  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="success-modal-title">
-    <button id="success-modal-close" class="modal-close" aria-label="Cerrar">&times;</button>
+<aside id="success-modal-overlay" class="modal-overlay <?= $visibleClass ?>"
+  aria-hidden="<?= $success ? 'false' : 'true' ?>" aria-labelledby="success-modal-title"
+  aria-describedby="success-modal-text" role="dialog">
 
-    <div class="modal-header">
-      <div class="modal-icon">✓</div>
+  <article class="modal-content">
+    <header class="modal-header">
+      <button id="success-modal-close" class="modal-close" aria-label="Cerrar ventana">&times;</button>
+      <span class="modal-icon" aria-hidden="true">✓</span>
       <h2 id="success-modal-title" class="modal-title">¡Listo!</h2>
-    </div>
+    </header>
 
-    <div class="modal-body" id="success-modal-text"><?= htmlspecialchars($success ?? '', ENT_QUOTES, 'UTF-8') ?></div>
+    <section id="success-modal-text" class="modal-body">
+      <?= htmlspecialchars($success ?? '', ENT_QUOTES, 'UTF-8') ?>
+    </section>
 
-    <div class="modal-actions">
+    <footer class="modal-actions">
       <button id="success-modal-ok" class="modal-ok-button">Aceptar</button>
-    </div>
-  </div>
-</div>
+    </footer>
+  </article>
+</aside>

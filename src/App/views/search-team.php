@@ -4,6 +4,9 @@ unset($_SESSION['errors']);
 $queryParams = $_GET;
 unset($queryParams['page']);
 
+$success = $_SESSION['success'] ?? null;
+unset($_SESSION['success']);
+
 $nombre = trim($_GET['nombre'] ?? '');
 $rangoSelected = $_GET['rango'] ?? '';
 $rangoSelectedId = isset($_GET['id_nivel_elo']) ? (int) $_GET['id_nivel_elo'] : '';
@@ -37,11 +40,11 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
     <script src="./js/maps.js" defer></script>
+    <script src="./js/components/modals.js"></script>
     <script src="./js/pages/search-team.js" defer></script>
     <script src="./js/components/spinner.js" defer></script>
     <script src="./js/sidebar.js"></script>
     <script src="./js/filtros.js" defer></script>
-    <script src="./js/components/modals.js" defer></script>
 
     <?php if (!empty($equipos)): ?>
         <script type="application/ld+json">
@@ -254,7 +257,7 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                 <section class="limpiar-filtros">
                     <button id="clearFilters" class="button" type="button">Limpiar filtros</button>
                 </section>
-                <div id="modalOverlay" class="modal-overlay"></div>
+                <div id="modalOverlayInfo" class="modal-overlay-info"></div>
             </aside>
 
             <section class="rigth-size">
@@ -273,15 +276,11 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                 </ul>
             </section>
         </section>
-
     </main>
     <?php
-    $success = $_SESSION['success'] ?? null;
-    unset($_SESSION['success']);
     if ($success)
         require __DIR__ . '/parts/modal-success.php';
     ?>
-
     <?php require "parts/footer.php"; ?>
 </body>
 

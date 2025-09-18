@@ -15,10 +15,10 @@ document.addEventListener('DOMContentLoaded', function () {
       btnOk && btnOk.focus();
     }
   
-    if (!overlay.classList.contains('hidden')) {
-      show();
-      setTimeout(hide, 4000);
-    }
+    // if (!overlay.classList.contains('hidden')) {
+    //   show();
+    //   setTimeout(hide, 4000);
+    // }
   
     btnClose && btnClose.addEventListener('click', hide);
     btnOk && btnOk.addEventListener('click', hide);

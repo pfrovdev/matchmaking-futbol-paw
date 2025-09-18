@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const filtersModal = document.getElementById("filtersModal");
   const orderModal = document.getElementById("orderModal");
   const closeButtons = document.querySelectorAll(".close-modal");
-  const overlay = document.getElementById("modalOverlay");
+  const overlay = document.getElementById("modalOverlayInfo");
 
   const openModal = (modal) => {
     modal.classList.add("show");
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const closeFiltersModal = () => {
     const filtersModal = document.getElementById("filtersModal");
-    const overlay = document.getElementById("modalOverlay");
+    const overlay = document.getElementById("modalOverlayInfo");
     const orderModal = document.getElementById("orderModal");
     
     filtersModal?.classList.remove("show");

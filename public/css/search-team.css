@@ -196,7 +196,8 @@ aside input[type="radio"] {
 
 .modal-actions {
   display: flex;
-  justify-content: flex-end;
+  background: none;
+  justify-content: center;
   gap: .5rem;
   margin-top: 1rem;
 }
@@ -292,7 +293,6 @@ aside input[type="radio"] {
 
 .modal-actions {
   display: flex;
-  justify-content: flex-end;
   gap: .5rem;
   margin-top: 1rem;
 }
@@ -324,7 +324,31 @@ aside input[type="radio"] {
   cursor: pointer;
 }
 
+.modal-overlay.show {
+  display: flex;
+}
+
+.modal-overlay:not(.hidden) .modal-content {
+  animation: modal-appear 220ms cubic-bezier(.2, .9, .3, 1) both;
+}
+
 .modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999 !important;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.modal-overlay.hidden {
+  display: none !important;
+}
+
+.modal-overlay-info {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
@@ -332,7 +356,7 @@ aside input[type="radio"] {
   z-index: 9998;
 }
 
-.modal-overlay.show {
+.modal-overlay-info.show {
   display: block;
 }
 

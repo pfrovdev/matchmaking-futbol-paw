@@ -21,31 +21,29 @@ unset($_SESSION['errors']);
     <script src="./js/components/modals.js"></script>
     <script src="/js/sidebar.js"></script>
     <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "SportsTeam",
-            "name": "<?= htmlspecialchars($equipoBanner->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>",
-            "alternateName": "<?= htmlspecialchars($miEquipo->fields['acronimo'], ENT_QUOTES, 'UTF-8') ?>",
-            "description": "<?= htmlspecialchars($equipoBanner->getLema(), ENT_QUOTES, 'UTF-8') ?>",
-            "sport": "Soccer",
-            "identifier": {
-                "@type": "PropertyValue",
-                "name": "Elo Ranking",
-                "value": "<?= htmlspecialchars($equipoBanner->getEloActual(), ENT_QUOTES, 'UTF-8') ?>"
-            },
-            "gender": "<?= htmlspecialchars($equipoBanner->getTipoEquipo(), ENT_QUOTES, 'UTF-8') ?>",
-            <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
-                "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
-            <?php endif; ?>
-            "location": {
-                "@type": "Place",
-                "geo": {
-                    "@type": "GeoCoordinates",
-                    "latitude": <?= $equipoBanner->getLatitud() ?>,
-                    "longitude": <?= $equipoBanner->getLongitud() ?>
-                }
+    {
+        "@context": "https://schema.org",
+        "@type": "SportsTeam",
+        "name": "<?= htmlspecialchars($equipoBanner->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>",
+        "alternateName": "<?= htmlspecialchars($miEquipo->fields['acronimo'], ENT_QUOTES, 'UTF-8') ?>",
+        "description": "<?= htmlspecialchars($equipoBanner->getLema(), ENT_QUOTES, 'UTF-8') ?>",
+        "sport": "Soccer",
+        "identifier": {
+            "@type": "PropertyValue",
+            "name": "Elo Ranking",
+            "value": "<?= htmlspecialchars($equipoBanner->getEloActual(), ENT_QUOTES, 'UTF-8') ?>"
+        },
+        "gender": "<?= htmlspecialchars($equipoBanner->getTipoEquipo(), ENT_QUOTES, 'UTF-8') ?>",
+        <?php if ($equipoBanner->getUrlFotoPerfil()): ?> "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
+        <?php endif; ?> "location": {
+            "@type": "Place",
+            "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": <?= $equipoBanner->getLatitud() ?>,
+                "longitude": <?= $equipoBanner->getLongitud() ?>
             }
         }
+    }
     </script>
 </head>
 
@@ -109,7 +107,7 @@ unset($_SESSION['errors']);
                                     $porcentaje = ($hasta > $desde)
                                         ? min(100, max(0, (($eloActual - $desde) / ($hasta - $desde)) * 100))
                                         : 0;
-                                ?>
+                                    ?>
                                     <div class="elo-bar">
                                         <span class="label"><?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?></span>
                                         <div class="bar-bg">
@@ -182,12 +180,12 @@ unset($_SESSION['errors']);
     <?php require "parts/footer.php"; ?>
     <script>
         const levelsEloMap = <?= json_encode(array_map(function ($row) {
-                                    return [
-                                        'descripcion' => $row['descripcion'],
-                                        'color_inicio' => $row['color_inicio'],
-                                        'color_fin' => $row['color_fin'],
-                                    ];
-                                }, $listLevelsElo)) ?>;
+            return [
+                'descripcion' => $row['descripcion'],
+                'color_inicio' => $row['color_inicio'],
+                'color_fin' => $row['color_fin'],
+            ];
+        }, $listLevelsElo)) ?>;
     </script>
 </body>
 

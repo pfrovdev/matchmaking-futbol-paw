@@ -83,6 +83,13 @@ unset($_SESSION['errors']);
         <?php unset($_SESSION['message']); ?>
       <?php endif; ?>
 
+      <?php if (!empty($_SESSION['error'])): ?>
+        <section class="alert alert-error">
+          <?= htmlspecialchars($_SESSION['error']) ?>
+        </section>
+        <?php unset($_SESSION['error']); ?>
+      <?php endif; ?>
+
       <!-- GRID PRINCIPAL -->
       <div class="dashboard-grid">
 
