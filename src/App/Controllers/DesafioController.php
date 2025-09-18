@@ -101,6 +101,7 @@ class DesafioController extends AbstractController
 
             $desafiante = $this->equipoService->getEquipoById($desafio->getIdEquipoDesafiante());
             $this->notificationService->notifyDesafioAccepted($equipo, $desafiante, $desafio);
+            $_SESSION['success'] = 'El desafío fue ACEPTADO. Se notificó al equipo "' . $desafiante->getNombre() . '"';
             header('Location: /dashboard');
         } catch (Exception $e) {
             $this->redirigirConError('/dashboard', 'Error al aceptar el desafío.');
@@ -129,7 +130,7 @@ class DesafioController extends AbstractController
 
             $desafiante = $this->equipoService->getEquipoById($desafio->getIdEquipoDesafiante());
             $this->notificationService->notifyDesafioRejected($equipo, $desafiante, $desafio);
-
+            $_SESSION['success'] = 'El desafío fue RECHAZADO. Se notificó al equipo "' . $desafiante->getNombre() . '"';
             header('Location: /dashboard');
         } catch (Exception $e) {
             $this->redirigirConError('/dashboard', 'Error al rechazar el desafío.');

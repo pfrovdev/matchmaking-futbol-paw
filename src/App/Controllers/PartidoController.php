@@ -361,6 +361,7 @@ class PartidoController extends AbstractController
         }
 
         $this->partidoService->terminarPartido($idPartido, $idMiEquipo, $idEquipoRival);
+        $_SESSION['success'] = 'Has dado el partido como finalizado. Se notificó al equipo rival';
 
         header("Location: /dashboard");
         exit;
