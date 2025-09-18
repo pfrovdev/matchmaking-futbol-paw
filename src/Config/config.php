@@ -2,7 +2,7 @@
 
 return [
     // Entorno de la aplicación
-    'debug' => true,
+    'debug' => false,
 
     // Configuración de logs
     'log' => [
@@ -27,7 +27,7 @@ return [
         ['path' => '/dashboard', 'action' => 'EquipoController@dashboard', 'method' => 'GET'],
         ['path' => '/ranking-teams', 'action' => 'EquipoController@rankingTeams', 'method' => 'GET'],
         ['path' => '/details-team', 'action' => 'EquipoController@detailsTeam', 'method' => 'GET'],
-        
+
         // POST Methods
         ['path' => '/register', 'action' => 'EquipoController@register', 'method' => 'POST'],
         ['path' => '/register-team', 'action' => 'EquipoController@registerTeam', 'method' => 'POST'],
@@ -43,9 +43,9 @@ return [
         // === DesafioController ===
         // GET Methods
         ['path' => '/desafios', 'action' => 'DesafioController@index', 'method' => 'GET'],
-        
+
         // POST Methods
-        ['path' => '/desafios','action' => 'DesafioController@createDesafio', 'method' => 'POST'],
+        ['path' => '/desafios', 'action' => 'DesafioController@createDesafio', 'method' => 'POST'],
         ['path' => '/accept-desafio', 'action' => 'DesafioController@aceptarDesafio', 'method' => 'POST'],
         ['path' => '/reject-desafio', 'action' => 'DesafioController@rechazarDesafio', 'method' => 'POST'],
 
