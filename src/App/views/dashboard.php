@@ -77,7 +77,7 @@ unset($_SESSION['success']);
   <?php require "parts/side-navbar.php"; ?>
   <main>
 
-    <div class="dashboard-container">
+    <section class="dashboard-container">
       <?php if (!empty($_SESSION['message'])): ?>
         <section class="alert alert-info">
           <?= htmlspecialchars($_SESSION['message']) ?>
@@ -95,27 +95,18 @@ unset($_SESSION['success']);
       <!-- GRID PRINCIPAL -->
       <div class="dashboard-grid">
 
-
-
         <!-- Columna Izquierda -->
         <section class="col-left">
           <!-- Card 1: Perfil -->
-          <div class="card perfil-card">
-            <div class="perfil-foto">
+          <article class="card perfil-card">
+            <figure class="perfil-foto">
               <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
-                <?php
-                $foto = $equipoBanner->getUrlFotoPerfil();
-                if (!filter_var($foto, FILTER_VALIDATE_URL)) {
-                  $foto = 'icons/defaultTeamIcon.png';
-                }
-                ?>
-                <img src="<?= htmlspecialchars($foto, ENT_QUOTES, 'UTF-8') ?>" alt="Foto de perfil">
+                <img src="<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>"
+                  alt="Foto de perfil del equipo <?= htmlspecialchars($equipoBanner->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>">
               <?php else: ?>
-                <div class="placeholder-foto">Coloca la foto de tu equipo aquí<br>
-                  <button class="btn-link">Cargando un enlace</button>
-                </div>
+                <figcaption class="placeholder-foto">Sin foto de equipo</figcaption>
               <?php endif; ?>
-            </div>
+            </figure>
             <div class="perfil-info">
               <h2 class="team-header">
                 <?= htmlspecialchars($equipoBanner->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>
@@ -127,7 +118,7 @@ unset($_SESSION['success']);
               </h2>
               <p class="lema"><?= htmlspecialchars($equipoBanner->getLema(), ENT_QUOTES, 'UTF-8') ?></p>
               <div class="sport-icons">
-                Deportividad:
+                <span>Deportividad:</span>
                 <!-- Faltaria hacer algo tipo, hasta la cantidad que me mandan
                 pongo pelotitas, y relleno hasta 5 espacios vacios -->
                 <?php for ($i = 1; $i <= 5; $i++): ?>
@@ -173,7 +164,7 @@ unset($_SESSION['success']);
               ?>
 
             </div>
-          </div>
+          </article>
 
           <!-- Card 2: historial de partidos -->
           <div class="card history-card">
@@ -185,13 +176,13 @@ unset($_SESSION['success']);
                 <option value="fecha_finalizacion-ASC">Más antiguos</option>
               </select>
             </div>
-            <div id="history-list" class="history-list"></div>
-            <div id="history-pagination" class="pagination"></div>
+            <ul id="history-list" class="history-list"></ul>
+            <nav id="history-pagination" class="pagination" aria-label="Paginación de historial"></nav>
           </div>
 
 
           <!-- Card 3: Desafíos recibidos -->
-          <div class="card challenges-card">
+          <section class="card challenges-card">
             <h3 class="title-subsection">Últimos desafíos recibidos</h3>
             <div class="comment-filter">
               <label for="filtroDesafios">Ordenar por:</label>
@@ -201,8 +192,8 @@ unset($_SESSION['success']);
               </select>
             </div>
             <ul id="challenge-list" class="challenge-list"></ul>
-            <div id="desafios-pagination" class="pagination"></div>
-          </div>
+            <nav id="desafios-pagination" class="pagination"></nav>
+          </section>
         </section>
 
         <!-- Columna Derecha -->
@@ -213,7 +204,7 @@ unset($_SESSION['success']);
           </section>
 
           <!-- Card 5: Comentarios -->
-          <div class="card comments-card">
+          <section class="card comments-card">
             <h3 class="title-subsection">Comentarios</h3>
             <div class="comment-filter">
               <label for="filtroComentarios">Ordenar por:</label>
@@ -225,8 +216,8 @@ unset($_SESSION['success']);
               </select>
             </div>
             <ul id="comment-list" class="comment-list"></ul>
-            <div id="comment-pagination" class="pagination"></div>
-          </div>
+            <nav id="comment-pagination" class="pagination"></nav>
+          </section>
         </aside>
 
         <!-- SECCIÓN INFERIOR: Proximos partidos full-width -->
@@ -240,11 +231,11 @@ unset($_SESSION['success']);
             </select>
           </div>
           <ul class="match-list" id="match-list"></ul>
-          <div class="pagination" id="partidos-pagination"></div>
+          <nav class="pagination" id="partidos-pagination"></nav>
         </section>
 
       </div>
-      <div id="edit-team-modal" class="modal-overlay hidden">
+      <section id="edit-team-modal" class="modal-overlay hidden">
         <div class="modal-content">
           <button id="close-modal" class="modal-close">&times;</button>
           <h2>Editar perfil de equipo</h2>
@@ -272,8 +263,8 @@ unset($_SESSION['success']);
             </small>
             <button type="submit" class="btn-primary">Guardar</button>
           </form>
-        </div>
-      </div>
+      </section>
+    </section>
   </main>
   <?php
   if ($success)

@@ -54,7 +54,7 @@ unset($_SESSION['errors']);
     ?>
     <?php require "parts/side-navbar.php"; ?>
     <main>
-        <div class="dashboard-container">
+        <section class="dashboard-container">
             <?php
             if (!empty($errors)) {
                 $type = "error";
@@ -67,22 +67,22 @@ unset($_SESSION['errors']);
                 <!-- Columna Izquierda -->
                 <section class="col-left">
                     <!-- Card 1: Perfil -->
-                    <div class="card perfil-card">
-                        <div class="perfil-foto">
+                    <article class="card perfil-card">
+                        <figure class="perfil-foto">
                             <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
                                 <img src="<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>"
-                                    alt="Foto de perfil">
+                                    alt="Foto de perfil del equipo <?= htmlspecialchars($equipoBanner->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>">
                             <?php else: ?>
-                                <div class="placeholder-foto">Sin foto de equipo</div>
+                                <figcaption class="placeholder-foto">Sin foto de equipo</figcaption>
                             <?php endif; ?>
-                        </div>
+                        </figure>
                         <div class="perfil-info">
                             <h2>
                                 <?= htmlspecialchars($equipoBanner->getNombreEquipo(), ENT_QUOTES, 'UTF-8') . " (" . htmlspecialchars($miEquipo->fields['acronimo'], ENT_QUOTES, 'UTF-8') . ")" ?>
                             </h2>
                             <p class="lema"><?= htmlspecialchars($equipoBanner->getLema(), ENT_QUOTES, 'UTF-8') ?></p>
                             <div class="sport-icons">
-                                Deportividad:
+                                <span>Deportividad:</span>
                                 <?php for ($i = 1; $i <= 5; $i++): ?>
                                     <?php if ($i <= $equipoBanner->getDeportividad()): ?>
                                         <span class="icon">⚽</span>
@@ -128,10 +128,10 @@ unset($_SESSION['errors']);
                                 </button>
                             </form>
                         </div>
-                    </div>
+                    </article>
 
                     <!-- Card 2: historial de partidos -->
-                    <div class="card history-card">
+                    <section class="card history-card">
                         <h3 class="title-subsection">Historial de partidos</h3>
                         <div class="comment-filter">
                             <label for="filtroHistorial">Ordenar por:</label>
@@ -140,9 +140,9 @@ unset($_SESSION['errors']);
                                 <option value="fecha_finalizacion-ASC">Más antiguos</option>
                             </select>
                         </div>
-                        <div id="history-list" class="history-list"></div>
-                        <div id="history-pagination" class="pagination"></div>
-                    </div>
+                        <ul id="history-list" class="history-list"></ul>
+                        <nav id="history-pagination" class="pagination" aria-label="Paginación de historial"></nav>
+                    </section>
                 </section>
 
                 <!-- Columna Derecha -->
@@ -153,7 +153,7 @@ unset($_SESSION['errors']);
                     </section>
 
                     <!-- Card 5: Comentarios -->
-                    <div class="card comments-card">
+                    <section class="card comments-card">
                         <h3 class="title-subsection">Comentarios</h3>
                         <div class="comment-filter">
                             <label for="filtroComentarios">Ordenar por:</label>
@@ -165,11 +165,11 @@ unset($_SESSION['errors']);
                             </select>
                         </div>
                         <ul id="comment-list" class="comment-list"></ul>
-                        <div id="comment-pagination" class="pagination"></div>
-                    </div>
+                        <nav id="comment-pagination" class="pagination"></nav>
+                    </section>
                 </aside>
             </div>
-        </div>
+        </section>
     </main>
     <?php
     $success = $_SESSION['success'] ?? null;
