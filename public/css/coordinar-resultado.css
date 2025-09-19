@@ -183,6 +183,15 @@
   flex-shrink: 0;
 }
 
+.progress-list {
+  display: flex;
+  flex-direction: row;
+  gap: .5rem;
+}
+
+.coordinar-resultado h2 {
+  font-size: .9rem;
+}
 
 /* Iconos de calificación (estrellas) */
 .rating-icon {
@@ -376,6 +385,7 @@
 
 /* Contenedor de los botones finales */
 .final-buttons-container {
+  background: none;
   display: flex;
   justify-content: space-around;
   gap: 1rem;
@@ -593,6 +603,8 @@
   right: 20px;
   cursor: pointer;
   transition: color 0.3s ease;
+  border: none;
+  background: none;
 }
 
 .close-button:hover,
@@ -739,5 +751,9 @@
 @media (max-width: 1024px) {
   .container {
     margin: 0 1rem;
+  }
+
+  .coordinar-resultado h2 {
+    font-size: .8em;
   }
 }

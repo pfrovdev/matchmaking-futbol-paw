@@ -119,9 +119,9 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
             <h1>Coordinar resultado</h1>
 
             <?php if (!empty($_SESSION['error'])): ?>
-                <div class="alert alert-error">
+                <p class="alert alert-error">
                     <?= htmlspecialchars($_SESSION['error']) ?>
-                </div>
+                </p>
                 <?php unset($_SESSION['error']); ?>
             <?php endif; ?>
             <?php
@@ -136,9 +136,9 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                     <strong id="deadline-txt"><?= htmlspecialchars($formattedDate) ?></strong>
                 </p>
             <?php endif; ?>
-            <div class="alert alert-<?= htmlspecialchars($statusType) ?>">
+            <p class="alert alert-<?= htmlspecialchars($statusType) ?>">
                 <?= htmlspecialchars($statusMessage) ?>
-            </div>
+            </p>
 
 
             <?php if ($mostrarSubtitlo): ?>
@@ -151,18 +151,23 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                 </p>
             <?php endif; ?>
 
-            <div class="progress-bar-container">
-                <?php for ($i = 0; $i < $maxIntentos; $i++): ?>
-                    <span class="progress-dot <?= ($i < $miUltimaIteracion) ? 'filled' : '' ?>"></span>
-                <?php endfor; ?>
-                <span class="progress-text">Intento
-                    <?= htmlspecialchars($miUltimaIteracion) ?>/<?= htmlspecialchars($maxIntentos) ?></span>
+            <div class="progress-bar-container" role="progressbar"
+                aria-valuenow="<?= htmlspecialchars($miUltimaIteracion) ?>" aria-valuemin="0"
+                aria-valuemax="<?= htmlspecialchars($maxIntentos) ?>">
+                <ul class="progress-list">
+                    <?php for ($i = 0; $i < $maxIntentos; $i++): ?>
+                        <li class="progress-dot <?= ($i < $miUltimaIteracion) ? 'filled' : '' ?>"></li>
+                    <?php endfor; ?>
+                </ul>
+                <span class="progress-text">
+                    Intento <?= htmlspecialchars($miUltimaIteracion) ?>/<?= htmlspecialchars($maxIntentos) ?>
+                </span>
             </div>
 
-            <div class="forms-wrapper">
+            <section class="forms-wrapper">
                 <!-- Formulario propio -->
-                <div class="form-column my-form-column active" id="my-form">
-                    <strong>Tu formulario (Iteración: <?= htmlspecialchars($miUltimaIteracion + 1) ?>)</strong>
+                <article class="form-column my-form-column active" id="my-form">
+                    <h2>Tu formulario (Iteración: <?= htmlspecialchars($miUltimaIteracion + 1) ?>)</h2>
                     <form method="POST" action="/coordinar-resultado?id_partido=<?= htmlspecialchars($id_partido) ?>"
                         class="form-team">
                         <?php
@@ -209,11 +214,15 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                         <?php endif; ?>
 
                     </form>
-                </div>
+                </article>
 
                 <!-- Formulario rival -->
-                <div class="form-column rival-form-column" id="rival-form">
-                    <strong><?= $formularioPartidoContrario->getIteracionActual() == 0 ? 'El rival aún no cargó su primer formulario' : 'Formulario del rival (Iteración: ' . htmlspecialchars($formularioPartidoContrario->getIteracionActual()) . ')' ?></strong>
+                <article class="form-column rival-form-column" id="rival-form">
+                    <h2>
+                        <?= $formularioPartidoContrario->getIteracionActual() == 0
+                            ? 'El rival aún no cargó su primer formulario'
+                            : 'Formulario del rival (Iteración: ' . htmlspecialchars($formularioPartidoContrario->getIteracionActual()) . ')' ?>
+                    </h2>
                     <form class="form-team">
                         <?php
                         // Campos Locales
@@ -258,11 +267,11 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                         <?php endif; ?>
 
                     </form>
-                </div>
-            </div>
+                </article>
+            </section>
 
             <?php if ($mostrarBotonTerminarPartido): ?>
-                <div class="final-buttons-container">
+                <footer class="final-buttons-container">
                     <form action="/terminar-partido" method="POST" style="display:inline;">
                         <input type="hidden" name="id_partido" value="<?= htmlspecialchars($id_partido) ?>">
                         <input type="hidden" name="id_equipo_rival"
@@ -273,11 +282,12 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                         </button>
                     </form>
                     <button class="button" type="button" id="btnCalificarDeportividad">Calificar deportividad</button>
-                </div>
+                </footer>
 
                 <div id="calificacionModal" class="modal">
                     <div class="modal-content">
-                        <span class="close-button">&times;</span>
+                        <!-- <span class="close-button">&times;</span> -->
+                        <button type="button" class="close-button" aria-label="Cerrar">&times;</button>
                         <form id="formCalificacion" action="/comentarios" method="POST" class="form-calificar">
                             <h3>Califica la deportividad del equipo rival</h3>
                             <div class="rating-group" id="ratingGroup">
