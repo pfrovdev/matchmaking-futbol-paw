@@ -97,6 +97,7 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
             <h1>Buscar desafío</h1>
             <p>Busca rivales, por rango o zona</p>
         </header>
+
         <?php
         if (!empty($errors)) {
             $type = "error";
@@ -108,15 +109,15 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
         <section class="search-container">
             <aside class="left-size">
                 <!-- Botones Mobile -->
-                <div class="mobile-controls">
+                <nav class="mobile-controls">
                     <button id="openFiltersBtn" class="mobile-btn">Filtros</button>
                     <button id="openOrderBtn" class="mobile-btn">Ordenar</button>
-                </div>
+                </nav>
 
                 <!-- Modal filtros (mobile) -->
-                <div id="filtersModal" class="mobile-modal hidden">
+                <section id="filtersModal" class="mobile-modal hidden" role="dialog" aria-labelledby="filtersTitle">
                     <div class="mobile-modal-content">
-                        <button class="close-modal">&times;</button>
+                        <button class="close-modal" aria-label="Cerrar filtros">&times;</button>
                         <h2>Filtros</h2>
 
                         <form method="get" action="/search-team" data-form="search">
@@ -134,7 +135,7 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
 
                         <section class="mobile-location-filter">
                             <h2 id="zona-busqueda">Zona de búsqueda</h2>
-                            <form method="GET" data-form="map-mobile">
+                            <form method="GET" data-form="map-mobile" aria-labelledby="zona-busqueda-mobile">
                                 <input type="hidden" id="latMobile" name="lat"
                                     value="<?= htmlspecialchars($_GET['lat'] ?? '', ENT_QUOTES, 'UTF-8') ?>" />
                                 <input type="hidden" id="lngMobile" name="lng"
@@ -156,15 +157,16 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                                 <div id="map-mobile"
                                     data-team-zone="<?php echo htmlspecialchars($equipo_temp['team-zone'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                                 </div>
+                                <figcaption>Mapa de zona de búsqueda</figcaption>
                             </figure>
                         </section>
                     </div>
-                </div>
+                </section>
 
                 <!-- Modal orden (mobile) -->
-                <div id="orderModal" class="mobile-modal hidden">
+                <section id="orderModal" class="mobile-modal hidden" role="dialog" aria-labelledby="orderTitle">
                     <div class="mobile-modal-content">
-                        <button class="close-modal">&times;</button>
+                        <button class="close-modal" aria-label="Cerrar orden">&times;</button>
                         <h2>Ordenar por</h2>
                         <form class="radio-btns" method="get" data-form="orden">
                             <input type="hidden" name="id_nivel_elo"
@@ -184,10 +186,10 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                             </label><br>
                         </form>
                     </div>
-                </div>
+                </section>
 
                 <!-- Filtros desktop -->
-                <div class="desktop-filters">
+                <section class="desktop-filters">
                     <h2>Filtros</h2>
                     <form method="get" action="/search-team" data-form="search">
                         <input type="text" name="nombre" placeholder="Ejemplo FC"
@@ -203,10 +205,10 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                     <?php if (!empty($listLevelsElo)): ?>
                         <?php require "parts/filtro-por-rango.php"; ?>
                     <?php endif; ?>
-                </div>
+                </section>
 
                 <!-- Orden desktop -->
-                <div class="desktop-order">
+                <section class="desktop-order">
                     <h2>Ordenar por</h2>
                     <form class="radio-btns" method="get" data-form="orden">
                         <input type="hidden" name="id_nivel_elo"
@@ -225,12 +227,12 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                             Alfabéticamente
                         </label><br>
                     </form>
-                </div>
+                </section>
 
                 <!-- Zona búsqueda desktop -->
                 <section class="right-size">
                     <h2 id="zona-busqueda">Zona de búsqueda</h2>
-                    <form method="GET" data-form="map">
+                    <form method="GET" data-form="map" aria-labelledby="zona-busqueda-desktop">
                         <input type="hidden" id="latDesktop" name="lat"
                             value="<?= htmlspecialchars($_GET['lat'] ?? '', ENT_QUOTES, 'UTF-8') ?>" />
                         <input type="hidden" id="lngDesktop" name="lng"
@@ -252,12 +254,13 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                     <div id="map"
                         data-team-zone="<?php echo htmlspecialchars($equipo_temp['team-zone'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                     </div>
+                    <figcaption>Mapa de zona de búsqueda</figcaption>
                 </figure>
 
                 <section class="limpiar-filtros">
                     <button id="clearFilters" class="button" type="button">Limpiar filtros</button>
                 </section>
-                <div id="modalOverlayInfo" class="modal-overlay-info"></div>
+                <div id="modalOverlayInfo" class="modal-overlay-info" role="dialog" aria-hidden="true"></div>
             </aside>
 
             <section class="rigth-size">
