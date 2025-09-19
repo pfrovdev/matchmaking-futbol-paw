@@ -59,9 +59,7 @@
 
 /* --- Header: nombre y récord --- */
 .card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  margin: 0;
 }
 
 .team-name {
@@ -183,6 +181,7 @@
 .challenge-card--send .card-actions {
   justify-content: center;
   margin-top: 1rem;
+  background: none;
 }
 
 @media (min-width: 400px) {
