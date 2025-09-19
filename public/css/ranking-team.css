@@ -103,6 +103,7 @@
   padding: 1rem;
   border-top: 1px solid #eee;
   text-align: center;
+  justify-content: center;
 }
 
 .btn-profile {

@@ -1,7 +1,9 @@
-<footer>
+<footer id="main-footer">
     <section>
         <h2>Sobre nosotros</h2>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt, deleniti pariatur exercitationem illo cumque necessitatibus, alias ipsum iusto officia asperiores aliquid modi ab voluptas, earum eos deserunt ipsam tempore facere!</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt, deleniti pariatur exercitationem illo
+            cumque necessitatibus, alias ipsum iusto officia asperiores aliquid modi ab voluptas, earum eos deserunt
+            ipsam tempore facere!</p>
     </section>
 
     <section>

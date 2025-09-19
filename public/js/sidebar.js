@@ -1,6 +1,6 @@
 function ajustarSidebar() {
     const header = document.querySelector('header');
-    const footer = document.querySelector('footer');
+    const footer = document.querySelector('#main-footer');
     const sidebar = document.querySelector('.side-navbar');
     if (!header || !sidebar) return;
     const altoHeader = header.getBoundingClientRect().height;
