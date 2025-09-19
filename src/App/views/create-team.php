@@ -40,7 +40,7 @@
             </section>
             <?php endif; ?>
 
-            <div class="register-body">
+            <section class="register-body">
                 <form action="/register-team" method="post" class="form-container">
                     <label for="team-name">Nombre completo del equipo *</label>
                     <input type="text" id="team-name" name="team-name" placeholder="Sacachispas F.C" required
@@ -87,10 +87,10 @@
                     <button type="submit" class="button">Crear equipo</button>
                 </form>
 
-                <div class="image-container">
+                <aside class="image-container">
                     <img src="../icons/picture_messi.png" alt="messi picture" class="side-picture" />
-                </div>
-            </div>
+                </aside>
+            </section>
         </section>
     </main>
 
