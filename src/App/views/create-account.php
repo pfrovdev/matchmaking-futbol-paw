@@ -40,7 +40,7 @@
             <?php endif; ?>
 
             <!-- Flex wrapper -->
-            <div class="register-body">
+            <section class="register-body">
                 <!-- Formulario -->
                 <form action="/register" method="post" class="form-container">
                     <label for="email">Correo electrónico *</label>
@@ -77,10 +77,10 @@
                 </form>
 
                 <!-- Imagen lateral -->
-                <div class="image-container">
+                <aside class="image-container">
                     <img src="../icons/picture_messi.png" alt="messi picture" class="side-picture">
-                </div>
-            </div>
+                </aside>
+            </section>
 
         </section>
     </main>
