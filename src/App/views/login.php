@@ -25,8 +25,8 @@ unset($_SESSION['success']);
     require "parts/header.php";
     ?>
 
-    <main>
-        <section class="container register-container">
+    <main role="main">
+        <section class="container register-container" aria-labelledby="login-title">
 
             <header class="register-header">
                 <h1>Iniciar sesión</h1>
@@ -49,8 +49,10 @@ unset($_SESSION['success']);
             <?php endif; ?>
 
             <!-- Flex wrapper: formulario | imagen -->
-            <div class="register-body">
-                <form action="/login" method="POST" class="form-container login-container">
+            <section class="register-body">
+                <form action="/login" method="POST" class="form-container login-container"
+                    aria-describedby="login-title">
+
                     <label for="email">Correo electrónico *</label>
                     <input type="email" id="email" name="email" placeholder="ej: email@gmail.com"
                         value="<?php echo !empty($email) ? htmlspecialchars($email, ENT_QUOTES, 'UTF-8') : ''; ?>"
@@ -68,10 +70,10 @@ unset($_SESSION['success']);
                 </form>
 
                 <!-- Imagen lateral -->
-                <div class="image-container">
-                    <img src="../icons/picture_messi.png" alt="Messi picture" class="side-picture">
-                </div>
-            </div>
+                <aside class="image-container">
+                    <img src="../icons/picture_messi.png" alt="Imagen ilustrativa de Lionel Messi" class="side-picture">
+                </aside>
+            </section>
 
         </section>
     </main>

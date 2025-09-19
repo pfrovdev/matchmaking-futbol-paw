@@ -219,6 +219,7 @@
     display: block;
     margin-top: 5rem;
     flex: 0 1 35%;
+    margin: 0;
   }
 }
 
