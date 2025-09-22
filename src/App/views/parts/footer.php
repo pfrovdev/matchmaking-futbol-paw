@@ -11,14 +11,24 @@
     </section>
 
     <section>
+        <h2>Redes sociales</h2>
+        <ul class="social-media">
+            <li><a href="#"><img src="../icons/instagram-icon.png" alt="Instagram"></a></li>
+            <li><a href="#"><img src="../icons/facebook-icon.png" alt="Facebook"></a></li>
+            <li><a href="#"><img src="../icons/youtube-icon.png" alt="YouTube"></a></li>
+        </ul>
+    </section>
+
+    <section>
         <h2>Contacto</h2>
         <address>
             <ul>
                 <li>Teléfono: <a href="tel:+123456789">+1 234 567 89</a></li>
-                <li>Email: <a href=<?php echo("mailto:".getenv("MAIL_USERNAME")) ?>> fsdfdsf</a></li>
+                <li>Email: <a href=<?php echo ("mailto:" . getenv("MAIL_USERNAME")) ?>> <?php echo (getenv("MAIL_USERNAME")) ?></a></li>
             </ul>
         </address>
     </section>
 
-    <p><small>&copy; Copyright</small></p>
+    <p><small>&copy; 2025 Matchmaking Futbol 5. Todos los derechos reservados.</small></p>
+
 </footer>
