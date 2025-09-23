@@ -11,7 +11,7 @@
     <main class="error-container">
         <h1>Error 401</h1>
         <p>No estás autorizado para acceder a esta página. Es posible que necesites iniciar sesión.</p>
-        <a href="/" aria-label="Volver a la página principal" class="button">Volver al inicio</a>
+        <a href="/login" aria-label="Volver a la página principal" class="button">Volver al inicio</a>
     </main>
 </body>
 

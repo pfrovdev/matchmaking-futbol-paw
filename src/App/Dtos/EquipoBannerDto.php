@@ -8,6 +8,9 @@ use Paw\App\Models\Equipo;
 class EquipoBannerDto implements JsonSerializable
 {
     public string $id_equipo;
+    public int $ganados;
+    public int $empatados;
+    public int $perdidos;
     public string $nombre_equipo;
     public string $acronimo;
     public string $url_foto_perfil;
