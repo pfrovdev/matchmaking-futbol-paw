@@ -115,17 +115,17 @@
   }
 
   .home-container h2 {
-    font-size: 1.75rem;
+    font-size: 2rem;
     grid-column: 2;
     grid-row: 1;
-    justify-self: start;
+    justify-self: center;
   }
 
   .home-container p {
     font-size: 0.95rem;
     grid-column: 2;
     grid-row: 2;
-    justify-self: start;
+    justify-self: center;
     max-width: 30rem;
   }
 

@@ -22,8 +22,9 @@
         <img src="../icons/picture_messi.png" alt="messi picture">
         <h2>¿Tenés equipo? Nosotros te conseguimos rival</h2>
         <p>
-          Armá tu equipo con amigos, publicá un partido y encontrá rivales reales en tu zona.
-          Organizá tus partidos, mejorá tu ranking y construí una reputación como jugador o como equipo.
+          Creá tu equipo con amigos, publicá un desafío y encontrá rivales reales cerca tuyo.
+          Organizá partidos de manera sencilla, sumá puntos para escalar en el ranking
+          y construí tu reputación como equipo.
         </p>
         <footer class="button-group">
           <a href="create-account" class="button">Registrar mi equipo</a>
