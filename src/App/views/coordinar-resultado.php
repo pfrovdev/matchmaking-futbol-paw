@@ -84,7 +84,7 @@ if (!$partidoAcordado) {
         }
     }
 } else {
-    $statusMessage = "El partido ya fue acordado, por favor terminalo dentro de los próximos $timeLeft.";
+    $statusMessage = "El partido ya fue acordado, por favor terminalo.";
     $statusType = "info";
     $mostrarSubtitlo = false;
 }
