@@ -12,25 +12,27 @@ $mismatchedFields = [];
 $deadline = $partido->getDeadlineFormulario(); // "2025-09-19 04:20:00"
 
 // Crear objeto DateTime para la fecha límite
-$deadlineDate = new DateTime($deadline);
-$now = new DateTime();
-$diff = $now->diff($deadlineDate);
-$partidoExpirado = false;
-if ($deadlineDate < $now) {
-    $partidoExpirado = true;
-} else {
-    $hours = $diff->h + ($diff->days * 24);
-    $minutes = $diff->i;
-
-    $timeLeft = '';
-    if ($hours > 0) {
-        $timeLeft .= $hours . ' hora' . ($hours > 1 ? 's' : '');
-        if ($minutes > 0) {
-            $timeLeft .= ' y ';
+if($deadline){
+    $deadlineDate = new DateTime($deadline);
+    $now = new DateTime();
+    $diff = $now->diff($deadlineDate);
+    $partidoExpirado = false;
+    if ($deadlineDate < $now) {
+        $partidoExpirado = true;
+    } else {
+        $hours = $diff->h + ($diff->days * 24);
+        $minutes = $diff->i;
+    
+        $timeLeft = '';
+        if ($hours > 0) {
+            $timeLeft .= $hours . ' hora' . ($hours > 1 ? 's' : '');
+            if ($minutes > 0) {
+                $timeLeft .= ' y ';
+            }
         }
-    }
-    if ($minutes > 0) {
-        $timeLeft .= $minutes . ' minuto' . ($minutes > 1 ? 's' : '');
+        if ($minutes > 0) {
+            $timeLeft .= $minutes . ' minuto' . ($minutes > 1 ? 's' : '');
+        }
     }
 }
 // Estado inicial vacío o desde flash
