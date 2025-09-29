@@ -19,13 +19,11 @@ class NotificationService
 
     public function notifyDesafioCreated(
         Equipo $desafiante,
-        Equipo $desafiado,
-        Desafio $desafio
+        Equipo $desafiado
     ): void {
-        $this->notificador->enviarNotificacionDesafioAceptado(
+        $this->notificador->enviarNotificacionDesafioCreado(
             $desafiante,
-            $desafiado,
-            $desafio
+            $desafiado
         );
     }
 

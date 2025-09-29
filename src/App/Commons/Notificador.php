@@ -8,6 +8,8 @@ use Paw\App\Models\Equipo;
 use Paw\App\Models\FormularioPartido;
 
 interface Notificador{
+
+    function enviarNotificacionDesafioCreado(Equipo $equipoDesafiante, Equipo $equipoDesafiado) : void;
     function enviarNotificacionDesafioAceptado(Equipo $equipo, Equipo $equipoDesafiante, Desafio $desafioCreado) : void;
     function enviarNotificacionDesafioRechazado(Equipo $equipoDesafiado, Equipo $equipoDesafiante, Desafio $desafioRechazado): void;
 
