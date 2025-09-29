@@ -19,6 +19,8 @@ if($deadline){
     $partidoExpirado = false;
     if ($deadlineDate < $now) {
         $partidoExpirado = true;
+        $statusMessage = "El tiempo para acordar el partido ha expirado. Se cargaron los resultados del último formulario.";
+        $statusType = "warning";
     } else {
         $hours = $diff->h + ($diff->days * 24);
         $minutes = $diff->i;

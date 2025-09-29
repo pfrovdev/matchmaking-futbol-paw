@@ -26,20 +26,4 @@ document.addEventListener('DOMContentLoaded', () => {
         new RatingComponent({ containerSelector: '#ratingGroup', inputName: 'deportividad' });
         new ModalComponent({ triggerSelector: '#btnCalificarDeportividad', modalSelector });
     }
-    
-    const dlElem = document.getElementById('deadline-txt');
-    if (dlElem) {
-    const submitBtn = document.querySelector('form button[type=submit]');
-    const deadline = new Date(dlElem.textContent).getTime();
-
-    const tick = setInterval(() => {
-        if (Date.now() >= deadline) {
-        clearInterval(tick);
-        if (submitBtn) {
-            submitBtn.textContent = 'Plazo vencido';
-        }
-        alert('Se superó el plazo de coordinación; se tomó el último resultado cargado.');
-        }
-    }, 1000);
-    }
 });
