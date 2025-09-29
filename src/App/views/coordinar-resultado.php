@@ -12,11 +12,11 @@ $mismatchedFields = [];
 $deadline = $partido->getDeadlineFormulario(); // "2025-09-19 04:20:00"
 
 // Crear objeto DateTime para la fecha límite
+$partidoExpirado = false;
 if($deadline){
     $deadlineDate = new DateTime($deadline);
     $now = new DateTime();
     $diff = $now->diff($deadlineDate);
-    $partidoExpirado = false;
     if ($deadlineDate < $now) {
         $partidoExpirado = true;
         $statusMessage = "El tiempo para acordar el partido ha expirado. Se cargaron los resultados del último formulario.";
@@ -84,9 +84,11 @@ if (!$partidoAcordado) {
         }
     }
 } else {
-    $statusMessage = "El partido ya fue acordado, por favor terminalo.";
-    $statusType = "info";
-    $mostrarSubtitlo = false;
+    if (!$partidoExpirado){
+        $statusMessage = "El partido ya fue acordado, por favor terminalo.";
+        $statusType = "info";
+        $mostrarSubtitlo = false;
+    }
 }
 
 // Cuando mostrar botones
