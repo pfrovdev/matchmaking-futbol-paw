@@ -173,6 +173,7 @@ class DesafioController extends AbstractController
         }
 
         try {
+            $desafio = $this->desafioService->createDesafio($miEquipo->getIdEquipo(), $id_equipo_desafiar);
             $equipoDesafiado = $this->equipoService->getEquipoById($id_equipo_desafiar);
 
             $this->notificationService->notifyDesafioCreated($miEquipo, $equipoDesafiado);
