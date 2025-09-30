@@ -530,49 +530,17 @@
    MEDIA QUERIES
    ------------------------- */
 
-@media (max-width: 1024px) {
-  .side-navbar {
-    display: none;
-  }
-
-  /* Contenedor principal más ancho en pantallas intermedias */
-  .dashboard-container {
-    width: 90%;
-    padding: 1.5rem 0;
-  }
-
-  /* Grid cambia de 5fr 3fr a 1fr 1fr */
-  .dashboard-grid {
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 1rem;
-  }
-
-  /* Tarjetas de desafío: imagen y contenido más compactos */
-  .challenge-card {
-    flex-direction: column;
-  }
-
-  .card-side {
-    width: 100%;
-    height: 100%;
-  }
-}
-
 /* -------------------------
      TABLET
-     Máx. 768px
+     Máx. 1220px
      ------------------------- */
-@media (max-width: 768px) {
+@media (max-width: 1220px) {
 
-  /* Ocultar side-navbar */
-  .side-navbar {
-    display: none;
-  }
 
   /* Contenedor ocupa casi todo el ancho */
   .dashboard-container {
-    width: 95%;
-    padding: 1rem 0;
+    width: 80%;
+    padding:1rem 0 0 3rem;
   }
 
   /* Un solo column en el grid */
@@ -604,6 +572,18 @@
 
   .next-matches {
     padding: 0.75rem 1rem;
+  }
+}
+
+  @media (max-width: 1024px) {
+  /* Ocultar side-navbar */
+  .side-navbar {
+    display: none;
+  }
+
+  .dashboard-container {
+    width: 90%;
+    padding:1rem;
   }
 }
 
