@@ -173,10 +173,9 @@ class DesafioController extends AbstractController
         }
 
         try {
-            $desafio = $this->desafioService->createDesafio($miEquipo->getIdEquipo(), $id_equipo_desafiar);
             $equipoDesafiado = $this->equipoService->getEquipoById($id_equipo_desafiar);
 
-            $this->notificationService->notifyDesafioCreated($miEquipo, $equipoDesafiado, $desafio);
+            $this->notificationService->notifyDesafioCreated($miEquipo, $equipoDesafiado);
             $_SESSION['success'] = 'Desafío enviado correctamente. Se notificó al equipo rival.';
 
             header('Location: ' . $referer);
