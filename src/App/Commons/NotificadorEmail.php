@@ -41,7 +41,7 @@ class NotificadorEmail implements Notificador
             $this->rechazarDesafioTemplate,
             [
                 'teamName' => $equipoDesafiado->fields['nombre'],
-                'link' => getenv('JWT_APP_URL') . '/search-team',
+                'link' => getenv('JWT_APP_URL') . 'search-team',
             ]
         );
     }
@@ -56,7 +56,7 @@ class NotificadorEmail implements Notificador
             [
                 'teamName' => $equipoDebeSerNotificado->fields['nombre'],
                 'teamNameCencelador' => $equipoQueCancela->fields['nombre'],
-                'link' => getenv('JWT_APP_URL') . '/search-team',
+                'link' => getenv('JWT_APP_URL') . 'search-team',
             ]
         );
     }
@@ -71,7 +71,7 @@ class NotificadorEmail implements Notificador
             [
                 'teamNameDesafiante' => $equipoDesafiante->fields['nombre'],
                 'teamNameDesafiado' => $equipoDesafiado->fields['nombre'],
-                'link' => getenv('JWT_APP_URL') . '/dashboard',
+                'link' => getenv('JWT_APP_URL') . 'dashboard',
             ]
         );
     }
@@ -93,7 +93,7 @@ class NotificadorEmail implements Notificador
             'asistenciasVisitante' => $formularioVisitante->getTotalAsistencias(),
             'amarillasVisitante' => $formularioVisitante->getTotalAmarillas(),
             'rojasVisitante' => $formularioVisitante->getTotalRojas(),
-            'detalleLink' => getenv('JWT_APP_URL') . '/partidos/detalle?id_partido=' . $formularioLocal->getIdPartido(),
+            'detalleLink' => getenv('JWT_APP_URL') . 'dashboard',
         ];
         $subject = sprintf(
             "Partido finalizado: %s %d - %d %s",
@@ -130,7 +130,7 @@ class NotificadorEmail implements Notificador
                 'equipoLocal' => $equipoLocal->getNombre(),
                 'equipoVisitante' => $equipoVisitante->getNombre(),
                 'iteracion' => $iteracion,
-                'link' => getenv('JWT_APP_URL') . "/partidos/detalle?id_partido={$idPartido}"
+                'link' => getenv('JWT_APP_URL') . "coordinar-resultado?id_partido={$idPartido}"
             ]
         );
     }
@@ -179,7 +179,7 @@ class NotificadorEmail implements Notificador
                 'commentingTeamName' => $equipoComentador->fields['nombre'],
                 'deportividad' => $deportividadHTML,
                 'comentario' => $comentarioSanitizado,
-                'link' => getenv('JWT_APP_URL') . '/dashboard',
+                'link' => getenv('JWT_APP_URL') . 'dashboard',
             ]
         );
     }
