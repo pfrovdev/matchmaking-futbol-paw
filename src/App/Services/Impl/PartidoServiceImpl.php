@@ -186,6 +186,7 @@ class PartidoServiceImpl implements PartidoService
     public function existePartidoPorTerminar(int $myEquipo): bool
     {
         $estadoPartidoCancelado = $this->estadoPartidoDataMapper->findIdByCode('cancelado');
+        $estadoPartidoAcordado = $this->estadoPartidoDataMapper->findIdByCode('acordado');
 
         $desafiosComoDesafiante = $this->desafioDataMapper->findByIdArray([
             'id_equipo_desafiante' => $myEquipo,
@@ -200,15 +201,32 @@ class PartidoServiceImpl implements PartidoService
             $partido = $this->partidoDataMapper->findById([
                 'id_partido' => $desafioEquipo->getIdPartido(),
             ]);
+
+            // Si no existe aún partido, sigo buscando
             if ($partido === null) {
                 continue;
             }
 
-            $estaFinalizado = (bool) $partido->getFinalizado();
             $estaCancelado = $partido->getIdEstadoPartido() === $estadoPartidoCancelado;
 
-            if (!$estaFinalizado && !$estaCancelado) {
-                return true;
+            // Si el partido esta cancelado, sigo buscando
+            if ($estaCancelado) {
+                continue;
+            }
+            $estaFinalizado = (bool) $partido->getFinalizado();
+            // Si el partido esta finalizado, sigo buscando
+            if ($estaFinalizado) {
+                continue;
+            }
+            $estaAcordado = $partido->getIdEstadoPartido() === $estadoPartidoAcordado;
+            if ($estaAcordado) {
+                //Si esta el partido acordado, y mi equipo lo termino --->continue; si mi equipo no lo termino marco como true
+                if (
+                    (($desafioEquipo->getIdEquipoDesafiante() === $myEquipo) && $partido->getFinalizadoEquipoDesafiante() === 0)
+                    || (($desafioEquipo->getIdEquipoDesafiado() === $myEquipo) && $partido->getFinalizadoEquipoDesafiado() === 0)
+                ) {
+                    return true;
+                }
             }
         }
 

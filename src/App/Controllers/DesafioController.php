@@ -181,7 +181,10 @@ class DesafioController extends AbstractController
 
         $id_equipo_desafiar = filter_input(INPUT_POST, 'id_equipo_desafiar', FILTER_VALIDATE_INT);
         if ($this->desafioService->existeDesafioPendiente($miEquipo->getIdEquipo(), $id_equipo_desafiar)) {
-            $this->redirigirConError($referer, "El equipo que intenta desafiar ya fue desafiado previamente y se encuentra en estado pendiente de aprobación.");
+            $this->redirigirConError(
+                $referer,
+                "El equipo que intenta desafiar ya fue desafiado previamente y se encuentra en estado pendiente de aprobación."
+            );
             return;
         }
 
