@@ -17,7 +17,7 @@ export default class ComentarioController {
     this.paginationContainer = paginationContainer;
     this.profileId = profileId;
 
-    this.pageSize = 3; 
+    this.pageSize = 3;
     this.currentPage = 1;
     this.order = 'fecha_creacion';
     this.dir = 'DESC';
@@ -56,7 +56,7 @@ export default class ComentarioController {
     );
 
     // 4) Carga inicial de comentarios
-    await this.loadComentarios();
+    return await this.loadComentarios();
   }
 
   async loadComentarios() {
@@ -74,8 +74,12 @@ export default class ComentarioController {
       // 6) Actualizar paginación (totalItems + página actual)
       this.paginationComponent.setTotalItems(meta.totalItems);
       this.paginationComponent.setCurrentPage(meta.currentPage);
+
+      // Devolvemos True si se encontraron comentarios
+      return comentariosRaw.length > 0;
     } catch (err) {
       console.error('Error cargando comentarios:', err);
+      return false;
     }
   }
 }

@@ -36,50 +36,56 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
     <link rel="stylesheet" href="./css/search-team.css">
     <link rel="stylesheet" href="./css/spinner.css">
 
+    <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+    <link rel="stylesheet" href="./css/parts/introJs.css">
+    <script src="https://unpkg.com/intro.js/minified/intro.min.js" defer></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
     <script src="./js/maps.js" defer></script>
     <script src="./js/components/modals.js"></script>
-    <script src="./js/pages/search-team.js" defer></script>
+    <script type="module" src="./js/pages/search-team.js" defer></script>
     <script src="./js/components/spinner.js" defer></script>
     <script src="./js/sidebar.js"></script>
     <script src="./js/filtros.js" defer></script>
 
+
+
     <?php if (!empty($equipos)): ?>
         <script type="application/ld+json">
-        <?= json_encode([
-            "@context" => "https://schema.org",
-            "@type" => "ItemList",
-            "name" => "Resultados de búsqueda de equipos",
-            "numberOfItems" => count($equipos),
-            "itemListElement" => array_map(function ($equipo, $index) {
-                        return [
-                            "@type" => "ListItem",
-                            "position" => $index + 1,
-                            "item" => [
-                                "@type" => "SportsTeam",
-                                "name" => htmlspecialchars($equipo->getNombreEquipo(), ENT_QUOTES, 'UTF-8'),
-                                "alternateName" => htmlspecialchars($equipo->getAcronimo() ?? '', ENT_QUOTES, 'UTF-8'),
-                                "identifier" => [
-                                    "@type" => "PropertyValue",
-                                    "name" => "Elo Ranking",
-                                    "value" => $equipo->getEloActual()
-                                ],
-                                "description" => htmlspecialchars($equipo->getLema() ?? '', ENT_QUOTES, 'UTF-8'),
-                                "url" => "/team-profile.php?id=" . $equipo->getIdEquipo(),
-                                "location" => [
-                                    "@type" => "Place",
-                                    "geo" => [
-                                        "@type" => "GeoCoordinates",
-                                        "latitude" => $equipo->getLatitud(),
-                                        "longitude" => $equipo->getLongitud()
-                                    ]
+            <?= json_encode([
+                "@context" => "https://schema.org",
+                "@type" => "ItemList",
+                "name" => "Resultados de búsqueda de equipos",
+                "numberOfItems" => count($equipos),
+                "itemListElement" => array_map(function ($equipo, $index) {
+                    return [
+                        "@type" => "ListItem",
+                        "position" => $index + 1,
+                        "item" => [
+                            "@type" => "SportsTeam",
+                            "name" => htmlspecialchars($equipo->getNombreEquipo(), ENT_QUOTES, 'UTF-8'),
+                            "alternateName" => htmlspecialchars($equipo->getAcronimo() ?? '', ENT_QUOTES, 'UTF-8'),
+                            "identifier" => [
+                                "@type" => "PropertyValue",
+                                "name" => "Elo Ranking",
+                                "value" => $equipo->getEloActual()
+                            ],
+                            "description" => htmlspecialchars($equipo->getLema() ?? '', ENT_QUOTES, 'UTF-8'),
+                            "url" => "/team-profile.php?id=" . $equipo->getIdEquipo(),
+                            "location" => [
+                                "@type" => "Place",
+                                "geo" => [
+                                    "@type" => "GeoCoordinates",
+                                    "latitude" => $equipo->getLatitud(),
+                                    "longitude" => $equipo->getLongitud()
                                 ]
                             ]
-                        ];
-                    }, $equipos, array_keys($equipos))
-        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?>
+                        ]
+                    ];
+                }, $equipos, array_keys($equipos))
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?>
         </script>
     <?php endif; ?>
 
@@ -267,7 +273,7 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                 <ul class="lista-equipos">
                     <?php if (empty($equipos)): ?>
                         <li>No se encontraron equipos.</li>
-                    <?php else:
+                        <?php else:
                         foreach ($equipos as $equipo): ?>
                             <li>
                                 <?php require __DIR__ . '/parts/tarjeta-envio-desafio.php'; ?>
