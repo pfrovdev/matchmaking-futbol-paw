@@ -13,7 +13,7 @@
     <?php if ($estaLogueado): ?>
         <?php if ($miEquipo->fields['nombre']): ?>
             <section class="header-my-account">
-                <button type="button" aria-label="Mi equipo">
+                <button type="button" class="mi-equipo-button" aria-label="Mi equipo">
                     <?php if ($miEquipo->fields['url_foto_perfil']): ?>
                         <?php
                         $foto = $miEquipo->fields['url_foto_perfil'] ?? '';

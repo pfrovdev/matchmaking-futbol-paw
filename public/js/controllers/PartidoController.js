@@ -1,6 +1,6 @@
 import PartidoService from '../services/PartidoService.js';
 import PartidoComponent from '../components/PartidoComponent.js';
-import FilterComponent  from '../components/FilterComponent.js';
+import FilterComponent from '../components/FilterComponent.js';
 import PaginationComponent from '../components/PaginationComponent.js';
 
 export default class PartidoController {
@@ -34,7 +34,7 @@ export default class PartidoController {
       this.filterSelect,
       ({ order: newOrder, dir: newDir }) => {
         this.order = newOrder;
-        this.dir   = newDir;
+        this.dir = newDir;
         this.currentPage = 1;
         this.loadPartidos();
       }
@@ -52,24 +52,27 @@ export default class PartidoController {
     );
 
     // Primera carga
-    await this.loadPartidos();
+    return await this.loadPartidos();
   }
 
   async loadPartidos() {
     try {
       const { data: partidosRaw, meta } = await PartidoService.getPartidos({
-        page:    this.currentPage,
+        page: this.currentPage,
         perPage: this.pageSize,
-        order:   this.order,
-        dir:     this.dir
+        order: this.order,
+        dir: this.dir
       });
 
       // Actualizar UI
       this.partidoComponent.updateData(partidosRaw);
       this.paginationComponent.setTotalItems(meta.totalItems);
       this.paginationComponent.setCurrentPage(meta.currentPage);
+
+      return partidosRaw.length > 0;
     } catch (err) {
       console.error('Error cargando partidos:', err);
+      return false;
     }
   }
 }

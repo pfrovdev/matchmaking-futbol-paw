@@ -3,8 +3,60 @@ import DesafioController from '../controllers/DesafioController.js';
 import PartidoController from '../controllers/PartidoController.js';
 import HistorialController from '../controllers/HistorialController.js';
 import EstadisticaController from '../controllers/EstadisticaController.js';
+import Tutorial from '../components/Tutorial.js';
+import steps from '../data/DashboardTutorialSlides.js';
+import stepsDesafio from '../data/DashboardDesafioTutorialSlides.js';
+import stepsMatch from '../data/DashboardCoordinarTutorialSlides.js';
+import stepsComment from '../data/DashboardComentarioTutorialSlides.js';
+import stepsHistory from '../data/DashboardHistorialPartidosTutorialSlides.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+const startHistoryTutorial = () => {
+  const tutorialKey = 'tarjetaHistorialIntro';
+
+  setTimeout(() => {
+    const tutorial = new Tutorial({
+      key: tutorialKey,
+      steps: stepsHistory
+    });
+    tutorial.init();
+  }, 300);
+};
+const startChallengeTutorial = () => {
+  const tutorialKey = 'tarjetaDesafioIntro';
+
+  setTimeout(() => {
+    const tutorial = new Tutorial({
+      key: tutorialKey,
+      steps: stepsDesafio
+    });
+    tutorial.init();
+  }, 300);
+};
+
+const startMatchTutorial = () => {
+  const tutorialKey = 'tarjetaPartidoIntro';
+  setTimeout(() => {
+    const tutorial = new Tutorial({
+      key: tutorialKey,
+      steps: stepsMatch
+    });
+    tutorial.init();
+  }, 300);
+};
+
+const startCommentTutorial = () => {
+  const tutorialKey = 'tarjetaComentarioIntro';
+
+  setTimeout(() => {
+    const tutorial = new Tutorial({
+      key: tutorialKey,
+      steps: stepsComment
+    });
+    tutorial.init();
+  }, 300);
+};
+
+document.addEventListener('DOMContentLoaded', async () => {
 
   const isOwner = document.body.dataset.isOwner === 'true';
 
@@ -26,6 +78,12 @@ document.addEventListener('DOMContentLoaded', () => {
       paginationContainer: paginationComentarios
     });
     comentarioController.init();
+
+    const commentsLoaded = await comentarioController.init();
+
+    if (commentsLoaded && isOwner) {
+      startCommentTutorial();
+    }
   }
 
   // ----------- Inicialización de Estadísticas -----------
@@ -46,7 +104,11 @@ document.addEventListener('DOMContentLoaded', () => {
       paginationContainer: paginationHistorial,
       equipoId
     });
-    hc.init();
+    const historyLoaded = await hc.init();
+
+    if (historyLoaded && isOwner) {
+      startHistoryTutorial();
+    }
   }
 
   if (!isOwner) {
@@ -71,7 +133,14 @@ document.addEventListener('DOMContentLoaded', () => {
       filterSelect: filterDesafios,
       paginationContainer: paginationDesafios
     });
-    desafioController.init();
+
+    const challengesLoaded = await desafioController.init();
+
+    console.log(challengesLoaded);
+
+    if (challengesLoaded && isOwner) {
+      startChallengeTutorial();
+    }
   }
 
   // ----------- Inicialización de partidos proximos ------------
@@ -91,7 +160,11 @@ document.addEventListener('DOMContentLoaded', () => {
       filterSelect,
       paginationContainer
     });
-    controller.init();
+    const matchesLoaded = await controller.init();
+
+    if (matchesLoaded && isOwner) {
+      startMatchTutorial();
+    }
   }
   // ----------- Lógica del Modal de edición ------------
   const modalTriggers = document.querySelectorAll('.open-edit-modal, .perfil-foto .btn-link');
@@ -165,4 +238,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // ----------- Inicialización del Tutorial ------------
+  const tutorial = new Tutorial({
+    key: 'dashboardIntro',
+    steps
+  });
+  tutorial.init();
 });

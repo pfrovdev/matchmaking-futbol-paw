@@ -52,16 +52,16 @@ export default class DesafioController {
     );
 
     // Primera carga de desafíos
-    await this.loadDesafios();
+    return await this.loadDesafios();
   }
 
   async loadDesafios() {
     try {
       const { data: desafiosRaw, meta } = await DesafioService.getDesafios({
-        page:    this.currentPage,
+        page: this.currentPage,
         perPage: this.pageSize,
-        order:   this.order,
-        dir:     this.dir
+        order: this.order,
+        dir: this.dir
       });
 
       console.log(desafiosRaw);
@@ -72,8 +72,12 @@ export default class DesafioController {
       // Actualizo paginación
       this.paginationComponent.setTotalItems(meta.totalItems);
       this.paginationComponent.setCurrentPage(meta.currentPage);
+
+      // Devolvemos True si se cargaron desafíos para inicializar el tutorial
+      return desafiosRaw.length > 0;
     } catch (err) {
       console.error('Error cargando desafíos:', err);
+      return false;
     }
   }
 }

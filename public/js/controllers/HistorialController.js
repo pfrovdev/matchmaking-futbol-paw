@@ -40,7 +40,7 @@ export default class HistoryController {
         this.load();
       }
     );
-    await this.load();
+    return await this.load();
   }
 
   async load() {
@@ -55,8 +55,11 @@ export default class HistoryController {
       this.historyComponent.updateData(data);
       this.paginationComponent.setTotalItems(meta.totalItems);
       this.paginationComponent.setCurrentPage(meta.currentPage);
+
+      return data.length > 0;
     } catch (e) {
       console.error('Error cargando historial:', e);
+      return false;
     }
   }
 }

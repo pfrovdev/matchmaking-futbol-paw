@@ -1,0 +1,95 @@
+/* Caja del tooltip */
+.introjs-tooltip {
+  background: var(--background-contents);
+  padding: 1.2rem;
+  border-radius: 0.8rem;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  max-height: 80vh;
+  text-align: center;
+  color: var(--text-color);
+}
+
+/* Título */
+.introjs-tooltip-title {
+  margin-top: 0.5rem;
+  margin-bottom: 0.8rem;
+  color: var(--primary-color);
+  text-align: center;
+  font-size: 1.6rem;
+  line-height: 1.3;
+}
+
+/* Texto */
+.introjs-tooltiptext {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-color);
+  text-align: center;
+  margin-bottom: 1rem;
+  max-width: 90%;
+  word-wrap: break-word;
+}
+
+/* Botones */
+.introjs-button {
+  padding: 0.5rem 0.8rem;
+  font-size: 0.9rem;
+  border-radius: 0.5rem;
+  background-color: var(--button-primary-background-color);
+  color: var(--primary-buttons-color);
+  border: 1px solid var(--primary-buttons-color);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.introjs-button:hover {
+  background-color: var(--contrast-text-color);
+  color: var(--muted-text-color);
+  border-color: var(--muted-text-color);
+  transform: scale(1.05);
+}
+
+/* Botón de saltar */
+.introjs-skipbutton {
+  background: transparent;
+  border: none;
+  color: var(--muted-text-color);
+  font-size: 0.9rem;
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+
+/* Círculo de foco */
+.introjs-helperLayer {
+  border-radius: 0.8rem;
+  box-shadow: 0 0 0 2000px rgba(0,0,0,0.7);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .introjs-tooltip {
+    padding: 1rem;
+    max-width: 95%;
+    max-height: 70vh;
+  }
+
+  .introjs-tooltip-title {
+    font-size: 1.3rem;
+  }
+
+  .introjs-tooltiptext {
+    font-size: 0.85rem;
+  }
+
+  .introjs-button {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.6rem;
+  }
+}
