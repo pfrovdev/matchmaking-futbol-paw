@@ -31,6 +31,16 @@ class DesafioDataMapper extends DataMapper
         return $row ? $this->map($row) : null;
     }
 
+    public function findByIdArray(array $params): ?array
+    {
+        $rows = $this->qb->select(
+            $this->table,
+            $params
+
+        );
+        return $this->mapAll($rows);
+    }
+
     // solo trae los desafios donde el equipo tiene desafios con el estado $estadoId
     public function findByEquipoAndEstadoPaginated(int $equipoId, int $estadoId, int $limit, int $offset, string $orderBy, string $direction): array
     {
@@ -49,7 +59,7 @@ class DesafioDataMapper extends DataMapper
     {
         $rows = $this->qb->select(
             $this->table,
-            ["id_equipo_desafiado" => $idEquipoDesafiado,"id_equipo_desafiante" => $idEquipoDesafiante, "id_estado_desafio" => $estadoId],
+            ["id_equipo_desafiado" => $idEquipoDesafiado, "id_equipo_desafiante" => $idEquipoDesafiante, "id_estado_desafio" => $estadoId],
         );
         return $this->mapAll($rows);
     }
@@ -69,7 +79,8 @@ class DesafioDataMapper extends DataMapper
         return $this->mapAll(array_merge($rowsDesafiado, $rowsDesafiante));
     }
 
-    public function findByIdPartido(int $idPartido){
+    public function findByIdPartido(int $idPartido)
+    {
         return $this->map($this->findBy(["id_partido" => $idPartido])[0]);
     }
 

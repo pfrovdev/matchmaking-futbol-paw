@@ -198,7 +198,8 @@ class ContainerConfig
             $c->get(DesafioService::class),
             $c->get(NotificationService::class),
             $c->get(EquipoService::class),
-            $c->get(AuthMiddelware::class)
+            $c->get(AuthMiddelware::class),
+            $c->get(PartidoService::class)
         ));
 
         $c->set(ComentarioController::class, fn($c) => new ComentarioController(

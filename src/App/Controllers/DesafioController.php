@@ -5,6 +5,7 @@ namespace Paw\App\Controllers;
 use Exception;
 use Monolog\Logger;
 use Paw\App\Services\DesafioService;
+use Paw\App\Services\PartidoService;
 use Paw\App\Services\EquipoService;
 use Paw\App\Services\NotificationService;
 use Paw\Core\AbstractController;
@@ -13,15 +14,23 @@ use Paw\Core\Middelware\AuthMiddelware;
 class DesafioController extends AbstractController
 {
     private DesafioService $desafioService;
+    private PartidoService $partidoService;
     private NotificationService $notificationService;
     private EquipoService $equipoService;
 
-    public function __construct(Logger $logger, DesafioService $desafioService, NotificationService $notificationService, EquipoService $equipoService, AuthMiddelware $authMiddelware)
-    {
+    public function __construct(
+        Logger $logger,
+        DesafioService $desafioService,
+        NotificationService $notificationService,
+        EquipoService $equipoService,
+        AuthMiddelware $authMiddelware,
+        PartidoService $partidoService
+    ) {
         parent::__construct($logger, $authMiddelware);
         $this->desafioService = $desafioService;
         $this->notificationService = $notificationService;
         $this->equipoService = $equipoService;
+        $this->partidoService = $partidoService;
     }
 
     private function verificarMetodoPOST(): void
@@ -167,8 +176,14 @@ class DesafioController extends AbstractController
             $this->redirigirConError($referer, "El equipo que intenta desafiar ya fue desafiado previamente y se encuentra en estado pendiente de aprobación.");
             return;
         }
+
         if (!$id_equipo_desafiar || $id_equipo_desafiar === $miEquipo->getIdEquipo()) {
             $this->redirigirConError($referer, 'ID de equipo a desafiar inválido.');
+            return;
+        }
+
+        if ($this->partidoService->existePartidoPorTerminar($miEquipo->getIdEquipo(), $id_equipo_desafiar)) {
+            $this->redirigirConError($referer, "Aún hay un partido sin finalizar, por favor verifique el partido con el equipo al que intenta desafiar e intente nuevamente.");
             return;
         }
 

@@ -13,6 +13,7 @@ interface PartidoService
     function finalizarPartido(int $partidoId): void;
     function getHistorialPartidosByIdEquipo(int $idEquipo, int $page, int $perPage, string $orderBy, string $direction): array;
     function getResultadoPartidosByIdEquipo(int $idEquipo): array;
+    function existePartidoPorTerminar(int $muequipo, int $equipoRival): bool;
     function getProximosPartidos(int $idEquipo, int $page, int $perPage, string $orderBy, string $direction): array;
     function validarPartido(int $idPartido, int $Idequipo): bool;
     function getUltimosFormulariosEquipoContrario(int $id_partido, int $id_equipo): ?FormularioPartidoDto;
