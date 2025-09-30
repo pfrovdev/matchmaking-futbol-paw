@@ -49,6 +49,11 @@ class Desafio extends AbstractModel
         $this->fields["id_estado_desafio"] = $idEstadoDesafio;
     }
 
+    public function getIdEstadoDesafio()
+    {
+        return $this->fields["id_estado_desafio"];
+    }
+
     public function setIdPartido(?int $idPartido)
     {
         $this->fields["id_partido"] = $idPartido;
@@ -74,7 +79,8 @@ class Desafio extends AbstractModel
         return $this->fields["id_equipo_desafiado"];
     }
 
-    public function getFechaCreacion(): ?string{
+    public function getFechaCreacion(): ?string
+    {
         return $this->fields["fecha_creacion"];
     }
 

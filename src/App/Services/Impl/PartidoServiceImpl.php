@@ -185,18 +185,38 @@ class PartidoServiceImpl implements PartidoService
 
     public function existePartidoPorTerminar(int $myEquipo, int $equipoRival): bool
     {
-        $desafiosConRivalComoDesafiante = $this->desafioDataMapper->findByIdArray(['id_equipo_desafiante' => $myEquipo, 'id_equipo_desafiado' => $equipoRival]);
-        $desafiosConRivalComoDesafiado = $this->desafioDataMapper->findByIdArray(['id_equipo_desafiante' => $equipoRival, 'id_equipo_desafiado' => $myEquipo]);
+        $estadoPartidoCancelado = $this->estadoPartidoDataMapper->findIdByCode('cancelado');
+
+        $desafiosConRivalComoDesafiante = $this->desafioDataMapper->findByIdArray([
+            'id_equipo_desafiante' => $myEquipo,
+            'id_equipo_desafiado' => $equipoRival,
+        ]);
+        $desafiosConRivalComoDesafiado = $this->desafioDataMapper->findByIdArray([
+            'id_equipo_desafiante' => $equipoRival,
+            'id_equipo_desafiado' => $myEquipo,
+        ]);
+
         $totalDesafiosEntreEquipos = array_merge($desafiosConRivalComoDesafiante, $desafiosConRivalComoDesafiado);
-        foreach ($totalDesafiosEntreEquipos as $DesafioEntreEquipos) {
-            $partido = $this->partidoDataMapper->findById(['id_partido' => $DesafioEntreEquipos->getIdPartido()]);
-            if (!$partido->getFinalizado()) {
-                return true;
+
+        foreach ($totalDesafiosEntreEquipos as $desafioEntreEquipos) {
+            $partido = $this->partidoDataMapper->findById([
+                'id_partido' => $desafioEntreEquipos->getIdPartido(),
+            ]);
+            if ($partido === null) {
+                continue;
             }
 
+            $estaFinalizado = (bool) $partido->getFinalizado();
+            $estaCancelado = $partido->getIdEstadoPartido() === $estadoPartidoCancelado;
+
+            if (!$estaFinalizado && !$estaCancelado) {
+                return true;
+            }
         }
+
         return false;
     }
+
 
 
 
