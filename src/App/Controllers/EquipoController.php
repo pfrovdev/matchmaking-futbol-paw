@@ -247,10 +247,8 @@ class EquipoController extends AbstractController
                     header('Location: /search-team');
                     exit;
                 }
-
-                $desafio = $this->desafioService->createDesafio($miEquipo->getIdEquipo(), $id_equipo);
                 $equipoDesafiado = $this->equipoService->getEquipoById($id_equipo);
-                $this->notificationService->notifyDesafioCreated($miEquipo, $equipoDesafiado, $desafio);
+                $this->notificationService->notifyDesafioCreated($miEquipo, $equipoDesafiado);
                 header('Location: /dashboard');
                 exit;
             } catch (\Exception $e) {

@@ -2,7 +2,7 @@
 
 return [
     // Entorno de la aplicación
-    'debug' => false,
+    'debug' => true,
 
     // Configuración de logs
     'log' => [
