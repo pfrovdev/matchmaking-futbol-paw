@@ -97,10 +97,16 @@ class DesafioController extends AbstractController
         $desafioId = filter_input(INPUT_POST, 'id_desafio', FILTER_VALIDATE_INT);
         if (!$desafioId) {
             $this->redirigirConError('/dashboard', 'ID de desafío inválido.');
-            return;
+            exit;
         }
 
         try {
+            if ($this->partidoService->existePartidoPorTerminar($equipo->getIdEquipo())) {
+                $_SESSION['error'] = "Aún hay un partido sin finalizar, por favor termineló para poder desafiar o aceptar nuevos desafios.";
+                header('Location: /dashboard');
+                exit;
+            }
+
             $desafio = $this->desafioService->acceptDesafio($desafioId);
 
             // Verificación de propiedad del desafío
@@ -112,6 +118,8 @@ class DesafioController extends AbstractController
             $this->notificationService->notifyDesafioAccepted($equipo, $desafiante, $desafio);
             $_SESSION['success'] = 'El desafío fue ACEPTADO. Se notificó al equipo "' . $desafiante->getNombre() . '"';
             header('Location: /dashboard');
+            exit;
+
         } catch (Exception $e) {
             $this->redirigirConError('/dashboard', 'Error al aceptar el desafío.');
         }
@@ -182,8 +190,11 @@ class DesafioController extends AbstractController
             return;
         }
 
-        if ($this->partidoService->existePartidoPorTerminar($miEquipo->getIdEquipo(), $id_equipo_desafiar)) {
-            $this->redirigirConError($referer, "Aún hay un partido sin finalizar, por favor verifique el partido con el equipo al que intenta desafiar e intente nuevamente.");
+        if ($this->partidoService->existePartidoPorTerminar($miEquipo->getIdEquipo())) {
+            $this->redirigirConError(
+                $referer,
+                "Aún hay un partido sin finalizar, por favor termineló para poder desafiar o aceptar nuevos desafios."
+            );
             return;
         }
 

@@ -183,24 +183,22 @@ class PartidoServiceImpl implements PartidoService
         return $resultadoPartidosDisputados;
     }
 
-    public function existePartidoPorTerminar(int $myEquipo, int $equipoRival): bool
+    public function existePartidoPorTerminar(int $myEquipo): bool
     {
         $estadoPartidoCancelado = $this->estadoPartidoDataMapper->findIdByCode('cancelado');
 
-        $desafiosConRivalComoDesafiante = $this->desafioDataMapper->findByIdArray([
+        $desafiosComoDesafiante = $this->desafioDataMapper->findByIdArray([
             'id_equipo_desafiante' => $myEquipo,
-            'id_equipo_desafiado' => $equipoRival,
         ]);
-        $desafiosConRivalComoDesafiado = $this->desafioDataMapper->findByIdArray([
-            'id_equipo_desafiante' => $equipoRival,
+        $desafiosComoDesafiado = $this->desafioDataMapper->findByIdArray([
             'id_equipo_desafiado' => $myEquipo,
         ]);
 
-        $totalDesafiosEntreEquipos = array_merge($desafiosConRivalComoDesafiante, $desafiosConRivalComoDesafiado);
+        $totalDesafiosEquipo = array_merge($desafiosComoDesafiante, $desafiosComoDesafiado);
 
-        foreach ($totalDesafiosEntreEquipos as $desafioEntreEquipos) {
+        foreach ($totalDesafiosEquipo as $desafioEquipo) {
             $partido = $this->partidoDataMapper->findById([
-                'id_partido' => $desafioEntreEquipos->getIdPartido(),
+                'id_partido' => $desafioEquipo->getIdPartido(),
             ]);
             if ($partido === null) {
                 continue;
@@ -216,8 +214,6 @@ class PartidoServiceImpl implements PartidoService
 
         return false;
     }
-
-
 
 
     public function getProximosPartidos(int $idEquipo, int $page, int $perPage, string $orderBy, string $direction): array
