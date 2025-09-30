@@ -39,12 +39,7 @@ main header {
 }
 
 #filtros-rango-form ul {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem;
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  display: flex;
 }
 
 #filtros-rango-form li {
@@ -446,6 +441,15 @@ aside input[type="radio"] {
     flex-direction: row;
     gap: 1rem;
     align-items: center;
+  }
+
+  #filtros-rango-form ul {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
 }
 

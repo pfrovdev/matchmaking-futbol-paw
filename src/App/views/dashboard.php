@@ -242,7 +242,7 @@ unset($_SESSION['success']);
           <form action="/update-team" method="POST" class="edit-team-form">
             <label>
               Acrónimo (máx. 3 chars)
-              <input type="text" name="team-acronym" id="team-acronym" maxlength="3"
+              <input type="text" name="team-acronym" id="team-acronym" maxlength="3" placeholder="PAW"
                 value="<?= htmlspecialchars($miEquipo->getAcronimo(), ENT_QUOTES, 'UTF-8') ?>">
             </label>
             <small id="acronym-error" class="error-message" style="display:none; color:#d32f2f; font-size:0.8rem;">
@@ -250,11 +250,11 @@ unset($_SESSION['success']);
             </small>
             <label>
               Lema
-              <input type="text" name="team-motto" value="<?= htmlspecialchars($miEquipo->getLema()) ?>">
+              <input type="text" name="team-motto" placeholder="Programacion en Ambiente Web" value="<?= htmlspecialchars($miEquipo->getLema()) ?>">
             </label>
             <label>
               URL foto perfil
-              <input type="url" name="team-url" id="team-url"
+              <input type="url" name="team-url" id="team-url" placeholder="https://www.unlu.edu.ar/imagenes/logo.png"
                 value="<?= htmlspecialchars($miEquipo->getUrlFotoPerfil()) ?>" maxlength="255" pattern="https?://.+"
                 title="Debe empezar con http:// o https:// y tener como máximo 255 caracteres.">
             </label>
