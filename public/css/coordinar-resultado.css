@@ -80,6 +80,10 @@
   margin-bottom: 1rem;
 }
 
+.tab-nav {
+  display: none;
+}
+
 .team-name.local {
   background-color: #DF2727;
 }

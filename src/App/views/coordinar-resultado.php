@@ -13,7 +13,7 @@ $deadline = $partido->getDeadlineFormulario(); // "2025-09-19 04:20:00"
 
 // Crear objeto DateTime para la fecha límite
 $partidoExpirado = false;
-if($deadline){
+if ($deadline) {
     $deadlineDate = new DateTime($deadline);
     $now = new DateTime();
     $diff = $now->diff($deadlineDate);
@@ -24,7 +24,7 @@ if($deadline){
     } else {
         $hours = $diff->h + ($diff->days * 24);
         $minutes = $diff->i;
-    
+
         $timeLeft = '';
         if ($hours > 0) {
             $timeLeft .= $hours . ' hora' . ($hours > 1 ? 's' : '');
@@ -84,7 +84,7 @@ if (!$partidoAcordado) {
         }
     }
 } else {
-    if (!$partidoExpirado){
+    if (!$partidoExpirado) {
         $statusMessage = "El partido ya fue acordado, por favor terminalo.";
         $statusType = "info";
         $mostrarSubtitlo = false;
@@ -168,6 +168,11 @@ $rivalTeamAcronym = $formularioPartidoContrario->getEquipoLocal()->getBadge()->g
                 <span class="progress-text">
                     Intento <?= htmlspecialchars($miUltimaIteracion) ?>/<?= htmlspecialchars($maxIntentos) ?>
                 </span>
+            </div>
+
+            <div class="tab-nav">
+                <button class="tab-button active" data-tab="my-form"><?= htmlspecialchars($myTeamAcronym); ?> (Tú)</button>
+                <button class="tab-button" data-tab="rival-form"><?= htmlspecialchars($rivalTeamAcronym); ?> (Rival)</button>
             </div>
 
             <section class="forms-wrapper">
