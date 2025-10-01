@@ -72,6 +72,12 @@ Una vez dentro podemos ejecutar el script para cargar la base de datos
 
 php src/Deploy_database/insert_demo_data.php
 
+### Ejemplo:
+kubectl get pods -l app=mysql
+kubectl exec -it mysql-7fbfdcbd54-rtzvk -- bash
+mysql -u root -p   --> colocar DB_ROOT_PASSWORD
+use match_making_db;
+
 
 para rdeploy mysql:
 docker build -t gcr.io/matchmaking-app-paw/mysql:v1 -f deploy/mysql/Dockerfile .
