@@ -12,7 +12,8 @@ class TipoEquipoController extends AbstractController{
     public function get_estado($tipo) {
         $model_type = $this->model->get_estado($tipo);
         if(is_null($model_type)){
-            require $this->viewsDir . 'not-found.php';
+            header("HTTP/1.1 404 Not Found");
+            require $this->viewsDir . 'errors/not-found.php';
             exit;
         }
         

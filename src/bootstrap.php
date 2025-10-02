@@ -1,12 +1,15 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
-
+session_start();
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Paw\Core\Container;
+use Paw\Core\ContainerConfig;
 use Paw\Core\Router;
 use Paw\Core\Request;
 // use Paw\Core\Database\ConnectionBuilder;
 use Paw\Core\Database\Database;
+
 
 // Cargamos configuración
 $config = require __DIR__ . '/../src/Config/config.php';
@@ -18,7 +21,8 @@ $log->pushHandler(new StreamHandler($config['log']['path'], $config['log']['leve
 
 // Inicializamos la base de datos
 Database::initialize($config['database'], $log );
-
+use Paw\Core\Database\QueryBuilder;
+QueryBuilder::getInstance()->setLogger($log);
 // Whoops (sólo en modo desarrollo)
 if (DEBUG) {
     $whoops = new \Whoops\Run;
@@ -31,17 +35,17 @@ if (DEBUG) {
 }
 
 
-/* conexión para proxima entrega
-$connectionBuilder = new ConnectionBuilder;
-$connectionBuilder->setLogger($log);
-$connection = $connectionBuilder->make($config['database']);
-*/
-
 $request = new Request;
+
+// Instancio el contenedor para inyectar las dependencias
+$container = new Container();
+// se las inyecto
+ContainerConfig::configure($container, $log);
 
 // Cargamos rutas desde config
 $router = new Router();
 $router->setLogger($log);
+$router->setContainer($container);
 
 foreach ($config['routes'] as $route) {
     $router->loadRoutes($route['path'], $route['action'], $route['method']);

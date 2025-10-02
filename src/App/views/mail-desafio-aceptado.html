@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desafío de partido aceptado</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f2f2f2;">
+  <!-- Contenedor general -->
+  <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#f2f2f2">
+    <tr>
+      <td align="center">
+        <!-- Caja blanca central -->
+        <table width="600" border="0" cellpadding="0" cellspacing="0" style="width:600px; max-width:100%; background-color:#ffffff; border:1px solid #dddddd; border-radius:8px; overflow:hidden;">
+          
+          <!-- Header azul -->
+          <tr>
+            <td bgcolor="#083B8C" style="padding:20px; text-align:center;">
+              <h1 style="margin:0; font-family:Arial, sans-serif; font-size:24px; color:#ffffff;">
+                Fútbol Match
+              </h1>
+            </td>
+          </tr>
+          
+          <!-- Cuerpo del mensaje -->
+          <tr>
+            <td style="padding:20px; font-family:Arial, sans-serif; color:#333333; line-height:1.5;">
+              
+              <!-- Título del equipo -->
+              <h2 style="margin:0 0 16px 0; font-size:20px; color:#083B8C;">
+                ¡ Hola {{teamName}} !
+              </h2>
+
+              <!-- Mensaje principal -->
+              <p style="margin:0 0 20px 0;">
+                El equipo <strong>{{teamRivalName}}</strong> acepto tu desafio, coordina los detalles apretando el botón de abajo.
+              </p>
+              
+              <!-- Botón de acción -->
+              <div style="text-align:center; margin:20px 0;">
+                <a href="{{link}}"
+                   style="display:inline-block; padding:12px 24px; background-color:#5CD37E; color:#ffffff; text-decoration:none; font-family:Arial, sans-serif; font-size:16px; border-radius:4px;">
+                  Abrir chat en WhatsApp
+                </a>
+              </div>
+              
+              <!-- Cierre -->
+              <p style="margin:0; text-align:center;">
+                ¡Te esperamos!
+              </p>
+              
+            </td>
+          </tr>
+          
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

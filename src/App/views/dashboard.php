@@ -1,7 +1,17 @@
 <?php
 // src/App/views/dashboard.php
-// Variables: $equipo, $comentariosPag (array de Comentario), $desafiosRecib (array de Desafio), $nivelDesc, $deportividad, $ultimoPartidoJugado $page, $per, $order, $dir
+// Variables: $miEquipo, $comentariosPag (array de Comentario), $desafiosRecib (array de Desafio), $nivelDesc, $deportividad, $ultimoPartidoJugado $page, $per, $order, $dir
+$isOwner = ($equipoVistoId === $miEquipo->getIdEquipo());
+if (!$isOwner) {
+  require $this->viewsDir . 'profile.php';
+  return;
+}
+$errors = $_SESSION['errors'] ?? [];
+unset($_SESSION['errors']);
+$success = $_SESSION['success'] ?? null;
+unset($_SESSION['success']);
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -9,213 +19,263 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Pagina principal del equipo de futbol del usuario">
-  <title>Dashboard - <?= htmlspecialchars($equipo->fields['nombre']) ?></title>
+  <title>Dashboard - <?= htmlspecialchars($miEquipo->fields['nombre'], ENT_QUOTES, 'UTF-8') ?></title>
   <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="./css/spinner.css">
+  <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+  <link rel="stylesheet" href="./css/parts/introJs.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="https://unpkg.com/intro.js/minified/intro.min.js" defer></script>
+
+  <script>
+    const levelsEloMap = <?= json_encode(array_map(function ($row) {
+                            return [
+                              'descripcion' => $row['descripcion'],
+                              'color_inicio' => $row['color_inicio'],
+                              'color_fin' => $row['color_fin'],
+                            ];
+                          }, $listLevelsElo)) ?>;
+  </script>
+  <script type="module" src="js/pages/Dashboard.js" defer></script>
+  <script src="./js/components/modals.js"></script>
+  <script src="/js/sidebar.js"></script>
+  <script src="./js/components/spinner.js" defer></script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SportsTeam",
+      "name": "<?= htmlspecialchars($equipoBanner->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>",
+      "sport": "Soccer",
+      "memberOf": {
+        "@type": "SportsOrganization",
+        "name": "Ligas de Fútbol Amateur"
+      },
+      "identifier": {
+        "@type": "PropertyValue",
+        "name": "Elo Ranking",
+        "value": "<?= htmlspecialchars($equipoBanner->getEloActual(), ENT_QUOTES, 'UTF-8') ?>"
+      },
+      "alternateName": "<?= htmlspecialchars($miEquipo->fields['acronimo'], ENT_QUOTES, 'UTF-8') ?>",
+      "description": "<?= htmlspecialchars($equipoBanner->getLema(), ENT_QUOTES, 'UTF-8') ?>",
+      <?php if ($equipoBanner->getUrlFotoPerfil()): ?> "image": "<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>",
+      <?php endif; ?> "gender": "<?= htmlspecialchars($equipoBanner->getTipoEquipo(), ENT_QUOTES, 'UTF-8') ?>",
+      "location": {
+        "@type": "Place",
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": <?= $equipoBanner->getLatitud() ?>,
+          "longitude": <?= $equipoBanner->getLongitud() ?>
+        }
+      }
+    }
+  </script>
 </head>
 
-<body>
-  <?php require "parts/header.php"; ?>
+<body data-profile-id="<?= $equipoVistoId ?>"
+  data-is-owner="<?= ($equipoVistoId === $miEquipo->getIdEquipo()) ? 'true' : 'false' ?>">
 
+  <?php
+  $estaLogueado = !!$miEquipo->getIdEquipo();
+  require "parts/header.php";
+  ?>
+  <?php require "parts/side-navbar.php"; ?>
   <main>
-    <div class="dashboard-container">
+
+    <section class="dashboard-container">
+      <?php if (!empty($_SESSION['message'])): ?>
+        <section class="alert alert-info">
+          <?= htmlspecialchars($_SESSION['message']) ?>
+        </section>
+        <?php unset($_SESSION['message']); ?>
+      <?php endif; ?>
+
+      <?php if (!empty($_SESSION['error'])): ?>
+        <section class="alert alert-error">
+          <?= htmlspecialchars($_SESSION['error']) ?>
+        </section>
+        <?php unset($_SESSION['error']); ?>
+      <?php endif; ?>
+
       <!-- GRID PRINCIPAL -->
       <div class="dashboard-grid">
+
         <!-- Columna Izquierda -->
         <section class="col-left">
           <!-- Card 1: Perfil -->
-          <div class="card perfil-card">
-            <div class="perfil-foto">
-              <?php if ($equipo->fields['url_foto_perfil']): ?>
-                <img src="<?= htmlspecialchars($equipo->fields['url_foto_perfil']) ?>" alt="Foto de perfil">
+          <article class="card perfil-card">
+            <figure class="perfil-foto">
+              <?php if ($equipoBanner->getUrlFotoPerfil()): ?>
+                <img src="<?= htmlspecialchars($equipoBanner->getUrlFotoPerfil(), ENT_QUOTES, 'UTF-8') ?>"
+                  alt="Foto de perfil del equipo <?= htmlspecialchars($equipoBanner->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>">
               <?php else: ?>
-                <div class="placeholder-foto">Arrastra-soltar la foto de tu equipo aquí<br>
-                  <button class="btn-link">Cargar un documento</button>
-                </div>
+                <figcaption class="placeholder-foto">Sin foto de equipo</figcaption>
               <?php endif; ?>
-            </div>
+            </figure>
             <div class="perfil-info">
-              <h2><?= htmlspecialchars($equipo->fields['nombre']) . " (" . htmlspecialchars($equipo->fields['acronimo']) . ")" ?></h2>
-              <p class="lema"><?= htmlspecialchars($equipo->fields['lema']) ?></p>
+              <h2 class="team-header">
+                <?= htmlspecialchars($equipoBanner->getNombreEquipo(), ENT_QUOTES, 'UTF-8') ?>
+                <span
+                  class="acronym">(<?= htmlspecialchars($miEquipo->fields['acronimo'], ENT_QUOTES, 'UTF-8') ?>)</span>
+                <button type="button" class="btn-link open-edit-modal" title="Editar perfil">
+                  ✎
+                </button>
+              </h2>
+              <p class="lema"><?= htmlspecialchars($equipoBanner->getLema(), ENT_QUOTES, 'UTF-8') ?></p>
               <div class="sport-icons">
-                Deportividad:
+                <span>Deportividad:</span>
                 <!-- Faltaria hacer algo tipo, hasta la cantidad que me mandan
                 pongo pelotitas, y relleno hasta 5 espacios vacios -->
                 <?php for ($i = 1; $i <= 5; $i++): ?>
-                  <?php if ($i <= $equipo->promediarDeportividad()): ?>
+                  <?php if ($i <= $equipoBanner->getDeportividad()): ?>
                     <span class="icon">⚽</span>
                   <?php else: ?>
                     <span class="icon" style="opacity: 0.4; color: grey;">⚽</span>
                   <?php endif; ?>
                 <?php endfor; ?>
+                <?= "(" . $cantidadDeVotos . ")" ?>
               </div>
-              <p>Género: <?= htmlspecialchars($equipo->getTipoEquipo()) ?></p>
-              <div class="elo-bar">
-                <span class="label"><?= htmlspecialchars($nivelDesc) ?></span>
-                <div class="bar-bg">
-                  <div class="bar-fill" style="width:<?= min(100, ($equipo->fields['elo_actual'] / 1300) * 100) ?>%"></div>
-                </div>
-                <div class="elo-values">
-                  <span>Elo: <?= htmlspecialchars($equipo->fields['elo_actual']) ?></span> / <span>1300</span>
-                </div>
-              </div>
+              <p>Género: <?= htmlspecialchars($equipoBanner->getTipoEquipo(), ENT_QUOTES, 'UTF-8') ?></p>
+              <?php foreach ($listLevelsElo as $row):
+                $id = $row['id_nivel_elo'];
+                $label = $row['descripcion'];
+                $desde = (float) $row['desde'];
+                $hasta = (float) $row['hasta'];
+                $colorInicio = $row['color_inicio'];
+                $colorFin = $row['color_fin'];
+                $gradient = "linear-gradient(90deg, $colorInicio, $colorFin)";
+                $eloActual = (float) $equipoBanner->getEloActual();
+
+                if ($eloActual >= $desde && $eloActual <= $hasta):
+                  $porcentaje = ($hasta > $desde)
+                    ? min(100, max(0, (($eloActual - $desde) / ($hasta - $desde)) * 100))
+                    : 0;
+              ?>
+                  <div class="elo-bar">
+                    <span class="label"><?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?></span>
+                    <div class="bar-bg">
+                      <div class="bar-fill" style="background: <?= htmlspecialchars($gradient, ENT_QUOTES, 'UTF-8') ?>;
+                       width: <?= round($porcentaje, 2) ?>%">
+                      </div>
+                    </div>
+                    <div class="elo-values">
+                      <span>Elo: <?= htmlspecialchars($eloActual, ENT_QUOTES, 'UTF-8') ?></span> /
+                      <span><?= htmlspecialchars($hasta, ENT_QUOTES, 'UTF-8') ?></span>
+                    </div>
+                  </div>
+              <?php
+                endif;
+              endforeach;
+              ?>
+
             </div>
+          </article>
+
+          <!-- Card 2: historial de partidos -->
+          <div class="card history-card">
+            <h3 class="title-subsection">Historial de partidos</h3>
+            <div class="comment-filter">
+              <label for="filtroHistorial">Ordenar por:</label>
+              <select id="filtroHistorial" name="filtroHistorial">
+                <option value="fecha_finalizacion-DESC" selected>Más recientes</option>
+                <option value="fecha_finalizacion-ASC">Más antiguos</option>
+              </select>
+            </div>
+            <ul id="history-list" class="history-list"></ul>
+            <nav id="history-pagination" class="pagination" aria-label="Paginación de historial"></nav>
           </div>
 
-          <!-- Card 2: Último partido -->
-          <div class="card last-match-card">
-            <?php
-            $match = [
-              'soyGanador' => $soyGanador,
-              'eloChange' => $eloChange,                       // número positivo o negativo
-              'matchUrl'  => '#',                       // enlace a detalle
-              'date' => (new \DateTime($ultimoPartidoJugado->fields['fecha_jugado']))->format('d-m-Y'),
-              'home'      => [
-                'abbr'      => $equipoLocal->fields['acronimo'],
-                'name'      => $equipoLocal->fields['nombre'],
-                'logo'      => $equipoLocal->fields['url_foto_perfil'],              // ruta relativa a img/
-                'tarjetas' => [
-                  'yellow' => $soyGanador
-                    ? $ultimoPartidoJugado->fields['total_amarillas_ganador']
-                    : $ultimoPartidoJugado->fields['total_amarillas_perdedor'],
-                  'red'    => $soyGanador
-                    ? $ultimoPartidoJugado->fields['total_rojas_ganador']
-                    : $ultimoPartidoJugado->fields['total_rojas_perdedor'],
-                ], // cantidad de tarjetas
-              ],
-              'away'      => [
-                'abbr'      => $equipoRival->fields['acronimo'],
-                'name'      => $equipoRival->fields['nombre'],
-                'logo'      => $equipoRival->fields['url_foto_perfil'],
-                'tarjetas' => [
-                  'yellow' => !$soyGanador
-                    ? $ultimoPartidoJugado->fields['total_amarillas_ganador']
-                    : $ultimoPartidoJugado->fields['total_amarillas_perdedor'],
-                  'red'    => !$soyGanador
-                    ? $ultimoPartidoJugado->fields['total_rojas_ganador']
-                    : $ultimoPartidoJugado->fields['total_rojas_perdedor'],
-                ], // cantidad de tarjetas
-              ],
-              'score'     => $soyGanador? 
-                              $ultimoPartidoJugado->fields['goles_equipo_ganador'] . "-" .  $ultimoPartidoJugado->fields['goles_equipo_perdedor'] :
-                              $ultimoPartidoJugado->fields['goles_equipo_perdedor'] . "-" .  $ultimoPartidoJugado->fields['goles_equipo_ganador'] ,
-            ];
-            require "parts/tarjeta-historial.php";
-            ?>
-          </div>
 
           <!-- Card 3: Desafíos recibidos -->
-          <div class="card challenges-card">
-            <h3>Últimos desafíos recibidos</h3>
-            <ul class="challenge-list">
-              <?php foreach ($desafiosRecib as $d): ?>
-                <?php $retador = $d->getEquipoDesafiante(); ?>
-                <li>
-                  <?php
-                  $challenge = [
-                    'name'       => $retador->fields['nombre'],
-                    'level'      => $retador->getNivelElo(),
-                    'icons'      => 0,
-                    'lema'      => $retador->fields['lema'] ?? '',
-                    'elo'        => ['wins' => 10, 'losses' => 7, 'draws' => 0],
-                    'record'     => '',
-                    'id_nivel_elo' => $retador->getNivelElo(),
-                    'deportividad' => $retador->promediarDeportividad(),
-                    'profile-link' => "/team/{$retador->fields['id_equipo']}",
-                  ];
-                  require "parts/tarjeta-desafio.php";
-                  ?>
-                </li>
-              <?php endforeach; ?>
-            </ul>
-            <div class="pagination">
-              <?php
-              $totalC = count($comentariosPag);
-              $pagesC = ceil($totalC / $per);
-              for ($p = 1; $p <= $pagesC; $p++): ?>
-                <a href="?page=<?= $p ?>&amp;order=<?= urlencode($order) ?>&amp;dir=<?= $dir ?>"
-                  class="<?= ($p === $page) ? 'active' : '' ?>"><?= $p ?></a>
-              <?php endfor; ?>
+          <section class="card challenges-card">
+            <h3 class="title-subsection">Últimos desafíos recibidos</h3>
+            <div class="comment-filter">
+              <label for="filtroDesafios">Ordenar por:</label>
+              <select id="filtroDesafios" name="filtroDesafios">
+                <option value="fecha_creacion-DESC" selected>Más recientes</option>
+                <option value="fecha_creacion-ASC">Más antiguos</option>
+              </select>
             </div>
-          </div>
+            <ul id="challenge-list" class="challenge-list"></ul>
+            <nav id="desafios-pagination" class="pagination"></nav>
+          </section>
         </section>
 
         <!-- Columna Derecha -->
         <aside class="col-right">
           <!-- Card 4: Estadísticas -->
-          <div class="card stats-card">
-            <h3>Estadísticas</h3>
-            <dl>
-              <dt>G/P:</dt>
-              <dd>1.2</dd>
-              <dt>A/P:</dt>
-              <dd>1.2</dd>
-              <dt>%G/A:</dt>
-              <dd>50%</dd>
-            </dl>
-            <h4>Coleadores</h4>
-            <ol>
-              <li>Nombre Jugador - 50</li>
-              <li>Nombre Jugador - 40</li>
-              <li>Nombre Jugador - 30</li>
-            </ol>
-            <h4>Asistidores</h4>
-            <ol>
-              <li>Nombre Jugador - 20</li>
-              <li>Nombre Jugador - 15</li>
-              <li>Nombre Jugador - 10</li>
-            </ol>
-          </div>
+          <section class="card stats-card">
+            <?php include 'parts/tarjeta-estadistica.php'; ?>
+          </section>
 
           <!-- Card 5: Comentarios -->
-          <div class="card comments-card">
-            <h3>Comentarios</h3>
-            <ul class="comment-list">
-              <?php foreach ($comentariosPag as $c): ?>
-                <?php $autor = $c->getEquipoComentador(); ?>
-                <li>
-                  <strong><?= htmlspecialchars($autor->fields['nombre']) ?></strong>
-                  <p>Calificación: <?= str_repeat('●', $c->fields['deportividad']) . str_repeat('○', 5 - $c->fields['deportividad']) ?></p>
-                  <p>comentario: <?= htmlspecialchars($c->fields['comentario']) ?></p>
-                </li>
-              <?php endforeach; ?>
-            </ul>
-            <div class="pagination">
-              <?php
-              $totalC = count($comentariosPag);
-              $pagesC = ceil($totalC / $per);
-              for ($p = 1; $p <= $pagesC; $p++): ?>
-                <a href="?page=<?= $p ?>&order=<?= urlencode($order) ?>&dir=<?= $dir ?>"
-                  class="<?= $p === $page ? 'active' : '' ?>"><?= $p ?></a>
-              <?php endfor; ?>
+          <section class="card comments-card">
+            <h3 class="title-subsection">Comentarios</h3>
+            <div class="comment-filter">
+              <label for="filtroComentarios">Ordenar por:</label>
+              <select id="filtroComentarios" name="filtroComentarios">
+                <option value="fecha_creacion-DESC" selected>Más recientes</option>
+                <option value="fecha_creacion-ASC">Más antiguos</option>
+                <option value="deportividad-DESC">Deportividad (mayor a menor)</option>
+                <option value="deportividad-ASC">Deportividad (menor a mayor)</option>
+              </select>
             </div>
-          </div>
+            <ul id="comment-list" class="comment-list"></ul>
+            <nav id="comment-pagination" class="pagination"></nav>
+          </section>
         </aside>
+
+        <!-- SECCIÓN INFERIOR: Proximos partidos full-width -->
+        <section class="next-matches">
+          <h3 class="title-subsection">Próximos partidos</h3>
+          <div class="comment-filter">
+            <label for="filtroProximosPartidos">Ordenar por:</label>
+            <select id="filtroProximosPartidos" name="filtroProximosPartidos">
+              <option value="fecha_creacion-DESC" selected>Más recientes</option>
+              <option value="fecha_creacion-ASC">Más antiguos</option>
+            </select>
+          </div>
+          <ul class="match-list" id="match-list"></ul>
+          <nav class="pagination" id="partidos-pagination"></nav>
+        </section>
+
       </div>
-
-      <!-- SECCIÓN INFERIOR: Proximos partidos full-width -->
-      <section class="next-matches">
-        <h3>Próximos partidos</h3>
-        <ul class="match-list">
-          <?php for ($i = 1; $i <= 2; $i++): ?>
-            <li class="match-item">
-              <div class="match-info">
-                <strong>Nombre-equipo</strong>
-                <p>Principiante II</p>
-              </div>
-              <div class="match-actions">
-                <button class="btn-secondary small">Abrir wapp</button>
-                <button class="btn-primary small">Coordinar resultado</button>
-                <button class="btn-danger small">Cancelar</button>
-              </div>
-            </li>
-          <?php endfor; ?>
-        </ul>
+      <section id="edit-team-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+          <button id="close-modal" class="modal-close">&times;</button>
+          <h2>Editar perfil de equipo</h2>
+          <form action="/update-team" method="POST" class="edit-team-form">
+            <label>
+              Acrónimo (máx. 3 chars)
+              <input type="text" name="team-acronym" id="team-acronym" maxlength="3" placeholder="PAW"
+                value="<?= htmlspecialchars($miEquipo->getAcronimo(), ENT_QUOTES, 'UTF-8') ?>">
+            </label>
+            <small id="acronym-error" class="error-message" style="display:none; color:#d32f2f; font-size:0.8rem;">
+              El acrónimo no puede tener más de 3 caracteres.
+            </small>
+            <label>
+              Lema
+              <input type="text" name="team-motto" placeholder="Programacion en Ambiente Web" value="<?= htmlspecialchars($miEquipo->getLema()) ?>">
+            </label>
+            <label>
+              URL foto perfil
+              <input type="url" name="team-url" id="team-url" placeholder="https://www.unlu.edu.ar/imagenes/logo.png"
+                value="<?= htmlspecialchars($miEquipo->getUrlFotoPerfil()) ?>" maxlength="255" pattern="https?://.+"
+                title="Debe empezar con http:// o https:// y tener como máximo 255 caracteres.">
+            </label>
+            <small id="url-error" class="error-message" style="display:none; color:#d32f2f; font-size:0.8rem;">
+              La URL debe empezar con http:// o https:// y no superar 255 caracteres.
+            </small>
+            <button type="submit" class="btn-primary">Guardar</button>
+          </form>
       </section>
-
-    </div>
+    </section>
   </main>
-
+  <?php
+  if ($success)
+    require __DIR__ . '/parts/modal-success.php';
+  ?>
   <?php require "parts/footer.php"; ?>
+
 </body>
 
 </html>

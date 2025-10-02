@@ -6,7 +6,8 @@ use Exception;
 use Paw\Core\AbstractModel;
 use Paw\App\Models\Equipo;
 
-class Desafio extends AbstractModel{
+class Desafio extends AbstractModel
+{
     public $table = "Desafio";
     public $fields = [
         "id_desafio" => null,
@@ -18,45 +19,69 @@ class Desafio extends AbstractModel{
         "id_partido" => null,
     ];
 
-    public function setIdDesafio(int $idDesafio){
+    public function setIdDesafio(int $idDesafio)
+    {
         $this->fields["id_desafio"] = $idDesafio;
     }
 
-    public function setIdEquipoDesafiante(int $equipoDesafianteId){
+    public function setIdEquipoDesafiante(int $equipoDesafianteId)
+    {
         $this->fields["id_equipo_desafiante"] = $equipoDesafianteId;
     }
 
-    public function setIdEquipoDesafiado(int $equipoDesafiadoId){
+    public function setIdEquipoDesafiado(int $equipoDesafiadoId)
+    {
         $this->fields["id_equipo_desafiado"] = $equipoDesafiadoId;
     }
 
-    public function setFechaCreacion(string $fechaCreacion){
+    public function setFechaCreacion(string $fechaCreacion)
+    {
         $this->fields["fecha_creacion"] = $fechaCreacion;
     }
 
-    public function setIdEstadoDesafio(int $idEstadoDesafio){
+    public function setFechaAceptacion(?string $fechaAceptacion)
+    {
+        $this->fields["fecha_creacion"] = $fechaAceptacion;
+    }
+
+    public function setIdEstadoDesafio(int $idEstadoDesafio)
+    {
         $this->fields["id_estado_desafio"] = $idEstadoDesafio;
     }
 
-    public function setIdPartido(int $idPartido){
+    public function getIdEstadoDesafio()
+    {
+        return $this->fields["id_estado_desafio"];
+    }
+
+    public function setIdPartido(?int $idPartido)
+    {
         $this->fields["id_partido"] = $idPartido;
     }
 
-    public function select(array $params) {
-        $queryBuilder = $this->getQueryBuilder();
-        $result = $queryBuilder->select($this->table, $params);
-        return $result;
+    public function getIdPartido(): ?int
+    {
+        return $this->fields["id_partido"];
     }
 
-    public function saveNewTeam(array $params): ?string{
-        $queryBuilder = $this->getQueryBuilder();
-        return $queryBuilder->insert($this->table, $params);
+    public function getIdDesafio(): ?int
+    {
+        return $this->fields["id_desafio"];
     }
 
-    public function selectLike(array $params): array{
-        $queryBuilder = $this->getQueryBuilder();
-        $result = $queryBuilder->selectLike($this->table, $params);
-        return $result;
+    public function getIdEquipoDesafiante(): ?int
+    {
+        return $this->fields["id_equipo_desafiante"];
+    }
+
+    public function getIdEquipoDesafiado(): ?int
+    {
+        return $this->fields["id_equipo_desafiado"];
+    }
+
+    public function getFechaCreacion(): ?string
+    {
+        return $this->fields["fecha_creacion"];
     }
 
     public function set(array $values)
@@ -72,16 +97,19 @@ class Desafio extends AbstractModel{
         }
     }
 
-    public function getEquipoDesafiante(): Equipo{
-        $qb = $this->getQueryBuilder();
-        $equipoDesafiante = new Equipo($qb);
-        $data = $qb->select(
-            $equipoDesafiante->table,
-            ['id_equipo' => $this->fields['id_equipo_desafiante']]
-        );
-        $equipoDesafiante->set($data[0]);
-        return $equipoDesafiante;
+    public function aceptar(string $fechaAceptacion, int $nuevoEstado): void
+    {
+        $this->setFechaAceptacion($fechaAceptacion);
+        $this->setIdEstadoDesafio($nuevoEstado);
+    }
+
+    public function rechazar(int $nuevoEstado): void
+    {
+        $this->setIdEstadoDesafio($nuevoEstado);
+    }
+
+    public function asignarPartido(int $partidoId): void
+    {
+        $this->setIdPartido($partidoId);
     }
 }
-
-?>

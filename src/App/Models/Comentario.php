@@ -19,11 +19,11 @@ class Comentario extends AbstractModel{
         $this->fields["id_comentario"] = $idComentario;
     }
 
-    public function setEquipoComentadoId(int $equipoComentadoId){
+    public function setIdEquipoComentado(int $equipoComentadoId){
         $this->fields["id_equipo_comentado"] = $equipoComentadoId;
     }
 
-    public function setEquipoComentadorId(int $equipoComentadorId){
+    public function setIdEquipoComentador(int $equipoComentadorId){
         $this->fields["id_equipo_comentador"] = $equipoComentadorId;
     }
 
@@ -31,7 +31,7 @@ class Comentario extends AbstractModel{
         $this->fields["comentario"] = $comentario;
     }
 
-    public function setDeportividad(int $deportividad){
+    public function setDeportividad(float $deportividad){
         $this->fields["deportividad"] = $deportividad;
     }
 
@@ -52,38 +52,31 @@ class Comentario extends AbstractModel{
         }
     }
 
-    public function select(array $params) {
-        $queryBuilder = $this->getQueryBuilder();
-        $result = $queryBuilder->select($this->table, $params);
-        return $result;
+    public function getComentarioId(): ?int
+    {
+        return $this->fields["id_comentario"];
     }
 
-    public function saveNewTeam(array $params): ?string{
-        $queryBuilder = $this->getQueryBuilder();
-        return $queryBuilder->insert($this->table, $params);
+    public function getEquipoComentadoId(): ?int
+    {
+        return $this->fields["id_equipo_comentado"];
     }
-
-    public function selectLike(array $params): array{
-        $queryBuilder = $this->getQueryBuilder();
-        $result = $queryBuilder->selectLike($this->table, $params);
-        return $result;
+    public function getEquipoComentadorId(): ?int
+    {
+        return $this->fields["id_equipo_comentador"];
     }
-
-    public function getEquipoComentador(): Equipo{
-
-        $qb = $this->getQueryBuilder(); 
-        $equipoComentador = new Equipo();
-        $data = $qb->select(
-            $equipoComentador->table,
-            ['id_equipo' => $this->fields['id_equipo_comentador']]
-        );
-    
-        if (!empty($data)) {
-            $equipoComentador->set($data[0]);
-        }
-    
-        return $equipoComentador;
-    }    
+    public function getComentario(): ?string
+    {
+        return $this->fields["comentario"];
+    }
+    public function getDeportividad(): ?float
+    {
+        return $this->fields["deportividad"];
+    }
+    public function getFechaCreacion(): ?string
+    {
+        return $this->fields["fecha_creacion"];
+    }
 }
 
 ?>

@@ -3,247 +3,653 @@
 @import url('./footer.css');
 @import url('./tarjeta-desafio.css');
 @import url('./tarjeta-historial.css');
+@import url("./base.css");
+@import url('./parts/header.css');
+@import url('./parts/footer.css');
+@import url("./tarjeta-desafio.css");
+@import url("./tarjeta-historial.css");
+@import url("./tarjeta-proximo.css");
+@import url("./side-navbar.css");
+@import url("./comentario.css");
+@import url("./parts/tarjeta-estadistica.css");
 
 /* -------------------------
    CONTENEDOR PRINCIPAL
    ------------------------- */
-   .dashboard-container {
-    width: 80%;
-    margin: 0 auto;
-    padding: 2rem 0;
-  }
-  
-  /* HEADER */
-  .dashboard-header h1 {
-    font-size: 2rem;
-    color: var(--primary-color);
-  }
-  .dashboard-header p {
-    color: var(--muted-text-color);
-    margin-bottom: 1.5rem;
-  }
-  
-  /* GRID PRINCIPAL: dos columnas */
-  .dashboard-grid {
-    display: grid;
-    grid-template-columns: 5fr 3fr;
-    grid-gap: 1.5rem;
+.dashboard-container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+/* HEADER */
+.dashboard-header h1 {
+  font-size: 2rem;
+  color: var(--primary-color);
+}
+
+.dashboard-header p {
+  color: var(--muted-text-color);
+  margin-bottom: 1.5rem;
+}
+
+/* GRID PRINCIPAL: dos columnas */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 5fr 3fr;
+  grid-gap: 1.5rem;
+}
+
+.col-left,
+.col-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* TIPO “card” */
+.card {
+  background: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+}
+
+.alert-info {
+  background-color: #e8f1fc;
+  color: #083b8c;
+  border: 1px solid var(--primary-color);
+  flex-direction: column;
+}
+
+.challenge-card {
+  align-items: unset;
+}
+
+/* ----- PERFIL ----- */
+.perfil-card {
+  display: flex;
+  gap: 1rem;
+}
+
+.perfil-foto {
+  display: flex;
+  max-height: 15rem;
+  max-width: 30rem;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  border: 0.1rem solid rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.perfil-foto img {
+  width: 18rem;
+  height: -webkit-fill-available;
+}
+
+.perfil-foto .btn-link {
+  margin-top: 0.5rem;
+  display: inline-block;
+  font-size: 0.8rem;
+  color: var(--primary-color);
+}
+
+.perfil-info {
+  flex: 1;
+}
+
+.perfil-info h2 {
+  margin-bottom: 0.25rem;
+}
+
+.perfil-info .lema {
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+
+.elo-bar {
+  margin-top: 1rem;
+}
+
+.elo-bar .label {
+  font-size: 0.9rem;
+  background: var(--button-secondary-background-color);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  margin-right: 0.5rem;
+}
+
+.elo-bar .bar-bg {
+  background: #e0e0e0;
+  border-radius: 0.25rem;
+  overflow: hidden;
+  height: 1rem;
+  margin: 0.5rem 0 0.25rem 0;
+}
+
+.elo-bar .bar-fill {
+  height: 100%;
+}
+
+.elo-bar .elo-values {
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.card-side {
+  margin: 0;
+}
+
+.team-image {
+  height: 100%;
+}
+
+.team-image img {
+  height: -webkit-fill-available;
+}
+
+.team-rank {
+  bottom: 0;
+}
+
+/* ----- ÚLTIMO PARTIDO ----- */
+.last-match-card .header-match {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.last-match-card .elo-change {
+  color: var(--button-primary-background-color);
+  font-weight: bold;
+}
+
+.last-match-card .date {
+  color: #999;
+}
+
+.team-record .wins {
+  color: green;
+}
+
+.team-record .losses {
+  color: red;
+}
+
+.team-record .draws {
+  color: rgb(212, 212, 193);
+}
+
+/* ----- CHALLENGES ----- */
+
+.challenge-list {
+  list-style: none;
+}
+
+.form-desafiar {
+  margin: 0 auto;
+}
+
+.challenge-list li {
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.pagination {
+  display: block;
+  text-align: center;
+  margin-top: 0.75rem;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+/* ----- STATS ----- */
+.stats-card h3 {
+  margin-bottom: 0.5rem;
+}
+
+.stats-card dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 1rem;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.stats-card h4 {
+  margin: 0.5rem 0 0.25rem;
+}
+
+.stats-card ol {
+  padding-left: 1.25rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+/* ----- PRÓXIMOS PARTIDOS (full-width) ----- */
+.next-matches {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  padding: 1rem 1.25rem;
+  grid-column: 1 / -1;
+}
+
+.match-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.match-list li {
+  margin-bottom: 0.75rem;
+}
+
+.alert-error {
+  flex-direction: column;
+}
+
+.nm-card {
+  width: 100%;
+}
+
+/* Opcional: espaciado extra entre tarjetas y borde del recuadro */
+.nm-card+.nm-card {
+  margin-top: 0.75rem;
+}
+
+/* Opcional: si quieres que al último ítem no le quede borde inferior, puedes quitarlo */
+.match-list li:last-child .nm-card {
+  margin-bottom: 0;
+}
+
+/* ----- BOTONES ----- */
+.btn-primary {
+  background-color: var(--button-primary-background-color);
+  color: var(--primary-buttons-color);
+  border: none;
+  border-radius: 0.25rem;
+}
+
+.btn-secondary {
+  background-color: var(--button-secondary-background-color);
+  color: var(--muted-text-color);
+  border: 1px solid var(--muted-text-color);
+  border-radius: 0.25rem;
+}
+
+.btn-danger {
+  background-color: #d32f2f;
+  color: #fff;
+  border: none;
+  border-radius: 0.25rem;
+}
+
+
+.btn-link {
+  background: none;
+  border: 1px solid var(--button-primary-background-color);
+  border-radius: 2rem;
+  color: var(--primary-color);
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn-link:hover {
+  background: var(--button-primary-background-color);
+  border: 1px solid var(--muted-text-color);
+}
+
+.small {
+  font-size: 0.8rem;
+}
+
+.title-subsection {
+  border-bottom: 1px solid #eee;
+}
+
+.modal-overlay.show {
+  display: flex;
+}
+
+.modal-content {
+  max-width: 28rem;
+  width: 100%;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  transform-origin: center top;
+}
+
+@keyframes modal-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(.99);
   }
 
-  .col-left,
-    .col-right {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem; /* Ajusta este valor según cuánto espacio quieras entre las cards */
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
-  
-  /* TIPO “card” */
-  .card {
-    background: #fff;
-    border-radius: 0.75rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    padding: 1rem;
+
+.modal-overlay:not(.hidden) .modal-content {
+  animation: modal-appear 220ms cubic-bezier(.2, .9, .3, 1) both;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: .25rem;
+}
+
+.modal-title {
+  font-size: 1.1rem;
+  margin: 0;
+  font-weight: 600;
+  color: #111;
+}
+
+.modal-icon {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #38b000 0%, #2fa43a 100%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.25rem;
+  box-shadow: 0 6px 18px rgba(45, 125, 52, 0.15);
+}
+
+.modal-body {
+  margin-top: .5rem;
+  color: #333;
+  font-size: .98rem;
+  line-height: 1.3;
+  min-height: 1.5rem;
+}
+
+.modal-actions {
+  display: flex;
+  background: none;
+  justify-content: center;
+  align-items: center;
+  gap: .5rem;
+  margin-top: 1rem;
+}
+
+.modal-ok-button {
+  padding: .5rem .9rem;
+  border-radius: .375rem;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  background: linear-gradient(180deg, #2fa43a 0%, #238b2d 100%);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(43, 113, 40, 0.12);
+}
+
+.modal-ok-button:active {
+  transform: translateY(1px);
+}
+
+.modal-ok-button:focus {
+  outline: 3px solid rgba(46, 125, 50, 0.18);
+  outline-offset: 2px;
+}
+
+.modal-secondary-button {
+  padding: .45rem .8rem;
+  border-radius: .375rem;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+}
+
+.modal-close {
+  top: .5rem;
+  right: .5rem;
+  font-size: 1.25rem;
+  color: #666;
+  background: transparent;
+}
+
+.modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999 !important;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.modal-overlay.hidden {
+  display: none !important;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: .5rem;
+  max-width: 28rem;
+  width: 100%;
+  padding: 1.5rem;
+  position: relative;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  transform-origin: center top;
+}
+
+
+.modal-close {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+
+.modal-header {
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  margin-bottom: .25rem;
+}
+
+.modal-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: linear-gradient(180deg, #38b000, #2fa43a);
+  font-weight: 700;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.modal-body {
+  color: #222;
+  margin-top: .25rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: .5rem;
+  margin-top: 1rem;
+}
+
+.modal-ok-button {
+  padding: .5rem .9rem;
+  border-radius: .375rem;
+  border: 0;
+  cursor: pointer;
+  background: linear-gradient(180deg, #2fa43a, #238b2d);
+  color: #fff;
+  font-weight: 600;
+}
+
+.edit-team-form label {
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.edit-team-form input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: .25rem;
+  border: 1px solid #ccc;
+  border-radius: .25rem;
+  font-size: 1rem;
+}
+
+.edit-team-form .btn-primary {
+  width: 100%;
+  padding: .75rem;
+  margin-top: 1rem;
+  cursor: pointer
+}
+
+/* -------------------------
+   MEDIA QUERIES
+   ------------------------- */
+
+/* -------------------------
+     TABLET
+     Máx. 1220px
+     ------------------------- */
+@media (max-width: 1220px) {
+
+
+  /* Contenedor ocupa casi todo el ancho */
+  .dashboard-container {
+    width: 80%;
+    padding:1rem 0 0 3rem;
   }
-  
-  /* ----- PERFIL ----- */
-  .perfil-card {
-    display: flex;
-    gap: 1rem;
+
+  /* Un solo column en el grid */
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    grid-gap: 1.25rem;
   }
-  .perfil-foto {
-    flex: 1;
-    border: 2px dashed #ccc;
-    border-radius: 0.5rem;
-    text-align: center;
-    padding: 1rem;
-    font-size: 0.9rem;
-    color: #666;
-    background: url('../icons/defaultTeamIcon.png') center/cover no-repeat;
-  }
-  .perfil-foto .btn-link {
-    margin-top: 0.5rem;
-    display: inline-block;
-    font-size: 0.8rem;
-    color: var(--primary-color);
-  }
-  .perfil-info {
-    flex: 2;
-  }
-  .perfil-info h2 {
-    margin-bottom: 0.25rem;
-  }
-  .perfil-info .lema {
-    font-style: italic;
-    margin-bottom: 0.5rem;
-  }
-  .elo-bar {
-    margin-top: 1rem;
-  }
-  .elo-bar .label {
-    font-size: 0.9rem;
-    background: var(--button-secondary-background-color);
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    margin-right: 0.5rem;
-  }
-  .elo-bar .bar-bg {
-    background: #e0e0e0;
-    border-radius: 0.25rem;
-    overflow: hidden;
-    height: 0.5rem;
-    margin: 0.5rem 0 0.25rem 0;
-  }
-  .elo-bar .bar-fill {
-    background: var(--button-primary-background-color);
+
+  .card-side {
+    width: 100%;
     height: 100%;
   }
-  .elo-bar .elo-values {
-    font-size: 0.8rem;
-    color: #555;
-  }
-  
-  /* ----- ÚLTIMO PARTIDO ----- */
-  .last-match-card .header-match {
-    display: flex;
-    justify-content: space-between;
+
+  /* Perfil: apilar foto e info */
+  .perfil-card {
+    flex-direction: column;
     align-items: center;
-    font-size: 0.85rem;
-    margin-bottom: 0.75rem;
   }
-  .last-match-card .elo-change {
-    color: var(--button-primary-background-color);
-    font-weight: bold;
+
+  .perfil-foto {
+    max-width: 100%;
+    margin-bottom: 1rem;
   }
-  .last-match-card .date {
-    color: #999;
-  }
-  .match-score {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-  .match-score .team {
-    font-size: 1rem;
-    color: #666;
-  }
-  
-  /* ----- CHALLENGES ----- */
-  .challenges-card h3 {
-    margin-bottom: 0.75rem;
-  }
-  .challenge-list {
-    list-style: none;
-  }
-  .challenge-list li {
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid #eee;
-  }
-  .pagination {
+
+  .perfil-info {
+    width: 100%;
     text-align: center;
-    margin-top: 0.75rem;
-    color: #888;
-    font-size: 0.9rem;
   }
-  
-  /* ----- STATS ----- */
-  .stats-card h3 {
-    margin-bottom: 0.5rem;
-  }
-  .stats-card dl {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 0.25rem 1rem;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-  }
-  .stats-card h4 {
-    margin: 0.5rem 0 0.25rem;
-  }
-  .stats-card ol {
-    padding-left: 1.25rem;
-    margin-bottom: 0.75rem;
-    font-size: 0.9rem;
-  }
-  
-  /* ----- COMENTARIOS ----- */
-  .comments-card h3 {
-    margin-bottom: 0.75rem;
-  }
-  .comment-list {
-    list-style: none;
-  }
-  .comment-list li {
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #eee;
-    font-size: 0.9rem;
-  }
-  .comment-list strong {
-    display: block;
-  }
-  .comment-list p {
-    margin: 0.25rem 0;
-  }
-  .comment-list p:first-of-type {
-    font-weight: bold;
-  }
-  
-  /* ----- PRÓXIMOS PARTIDOS (full-width) ----- */
+
   .next-matches {
-    grid-column: 1 / -1;
-    margin: 2rem 0 1rem;
+    padding: 0.75rem 1rem;
   }
-  .next-matches h3 {
-    margin-bottom: 1rem;
+}
+
+  @media (max-width: 1024px) {
+  /* Ocultar side-navbar */
+  .side-navbar {
+    display: none;
   }
-  .match-list {
-    list-style: none;
+
+  .dashboard-container {
+    width: 90%;
+    padding:1rem;
   }
+}
+
+/* -------------------------
+     MÓVIL
+     Máx. 480px
+     ------------------------- */
+@media (max-width: 480px) {
+  .side-navbar {
+    display: none;
+  }
+
+  /* Contenedor casi full width */
+  .dashboard-container {
+    width: 100%;
+    padding: 0.5rem 0;
+  }
+
+  /* Tipografías más pequeñas */
+  .dashboard-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-header p {
+    font-size: 0.9rem;
+  }
+
+  .card-side {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Cards reducidas */
+  .card {
+    padding: 0.75rem;
+  }
+
+  .perfil-foto {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+  }
+
+  .challenge-card {
+    flex-direction: column;
+  }
+
+  .card-main {
+    padding: 0.75rem;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 0.6rem 0;
+    font-size: 0.9rem;
+  }
+
+  .challenge-list li,
+  .comment-list li,
   .match-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid #eee;
+    flex-direction: column;
+    align-items: flex-start;
   }
-  .match-actions button {
-    margin-left: 0.5rem;
-    font-size: 0.8rem;
-  }
-  
-  /* ----- BOTONES ----- */
-  .btn-primary {
-    background-color: var(--button-primary-background-color);
-    color: var(--primary-buttons-color);
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
-  }
-  .btn-secondary {
-    background-color: var(--button-secondary-background-color);
-    color: var(--muted-text-color);
-    border: 1px solid var(--muted-text-color);
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
-  }
-  .btn-danger {
-    background-color: #d32f2f;
-    color: #fff;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 0.25rem;
-  }
-  .btn-link {
-    background: none;
-    border: none;
-    color: var(--primary-color);
-    cursor: pointer;
-    padding: 0;
-  }
-  .small {
-    font-size: 0.8rem;
-  }
-  
+}

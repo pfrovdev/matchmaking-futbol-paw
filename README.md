@@ -1,13 +1,6 @@
-# TP Integrador. Match Making Futbol 5
+# TP Integrador Match Making Futbol 5
 
-## Autores:
-
-De Paola Agustín, depa.agustin@gmail.com
-Fedorov Pavlo, pfrov.dev@gmail.com
-Iarza Esteban, iarzaesteban94@gmail.com
-Juarez Sebastián, sebajuarezz@#gmail.com
-
-## Estructura del Proyecto PawPrint
+## Estructura del Proyecto
 
 ```bash
 .
@@ -18,10 +11,49 @@ Juarez Sebastián, sebajuarezz@#gmail.com
 │   └── index.php
 ├── src/
 │   ├── App/
-│   │   ├── Controller/
+│   │   ├── Controllers/
+│   │   │   ├──AuthController.php
+│   │   │   ├──EquipoController.php
+│   │   │   ├──EstadoDesafioController.php
+│   │   │   ├──EstadoIteracionController.php
+│   │   │   ├──EstadoPartidoController.php
+│   │   │   ├──PageController.php
+│   │   │   └──TipoEquipoController.php
 │   │   ├── Models/
+│   │   │   ├──Comentario.php
+│   │   │   ├──Desafio.php
+│   │   │   ├──Equipo.php
+│   │   │   ├──EquipoCollection.php
+│   │   │   ├──Estadisticas.php
+│   │   │   ├──EstadoDesafio.php
+│   │   │   ├──EstadoIteracion.php
+│   │   │   ├──EstadoPartido.php
+│   │   │   ├──NivelElo.php
+│   │   │   ├──Partido.php
+│   │   │   ├──ResultadoPartido.php
+│   │   │   └──TipoEquipo.php
+│   │   ├── Utils/
+│   │   │   └──CalculadoraDeElo.php
 │   │   ├── Views/
-│   │   │   └── Parts/
+│   │   │   └── parts/
+│   │   │       ├──footer.php
+│   │   │       ├──header-no-account.php
+│   │   │       ├──header.php
+│   │   │       ├──nav.php
+│   │   │       ├──side-navbar.php
+│   │   │       ├──tarjeta-desafio.php
+│   │   │       ├──tarjeta-envio-desafio.php
+│   │   │       └──tarjeta-historial.php
+│   │   │   ├──about-us.php
+│   │   │   ├──create-account.php
+│   │   │   ├──create-team.php
+│   │   │   ├──dashboard.php
+│   │   │   ├──home.php
+│   │   │   ├──internal-error.php
+│   │   │   ├──login.php
+│   │   │   ├──mail-desafio.html
+│   │   │   ├──not-found.php
+│   │   │   └──search-team.php
 │   ├── Config/
 │   │   └── config.php
 │   ├── Core/
@@ -32,6 +64,10 @@ Juarez Sebastián, sebajuarezz@#gmail.com
 │   │   ├── Exceptions/
 │   │   │   ├── InvalidValueFormatException.php
 │   │   │   └── RouteNotFoundException.php
+│   │   ├── JWT/
+│   │   │   └── Auth.php
+│   │   ├── Middelware/
+│   │   │   └── AuthMiddelware.php
 │   │   ├── Traits/
 │   │   │   └── Loggeable.php
 │   │   ├── AbstractController.php
@@ -47,8 +83,7 @@ Juarez Sebastián, sebajuarezz@#gmail.com
 ├── .env
 ├── Makefile
 ├── phinx.php
-├── composer.json
-└── README.md
+└── composer.json
 ```
 
 ## Análisis de peticiones HTTP
@@ -102,21 +137,215 @@ Descripción:
 - Composer para gestión de dependencias
 - Sistema de logs ubicado en `/Logs/logs.app`
 
-## Instrucciones de uso
+## Instrucciones de uso (modo local)
 
-1. Clonar el repositorio
+### 1. Crear un directorio de trabajo
+Elegir un directorio en tu máquina donde quieras alojar el proyecto y crealo desde la terminal:
+
+```bash
+mkdir ~/proyectos
+cd ~/proyectos
+```
+
+### 2. Crear un directorio de trabajo
+Dentro del directorio creado, clonar el repositorio:
 
 ```bash
 git clone https://github.com/pfrovdev/matchmaking-futbol-paw.git
 ```
 
-2. Levantar el proyecto localmente
+### 3. Ingresar al proyecto
+Acceder al directorio del proyecto:
 
 ```bash
-cd ~/matchmaking-futbol-paw
-make up
+cd matchmaking-futbol-paw
+
 ```
 
-Esto iniciará un servidor PHP local en `http://localhost:9999`.
+### 4. Levantar los servicios
+Ejecutar:
 
-## Recursos del proyecto
+```bash
+make up
+```
+Esto iniciará los servicios necesarios (PHP, MySQL, Redis) y la aplicación estará disponible ingreando en el navegador:
+
+http://localhost:9999
+
+### 5.Inicializar la base de datos
+En otra terminal (sin detener los servicios anteriores), ejecutar:
+
+```bash
+make reset_db
+```
+Este comando:
+    - Crea la base de datos.
+
+    - Genera la estructura de tablas.
+
+    - Aplica las migraciones necesarias.
+
+### 6. Insertar datos de demostración
+Para cargar datos ficticios en la base de datis y poder probar el sistema, correr:
+
+```bash
+make insertar_datos_demo
+```
+
+## Aplicación Web (versión online)
+
+El sistema también está disponible en hosting:
+
+http://34.30.100.40/
+
+
+## Deploy en Google Cloud con Terraform y Kubernetes
+
+Este proyecto fue desplegado en la plataforma gratuita de Google cloud utilizando una infraestructura orquestada con Terraform y Kubernetes.
+A continuación, se documenta el procedimiento completo seguido para lograr el deploy de los servicios de la aplicación (Nginx, PHP/App y MySQL).
+
+1. Construcción y Push de Imágenes Docker
+
+Antes de desplegar en Kubernetes, fue necesario construir las imágenes Docker personalizadas para cada uno de los servicios:
+
+Nginx → encargado de servir la aplicación y manejar el enrutamiento.
+
+App/PHP → contiene el código de la aplicación web.
+
+MySQL → base de datos persistente del sistema.
+
+Cada imagen las construyó y se subió al Artifact Registry de Google cloud:
+
+### Nginx
+docker build -t us-central1-docker.pkg.dev/matchmaking-paw/matchmaking-repo/nginx:latest -f deploy/nginx/Dockerfile .
+docker push us-central1-docker.pkg.dev/matchmaking-paw/matchmaking-repo/nginx:latest
+
+### App/PHP
+docker build -t us-central1-docker.pkg.dev/matchmaking-paw/matchmaking-repo/app:latest -f deploy/app/Dockerfile .
+docker push us-central1-docker.pkg.dev/matchmaking-paw/matchmaking-repo/app:latest
+
+### MySQL
+docker build -t us-central1-docker.pkg.dev/matchmaking-paw/matchmaking-repo/mysql:latest -f deploy/mysql/Dockerfile .
+docker push us-central1-docker.pkg.dev/matchmaking-paw/matchmaking-repo/mysql:latest
+
+Con esto nos aseguramos que las imágenes estén disponibles en una ubicación centralizada y segura, optimizada para desplegar en Kubernetes dentro del mismo proyecto de Google cloud.
+
+2. Manejo de configuraciones y secrets
+
+### ConfigMaps
+
+Las configuraciones de la aplicación (variables de entorno comunes como DB_HOST, DB_USER, JWT parámetros, correo, etc.) las gestionamos mediante un ConfigMap:
+
+Archivo: deploy/kubernetes/configmap-env.yaml
+
+Esto permite desacoplar las configuraciones del código y mantenerlas versionadas de forma clara.
+
+### Secrets
+
+Las credenciales sensibles (contraseñas de base de datos, JWT_SECRET, credenciales de email, etc.) se almacenaron como Secrets en Kubernetes:
+
+kubectl create secret generic app-secrets \
+  --from-literal=DB_ROOT_PASSWORD=blablabla \
+  --from-literal=DB_PASSWORD=blablabla \
+  --from-literal=JWT_SECRET=blablabla... \
+  --from-literal=MAIL_PASSWORD=blablabla
+
+Con esto, nos aseguramos que los valores confidenciales no estén en el código ni en el repositorio, cumpliendo buenas prácticas de seguridad.
+
+3. Persistencia de la base de datos
+
+La base de datos MySQL necesita almacenamiento persistente para no perder datos al reiniciar o actualizar los pods.
+Se creó un PersistentVolumeClaim (PVC):
+
+Archivo: deploy/kubernetes/mysql-pvc.yaml
+
+resources:
+  requests:
+    storage: 5Gi
+
+Esto reserva 5GB de almacenamiento en Google cloud, garantizando la durabilidad de los datos.
+
+4. Despliegue de servicios en Kubernetes
+
+Cada componente de la aplicación se define como un Deployment y expone sus puertos mediante un Service.
+
+### Para MySQL
+
+Archivo: deploy/kubernetes/mysql-deployment.yaml
+Archivo: deploy/kubernetes/mysql-service.yaml
+
+Deployment con 1 réplica.
+
+Variables de entorno obtenidas de ConfigMap y Secrets.
+
+Montaje del PVC en /var/lib/mysql.
+
+Service expuesto en el puerto 3306.
+
+### Para Nginx y App/PHP
+
+Los deployments de Nginx y App siguen una estructura similar:
+
+Imagen personalizada desde el Artifact Registry.
+
+Variables de configuración mediante ConfigMaps y Secrets.
+
+Exposición de puertos con Services.
+
+Balanceo de carga manejado por Kubernetes (LoadBalancer).
+
+5. Terraform para la Infraestructura
+
+Para gestionar la infraestructura en Google cloud, utilizamos Terraform.
+Entre los recursos definidos se encuentran:
+
+Cluster de GKE (Google Kubernetes Engine)
+
+Artifact Registry para almacenar imágenes Docker
+
+Configuración de red y roles IAM necesarios
+
+Terraform nos permite automatizar y versionar toda la infraestructura, garantizando que cualquier miembro del equipo pueda replicar el entorno con un simple terraform apply.
+
+6. Flujo de deploy completo
+
+Crear proyecto en Google cloud y habilitar la cuenta gratuita.
+
+Configurar Terraform para aprovisionar el cluster de Kubernetes.
+
+Construir y pushear las imágenes Docker al Artifact Registry.
+
+Crear ConfigMaps y secrets en el cluster.
+
+Aplicar los manifiestos de Kubernetes:
+
+kubectl apply -f deploy/kubernetes/configmap-env.yaml
+kubectl apply -f deploy/kubernetes/mysql-pvc.yaml
+kubectl apply -f deploy/kubernetes/mysql-deployment.yaml
+kubectl apply -f deploy/kubernetes/mysql-service.yaml
+kubectl apply -f deploy/kubernetes/nginx-php-deployment.yaml
+kubectl apply -f deploy/kubernetes/nginx-service.yaml
+kubectl apply -f deploy/kubernetes/redis-deployment.yaml
+kubectl apply -f deploy/kubernetes/redis-service.yaml
+
+Verificar que los pods estén en estado running:
+En una terminal ejecutar:
+```bash
+kubectl get pods
+```
+
+Acceder a la aplicación a través de la IP pública del LoadBalancer generado.
+Para obtenerla ejecutar desde una terminal:
+```bash
+kubectl get svc
+```
+
+7. Resultados
+
+La aplicación quedó desplegada en un cluster Kubernetes en Google cloud, completamente desacoplada y escalable.
+
+Gracias a Terraform, la infraestructura es reproducible.
+
+Los Secrets y ConfigMaps permiten un manejo seguro y ordenado de configuraciones.
+
+La base de datos cuenta con almacenamiento persistente para garantizar integridad de los datos.

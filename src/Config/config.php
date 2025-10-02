@@ -2,7 +2,7 @@
 
 return [
     // Entorno de la aplicación
-    'debug' => true,
+    'debug' => false,
 
     // Configuración de logs
     'log' => [
@@ -13,18 +13,63 @@ return [
 
     // Configuración de rutas iniciales
     'routes' => [
+        // === PageController ===
+        // GET Methods
         ['path' => '/', 'action' => 'PageController@index', 'method' => 'GET'],
         ['path' => '/about-us', 'action' => 'PageController@aboutUs', 'method' => 'GET'],
         ['path' => '/login', 'action' => 'PageController@login', 'method' => 'GET'],
+
+        // === EquipoController ===
+        // GET Methods
         ['path' => '/create-account', 'action' => 'EquipoController@createAccount', 'method' => 'GET'],
         ['path' => '/create-team', 'action' => 'EquipoController@createTeam', 'method' => 'GET'],
         ['path' => '/search-team', 'action' => 'EquipoController@searchTeam', 'method' => 'GET'],
         ['path' => '/dashboard', 'action' => 'EquipoController@dashboard', 'method' => 'GET'],
-        
-        ['path' => '/login', 'action' => 'AuthController@login', 'method' => 'POST'],
+        ['path' => '/ranking-teams', 'action' => 'EquipoController@rankingTeams', 'method' => 'GET'],
+        ['path' => '/details-team', 'action' => 'EquipoController@detailsTeam', 'method' => 'GET'],
+
+        // POST Methods
         ['path' => '/register', 'action' => 'EquipoController@register', 'method' => 'POST'],
         ['path' => '/register-team', 'action' => 'EquipoController@registerTeam', 'method' => 'POST'],
-        
+        ['path' => '/update-team', 'action' => 'EquipoController@updateTeam', 'method' => 'POST'],
+
+        // === ComentarioController ===
+        // GET Methods
+        ['path' => '/comentarios', 'action' => 'ComentarioController@index', 'method' => 'GET'],
+
+        // POST Methods
+        ['path' => '/comentarios', 'action' => 'ComentarioController@comentarEquipoRival', 'method' => 'POST'],
+
+        // === DesafioController ===
+        // GET Methods
+        ['path' => '/desafios', 'action' => 'DesafioController@index', 'method' => 'GET'],
+
+        // POST Methods
+        ['path' => '/desafios', 'action' => 'DesafioController@createDesafio', 'method' => 'POST'],
+        ['path' => '/accept-desafio', 'action' => 'DesafioController@aceptarDesafio', 'method' => 'POST'],
+        ['path' => '/reject-desafio', 'action' => 'DesafioController@rechazarDesafio', 'method' => 'POST'],
+
+        // === PartidoController ===
+        // GET Methods
+        ['path' => '/partidos', 'action' => 'PartidoController@index', 'method' => 'GET'],
+        ['path' => '/coordinar-resultado', 'action' => 'PartidoController@coordinarResultado', 'method' => 'GET'],
+        ['path' => '/cancelar-partido', 'action' => 'PartidoController@cancelarPartido', 'method' => 'GET'],
+        ['path' => '/historial-partidos', 'action' => 'PartidoController@getHistorial', 'method' => 'GET'],
+
+        // POST Methods
+        ['path' => '/coordinar-resultado', 'action' => 'PartidoController@enviarFormulario', 'method' => 'POST'],
+        ['path' => '/terminar-partido', 'action' => 'PartidoController@terminarPartido', 'method' => 'POST'],
+
+        // === AuthController ===
+        // POST Methods
+        ['path' => '/login', 'action' => 'AuthController@login', 'method' => 'POST'],
+
+        // GET Methods
+        ['path' => '/logout', 'action' => 'AuthController@logout', 'method' => 'GET'],
+
+        // === EstadisticaController ===
+        // GET Methods
+        ['path' => '/estadisticas', 'action' => 'EstadisticaController@showEstadisticasEquipo', 'method' => 'GET']
     ],
 
 

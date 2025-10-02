@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partido Finalizado</title>
+</head>
+
+<body style="margin:0; padding:0; background-color:#f2f2f2; font-family:Arial, sans-serif;">
+    <!-- Contenedor general -->
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#f2f2f2">
+        <tr>
+            <td align="center">
+                <!-- Caja blanca central -->
+                <table width="600" border="0" cellpadding="0" cellspacing="0"
+                    style="max-width:100%; background-color:#ffffff; border:1px solid #dddddd; border-radius:8px; overflow:hidden;">
+                    <!-- Header azul -->
+                    <tr>
+                        <td bgcolor="#083B8C" style="padding:20px; text-align:center;">
+                            <h1 style="margin:0; font-size:24px; color:#ffffff;">Fútbol Match</h1>
+                        </td>
+                    </tr>
+                    <!-- Cuerpo del mensaje -->
+                    <tr>
+                        <td style="padding:20px; color:#333333; line-height:1.5;">
+                            <h2 style="margin:0 0 16px; font-size:20px; color:#083B8C;">¡Partido Finalizado!</h2>
+                            <p style="margin:0 0 20px;">El partido entre <strong>{{equipoLocal}}</strong> y
+                                <strong>{{equipoVisitante}}</strong> ha concluido. A continuación, los resultados
+                                parciales:</p>
+                            <!-- Resultados parciales -->
+                            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
+                                <tr>
+                                    <!-- Equipo Local -->
+                                    <td valign="top" style="width:50%; padding-right:10px;">
+                                        <table width="100%" border="0" cellpadding="10" cellspacing="0"
+                                            style="border:1px solid #dddddd; border-radius:4px;">
+                                            <tr bgcolor="#f9f9f9">
+                                                <td colspan="2"
+                                                    style="text-align:center; font-size:18px; color:#083B8C;">
+                                                    <strong>{{equipoLocal}}</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight:bold;">Goles:</td>
+                                                <td>{{golesLocal}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight:bold;">Asistencias:</td>
+                                                <td>{{asistenciasLocal}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight:bold;">Amarillas:</td>
+                                                <td>{{amarillasLocal}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight:bold;">Rojas:</td>
+                                                <td>{{rojasLocal}}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <!-- Equipo Visitante -->
+                                    <td valign="top" style="width:50%; padding-left:10px;">
+                                        <table width="100%" border="0" cellpadding="10" cellspacing="0"
+                                            style="border:1px solid #dddddd; border-radius:4px;">
+                                            <tr bgcolor="#f9f9f9">
+                                                <td colspan="2"
+                                                    style="text-align:center; font-size:18px; color:#083B8C;">
+                                                    <strong>{{equipoVisitante}}</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight:bold;">Goles:</td>
+                                                <td>{{golesVisitante}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight:bold;">Asistencias:</td>
+                                                <td>{{asistenciasVisitante}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight:bold;">Amarillas:</td>
+                                                <td>{{amarillasVisitante}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight:bold;">Rojas:</td>
+                                                <td>{{rojasVisitante}}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            <!-- Botón de acción -->
+                            <div style="text-align:center;">
+                                <a href="{{detalleLink}}"
+                                    style="display:inline-block; padding:12px 24px; background-color:#5CD37E; color:#ffffff; text-decoration:none; font-size:16px; border-radius:4px;">Ver
+                                    detalle del partido</a>
+                            </div>
+                            <p style="margin:20px 0 0; text-align:center; color:#777777; font-size:12px;">Si tienes
+                                alguna duda, responde este correo.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

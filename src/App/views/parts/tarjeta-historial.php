@@ -25,49 +25,58 @@
     <span class="elo-change <?= $match['eloChange'] >= 0 ? 'up' : 'down' ?>">
       <?= ($match['eloChange'] >= 0 ? '+' : '') . $match['eloChange'] ?> ELO
     </span>
-    <a href="<?= htmlspecialchars($match['matchUrl']) ?>" class="hc-btn-link">ver partido</a>
-    <span class="match-date"><?= htmlspecialchars($match['date']) ?></span>
+    <a href="<?= htmlspecialchars($match['matchUrl'], ENT_QUOTES, 'UTF-8') ?>" class="hc-btn-link">ver partido</a>
+    <span class="match-date"><?= htmlspecialchars($match['date'], ENT_QUOTES, 'UTF-8') ?></span>
   </div>
 
   <div class="hc-body">
     <!-- Equipo local -->
     <div class="team-block home">
-        <div class="team-img" style="background-image:url('../../../public/icons/<?= $match['home']['logo'] ?>')">
-            <span class="team-abbr"><?= htmlspecialchars($match['home']['abbr']) ?></span>
+      <?php
+        $logoHome = !empty($match['home']['logo'])
+          ? $match['home']['logo']
+          : '/icons/defaultTeamIcon.png';
+      ?>
+      <div class="team-img">
+        <img src="<?= htmlspecialchars($logoHome, ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($match['home']['name'], ENT_QUOTES, 'UTF-8') ?>">
+        <span class="team-abbr"><?= htmlspecialchars($match['home']['abbr'], ENT_QUOTES, 'UTF-8') ?></span>
+      </div>
+      <div class="team-info">
+        <div class="tarjetas">
+          <?php if ($match['home']['tarjetas']['yellow']): ?>
+            <span class="tarjeta yellow"><?= $match['home']['tarjetas']['yellow'] ?></span>
+          <?php endif; ?>
+          <?php if ($match['home']['tarjetas']['red']): ?>
+            <span class="tarjeta red"><?= $match['home']['tarjetas']['red'] ?></span>
+          <?php endif; ?>
         </div>
-        <div class="team-info">
-            
-            <div class="tarjetas">
-                <?php if ($match['home']['tarjetas']['yellow']): ?>
-                <span class="tarjeta yellow"><?= $match['home']['tarjetas']['yellow'] ?></span>
-                <?php endif; ?>
-                <?php if ($match['home']['tarjetas']['red']): ?>
-                <span class="tarjeta red"><?= $match['home']['tarjetas']['red'] ?></span>
-                <?php endif; ?>
-            </div>
-        </div>
+      </div>
     </div>
 
     <!-- Marcador -->
-    <div class="hc-score"><?= htmlspecialchars($match['score']) ?></div>
+    <div class="hc-score"><?= htmlspecialchars($match['score'], ENT_QUOTES, 'UTF-8') ?></div>
 
     <!-- Equipo visitante -->
     <div class="team-block away">
-        <div class="team-info">
-                
-                <div class="tarjetas">
-                    <?php if ($match['away']['tarjetas']['yellow']): ?>
-                    <span class="tarjeta yellow"><?= $match['away']['tarjetas']['yellow'] ?></span>
-                    <?php endif; ?>
-                    <?php if ($match['away']['tarjetas']['red']): ?>
-                    <span class="tarjeta red"><?= $match['away']['tarjetas']['red'] ?></span>
-                    <?php endif; ?>
-                </div>
-            </div>
-        <div class="team-img" style="background-image:url('../../../public/icons/<?= $match['away']['logo'] ?>')">
-            <span class="team-abbr"><?= htmlspecialchars($match['away']['abbr']) ?></span>
+      <div class="team-info">
+        <div class="tarjetas">
+          <?php if ($match['away']['tarjetas']['yellow']): ?>
+            <span class="tarjeta yellow"><?= $match['away']['tarjetas']['yellow'] ?></span>
+          <?php endif; ?>
+          <?php if ($match['away']['tarjetas']['red']): ?>
+            <span class="tarjeta red"><?= $match['away']['tarjetas']['red'] ?></span>
+          <?php endif; ?>
         </div>
-        
+      </div>
+      <?php
+        $logoAway = !empty($match['away']['logo'])
+          ? $match['away']['logo']
+          : '/icons/defaultTeamIcon.png';
+      ?>
+      <div class="team-img">
+        <img src="<?= htmlspecialchars($logoAway, ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($match['away']['name'], ENT_QUOTES, 'UTF-8') ?>">
+        <span class="team-abbr"><?= htmlspecialchars($match['away']['abbr'], ENT_QUOTES, 'UTF-8') ?></span>
+      </div>
     </div>
   </div>
 </div>

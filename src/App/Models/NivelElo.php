@@ -1,6 +1,7 @@
 <?php
 namespace Paw\App\Models;
 
+use Monolog\Logger;
 use Paw\Core\AbstractModel;
 
 class NivelElo extends AbstractModel
@@ -9,6 +10,8 @@ class NivelElo extends AbstractModel
     public $fields = [
 
         "id_nivel_elo" => null,
+        "desde" => null,
+        "hasta" => null,
         "descripcion" => null,
         "descripcion_corta" => null,
     ];
@@ -17,8 +20,19 @@ class NivelElo extends AbstractModel
         parent::__construct($queryBuilder);
     }
 
+    public function setIdNivelElo(int $id)
+    {
+        $this->fields['id_nivel_elo'] = $id;
+    }
     public function setDescripcion(string $descripcion){
         $this->fields["descripcion"] = $descripcion;
+    }
+    public function setDesde(string $desde){
+        $this->fields["desde"] = $desde;
+    }
+
+    public function setHasta(string $hasta){
+        $this->fields["hasta"] = $hasta;
     }
     public function setDescripcionCorta(string $descripcionCorta){
         $this->fields["descripcion_corta"] = $descripcionCorta;
@@ -51,5 +65,28 @@ class NivelElo extends AbstractModel
                 $this->$method($values[$field]);
             }
         }
+    }
+
+    public function getIdNivelElo(): ?int
+    {
+        return $this->fields['id_nivel_elo'];
+    }
+
+    public function getDescripcion(): ?string
+    {
+        return $this->fields['descripcion'];
+    }
+    public function getDesde(): ?int
+    {
+        return $this->fields['desde'];
+    }
+    public function getHasta(): ?int
+    {
+        return $this->fields['hasta'];
+    }
+
+    public function getDescripcionCorta(): ?string
+    {
+        return $this->fields['descripcion_corta'];
     }
 }

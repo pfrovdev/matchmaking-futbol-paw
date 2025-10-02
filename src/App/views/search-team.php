@@ -1,251 +1,298 @@
+<?php
+$errors = $_SESSION['errors'] ?? [];
+unset($_SESSION['errors']);
+$queryParams = $_GET;
+unset($queryParams['page']);
+
+$success = $_SESSION['success'] ?? null;
+unset($_SESSION['success']);
+
+$nombre = trim($_GET['nombre'] ?? '');
+$rangoSelected = $_GET['rango'] ?? '';
+$rangoSelectedId = isset($_GET['id_nivel_elo']) ? (int) $_GET['id_nivel_elo'] : '';
+$rangoSelected = $mapaRangos[$rangoSelectedId] ?? '';
+
+$mapaRangos = [
+    1 => 'Principiante',
+    2 => 'Amateur',
+    3 => 'SemiPro',
+    4 => 'Profesional',
+];
+
+$rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
+
+
+?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buscar Equipo</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" href="./css/parts/map.css">
     <link rel="stylesheet" href="./css/search-team.css">
+    <link rel="stylesheet" href="./css/spinner.css">
+
+    <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+    <link rel="stylesheet" href="./css/parts/introJs.css">
+    <script src="https://unpkg.com/intro.js/minified/intro.min.js" defer></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+    <script src="./js/maps.js" defer></script>
+    <script src="./js/components/modals.js"></script>
+    <script type="module" src="./js/pages/search-team.js" defer></script>
+    <script src="./js/components/spinner.js" defer></script>
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/filtros.js" defer></script>
+
+
+
+    <?php if (!empty($equipos)): ?>
+        <script type="application/ld+json">
+            <?= json_encode([
+                "@context" => "https://schema.org",
+                "@type" => "ItemList",
+                "name" => "Resultados de búsqueda de equipos",
+                "numberOfItems" => count($equipos),
+                "itemListElement" => array_map(function ($equipo, $index) {
+                    return [
+                        "@type" => "ListItem",
+                        "position" => $index + 1,
+                        "item" => [
+                            "@type" => "SportsTeam",
+                            "name" => htmlspecialchars($equipo->getNombreEquipo(), ENT_QUOTES, 'UTF-8'),
+                            "alternateName" => htmlspecialchars($equipo->getAcronimo() ?? '', ENT_QUOTES, 'UTF-8'),
+                            "identifier" => [
+                                "@type" => "PropertyValue",
+                                "name" => "Elo Ranking",
+                                "value" => $equipo->getEloActual()
+                            ],
+                            "description" => htmlspecialchars($equipo->getLema() ?? '', ENT_QUOTES, 'UTF-8'),
+                            "url" => "/team-profile.php?id=" . $equipo->getIdEquipo(),
+                            "location" => [
+                                "@type" => "Place",
+                                "geo" => [
+                                    "@type" => "GeoCoordinates",
+                                    "latitude" => $equipo->getLatitud(),
+                                    "longitude" => $equipo->getLongitud()
+                                ]
+                            ]
+                        ]
+                    ];
+                }, $equipos, array_keys($equipos))
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?>
+        </script>
+    <?php endif; ?>
+
 </head>
+
 
 <body>
     <?php
-        require "parts/header.php";
+    $estaLogueado = !!$miEquipo->getIdEquipo();
+    require "parts/header.php";
     ?>
-    <?php
-        // Capturamos el orden o ponemos “desc” por defecto
-        $orden = $_GET['orden'] ?? 'desc';
-        ?>
+    <?php require "parts/side-navbar.php"; ?>
+
     <main>
         <header>
             <h1>Buscar desafío</h1>
             <p>Busca rivales, por rango o zona</p>
         </header>
 
-        <section class="grid-layout">
-        
-            <section class="left-size" aria-labelledby="buscar-nombre">
-                <h2 id="buscar-nombre">Buscar por nombre</h2>
-                <form method="get" action="/search-team">
-                    <input type="text" id="nombre" name="nombre" placeholder="Ejemplo FC" value="<?= htmlspecialchars($_GET['nombre'] ?? '') ?>" />
-                    <button type="submit">Buscar</button>
-                </form>
-                <?php if ($equipos): ?>
-                    <ul class="lista-equipos">
-                   
-                        <?php foreach ($equipos as $equipo): ?>
-                            <li>
-                                <article>
-                                    <img src="<?= !empty($equipo['url_foto_perfil']) ? htmlspecialchars($equipo['url_foto_perfil']) : '/icons/defaultTeamIcon.png' ?>" alt="imagen del equipo">
-                                    <span class="rango"><?= htmlspecialchars($equipo['nivel_elo_descripcion']) ?></span>
-                                    <h3 class="team-name"><?= htmlspecialchars($equipo['nombre']) ?></h3>
-                                    <p>Deportividad: <?= isset($equipo['deportividad']) ? number_format($equipo['deportividad'], 2) : 'Sin datos' ?></p>
-                                    <p>Lema: <?= htmlspecialchars($equipo['lema']) ?></p>
-                                    <p>ELO: <?= htmlspecialchars($equipo['elo_actual']) ?></p>
-                                    <a href="#">Ver perfil del equipo</a>
-                                    <a href="?<?= http_build_query(array_merge($_GET, ['id_equipo_desafiar' => $equipo['id_equipo']])) ?>">Desafiar</a>
-                                </article>
-                            </li><br>
-                            <?php $first = false; ?>
-                        <?php endforeach; ?>
-                    </ul>
-                    <section>
-                        <?php if ($paginaActual > 1): ?>
-                            <a href="?<?= http_build_query(array_merge($_GET, ['page' => $paginaActual - 1])) ?>">Anterior</a>
-                        <?php endif; ?>
+        <?php
+        if (!empty($errors)) {
+            $type = "error";
+            $messages = $errors;
+            include __DIR__ . "/parts/alert.php";
+        }
+        ?>
 
-                <ul class="lista-equipos">
-                    <?php
-                    // $equipos es tu array de equipos, cada uno con ['id_nivel_elo'] y ['nombre']
-                    switch ($orden) {
-                        case 'asc':
-                        usort($equipos, function($a, $b) {
-                            return $a['id_nivel_elo'] <=> $b['id_nivel_elo'];
-                        });
-                        break;
-                        case 'alpha':
-                        usort($equipos, function($a, $b) {
-                            return strcasecmp($a['nombre'], $b['nombre']);
-                        });
-                        break;
-                        case 'desc':
-                        default:
-                        usort($equipos, function($a, $b) {
-                            return $b['id_nivel_elo'] <=> $a['id_nivel_elo'];
-                        });
-                        break;
-                    }
-                    ?>
-                    <?php foreach ($equipos as $equipo): ?>
-                        <li>
-                            <?php
-                                require __DIR__ . '/parts/tarjeta-envio-desafio.php';
-                            ?>
-                        </li><br>
-                        <?php $first = false; ?>
-                    <?php endforeach; ?>
-                </ul>
-                <section class="pagination">
-                    <?php if ($paginaActual > 1): ?>
-                        <a href="?<?= http_build_query(array_merge($_GET, ['page' => $paginaActual - 1])) ?>" class="page-link prev">« Anterior</a>
-                    <?php endif; ?>
+        <section class="search-container">
+            <aside class="left-size">
+                <!-- Botones Mobile -->
+                <nav class="mobile-controls">
+                    <button id="openFiltersBtn" class="mobile-btn">Filtros</button>
+                    <button id="openOrderBtn" class="mobile-btn">Ordenar</button>
+                </nav>
 
-                    <span class="page-info">Página <?= $paginaActual ?> de <?= $totalPaginas ?></span>
+                <!-- Modal filtros (mobile) -->
+                <section id="filtersModal" class="mobile-modal hidden" role="dialog" aria-labelledby="filtersTitle">
+                    <div class="mobile-modal-content">
+                        <button class="close-modal" aria-label="Cerrar filtros">&times;</button>
+                        <h2>Filtros</h2>
 
-                    <?php if ($paginaActual < $totalPaginas): ?>
-                        <a href="?<?= http_build_query(array_merge($_GET, ['page' => $paginaActual + 1])) ?>" class="page-link next">Siguiente »</a>
-                    <?php endif; ?>
-                </section>
-            </section>
+                        <form method="get" action="/search-team" data-form="search">
+                            <input type="text" name="nombre" placeholder="Ejemplo FC"
+                                value="<?= htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8') ?>" />
+                            <input type="hidden" name="id_nivel_elo"
+                                value="<?= htmlspecialchars($rangoSelectedId ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                            <input type="hidden" name="orden"
+                                value="<?= htmlspecialchars($orden, ENT_QUOTES, 'UTF-8') ?>">
 
-            <aside> 
-                <?php
-                $rangoSeleccionado = $_GET['rango'] ?? '';
-                ?>
-                <section aria-labelledby="filtro-rango">
-                <h2 id="filtro-rango">Filtrar por rango</h2>
-                <form method="get" class="filtros-rango-form">
-                    <ul class="filtros-rango">
-                    <?php
-                        // Definimos los rangos y su color semántico
-                        $rangos = [
-                        'Principiante'  => 'principiante',
-                        'Amateur'       => 'amateur',
-                        'SemiPro'       => 'semipro',
-                        'Profesional'   => 'profesional',
-                        ];
-                        foreach ($rangos as $label => $clase) {
-                        // ¿Es el que está seleccionado?
-                        $activo = ($rangoSeleccionado === $label) ? ' activo' : '';
-                        echo sprintf(
-                            '<li><button type="submit" name="rango" value="%1$s" class="%2$s%3$s">%1$s</button></li>',
-                            $label,
-                            $clase,
-                            $activo
-                        );
-                        }
-                    ?>
-                    </ul>
-                </form>
+                            <button class="button" type="submit">Buscar</button>
+                        </form>
+
+                        <?php require "parts/filtro-por-rango.php"; ?>
+
+                        <section class="mobile-location-filter">
+                            <h2 id="zona-busqueda">Zona de búsqueda</h2>
+                            <form method="GET" data-form="map-mobile" aria-labelledby="zona-busqueda-mobile">
+                                <input type="hidden" id="latMobile" name="lat"
+                                    value="<?= htmlspecialchars($_GET['lat'] ?? '', ENT_QUOTES, 'UTF-8') ?>" />
+                                <input type="hidden" id="lngMobile" name="lng"
+                                    value="<?= htmlspecialchars($_GET['lng'] ?? '', ENT_QUOTES, 'UTF-8') ?>" />
+
+                                <label for="radiusSliderMobile">Radio del área (km)</label>
+                                <div class="input-group">
+                                    <input type="range" id="radiusSliderMobile" name="radius_km" min="0.1" max="10"
+                                        step="0.1"
+                                        value="<?= htmlspecialchars($_GET['radius_km'] ?? 1, ENT_QUOTES, 'UTF-8') ?>">
+                                    <span id="radiusValueMobile">
+                                        <?= htmlspecialchars($_GET['radius_km'] ?? 1.0, ENT_QUOTES, 'UTF-8') ?>
+                                    </span>
+                                </div>
+                                <button class="button" type="submit">Aplicar</button>
+                            </form>
+
+                            <figure>
+                                <div id="map-mobile"
+                                    data-team-zone="<?php echo htmlspecialchars($equipo_temp['team-zone'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                                </div>
+                                <figcaption>Mapa de zona de búsqueda</figcaption>
+                            </figure>
+                        </section>
+                    </div>
                 </section>
 
-                
-                <section aria-labelledby="ordenar">
-                    <h2 id="ordenar">Ordenar por</h2>
-                    <form class="radio-btns" method="get">
+                <!-- Modal orden (mobile) -->
+                <section id="orderModal" class="mobile-modal hidden" role="dialog" aria-labelledby="orderTitle">
+                    <div class="mobile-modal-content">
+                        <button class="close-modal" aria-label="Cerrar orden">&times;</button>
+                        <h2>Ordenar por</h2>
+                        <form class="radio-btns" method="get" data-form="orden">
+                            <input type="hidden" name="id_nivel_elo"
+                                value="<?= htmlspecialchars($rangoSelectedId ?? '', ENT_QUOTES, 'UTF-8') ?>">
+
+                            <label>
+                                <input type="radio" name="orden" value="desc" <?= $orden === 'desc' ? 'checked' : '' ?>>
+                                Menor a mayor ELO
+                            </label><br>
+                            <label>
+                                <input type="radio" name="orden" value="asc" <?= $orden === 'asc' ? 'checked' : '' ?>>
+                                Mayor a menor ELO
+                            </label><br>
+                            <label>
+                                <input type="radio" name="orden" value="alpha" <?= $orden === 'alpha' ? 'checked' : '' ?>>
+                                Alfabéticamente
+                            </label><br>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Filtros desktop -->
+                <section class="desktop-filters">
+                    <h2>Filtros</h2>
+                    <form method="get" action="/search-team" data-form="search">
+                        <input type="text" name="nombre" placeholder="Ejemplo FC"
+                            value="<?= htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8') ?>" />
+
+                        <input type="hidden" name="id_nivel_elo"
+                            value="<?= htmlspecialchars($rangoSelectedId ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                        <input type="hidden" name="orden" value="<?= htmlspecialchars($orden, ENT_QUOTES, 'UTF-8') ?>">
+
+                        <button class="button" type="submit">Buscar</button>
+                    </form>
+
+                    <?php if (!empty($listLevelsElo)): ?>
+                        <?php require "parts/filtro-por-rango.php"; ?>
+                    <?php endif; ?>
+                </section>
+
+                <!-- Orden desktop -->
+                <section class="desktop-order">
+                    <h2>Ordenar por</h2>
+                    <form class="radio-btns" method="get" data-form="orden">
+                        <input type="hidden" name="id_nivel_elo"
+                            value="<?= htmlspecialchars($rangoSelectedId ?? '', ENT_QUOTES, 'UTF-8') ?>">
+
                         <label>
-                        <input type="radio"
-                                name="orden"
-                                value="desc"
-                                <?= $orden === 'desc' ? 'checked' : '' ?>>
-                        Menor a mayor ELO
+                            <input type="radio" name="orden" value="desc" <?= $orden === 'desc' ? 'checked' : '' ?>>
+                            Menor a mayor ELO
                         </label><br>
                         <label>
-                        <input type="radio"
-                                name="orden"
-                                value="asc"
-                                <?= $orden === 'asc' ? 'checked' : '' ?>>
-                        Mayor a menor ELO
+                            <input type="radio" name="orden" value="asc" <?= $orden === 'asc' ? 'checked' : '' ?>>
+                            Mayor a menor ELO
                         </label><br>
                         <label>
-                        <input type="radio"
-                                name="orden"
-                                value="alpha"
-                                <?= $orden === 'alpha' ? 'checked' : '' ?>>
-                        Alfabéticamente
+                            <input type="radio" name="orden" value="alpha" <?= $orden === 'alpha' ? 'checked' : '' ?>>
+                            Alfabéticamente
                         </label><br>
-                        <button type="submit">Ordenar</button>
                     </form>
                 </section>
 
-                <section aria-labelledby="zona-busqueda">
+                <!-- Zona búsqueda desktop -->
+                <section class="right-size">
                     <h2 id="zona-busqueda">Zona de búsqueda</h2>
-                    <form id="mapForm" action="procesar.php" method="POST">
+                    <form method="GET" data-form="map" aria-labelledby="zona-busqueda-desktop">
+                        <input type="hidden" id="latDesktop" name="lat"
+                            value="<?= htmlspecialchars($_GET['lat'] ?? '', ENT_QUOTES, 'UTF-8') ?>" />
+                        <input type="hidden" id="lngDesktop" name="lng"
+                            value="<?= htmlspecialchars($_GET['lng'] ?? '', ENT_QUOTES, 'UTF-8') ?>" />
+
+                        <label for="radiusSliderDesktop">Radio del área (km)</label>
                         <div class="input-group">
-                            <label for="lat">Latitud:</label>
-                            <input type="text" id="lat" name="lat" readonly />
+                            <input type="range" id="radiusSliderDesktop" name="radius_km" min="0.1" max="10" step="0.1"
+                                value="<?= htmlspecialchars($_GET['radius_km'] ?? 1, ENT_QUOTES, 'UTF-8') ?>">
+                            <span id="radiusValueDesktop">
+                                <?= htmlspecialchars($_GET['radius_km'] ?? 1.0, ENT_QUOTES, 'UTF-8') ?>
+                            </span>
                         </div>
-                        <div class="input-group">
-                            <label for="lng">Longitud:</label>
-                            <input type="text" id="lng" name="lng" readonly />
-                        </div>
-                        <div class="input-group">
-                            <label for="radiusSlider">Radio del área (km)</label>
-                        </div>
-                        <div class="input-group">
-                            <input type="range" id="radiusSlider" name="radius_km" min="0.1" max="10" step="0.1" value="1">
-                            <span id="radiusValue">1.0</span>
-                        </div>
-                        <button type="submit">Enviar</button>
+                        <button class="button" type="submit">Enviar</button>
                     </form>
                     
                 </section>
-                <figure>
-                    <div id="map"></div>
+
+                <figure class="filter-map">
+                    <div id="map"
+                        data-team-zone="<?php echo htmlspecialchars($equipo_temp['team-zone'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                    </div>
+                    <figcaption>Mapa de zona de búsqueda</figcaption>
                 </figure>
+
+                <section class="limpiar-filtros">
+                    <button id="clearFilters" class="button" type="button">Limpiar filtros</button>
+                </section>
+                <div id="modalOverlayInfo" class="modal-overlay-info" role="dialog" aria-hidden="true"></div>
             </aside>
+
+            <section class="rigth-size">
+                <ul class="lista-equipos">
+                    <?php if (empty($equipos)): ?>
+                        <li>No se encontraron equipos.</li>
+                        <?php else:
+                        foreach ($equipos as $equipo): ?>
+                            <li>
+                                <?php require __DIR__ . '/parts/tarjeta-envio-desafio.php'; ?>
+                            </li>
+                            <br>
+                        <?php endforeach; ?>
+                        <?php require "parts/pagination.php"; ?>
+                    <?php endif; ?>
+                </ul>
+            </section>
         </section>
     </main>
     <?php
-        require "parts/footer.php";
+    if ($success)
+        require __DIR__ . '/parts/modal-success.php';
     ?>
-    <<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-    var map = L.map('map').setView([-34.57, -59.11], 13);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
-
-    var marker, circle;
-    var slider = document.getElementById('radiusSlider');
-    var output = document.getElementById('radiusValue');
-    output.textContent = slider.value;
-
-    function updateLatLngFields(lat, lng) {
-        document.getElementById('lat').value = lat.toFixed(6);
-        document.getElementById('lng').value = lng.toFixed(6);
-    }
-
-    function placeMarker(e) {
-        var lat = e.latlng.lat;
-        var lng = e.latlng.lng;
-
-        if (!marker) {
-        marker = L.marker([lat, lng], { draggable: true }).addTo(map);
-        marker.on('dragend', function(ev) {
-            var pos = ev.target.getLatLng();
-            updateLatLngFields(pos.lat, pos.lng);
-            updateCircle(pos);
-        });
-        } else {
-        marker.setLatLng([lat, lng]);
-        }
-
-        updateLatLngFields(lat, lng);
-        updateCircle(e);
-    }
-
-    function updateCircle(e) {
-        var km = parseFloat(slider.value);
-        var m = km * 1000;
-        if (!circle) {
-        circle = L.circle(e.latlng, { radius: m }).addTo(map);
-        } else {
-        circle.setLatLng(e.latlng);
-        circle.setRadius(m);
-        }
-    }
-
-    map.on('click', placeMarker);
-
-    slider.oninput = function() {
-        output.textContent = parseFloat(this.value).toFixed(1);
-        if (circle) {
-        var m = parseFloat(this.value) * 1000;
-        circle.setRadius(m);
-        }
-    };
-    </script>
+    <?php require "parts/footer.php"; ?>
 </body>
+
 </html>

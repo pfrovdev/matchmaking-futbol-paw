@@ -2,64 +2,120 @@
 
 namespace Paw\App\Controllers;
 
-use Paw\App\Models\NivelElo;
-use Paw\Core\AbstractController;
+use Monolog\Logger;
+use Paw\App\DataMapper\EstadisticaDataMapper;
+use Paw\App\DataMapper\ResultadoPartidoDataMapper;
+use Paw\App\Dtos\EquipoBannerDto;
 use Paw\App\Models\Equipo;
-use Paw\App\Models\TipoEquipo;
-use Paw\App\Models\Comentario;
-use Paw\App\Models\EquipoCollection;
+use Paw\App\Services\ComentarioEquipoService;
+use Paw\App\Services\DesafioService;
+use Paw\App\Services\NotificationService;
+use Paw\App\Services\EquipoService;
+use Paw\App\Services\PartidoService;
+use Paw\Core\AbstractController;
 use Paw\Core\Middelware\AuthMiddelware;
-use Paw\App\Utils\CalculadoraDeElo;
 
-class EquipoController extends AbstractController{
+class EquipoController extends AbstractController
+{
 
-    public ?string $modelName = Equipo::class;
+    private EquipoService $equipoService;
+    private PartidoService $partidoService;
+    private DesafioService $desafioService;
+    private NotificationService $notificationService;
+    private ComentarioEquipoService $comentarioEquipoService;
+    private EstadisticaDataMapper $estadisticasDataMapper;
+    private ResultadoPartidoDataMapper $resultadoPartidoDataMapper;
 
+    public function __construct(
+        Logger $logger,
+        EquipoService $equipoService,
+        PartidoService $partidoService,
+        DesafioService $desafioService,
+        NotificationService $notificationService,
+        ComentarioEquipoService $comentarioEquipoService,
+        AuthMiddelware $auth,
+        EstadisticaDataMapper $estadisticasDataMapper,
+        ResultadoPartidoDataMapper $resultadoPartidoDataMapper
+    ) {
+        parent::__construct($logger, $auth);
+        $this->equipoService = $equipoService;
+        $this->partidoService = $partidoService;
+        $this->desafioService = $desafioService;
+        $this->notificationService = $notificationService;
+        $this->comentarioEquipoService = $comentarioEquipoService;
+        $this->estadisticasDataMapper = $estadisticasDataMapper;
+        $this->resultadoPartidoDataMapper = $resultadoPartidoDataMapper;
+    }
 
-    public function createAccount(){
+    public function createAccount()
+    {
         require $this->viewsDir . 'create-account.php';
     }
 
-    public function createTeam(){
-        $tipoEquipoModel = $this->getModel(TipoEquipo::class);
-        $tipos = $tipoEquipoModel->all();
+    public function createTeam()
+    {
+        $tipos = $this->equipoService->getAllTiposEquipos();
         require $this->viewsDir . 'create-team.php';
     }
 
-    public function register(){
-        session_start();
-        $email = $_POST['email'] ?? null;
-        $confirmEmail = $_POST['confirm-email'] ?? null;
+    private function validatePassword(string $password): array
+    {
+        $errors = [];
+        $minLength = 8;
+
+        if (strlen($password) < $minLength) {
+            $errors[] = "La contraseña debe tener al menos {$minLength} caracteres.";
+        }
+        if (!preg_match('/[A-Z]/', $password)) {
+            $errors[] = "La contraseña debe contener al menos una letra mayúscula.";
+        }
+        if (!preg_match('/[a-z]/', $password)) {
+            $errors[] = "La contraseña debe contener al menos una letra minúscula.";
+        }
+        if (!preg_match('/[0-9]/', $password)) {
+            $errors[] = "La contraseña debe contener al menos un número.";
+        }
+        if (!preg_match('/[!@#$%^&*(),.?":{}|<>]/', $password)) {
+            $errors[] = "La contraseña debe contener al menos un carácter especial.";
+        }
+
+        return $errors;
+    }
+
+    public function register()
+    {
+        $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+        $confirmEmail = filter_input(INPUT_POST, 'confirm-email', FILTER_VALIDATE_EMAIL);
+        $telefono = filter_input(INPUT_POST, 'telefono', FILTER_UNSAFE_RAW);
+        $telefono = trim($telefono);
+        $telefono = htmlspecialchars($telefono, ENT_QUOTES | ENT_SUBSTITUTE);
         $password = $_POST['password'] ?? null;
         $confirmPassword = $_POST['confirm_password'] ?? null;
-        $telefono = $_POST['telefono'] ?? null;
 
         $errors = [];
 
         if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors[] = "El correo electrónico no es válido.";
         }
-
         if ($email !== $confirmEmail) {
             $errors[] = "Los correos electrónicos no coinciden.";
         }
-        if ($this->model->select(['email' => $email])) {
+        if ($this->equipoService->existsByEmail($email)) {
             $errors[] = "Ya existe un equipo registrado con ese correo electrónico.";
         }
-
         if ($password !== $confirmPassword) {
             $errors[] = "Las contraseñas no coinciden.";
         }
-
+        $passwordErrors = $this->validatePassword($password);
+        $errors = array_merge($errors, $passwordErrors);
         if (empty($telefono)) {
             $errors[] = "El teléfono es obligatorio.";
         }
-
         if (!preg_match("/^\+54[0-9]{10,12}$/", $telefono)) {
             $errors[] = 'El número de teléfono es inválido. Ej: +542323444444';
         }
 
-        if ($errors) {
+        if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = $_POST;
             header('Location: /create-account');
@@ -76,173 +132,325 @@ class EquipoController extends AbstractController{
         exit;
     }
 
-    public function registerTeam(){
-        if (session_status() === PHP_SESSION_NONE) session_start();
-        $errors = [];
-
+    public function registerTeam()
+    {
         if (!isset($_SESSION['equipo_temp'])) {
             $_SESSION['errors'] = ["Error de sesión, por favor intentalo nuevamente."];
             header('Location: /create-team');
             exit;
         }
+
         $equipoTemp = $_SESSION['equipo_temp'];
         unset($_SESSION['equipo_temp']);
+        $errors = [];
 
-        $teamName    = $_POST['team-name']    ?? null;
-        $teamAcronym = $_POST['team-acronym'] ?? null;
-        $teamTypeId  = $_POST['tipo_equipo']  ?? null;
-        $lat         = $_POST['lat']          ?? null;
-        $lng         = $_POST['lng']          ?? null;
-        $teamMotto   = $_POST['team-motto']   ?? null;
+        $teamName = trim($_POST['team-name'] ?? '');
+        $teamAcronym = trim($_POST['team-acronym'] ?? '');
+        $teamTypeId = (int) ($_POST['tipo_equipo'] ?? 0);
+        $lat = filter_var($_POST['lat'] ?? null, FILTER_VALIDATE_FLOAT);
+        $lng = filter_var($_POST['lng'] ?? null, FILTER_VALIDATE_FLOAT);
+        $teamMotto = trim($_POST['team-motto'] ?? '');
+
+        if ($lat === false || $lng === false) {
+            $errors[] = "Coordenadas inválidas.";
+        }
+
+        if (!preg_match('/^[\w\s]{3,50}$/u', $teamName)) {
+            $errors[] = "El nombre del equipo contiene caracteres no permitidos o es demasiado corto.";
+        }
+
+        if (!preg_match('/^[\w\s]{2,10}$/u', $teamAcronym)) {
+            $errors[] = "El acrónimo del equipo contiene caracteres no permitidos o es demasiado corto.";
+        }
 
         if (!$teamName || !$teamAcronym || !$teamTypeId || !$lat || !$lng) {
-            $errors[] = "Por favor llená los campos obligatorios.";
-            $_SESSION['errors'] = $errors;
-            $_SESSION['old'] = array_merge($equipoTemp, $_POST);
-            header('Location: /create-team');
-            exit;
+            $errors[] = "Por favor completá todos los campos obligatorios.";
         }
 
-        $geolocalizacion = "ST_GeomFromText('POINT($lng $lat)', 4326)";
+        if ($this->equipoService->getByTeamName($teamName)) {
+            $errors[] = "Ya existe un equipo registrado con ese nombre.";
+        }
 
-        $tipoEquipoModel = $this->getModel(TipoEquipo::class);
-        $tipoArr = $tipoEquipoModel->find(['id_tipo_equipo' => $teamTypeId]);
-        if (!$tipoArr) {
+        $typeTeam = $this->equipoService->getTypeTeamById($teamTypeId);
+        if (!$typeTeam) {
             $errors[] = "El tipo de equipo seleccionado no es válido.";
         }
-        if ($errors) {
+
+        if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = array_merge($equipoTemp, $_POST);
             header('Location: /create-team');
             exit;
         }
 
-        $params = [
-            'email'           => $equipoTemp['email'],
-            'contrasena'      => $equipoTemp['password'],
-            'telefono'        => $equipoTemp['telefono'],
-            'nombre'          => $teamName,
-            'acronimo'        => $teamAcronym,
-            'id_tipo_equipo'  => $tipoArr[0]['id_tipo_equipo'],
-            'ubicacion'       => $geolocalizacion,
-            'lema'            => $teamMotto,
-            'id_nivel_elo' => 1, // Principiante
-            'id_rol' => 2 // Usuario
-        ];
-        $insertedId = $this->model->saveNewTeam($params);
+        $equipo = new Equipo();
+        $equipo->set([
+            "email" => $equipoTemp['email'],
+            "contrasena" => $equipoTemp['password'],
+            "telefono" => $equipoTemp['telefono'],
+            "nombre" => $teamName,
+            "acronimo" => $teamAcronym,
+            "id_tipo_equipo" => $typeTeam->id_tipo_equipo,
+            "ubicacion" => $equipo->setUbicacionFromCoords($lng, $lat),
+            "lema" => $teamMotto,
+            "elo_actual" => 800,
+            "id_nivel_elo" => 2,
+            "id_rol" => 2,
+        ]);
 
-        if ($insertedId) {
+        if ($this->equipoService->saveNewTeam($equipo)) {
+            $_SESSION['email'] = $equipoTemp['email'];
+            $_SESSION['success'] = "Tu cuenta se creó con éxito. ¡Ya podés iniciar sesión!";
             header('Location: /login');
             exit;
         }
 
         $_SESSION['errors'] = ["Hubo un error al registrar el equipo. Por favor intentalo nuevamente."];
-        $_SESSION['old']    = array_merge($equipoTemp, $_POST);
+        $_SESSION['old'] = array_merge($equipoTemp, $_POST);
         header('Location: /create-team');
         exit;
     }
 
-    public function searchTeam() {
-        $nombre = $_GET['nombre'] ?? null;
-        $paginaActual = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $id_nivel_elo = isset($_GET['id_nivel_elo']) ? (int)$_GET['id_nivel_elo'] : null;
-        $id_equipo = isset($_GET['id_equipo_desafiar']) ? (int)$_GET['id_equipo_desafiar'] : null;
+
+    public function dashboard()
+    {
+        $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
+
+        $equipoVistoId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT) ?: $miEquipo->getIdEquipo();
+        $isOwner = ($equipoVistoId === $miEquipo->getIdEquipo());
+
+        try {
+            $equipoVisto = $this->equipoService->getEquipoById($equipoVistoId);
+        } catch (\Exception $e) {
+            http_response_code(404);
+            require $this->viewsDir . 'errors/not-found.php';
+            exit;
+        }
+
+        $cantidadDeVotos = $this->comentarioEquipoService->getCantidadDeVotosByIdEquipo($equipoVistoId);
+        $estadisticas = $this->estadisticasDataMapper->findIdByIdEquipo($equipoVistoId);
+        $resultadosPartidosEstadisticas = $estadisticas
+            ? $this->resultadoPartidoDataMapper->getResultadosPartidosEstadisticas($equipoVistoId)
+            : null;
+
+        $equipoBanner = $this->equipoService->getEquipoBanner($equipoVisto);
+        $listLevelsElo = $this->equipoService->getAllNivelElo();
+
+        require $this->viewsDir . ($isOwner ? 'dashboard.php' : 'profile.php');
+    }
+
+
+    public function searchTeam()
+    {
+        $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
+
+        if (!$miEquipo) {
+            header("HTTP/1.1 404 Not Found");
+            require $this->viewsDir . 'errors/not-found.php';
+            exit;
+        }
+
+        $latitud = filter_input(INPUT_GET, 'lat', FILTER_VALIDATE_FLOAT);
+        $longitud = filter_input(INPUT_GET, 'lng', FILTER_VALIDATE_FLOAT);
+        $radio_km = filter_input(INPUT_GET, 'radius_km', FILTER_VALIDATE_FLOAT);
+        $nombre = filter_input(INPUT_GET, 'nombre', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $id_nivel_elo = filter_input(INPUT_GET, 'id_nivel_elo', FILTER_VALIDATE_INT);
+        $id_equipo = filter_input(INPUT_GET, 'id_equipo_desafiar', FILTER_VALIDATE_INT);
+        $orden = $_GET['orden'] ?? 'desc';
+        $orden = in_array($orden, ['asc', 'desc', 'alpha']) ? $orden : 'desc';
+
+        $paginaActual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT);
+        $paginaActual = $paginaActual && $paginaActual > 0 ? $paginaActual : 1;
         $porPagina = 3;
         $offset = ($paginaActual - 1) * $porPagina;
 
         if ($id_equipo) {
-            //Armar desafío --> necesitamos el login
+            try {
+                if ($this->desafioService->existeDesafioPendiente($miEquipo->getIdEquipo(), $id_equipo)) {
+                    $_SESSION['errors'] = ["El equipo la que intenta desafiar ya fue desafiado previamente y se encuentra en estado pendiente de aprobación."];
+                    header('Location: /search-team');
+                    exit;
+                }
+                $equipoDesafiado = $this->equipoService->getEquipoById($id_equipo);
+                $this->notificationService->notifyDesafioCreated($miEquipo, $equipoDesafiado);
+                header('Location: /dashboard');
+                exit;
+            } catch (\Exception $e) {
+                $_SESSION['errors'] = ["Error al registrar el desafío. Intentá nuevamente."];
+                header('Location: /search-team');
+                exit;
+            }
         }
-        if ($nombre && $id_nivel_elo) {
-            $todosLosEquipos = $this->model->selectLike(['nombre' => $nombre, 'id_nivel_elo' => $id_nivel_elo]);
-        } elseif ($nombre){
-            $todosLosEquipos = $this->model->selectLike(['nombre' => $nombre]);
-        } elseif ($id_nivel_elo){
-            $todosLosEquipos = $this->model->selectLike(['id_nivel_elo' => $id_nivel_elo]);
-        }else{
-            $todosLosEquipos = $this->model->select([]);
+
+        $usarUbicacion = ($latitud !== null && $longitud !== null && $radio_km !== null && ($latitud != 0 || $longitud != 0));
+        $orderBy = $orden === 'alpha' ? 'nombre' : 'elo_actual';
+        $direction = $orden === 'alpha' ? 'ASC' : strtoupper($orden);
+
+        $selectParams = [
+            'nombre' => $nombre,
+            'id_equipo' => $miEquipo->getIdEquipo(),
+        ];
+
+        if ($usarUbicacion) {
+            $selectParams['lat'] = $latitud;
+            $selectParams['lng'] = $longitud;
+            $selectParams['radio_km'] = $radio_km;
         }
+
+        if ($id_nivel_elo) {
+            $selectParams['id_nivel_elo'] = $id_nivel_elo;
+        }
+
+        $listLevelsElo = $this->equipoService->getAllNivelElo();
+        $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
+        $todosLosEquipos = $this->equipoService->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);
 
         $totalEquipos = count($todosLosEquipos);
-        $totalPaginas = ceil($totalEquipos / $porPagina);
+        $totalPaginas = max(1, ceil($totalEquipos / $porPagina));
+
+        if ($paginaActual > $totalPaginas) {
+            header("HTTP/1.1 404 Not Found");
+            require $this->viewsDir . 'errors/not-found.php';
+            exit;
+        }
 
         $equipos = array_slice($todosLosEquipos, $offset, $porPagina);
-
-        $nivelEloModel = $this->getModel(NivelElo::class);
-        $nivelesElo = $nivelEloModel->select([]);
-        $comentarioModel = $this->getModel(Comentario::class);
-        $comentarios = $comentarioModel->select([]);
-
-        $deportividadPorEquipo = [];
-
-        foreach ($comentarios as $comentario) {
-            $id = $comentario['id_equipo_comentado'];
-            if (!isset($deportividadPorEquipo[$id])) {
-                $deportividadPorEquipo[$id] = ['total' => 0, 'cantidad' => 0];
-            }
-            $deportividadPorEquipo[$id]['total'] += (float)$comentario['deportividad'];
-            $deportividadPorEquipo[$id]['cantidad']++;
-        }
-
-        foreach ($equipos as &$equipo) {
-            $idEquipo = $equipo['id_equipo'];
-            $nivelElo = $nivelEloModel->select(['id_nivel_elo' => $equipo['id_nivel_elo']]);
-            $equipo['nivel_elo_descripcion'] = $nivelElo[0]['descripcion'] ?? 'Sin nivel';
-            if (isset($deportividadPorEquipo[$idEquipo])) {
-                $total = $deportividadPorEquipo[$idEquipo]['total'];
-                $cantidad = $deportividadPorEquipo[$idEquipo]['cantidad'];
-                $equipo['deportividad'] = round($total / $cantidad, 2);
-            } else {
-                $equipo['deportividad'] = null;
-            }
-        }
-
         require $this->viewsDir . 'search-team.php';
     }
 
-    public function dashboard(){
 
-        $equipo_jwt_data = AuthMiddelware::verificar();
+    public function rankingTeams()
+    {
+        $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
 
-        $equipo = $this->getEquipo($equipo_jwt_data->id_equipo);
+        if (!$miEquipo) {
+            header("HTTP/1.1 404 Not Found");
+            require $this->viewsDir . 'errors/not-found.php';
+            exit;
+        }
 
-        $page  = max(1, (int)($_GET['page'] ?? 1));
-        $per   = 3;
-        $order = $_GET['order'] ?? 'fecha_creacion';
-        $dir   = strtoupper($_GET['dir'] ?? 'DESC') === 'ASC' ? 'ASC' : 'DESC';
+        $orden = $_GET['orden'] ?? 'desc';
+        $orden = in_array($orden, ['asc', 'desc', 'alpha']) ? $orden : 'asc';
 
-        $comentariosPag = $equipo->getComentarios($page, $per, $order, $dir);
-        $desafiosRecib  = $equipo->getDesafiosRecibidos($page, $per, $order, $dir);
+        $paginaActual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT);
+        $paginaActual = $paginaActual && $paginaActual > 0 ? $paginaActual : 1;
+        $porPagina = 3;
+        $offset = ($paginaActual - 1) * $porPagina;
 
-        $nivelDesc    = $equipo->getNivelElo();
-        $deportividad = $equipo->promediarDeportividad();
+        $orderBy = $orden === 'alpha' ? 'nombre' : 'elo_actual';
+        $direction = $orden === 'alpha' ? 'DESC' : strtoupper($orden);
 
-        $ultimoPartidoJugado = $equipo->getHistorialPartidos(1,1)[0];
+        $selectParams = [];
 
-        $soyGanador = $ultimoPartidoJugado->soyEquipoGanador($equipo);
+        $listLevelsElo = $this->equipoService->getAllNivelElo();
+        $todosLosEquipos = $this->equipoService->getAllEquiposBanner($selectParams, $orderBy, $direction);
+        $todosLosEquipos = $this->equipoService->quitarMiEquipoDeEquipos($todosLosEquipos, $miEquipo);
+        $todosLosEquipos = $this->equipoService->setRestultadosPartido($todosLosEquipos);
 
-        $this->logger->info("id partido jugado" . $ultimoPartidoJugado->fields['id_resultado']);
+        $totalEquipos = count($todosLosEquipos);
+        $totalPaginas = max(1, ceil($totalEquipos / $porPagina));
 
-        $equipoLocal  = $equipo;
-        $equipoRival  = $ultimoPartidoJugado->getEquipoRival($equipoLocal);
+        if ($paginaActual > $totalPaginas) {
+            header("HTTP/1.1 404 Not Found");
+            require $this->viewsDir . 'errors/not-found.php';
+            exit;
+        }
 
-        $eloChange = CalculadoraDeElo::calcularCambioElo($ultimoPartidoJugado, $equipoLocal);
-
-        require $this->viewsDir . 'dashboard.php';
+        $equipos = array_slice($todosLosEquipos, $offset, $porPagina);
+        require $this->viewsDir . 'ranking-teams.php';
     }
 
-    // obtiene el equipo que le pertenece a la persona que se logeo
-    private function getEquipo(int $id_equipo): Equipo {
 
-        $equipoCollection = $this->getModel(EquipoCollection::class);
 
-        $equipo_data_bd = $equipoCollection->getById($id_equipo)[0];
+    public function detailsTeam()
+    {
+        $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
 
-        $equipo = $this->getModel(Equipo::class);
+        $id_equipo = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
-        $equipo->set($equipo_data_bd);
+        if (!$id_equipo) {
+            header("HTTP/1.1 404 Not Found");
+            require $this->viewsDir . 'errors/not-found.php';
+            exit;
+        }
 
-        return $equipo;
+        try {
+            $equipo = $this->equipoService->getEquipoById($id_equipo);
+        } catch (\Exception $e) {
+            http_response_code(404);
+            require $this->viewsDir . 'errors/not-found.php';
+            exit;
+        }
+
+        $todosLosEquipos = $this->equipoService->getAllEquiposBanner([], '', '');
+        $todosLosEquipos = $this->equipoService->setRestultadosPartido($todosLosEquipos);
+        $listLevelsElo = $this->equipoService->getAllNivelElo();
+        $estadisticas = $this->estadisticasDataMapper->findIdByIdEquipo($equipo->getIdEquipo());
+        $resultadosPartidosEstadisticas = $estadisticas
+            ? $this->resultadoPartidoDataMapper->getResultadosPartidosEstadisticas($equipo->getIdEquipo())
+            : null;
+        $equipo = $this->equipoService->getAllEquiposbyId($equipo->getIdEquipo(), $todosLosEquipos);
+        require $this->viewsDir . 'details-team.php';
+    }
+
+    public function updateTeam()
+    {
+        $this->logger->info('updateTeam $_POST: ' . print_r($_POST, true));
+        $equipoJwtData = $this->auth->verificar(['ADMIN', 'USUARIO']);
+        $miEquipo = $this->equipoService->getEquipoById($equipoJwtData->id_equipo);
+
+        $acronimoInput = trim($_POST['team-acronym'] ?? '');
+        $lemaInput = trim($_POST['team-motto'] ?? '');
+        $urlInput = trim($_POST['team-url'] ?? '');
+
+        $errors = [];
+
+        if ($acronimoInput !== '') {
+            if (strlen($acronimoInput) > 3) {
+                $errors[] = "El acrónimo no puede superar 3 caracteres.";
+            }
+        }
+
+        if ($urlInput !== '') {
+            if (!filter_var($urlInput, FILTER_VALIDATE_URL)) {
+                $errors[] = "La URL de la foto no es válida.";
+            }
+            if (strlen($urlInput) > 255) {
+                $_SESSION['errors'][] = "La URL es demasiado larga (máx. 255 caracteres).";
+                header("Location: /dashboard?id={$miEquipo->getIdEquipo()}");
+                exit;
+            }
+        }
+
+        if ($errors) {
+            $_SESSION['errors'] = $errors;
+            header("Location: /dashboard?id={$miEquipo->getIdEquipo()}");
+            exit;
+        }
+
+        $acronimo = $acronimoInput !== '' ? $acronimoInput : $miEquipo->getAcronimo();
+        $lema = $lemaInput !== '' ? $lemaInput : $miEquipo->getLema();
+        $url = $urlInput !== '' ? $urlInput : null;
+
+
+        $equipo = new Equipo();
+        $equipo->setIdEquipo($miEquipo->getIdEquipo());
+        $equipo->setAcronimo($acronimo);
+        $equipo->setLema($lema);
+        $equipo->setUrlFotoPerfil($url);
+
+
+        if ($this->equipoService->updateTeam($equipo)) {
+            header("Location: /dashboard?id={$miEquipo->getIdEquipo()}");
+            exit;
+        }
+
+        $_SESSION['errors'] = ["No se pudo actualizar el equipo, intentá de nuevo más tarde."];
+        header("Location: /dashboard?id={$miEquipo->getIdEquipo()}");
+        exit;
     }
 }
-?>

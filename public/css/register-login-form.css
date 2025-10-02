@@ -1,59 +1,60 @@
 @import url('./base.css');
-@import url('./header.css');
-@import url('./footer.css');
+@import url('./parts/header.css');
+@import url('./parts/footer.css');
 
-.container{
-  margin: 0 5rem;
+.container {
+  margin: 0 1rem;
 }
 
 .register-container {
-  padding: 5% 8%; /* 5% arriba/abajo, 8% izquierda/derecha */
+  padding: 0.75rem 1rem;
 }
 
-/* Header interno */
+.login-container {
+  margin-top: 2rem;
+}
+
 .register-header h1 {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--text-color);
   margin-bottom: .25rem;
 }
+
 .register-header p {
   font-size: 1rem;
   color: var(--text-color);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
-/* Mensajes de error */
 .error-messages .error-text {
   color: red;
   margin-bottom: .5rem;
 }
 
-/* --------------------------------------------------
-   Aquí viene el wrapper flex: form | imagen
-----------------------------------------------------*/
 .register-body {
   display: flex;
-  gap: 2%;         /* separación en % */
+  flex-direction: column;
+  gap: 1.5rem;
   align-items: flex-start;
 }
 
-/* Formulario */
 .form-container {
-  flex: 0 1 60%;   /* flex-grow:0, flex-shrink:1, base:60% */
-  min-width: 280px;
+  width: 100%;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
 }
-/* Labels e inputs */
+
 .form-container label {
   font-weight: 500;
   margin-bottom: .5rem;
 }
+
 .form-container input {
   width: 100%;
   padding: .75rem 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
   border: 1px solid #ccc;
   border-radius: .5rem;
   font-size: 1rem;
@@ -61,12 +62,12 @@
 
 .form-container fieldset {
   display: flex;
-  flex-wrap: wrap;      
-  align-items: center;  
-  gap: 1.5rem;         
-  border: none;          
-  margin-bottom: 1.5rem; 
-  padding: 0;            
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  border: none;
+  margin-bottom: 1.5rem;
+  padding: 0;
 }
 
 .form-container legend {
@@ -89,14 +90,12 @@
   accent-color: var(--button-primary-background-color);
 }
 
-
-/* Wrapper para iconos en inputs */
 .input-with-icon {
-  position: relative;  
+  position: relative;
 }
 
 .input-with-icon input {
-  padding-right: 2.5rem; 
+  padding-right: 2.5rem;
 }
 
 .icon-forms {
@@ -108,19 +107,16 @@
   cursor: pointer;
 }
 
-/* Nota de obligatorio */
 .mandatory-note {
   font-size: .85rem;
   color: #999;
   margin-bottom: 2rem;
 }
 
-/* Botón “Siguiente” */
 .form-container button {
   width: 100%;
-  max-width: 20rem;
   padding: 1rem 0;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   background-color: var(--button-primary-background-color);
   color: var(--primary-buttons-color);
   border: none;
@@ -129,23 +125,31 @@
   cursor: pointer;
   transition: background-color .3s;
 }
+
 .form-container button:hover {
   filter: brightness(0.95);
 }
 
-/* Link de “Iniciar sesión” */
+.alert-success {
+  background-color: #d4f7e0;
+  color: #085f32;
+  border: 1px solid var(--button-primary-background-color);
+  flex-direction: column;
+}
+
 .login-link {
   font-size: .9rem;
   color: #666;
   text-align: center;
 }
+
 .login-link a {
   color: var(--muted-text-color);
   text-decoration: underline;
 }
 
-/* Imagen lateral */
 .image-container {
+  display: none;
   flex: 0 1 40%;
   min-width: 200px;
 }
@@ -154,76 +158,93 @@
   width: 100%;
   border-radius: .5rem;
   object-fit: cover;
+  border: 2px solid #64c67c;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
 }
 
-/* ------------ Media Queries ------------ */
-/* Tablet (768px–1024px) */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .container{
-    margin: 0 1rem;
-  }
-  
-  .register-container {
-    /* Un poco menos de padding lateral */
-    padding: 3% 5%;
-  }
-  .register-body {
-    gap: 3%;
-  }
-  .form-container {
-    flex-basis: 65%;
-  }
-  .image-container {
-    flex-basis: 35%;
-  }
+.leaflet-control-geocoder-icon {
+  vertical-align: middle !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  background-color: white !important;
 }
-/* Móvil estándar (480px–767px) */
-@media (max-width: 767px) and (min-width: 480px) {
-  .container{
-    margin: 0 1rem;
+
+.leaflet-control-geocoder {
+  height: 100%;
+  border-radius: 1rem !important;
+}
+
+.leaflet-control-geocoder-form input {
+  width: 220px !important;
+  margin-bottom: 0;
+}
+
+.leaflet-left {
+  display: none;
+}
+
+@media (min-width: 480px) {
+  .register-container {
+    padding: 1rem 1.5rem;
   }
 
-  .register-container {
-    padding: 1rem 1.5rem; /* menos padding lateral */
-  }
   .register-body {
-    flex-direction: column;
     gap: 2rem;
   }
-  .form-container,
-  .image-container {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;           /* quita márgenes extra */
-    padding: 0;          /* si tenías padding específico, aquí lo eliminas */
-  }
-  .image-container {
-    display: none;
+
+  .leaflet-left {
+    display: block;
   }
 }
 
-/* Pequeños móviles (<480px) */
-@media (max-width: 479px) {
-  .container{
+@media (min-width: 768px) {
+  .container {
     margin: 0 1rem;
   }
-  
+
   .register-container {
-    padding: 0.75rem 1rem;  /* aún más ajustado */
+    padding: 3% 5%;
   }
+
   .register-body {
-    flex-direction: column;
-    gap: 1.5rem;
+    flex-direction: row;
+    gap: 3%;
   }
-  .form-container,
+
+  .form-container {
+    flex: 0 1 65%;
+  }
+
   .image-container {
-    width: 100%;
-    max-width: 100%;
+    display: block;
+    margin-top: 5rem;
+    flex: 0 1 35%;
     margin: 0;
-    padding: 0;
   }
-  /* opcional: ocultar la imagen lateral si sigue muy apretado */
+}
+
+@media (min-width: 1024px) {
+  .container {
+    margin: 0 5rem;
+  }
+
+  .register-container {
+    padding: 5% 3%;
+  }
+
+  .register-body {
+    gap: 5%;
+  }
+
+  .form-container {
+    flex: 0 1 60%;
+  }
+
   .image-container {
-    display: none;
+    flex: 0 1 40%;
+  }
+
+  .register-header h1 {
+    font-size: 2rem;
   }
 }

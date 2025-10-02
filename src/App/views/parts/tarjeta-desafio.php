@@ -14,21 +14,24 @@
 <div class="challenge-card">
   <div class="card-side">
     <div class="team-image">
-      <span class="level-badge"><?php echo htmlspecialchars($challenge['id_nivel_elo']) ?></span>
+      <img src="<?= !empty($challenge['url_foto_perfil'])
+        ? htmlspecialchars($challenge['url_foto_perfil'], ENT_QUOTES, 'UTF-8')
+        : '/icons/defaultTeamIcon.png' ?>" alt="">
+      <span class="level-badge"><?php echo htmlspecialchars($challenge['id_nivel_elo'], ENT_QUOTES, 'UTF-8') ?></span>
     </div>
   </div>
 
   <div class="card-main">
     <div class="card-header">
-      <h3 class="team-name"><?php echo htmlspecialchars($challenge['name']) ?></h3>
-      <div class="team-record"><?php echo htmlspecialchars($challenge['record']) ?></div>
+      <h3 class="team-name"><?php echo htmlspecialchars($challenge['name'], ENT_QUOTES, 'UTF-8') ?></h3>
+      <div class="team-record"><?php echo htmlspecialchars($challenge['record'], ENT_QUOTES, 'UTF-8') ?></div>
     </div>
 
     <div class="card-body">
       <div class="sport-icons">
         <!-- Faltaria hacer algo tipo, hasta la cantidad que me mandan
              pongo pelotitas, y relleno hasta 5 espacios vacios -->
-        Deportividad: 
+        Deportividad:
         <?php for ($i = 1; $i <= 5; $i++): ?>
           <?php if ($i <= $challenge['deportividad']): ?>
             <span class="icon">⚽</span>
@@ -37,19 +40,32 @@
           <?php endif; ?>
         <?php endfor; ?>
       </div>
-      <p class="team-motto"><?php echo htmlspecialchars($challenge['lema']) ?></p>
+      <p class="team-motto"><?php echo htmlspecialchars($challenge['lema'], ENT_QUOTES, 'UTF-8') ?></p>
       <small class="elo">
         Elo W/L/D: +
         <?php echo $challenge['elo']['wins'] ?>,
         -<?php echo $challenge['elo']['losses'] ?>,
         <?php echo $challenge['elo']['draws'] ?>
       </small>
-      <a href="<?php echo $challenge['profile-link'] ?>" class="profile-link">ver perfil del equipo</a>
+      <a href="<?php echo $challenge['profile-link'] ?>" class="profile-link">Ver perfil equipo</a>
     </div>
 
     <div class="card-actions">
-      <button class="btn btn-accept">Aceptar desafío</button>
-      <button class="btn btn-reject">Rechazar desafío</button>
+      <!-- Aceptar desafío -->
+      <form action="/accept-desafio" method="POST" style="display:inline">
+        <input type="hidden" name="id_equipo" value="<?= $challenge['id_equipo'] ?>">
+        <input type="hidden" name="id_desafio" value="<?= $challenge['id_desafio'] ?>">
+        <button type="submit" class="btn btn-accept">Aceptar desafío</button>
+      </form>
+
+      <!-- Rechazar desafío -->
+      <form action="/reject-desafio" method="POST" style="display:inline">
+        <input type="hidden" name="_method" value="DELETE">
+        <input type="hidden" name="id_equipo" value="<?= $challenge['id_equipo'] ?>">
+        <input type="hidden" name="id_desafio" value="<?= $challenge['id_desafio'] ?>">
+        <button type="submit" class="btn btn-reject">Rechazar desafío</button>
+      </form>
     </div>
+
   </div>
 </div>
