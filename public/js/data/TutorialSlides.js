@@ -25,17 +25,22 @@ const tutorialSlides = [
     image: "../../img/tutorial/intentos.png"
   },
   {
-    title: "5. Notificar al Rival",
+    title: "5. Deadline para Cargar Resultados",
+    text: "Tienes hasta 48 horas después de finalizado el partido para cargar y coordinar los resultados. El tiempo restante se muestra en la parte superior.",
+    image: "../../img/tutorial/deadline.png"
+  },
+  {
+    title: "6. Notificar al Rival",
     text: "Si necesitas que el rival cargue o revise sus datos, haz clic en el botón 'Abrir WhatsApp' situado justo debajo del 'Formulario del rival' para enviarle un mensaje rápido.",
     image: "../../img/tutorial/whatsapp-button.png"
   },
   {
-    title: "6. Califica la Deportividad (Opcional)",
+    title: "7. Califica la Deportividad (Opcional)",
     text: "Una vez que los resultados coincidan (¡todos los campos en verde!), verás el botón 'Calificar deportividad'. Puedes hacer clic para dar tu opinión y una calificación del 1 al 5 sobre la actitud del equipo rival. ¡Esto es opcional!",
     image: "../../img/tutorial/deportividad-formulario.png"
   },
   {
-    title: "7. Finaliza el Partido y Actualiza Estadísticas",
+    title: "8. Finaliza el Partido y Actualiza Estadísticas",
     text: "Una vez que los resultados coinciden, tienes dos opciones para finalizar: si calificaste la deportividad, al enviar el formulario se terminará el partido. Si no quieres calificar, simplemente haz clic en el botón 'Terminar partido'. ¡Al finalizar, el ELO de tu equipo y las estadísticas se actualizarán automáticamente!",
     image: "../../img/tutorial/terminar-partido.png"
   },
