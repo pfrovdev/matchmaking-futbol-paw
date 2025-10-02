@@ -91,6 +91,7 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
 
 </head>
 
+
 <body>
     <?php
     $estaLogueado = !!$miEquipo->getIdEquipo();
@@ -254,6 +255,7 @@ $rangoSelectedId = $_GET['id_nivel_elo'] ?? null;
                         </div>
                         <button class="button" type="submit">Enviar</button>
                     </form>
+                    
                 </section>
 
                 <figure class="filter-map">
