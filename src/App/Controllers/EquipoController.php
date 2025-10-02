@@ -58,6 +58,30 @@ class EquipoController extends AbstractController
         require $this->viewsDir . 'create-team.php';
     }
 
+    private function validatePassword(string $password): array
+    {
+        $errors = [];
+        $minLength = 8;
+
+        if (strlen($password) < $minLength) {
+            $errors[] = "La contraseña debe tener al menos {$minLength} caracteres.";
+        }
+        if (!preg_match('/[A-Z]/', $password)) {
+            $errors[] = "La contraseña debe contener al menos una letra mayúscula.";
+        }
+        if (!preg_match('/[a-z]/', $password)) {
+            $errors[] = "La contraseña debe contener al menos una letra minúscula.";
+        }
+        if (!preg_match('/[0-9]/', $password)) {
+            $errors[] = "La contraseña debe contener al menos un número.";
+        }
+        if (!preg_match('/[!@#$%^&*(),.?":{}|<>]/', $password)) {
+            $errors[] = "La contraseña debe contener al menos un carácter especial.";
+        }
+
+        return $errors;
+    }
+
     public function register()
     {
         $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
@@ -82,6 +106,8 @@ class EquipoController extends AbstractController
         if ($password !== $confirmPassword) {
             $errors[] = "Las contraseñas no coinciden.";
         }
+        $passwordErrors = $this->validatePassword($password);
+        $errors = array_merge($errors, $passwordErrors);
         if (empty($telefono)) {
             $errors[] = "El teléfono es obligatorio.";
         }
