@@ -150,6 +150,10 @@ export default class PartidoComponent {
         btnWapp.disabled = true;
         btnWapp.classList.add('disabled-link');
       }
+      btnWapp.addEventListener('click', () => {
+        const url = `https://wa.me/${p.equipo.numeroTelefono}`;
+        window.open(url, '_blank');
+      });
       actionsDiv.appendChild(btnWapp);
 
       // Enlace “Coordinar resultado”

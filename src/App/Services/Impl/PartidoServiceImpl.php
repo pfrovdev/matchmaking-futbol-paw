@@ -288,7 +288,7 @@ class PartidoServiceImpl implements PartidoService
 
         return [
             'data' => $this->proximosPartidosPaginated($misPartidosPendientes, $page, $perPage, $orderBy, $direction),
-            'meta' => $meta,
+            'meta' => $meta
         ];
     }
 
