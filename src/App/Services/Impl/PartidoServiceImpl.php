@@ -414,7 +414,7 @@ class PartidoServiceImpl implements PartidoService
         $partido = $this->partidoDataMapper->findByIdAndFinalizado($idPartido, false);
 
         if (!$partido) {
-            throw new \RuntimeException("Partido con id {$idPartido} no encontrado");
+            return false;
         }
 
         $desafio = $this->desafioDataMapper->findByIdPartido($idPartido);
@@ -426,7 +426,7 @@ class PartidoServiceImpl implements PartidoService
         $formularioPartido = $this->formularioPartidoDataMapper->findByIdFormularioPartido($idPartido);
 
         if ($formularioPartido->getTotalIteraciones() == 5) {
-            throw new \RuntimeException("El formulario llegó a su máximo de iteraciones");
+            return false;
         }
 
         return true;
